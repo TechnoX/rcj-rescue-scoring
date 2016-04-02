@@ -3,9 +3,24 @@
 </div>
 <div class="modal-body">
   <ul>
-    <li><label>Speedbumps:</label><a href="">+</a> {{tile.speedbumps}}<a href="">-</a></li>
-    <li><label>Gaps:</label><a href="">+</a> {{tile.gaps}}<a href="">-</a></li>
-    <li><label>Obstacles:</label><a href="">+</a> {{tile.obstacles}}<a href="">-</a></li>
+    <li>
+      <label>Speedbumps:</label>
+      <a href="#" ng-click="tile.speedbumps>0?tile.speedbumps=tile.speedbumps-1:0">-</a>
+      {{tile.speedbumps}}
+      <a href="#" ng-click="tile.speedbumps=tile.speedbumps+1">+</a>
+    </li>
+    <li>
+      <label>Gaps:</label>
+      <a href="#" ng-click="tile.gaps>0?tile.gaps=tile.gaps-1:0">-</a>
+      {{tile.gaps}}
+      <a href="#" ng-click="tile.gaps=tile.gaps+1">+</a>
+    </li>
+    <li>
+      <label>Obstacles:</label>
+      <a href="#" ng-click="tile.obstacles>0?tile.obstacles=tile.obstacles-1:0">-</a>
+      {{tile.obstacles}}
+      <a href="#" ng-click="tile.obstacles=tile.obstacles+1">+</a>
+    </li>
   </ul>
 </div>
 <div class="modal-footer">

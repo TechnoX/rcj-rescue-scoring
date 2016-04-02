@@ -17,7 +17,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
     $scope.height = 0;
     $scope.tiles = {};
 
-    $scope.tiles["2,3"] = {rot: 0,   image: 'tiles/tile-5.png'};
+    $scope.tiles["2,3"] = {rot: 0,   image: 'tiles/tile-5.png', gaps: 2, obstacles: 0, speedbumps: 3};
 /*    $scope.tiles["2,4"] = {rot: '0'};
     $scope.tiles["2,5"] = {rot: '270', image: 'tile-6.png'};
     $scope.tiles["3,3"] = {rot: '90',  image: 'tile-4.png'};
@@ -31,16 +31,21 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
 
     $scope.animationsEnabled = true;
 
-    $scope.open = function() {
-
+    $scope.open = function(x,y) {
+        console.log(x+','+y);
         var modalInstance = $uibModal.open({
             animation: $scope.animationsEnabled,
             templateUrl: 'add_difficulties.html',
             controller: 'ModalInstanceCtrl',
             size: 'sm',
             resolve: {
-                items: function () {
-                    return $scope.items;
+                tile: function () {
+                    console.log("Hej");
+                    console.log($scope.tiles);
+                    console.log(x+','+y);
+                    console.log($scope.tiles[x+','+y]);
+                    console.log("efter");
+                    return $scope.tiles[x+','+y];
                 }
             }
         });
@@ -62,15 +67,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
 // Please note that $uibModalInstance represents a modal window (instance) dependency.
 // It is not the same as the $uibModal service used above.
 
-app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, items) {
-
-    $scope.items = items;
-    $scope.selected = {
-        item: $scope.items[0]
-    };
-
+app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, tile) {
+    $scope.tile = tile;
+    console.log(tile);
     $scope.ok = function () {
-        $uibModalInstance.close($scope.selected.item);
+        $uibModalInstance.close($scope.tile);
     };
 
     $scope.cancel = function () {
