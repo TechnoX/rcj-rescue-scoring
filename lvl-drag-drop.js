@@ -7,7 +7,8 @@ app.controller('ddController', ['$scope' , function($scope){
 
     $scope.rotateTile = function(x,y){
         console.log("huh");
-        console.log($scope.tiles[x+','+y]);
+        console.log(x+','+y);
+        console.log($scope.tiles);
         $scope.tiles[x+','+y].rot += 90;
         if($scope.tiles[x+','+y].rot >= 360)
             $scope.tiles[x+','+y].rot = 0;

@@ -4,7 +4,7 @@
 
     <script type="text/javascript"
             src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.2/angular.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular-animate.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.2/angular-animate.js"></script>
     <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-1.2.5.js"></script>
 
     <script src="lvl-uuid.js"></script>
@@ -139,7 +139,7 @@
         <div class="col-md-9" ng-controller="ModalDemoCtrl">
           <div ng-repeat="r in [0,1,2,3,4,5,6,7,8,9]">
             <div ng-repeat="c in [0,1,2,3,4]" class="slot">
-              <tile tiles="tiles" x="{{c}}" y="{{r}}"  x-lvl-draggable="true" x-lvl-drop-target="true" ng-click="$parent.rotateTile(x,y)"></tile>
+              <tile tiles="tiles" x="{{c}}" y="{{r}}"  x-lvl-draggable="true" x-lvl-drop-target="true"></tile>
             </div>
           </div>
         </div>
