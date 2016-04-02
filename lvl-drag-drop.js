@@ -8,17 +8,21 @@ app.controller('ddController', ['$scope' , function($scope){
         var drop = angular.element(dropEl); // The div where i dropped the tile
         var drag = angular.element(dragEl); // The div where I lifted this tile
 
-        console.log(drop.attr("x"));
-
-        $scope.tiles[drop.attr("x")+","+drop.attr("y")] = $scope.tiles[drag.attr("x")+","+drag.attr("y")];
-        $scope.tiles[drag.attr("x")+","+drag.attr("y")] = {};
+        // If we drag out an image, this is a new tile
+        if(drag[0].tagName == "IMG"){
+            $scope.tiles[drop.attr("x")+","+drop.attr("y")] = {image: drag.attr("src")};
+        }else if(drag.attr("x") != drop.attr("x") || drag.attr("y") != drop.attr("y")){
+            $scope.tiles[drop.attr("x")+","+drop.attr("y")] = $scope.tiles[drag.attr("x")+","+drag.attr("y")];
+            // Remove the element from where we dragged it
+            $scope.tiles[drag.attr("x")+","+drag.attr("y")] = {};
+        }
         console.log($scope.tiles);
         $scope.$apply();
     }
 
     $scope.tiles = {};
 
-    $scope.tiles["2,3"] = {rot: '0',   image: 'tile-5.png'};
+    $scope.tiles["2,3"] = {rot: '0',   image: 'tiles/tile-5.png'};
 /*    $scope.tiles["2,4"] = {rot: '0'};
     $scope.tiles["2,5"] = {rot: '270', image: 'tile-6.png'};
     $scope.tiles["3,3"] = {rot: '90',  image: 'tile-4.png'};
@@ -95,7 +99,7 @@ app.directive('lvlDropTarget', ['$rootScope', 'uuid', function ($rootScope, uuid
             onDrop: '&',
             col: '=',
             row: '=',
-            tiles: '='
+            tile: '='
         },
         link: function (scope, el, attrs, controller) {
             var id = angular.element(el).attr("id");
