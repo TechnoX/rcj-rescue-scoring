@@ -72,6 +72,13 @@
       background-color: grey;
       }
 
+      tile{
+      width: 40px;
+      height: 40px;
+      margin: 0px;
+      display: block;
+      }
+
       .tile-image{
         width: 40px;
         height: 40px;
@@ -129,7 +136,7 @@
         <div class="col-md-9">
           <div ng-repeat="r in [0,1,2,3,4,5,6,7,8,9]">
             <div ng-repeat="c in [0,1,2,3,4]" class="slot">
-              <tile tiles="tiles" x="{{c}}" y="{{r}}"></tile>
+              <tile tiles="tiles" x="{{c}}" y="{{r}}"  x-lvl-draggable='true' x-lvl-drop-target="true" x-on-drop="dropped(dragEl, dropEl)" ></tile>
               <!--
               <div ng-repeat="tile in tiles | filter: {x: col, y: row}">
                 <img src="tiles/{{tile.image}}" class="rot{{tile.rot}} tile-image" ng-show="tile.image">
@@ -141,10 +148,7 @@
       </div>
     </div>
   </body>
-
-
-
-  <script>
+<script>
     // register the directive with your app module
     var app = angular.module('ddApp', ['lvl.directives.dragdrop']);
 
@@ -156,7 +160,7 @@
         var drop = angular.element(dropEl); // The div where i dropped the tile
         var drag = angular.element(dragEl); // The div where I lifted this tile
 
-    console.log("adsf");
+        console.log("adsf");
 
         //add the dragged image
         var path = drag.attr("src");
@@ -212,11 +216,5 @@
         }
       };
     });
-
-
-
-
-
-
-  </script>
+</script>
 </html>
