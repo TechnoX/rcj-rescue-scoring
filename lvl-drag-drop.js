@@ -2,8 +2,7 @@
 var app = angular.module('ddApp', ['lvl.services', 'ngAnimate', 'ui.bootstrap']);
 
 // function referenced by the drop target
-app.controller('ddController', ['$scope' , function($scope){
-
+app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, $uibModal, $log){
 
     $scope.rotateTile = function(x,y){
         console.log("huh");
@@ -26,12 +25,7 @@ app.controller('ddController', ['$scope' , function($scope){
     $scope.tiles["3,5"] = {rot: '180'};
 */
 
-}]);
 
-
-
-
-app.controller('ModalDemoCtrl', function ($scope, $uibModal, $log) {
 
     $scope.items = ['item1', 'item2', 'item3'];
 
@@ -62,7 +56,7 @@ app.controller('ModalDemoCtrl', function ($scope, $uibModal, $log) {
         $scope.animationsEnabled = !$scope.animationsEnabled;
     };
 
-});
+}]);
 
 
 // Please note that $uibModalInstance represents a modal window (instance) dependency.
