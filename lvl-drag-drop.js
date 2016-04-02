@@ -4,6 +4,7 @@ module.directive('lvlDraggable', ['$rootScope', 'uuid', function ($rootScope, uu
     return {
         restrict: 'A',
         link: function (scope, el, attrs, controller) {
+            console.log("linking draggable element");
             angular.element(el).attr("draggable", "true");
 
             var id = angular.element(el).attr("id");
@@ -14,7 +15,7 @@ module.directive('lvlDraggable', ['$rootScope', 'uuid', function ($rootScope, uu
             }
             console.log(id);
             el.bind("dragstart", function (e) {
-                e.originalEvent.dataTransfer.setData('text', id);
+                e.dataTransfer.setData('text', id);
                 console.log('drag');
                 $rootScope.$emit("LVL-DRAG-START");
             });
@@ -44,7 +45,7 @@ module.directive('lvlDropTarget', ['$rootScope', 'uuid', function ($rootScope, u
                     e.preventDefault(); // Necessary. Allows us to drop.
                 }
 
-                e.originalEvent.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
+                e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
                 return false;
             });
 
@@ -65,11 +66,11 @@ module.directive('lvlDropTarget', ['$rootScope', 'uuid', function ($rootScope, u
                 if (e.stopPropagation) {
                     e.stopPropagation(); // Necessary. Allows us to drop.
                 }
-                var data = e.originalEvent.dataTransfer.getData("text");
+                var data = e.dataTransfer.getData("text");
                 var dest = document.getElementById(id);
                 var src = document.getElementById(data);
 
-                scope.onDrop({dragEl: data, dropEl: id});
+                scope.onDrop({dragEl: src, dropEl: dest});
             });
 
             $rootScope.$on("LVL-DRAG-START", function () {
