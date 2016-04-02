@@ -186,12 +186,16 @@ app.directive('lvlDropTarget', ['$rootScope', 'uuid', function ($rootScope, uuid
                 var drop = angular.element(dest); // The div where i dropped the tile
                 var drag = angular.element(src); // The div where I lifted this tile
 
+
                 // If we dropped something on an image this is back to the tool box
                 if(drop[0].tagName == "IMG"){
                     // Remove the element from where we dragged it
                     scope.tiles[drag.attr("x")+","+drag.attr("y")] = {};
                 }else if(drag[0].tagName == "IMG"){// If we drag out an image, this is a new tile
                     scope.tiles[drop.attr("x")+","+drop.attr("y")] = {image: drag.attr("src"), rot: +drag.attr("rot")};
+                }else if(!scope.tiles[drag.attr("x")+","+drag.attr("y")]){ // We dragged an non-existing tile
+                    // Just ignore!
+                    ;
                 }else if(drag.attr("x") != drop.attr("x") || drag.attr("y") != drop.attr("y")){
                     scope.tiles[drop.attr("x")+","+drop.attr("y")] = scope.tiles[drag.attr("x")+","+drag.attr("y")];
                     // Remove the element from where we dragged it
