@@ -13,7 +13,7 @@ module.directive('lvlDraggable', ['$rootScope', 'uuid', function ($rootScope, uu
                 id = uuid.new()
                 angular.element(el).attr("id", id);
             }
-            console.log(id);
+            //console.log(id);
             el.bind("dragstart", function (e) {
                 e.dataTransfer.setData('text', id);
                 console.log('drag');
