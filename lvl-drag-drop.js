@@ -1,5 +1,5 @@
 // register the directive with your app module
-var app = angular.module('ddApp', ['lvl.services']);
+var app = angular.module('ddApp', ['lvl.services', 'ngAnimate', 'ui.bootstrap']);
 
 // function referenced by the drop target
 app.controller('ddController', ['$scope' , function($scope){
@@ -43,7 +43,64 @@ app.controller('ddController', ['$scope' , function($scope){
     $scope.tiles["3,4"] = {rot: '90',  image: 'tile-4.png'};
     $scope.tiles["3,5"] = {rot: '180'};
 */
+
 }]);
+
+
+
+
+app.controller('ModalDemoCtrl', function ($scope, $uibModal, $log) {
+
+    $scope.items = ['item1', 'item2', 'item3'];
+
+    $scope.animationsEnabled = true;
+
+    $scope.open = function (size) {
+
+        var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'myModalContent.html',
+            controller: 'ModalInstanceCtrl',
+            size: size,
+            resolve: {
+                items: function () {
+                    return $scope.items;
+                }
+            }
+        });
+
+        modalInstance.result.then(function (selectedItem) {
+            $scope.selected = selectedItem;
+        }, function () {
+            $log.info('Modal dismissed at: ' + new Date());
+        });
+    };
+
+    $scope.toggleAnimation = function () {
+        $scope.animationsEnabled = !$scope.animationsEnabled;
+    };
+
+});
+
+
+// Please note that $uibModalInstance represents a modal window (instance) dependency.
+// It is not the same as the $uibModal service used above.
+
+app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, items) {
+
+    $scope.items = items;
+    $scope.selected = {
+        item: $scope.items[0]
+    };
+
+    $scope.ok = function () {
+        $uibModalInstance.close($scope.selected.item);
+    };
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+});
 
 
 app.directive('tile', function() {
