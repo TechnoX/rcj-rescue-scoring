@@ -72,11 +72,11 @@
       background-color: grey;
       }
 
-      .tile {
+      .tile-image{
         width: 40px;
         height: 40px;
       }
-      .tools .tile{
+      .tools .tile-image{
         margin: 5px;
       }
 
@@ -122,18 +122,26 @@
     <div ng-controller="ddController" style="margin-top:50px;">
       <div class="row">
         <div class="col-md-3 tools">
-          <img src="tiles/tile-{{tile}}.png" x-lvl-draggable="true" ng-repeat="tile in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]" class="tile" rotate-on-click="90">
+          <div x-lvl-draggable="true" ng-repeat="tile in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]" class="tile-image">
+            <img src="tiles/tile-{{tile}}.png" rotate-on-click="90" class="tile-image">
+          </div>
         </div>
         <div class="col-md-9">
-          <div ng-repeat="r in tiles">
-            <div ng-repeat="c in r" x-lvl-draggable='true' x-lvl-drop-target="true" x-on-drop="dropped(dragEl, dropEl)" class="slot" tile="c">
-              <img src="tiles/{{tile.image}}" class="tile rot{{tile.rot}}">
+          <div ng-repeat="r in [0,1,2,3,4,5,6,7,8,9]">
+            <div ng-repeat="c in [0,1,2,3,4]" class="slot">
+              <tile tiles="tiles" x="{{c}}" y="{{r}}"></tile>
+              <!--
+              <div ng-repeat="tile in tiles | filter: {x: col, y: row}">
+                <img src="tiles/{{tile.image}}" class="rot{{tile.rot}} tile-image" ng-show="tile.image">
+              </div>
+              -->
             </div>
           </div>
         </div>
       </div>
     </div>
   </body>
+
 
 
   <script>
@@ -143,15 +151,14 @@
 
     // function referenced by the drop target
     app.controller('ddController', ['$scope' , function($scope){
-
-/*
       $scope.dropped = function(dragEl, dropEl) {
         //the directive provides a native dom object, wrap with jqlite
-        var drop = angular.element(dropEl);
-        var drag = angular.element(dragEl);
+        var drop = angular.element(dropEl); // The div where i dropped the tile
+        var drag = angular.element(dragEl); // The div where I lifted this tile
+
+    console.log("adsf");
 
         //add the dragged image
-
         var path = drag.attr("src");
         console.log(path);
         drop.attr('src', path);
@@ -161,24 +168,30 @@
           drag.attr('src', 'tiles/tile-empty.png');
         }
       }
-*/
-      $scope.tiles =
-[
-[
-{rot: '90',  image: 'tile-4.png'},
-{rot: '90',  image: 'tile-4.png'},
-{rot: '180', image: 'tile-5.png'}
-],
-[
-{rot: '0',   image: 'tile-5.png'},
-{rot: '0',   image: 'tile-6.png'},
-{rot: '270', image: 'tile-6.png'}
-]
-]
 
+      $scope.tiles = {};
+
+      $scope.tiles["2,3"] = {rot: '0',   image: 'tile-5.png'};
+      $scope.tiles["2,4"] = {rot: '0'};
+      $scope.tiles["2,5"] = {rot: '270', image: 'tile-6.png'};
+      $scope.tiles["3,3"] = {rot: '90',  image: 'tile-4.png'};
+      $scope.tiles["3,4"] = {rot: '90',  image: 'tile-4.png'};
+      $scope.tiles["3,5"] = {rot: '180'};
 
     }]);
 
+
+    app.directive('tile', function() {
+      return {
+       scope: {
+          x: '@',
+          y: '@',
+          tiles: '=tiles'
+        },
+        restrict: 'E',
+        templateUrl: 'tile.html'
+      };
+    });
 
 
     app.directive('rotateOnClick', function() {
