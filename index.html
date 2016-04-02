@@ -72,10 +72,44 @@
       background-color: grey;
       }
 
-      .tools .tile {
-      width: 40px;
-      height: 40px;
-      margin: 5px;
+      .tile {
+        width: 40px;
+        height: 40px;
+      }
+      .tools .tile{
+        margin: 5px;
+      }
+
+      .rot0 {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+      }
+
+      .rot90 {
+        -webkit-transform: rotate(90deg);
+        -moz-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        -o-transform: rotate(90deg);
+        transform: rotate(90deg);
+      }
+
+      .rot180 {
+        -webkit-transform: rotate(180deg);
+        -moz-transform: rotate(180deg);
+        -ms-transform: rotate(180deg);
+        -o-transform: rotate(180deg);
+        transform: rotate(180deg);
+      }
+
+      .rot270 {
+        -webkit-transform: rotate(270deg);
+        -moz-transform: rotate(270deg);
+        -ms-transform: rotate(270deg);
+        -o-transform: rotate(270deg);
+        transform: rotate(270deg);
       }
 
 
@@ -93,8 +127,7 @@
         <div class="col-md-9">
           <div ng-repeat="r in tiles">
             <div ng-repeat="c in r" x-lvl-draggable='true' x-lvl-drop-target="true" x-on-drop="dropped(dragEl, dropEl)" class="slot" tile="c">
-              {{tile.y}}
-asdf
+              <img src="tiles/{{tile.image}}" class="tile rot{{tile.rot}}">
             </div>
           </div>
         </div>
@@ -132,14 +165,14 @@ asdf
       $scope.tiles =
 [
 [
-{x: 3, y: 4, rot: '90',  image: 'tile-4.png'},
-{x: 3, y: 5, rot: '90',  image: 'tile-4.png'},
-{x: 3, y: 6, rot: '180', image: 'tile-5.png'}
+{rot: '90',  image: 'tile-4.png'},
+{rot: '90',  image: 'tile-4.png'},
+{rot: '180', image: 'tile-5.png'}
 ],
 [
-{x: 2, y: 4, rot: '0',   image: 'tile-5.png'},
-{x: 2, y: 5, rot: '0',   image: 'tile-6.png'},
-{x: 2, y: 6, rot: '270', image: 'tile-6.png'}
+{rot: '0',   image: 'tile-5.png'},
+{rot: '0',   image: 'tile-6.png'},
+{rot: '270', image: 'tile-6.png'}
 ]
 ]
 
