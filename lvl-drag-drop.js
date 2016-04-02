@@ -6,18 +6,17 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
 
     $scope.rotateTile = function(x,y){
         // If the tile doesn't exists yet
-        if(!$scope.tiles[x+','+y])
+        if(!$scope.tiles[x+','+y+','+$scope.z])
             return;
-        $scope.tiles[x+','+y].rot += 90;
-        if($scope.tiles[x+','+y].rot >= 360)
-            $scope.tiles[x+','+y].rot = 0;
+        $scope.tiles[x+','+y+','+$scope.z].rot += 90;
+        if($scope.tiles[x+','+y+','+$scope.z].rot >= 360)
+            $scope.tiles[x+','+y+','+$scope.z].rot = 0;
     }
 
-
-    $scope.height = 0;
+    $scope.z = 0;
     $scope.tiles = {};
 
-    $scope.tiles["2,3"] = {rot: 0,   image: 'tiles/tile-5.png', gaps: 2, obstacles: 0, speedbumps: 3, intersections: 0};
+    $scope.tiles["2,3,0"] = {rot: 0, image: 'tiles/tile-5.png', gaps: 2, obstacles: 0, speedbumps: 3, intersections: 0};
 /*    $scope.tiles["2,4"] = {rot: '0'};
     $scope.tiles["2,5"] = {rot: '270', image: 'tile-6.png'};
     $scope.tiles["3,3"] = {rot: '90',  image: 'tile-4.png'};
@@ -32,7 +31,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
     $scope.animationsEnabled = true;
 
     $scope.open = function(x,y) {
-        console.log(x+','+y);
+        console.log(x+','+y+','+$scope.z);
         var modalInstance = $uibModal.open({
             animation: $scope.animationsEnabled,
             templateUrl: 'add_difficulties.html',
@@ -40,7 +39,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
             size: 'sm',
             resolve: {
                 tile: function () {
-                    return $scope.tiles[x+','+y];
+                    return $scope.tiles[x+','+y+','+$scope.z];
                 }
             }
         });
@@ -96,6 +95,7 @@ app.directive('tile', function() {
         scope: {
             x: '@',
             y: '@',
+            z: '@',
             tiles: '='
         },
         restrict: 'E',
@@ -196,21 +196,25 @@ app.directive('lvlDropTarget', ['$rootScope', 'uuid', function ($rootScope, uuid
                 // If we dropped something on an image this is back to the tool box
                 if(drop[0].tagName == "IMG"){
                     // Remove the element from where we dragged it
-                    scope.tiles[drag.attr("x")+","+drag.attr("y")] = {};
+                    scope.tiles[drag.attr("x")+","+drag.attr("y")+","+drag.attr("z")] = {};
                 }else if(drag[0].tagName == "IMG"){// If we drag out an image, this is a new tile
-                    scope.tiles[drop.attr("x")+","+drop.attr("y")] = {image: drag.attr("src"),
-                                                                      rot: +drag.attr("rot"),
-                                                                      gaps: 0,
-                                                                      obstacles: 0,
-                                                                      speedbumps: 0,
-                                                                      intersections: 0};
-                }else if(!scope.tiles[drag.attr("x")+","+drag.attr("y")]){ // We dragged an non-existing tile
+                    scope.tiles[drop.attr("x")+","+drop.attr("y")+","+drop.attr("z")] = {image: drag.attr("src"),
+                                                                                         rot: +drag.attr("rot"),
+                                                                                         gaps: 0,
+                                                                                         obstacles: 0,
+                                                                                         speedbumps: 0,
+                                                                                         intersections: 0};
+                    // We dragged an non-existing tile
+                }else if(!scope.tiles[drag.attr("x")+","+drag.attr("y")+","+drag.attr("z")]){
                     // Just ignore!
                     ;
-                }else if(drag.attr("x") != drop.attr("x") || drag.attr("y") != drop.attr("y")){
-                    scope.tiles[drop.attr("x")+","+drop.attr("y")] = scope.tiles[drag.attr("x")+","+drag.attr("y")];
+                }else if(drag.attr("x") != drop.attr("x") ||
+                         drag.attr("y") != drop.attr("y") ||
+                         drag.attr("z") != drop.attr("z")){
+                    scope.tiles[drop.attr("x")+","+drop.attr("y")+","+drop.attr("z")] =
+                        scope.tiles[drag.attr("x")+","+drag.attr("y")+","+drag.attr("z")];
                     // Remove the element from where we dragged it
-                    scope.tiles[drag.attr("x")+","+drag.attr("y")] = {};
+                    scope.tiles[drag.attr("x")+","+drag.attr("y")+","+drag.attr("z")] = {};
                 }
                 console.log(scope.tiles);
                 scope.$apply();
