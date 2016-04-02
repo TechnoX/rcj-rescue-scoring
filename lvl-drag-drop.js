@@ -5,9 +5,9 @@ var app = angular.module('ddApp', ['lvl.services', 'ngAnimate', 'ui.bootstrap'])
 app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, $uibModal, $log){
 
     $scope.rotateTile = function(x,y){
-        console.log("huh");
-        console.log(x+','+y);
-        console.log($scope.tiles);
+        // If the tile doesn't exists yet
+        if(!$scope.tiles[x+','+y])
+            return;
         $scope.tiles[x+','+y].rot += 90;
         if($scope.tiles[x+','+y].rot >= 360)
             $scope.tiles[x+','+y].rot = 0;
@@ -40,11 +40,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
             size: 'sm',
             resolve: {
                 tile: function () {
-                    console.log("Hej");
-                    console.log($scope.tiles);
-                    console.log(x+','+y);
-                    console.log($scope.tiles[x+','+y]);
-                    console.log("efter");
                     return $scope.tiles[x+','+y];
                 }
             }
