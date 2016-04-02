@@ -8,28 +8,23 @@ app.controller('ddController', ['$scope' , function($scope){
         var drop = angular.element(dropEl); // The div where i dropped the tile
         var drag = angular.element(dragEl); // The div where I lifted this tile
 
-        console.log("adsf");
+        console.log(drop.attr("x"));
 
-        //add the dragged image
-        var path = drag.attr("src");
-        console.log(path);
-        drop.attr('src', path);
-
-        //if element has been dragged from the grid, clear dragged color
-        if (drag.attr("x-lvl-drop-target")) {
-            drag.attr('src', 'tiles/tile-empty.png');
-        }
+        $scope.tiles[drop.attr("x")+","+drop.attr("y")] = $scope.tiles[drag.attr("x")+","+drag.attr("y")];
+        $scope.tiles[drag.attr("x")+","+drag.attr("y")] = {};
+        console.log($scope.tiles);
+        $scope.$apply();
     }
 
     $scope.tiles = {};
 
     $scope.tiles["2,3"] = {rot: '0',   image: 'tile-5.png'};
-    $scope.tiles["2,4"] = {rot: '0'};
+/*    $scope.tiles["2,4"] = {rot: '0'};
     $scope.tiles["2,5"] = {rot: '270', image: 'tile-6.png'};
     $scope.tiles["3,3"] = {rot: '90',  image: 'tile-4.png'};
     $scope.tiles["3,4"] = {rot: '90',  image: 'tile-4.png'};
     $scope.tiles["3,5"] = {rot: '180'};
-
+*/
 }]);
 
 
@@ -76,7 +71,7 @@ app.directive('lvlDraggable', ['$rootScope', 'uuid', function ($rootScope, uuid)
             var id = angular.element(el).attr("id");
 
             if (!id) {
-                id = uuid.new()
+                id = uuid.new();
                 angular.element(el).attr("id", id);
             }
             //console.log(id);
