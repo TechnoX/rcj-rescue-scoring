@@ -130,13 +130,13 @@
     <div ng-controller="ddController" style="margin-top:50px;">
       <div class="row">
         <div class="col-md-3 tools">
-          <img x-lvl-draggable='true' x-lvl-drop-target="true" x-on-drop="dropped(dragEl, dropEl)"  ng-repeat="tile in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]" tile="tile" ng-src="tiles/tile-{{tile}}.png" class="tile-image">
+          <img x-lvl-draggable='true' x-lvl-drop-target="true" x-on-drop="dropped(dragEl, dropEl)"  ng-repeat="tile in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]" tile="tile" ng-src="tiles/tile-{{tile}}.png" class="tile-image rot0" rotate-on-click rot="0">
 
         </div>
         <div class="col-md-9">
           <div ng-repeat="r in [0,1,2,3,4,5,6,7,8,9]">
             <div ng-repeat="c in [0,1,2,3,4]" class="slot">
-              <tile tiles="tiles" x="{{c}}" y="{{r}}"  x-lvl-draggable='true' x-lvl-drop-target="true" x-on-drop="dropped(dragEl, dropEl)" ></tile>
+              <tile tiles="tiles" x="{{c}}" y="{{r}}"  x-lvl-draggable='true' x-lvl-drop-target="true" x-on-drop="dropped(dragEl, dropEl)"  ng-click="$parent.rotateTile(x,y)"></tile>
             </div>
           </div>
         </div>
@@ -144,3 +144,5 @@
     </div>
   </body>
 </html>
+
+
