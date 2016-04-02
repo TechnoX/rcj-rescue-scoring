@@ -1,0 +1,130 @@
+<html>
+  <head>
+    <title>Drag and Drop Demo</title>
+
+    <script type="text/javascript"
+            src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+    <script src="lvl-uuid.js"></script>
+    <script src="lvl-drag-drop.js"></script>
+
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+      .lvl-over {
+      /* applied to a drop target when a draggable object is over it */
+      border: 2px dashed black !important;
+      }
+
+      .lvl-target {
+      /* applied to all drop targets when a drag operation begins, used to indicate drop targets on a page */
+      background-color: #ddd;
+      opacity: .5;
+      }
+
+      [draggable] {
+      -moz-user-select: none;
+      -khtml-user-select: none;
+      -webkit-user-select: none;
+      user-select: none;
+      /* Required to make elements draggable in old WebKit */
+      -khtml-user-drag: element;
+      -webkit-user-drag: element;
+      cursor: move;
+      border:1px solid black;
+      }
+
+      .peg {
+      text-align: center;
+      font-weight: bold;
+      border:1px black solid;
+      width: 75px;
+      margin: 10px;
+      }
+
+      .slot {
+      margin-right:2px;
+      margin-top:2px;
+      width:25;
+      height:25px;
+      display:inline-block;
+      border: none;
+      }
+
+      .red {
+      background-color: red;
+      }
+
+      .blue {
+      background-color: blue;
+      }
+
+      .green {
+      background-color: green;
+      }
+
+      .black {
+      background-color: black;
+      color: white;
+      }
+
+      .grey {
+      background-color: grey;
+      }
+
+      pre strong {
+      font-size:12pt;
+      }
+
+    </style>
+  </head>
+  <body ng-app="ddApp">
+    <h1>Drag and Drop Directives</h1>
+    <p>Simple directives to enable drag and drop in your application</p>
+
+    <div ng-controller="ddController" style="margin-top:50px;">
+      <div class="row">
+        <div class="col-md-1 col-md-offset-1">
+          <p>Click and drag a color onto the grid to the right</p>
+          <div class="peg green" x-lvl-draggable="true" data-color="green">Green</div>
+          <div class="peg red" x-lvl-draggable="true" data-color="red">Red</div>
+          <div class="peg blue" x-lvl-draggable="true" data-color="blue">Blue</div>
+          <div class="peg black" x-lvl-draggable="true" data-color="black">Black</div>
+          <div class="peg grey" x-lvl-draggable="true" data-color="grey">Grey</div>
+        </div>
+        <div class="col-md-10">
+          <div ng-repeat="r in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]">
+            <span class="slot" ng-repeat="c in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]" x-lvl-draggable='true' x-lvl-drop-target="true" x-on-drop="dropped(dragEl, dropEl)"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    angular
+    .module('ddApp', ['lvl.directives.dragdrop']) // register the directive with your app module
+    .controller('ddController', ['$scope' , function($scope){ // function referenced by the drop target
+    $scope.dropped = function(dragEl, dropEl) {
+    //this is application logic, for the demo we just want to color the grid squares
+    //the directive provides a native dom object, wrap with jqlite
+    var drop = angular.element(dropEl);
+    var drag = angular.element(dragEl);
+    
+    //clear the previously applied color, if it exists
+    var bgClass = drop.attr('data-color');
+    if (bgClass) {
+    drop.removeClass(bgClass);
+    }
+
+    //add the dragged color
+    bgClass = drag.attr("data-color");
+    drop.addClass(bgClass);
+    drop.attr('data-color', bgClass);
+
+    //if element has been dragged from the grid, clear dragged color
+    if (drag.attr("x-lvl-drop-target")) {
+    drag.removeClass(bgClass);
+    }
+    }
+    }]);
+  </script>
+</html>
