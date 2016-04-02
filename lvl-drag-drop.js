@@ -31,7 +31,8 @@ module.directive('lvlDropTarget', ['$rootScope', 'uuid', function ($rootScope, u
     return {
         restrict: 'A',
         scope: {
-            onDrop: '&'
+            onDrop: '&',
+            tile: '='
         },
         link: function (scope, el, attrs, controller) {
             var id = angular.element(el).attr("id");

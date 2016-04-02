@@ -92,8 +92,8 @@
         </div>
         <div class="col-md-9">
           <div ng-repeat="r in tiles">
-            <div ng-repeat="bcd in r" x-lvl-draggable='true' x-lvl-drop-target="true" x-on-drop="dropped(dragEl, dropEl)" class="slot">
-              {{bcd.y}}
+            <div ng-repeat="c in r" x-lvl-draggable='true' x-lvl-drop-target="true" x-on-drop="dropped(dragEl, dropEl)" class="slot" tile="c">
+              {{tile.y}}
 asdf
             </div>
           </div>
