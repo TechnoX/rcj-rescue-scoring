@@ -17,7 +17,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
     $scope.height = 0;
     $scope.tiles = {};
 
-    $scope.tiles["2,3"] = {rot: 0,   image: 'tiles/tile-5.png', gaps: 2, obstacles: 0, speedbumps: 3};
+    $scope.tiles["2,3"] = {rot: 0,   image: 'tiles/tile-5.png', gaps: 2, obstacles: 0, speedbumps: 3, intersections: 0};
 /*    $scope.tiles["2,4"] = {rot: '0'};
     $scope.tiles["2,5"] = {rot: '270', image: 'tile-6.png'};
     $scope.tiles["3,3"] = {rot: '90',  image: 'tile-4.png'};
@@ -187,7 +187,12 @@ app.directive('lvlDropTarget', ['$rootScope', 'uuid', function ($rootScope, uuid
                     // Remove the element from where we dragged it
                     scope.tiles[drag.attr("x")+","+drag.attr("y")] = {};
                 }else if(drag[0].tagName == "IMG"){// If we drag out an image, this is a new tile
-                    scope.tiles[drop.attr("x")+","+drop.attr("y")] = {image: drag.attr("src"), rot: +drag.attr("rot")};
+                    scope.tiles[drop.attr("x")+","+drop.attr("y")] = {image: drag.attr("src"),
+                                                                      rot: +drag.attr("rot"),
+                                                                      gaps: 0,
+                                                                      obstacles: 0,
+                                                                      speedbumps: 0,
+                                                                      intersections: 0};
                 }else if(!scope.tiles[drag.attr("x")+","+drag.attr("y")]){ // We dragged an non-existing tile
                     // Just ignore!
                     ;

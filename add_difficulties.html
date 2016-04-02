@@ -21,6 +21,12 @@
       {{tile.obstacles}}
       <a href="#" ng-click="tile.obstacles=tile.obstacles+1">+</a>
     </li>
+    <li>
+      <label>Intersections:</label>
+      <a href="#" ng-click="tile.intersections>0?tile.intersections=tile.intersections-1:0">-</a>
+      {{tile.intersections}}
+      <a href="#" ng-click="tile.intersections=tile.intersections+1">+</a>
+    </li>
   </ul>
 </div>
 <div class="modal-footer">
