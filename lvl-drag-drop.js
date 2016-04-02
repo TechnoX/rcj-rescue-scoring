@@ -37,13 +37,13 @@ app.controller('ModalDemoCtrl', function ($scope, $uibModal, $log) {
 
     $scope.animationsEnabled = true;
 
-    $scope.open = function (size) {
+    $scope.open = function() {
 
         var modalInstance = $uibModal.open({
             animation: $scope.animationsEnabled,
-            templateUrl: 'myModalContent.html',
+            templateUrl: 'add_difficulties.html',
             controller: 'ModalInstanceCtrl',
-            size: size,
+            size: 'sm',
             resolve: {
                 items: function () {
                     return $scope.items;
