@@ -72,7 +72,7 @@
       background-color: grey;
       }
 
-      .tile {
+      .tools .tile {
       width: 40px;
       height: 40px;
       margin: 5px;
@@ -83,16 +83,19 @@
   </head>
   <body ng-app="ddApp">
     <h1>Rescue Line map editor</h1>
-    <p>Draw the tiles to the field to create a new layout</p>
+    <p>Draw the tiles to the field to create a new layout {{value}}</p>
 
     <div ng-controller="ddController" style="margin-top:50px;">
       <div class="row">
-        <div class="col-md-3">
-          <img src="tiles/tile-{{tile}}.png" x-lvl-draggable="true" ng-repeat="tile in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]" class="tile">
+        <div class="col-md-3 tools">
+          <img src="tiles/tile-{{tile}}.png" x-lvl-draggable="true" ng-repeat="tile in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]" class="tile" rotate-on-click="90">
         </div>
         <div class="col-md-9">
-          <div ng-repeat="r in [1, 2, 3, 4, 5, 6, 7, 8]">
-            <img src="tiles/tile-empty.png" class="slot" ng-repeat="c in [1, 2, 3, 4, 5, 6, 7, 8]" x-lvl-draggable='true' x-lvl-drop-target="true" x-on-drop="dropped(dragEl, dropEl)">
+          <div ng-repeat="r in tiles">
+            <div ng-repeat="bcd in r" x-lvl-draggable='true' x-lvl-drop-target="true" x-on-drop="dropped(dragEl, dropEl)" class="slot">
+              {{bcd.y}}
+asdf
+            </div>
           </div>
         </div>
       </div>
@@ -107,12 +110,15 @@
 
     // function referenced by the drop target
     app.controller('ddController', ['$scope' , function($scope){
+
+/*
       $scope.dropped = function(dragEl, dropEl) {
         //the directive provides a native dom object, wrap with jqlite
         var drop = angular.element(dropEl);
         var drag = angular.element(dragEl);
 
         //add the dragged image
+
         var path = drag.attr("src");
         console.log(path);
         drop.attr('src', path);
@@ -122,6 +128,49 @@
           drag.attr('src', 'tiles/tile-empty.png');
         }
       }
+*/
+      $scope.tiles =
+[
+[
+{x: 3, y: 4, rot: '90',  image: 'tile-4.png'},
+{x: 3, y: 5, rot: '90',  image: 'tile-4.png'},
+{x: 3, y: 6, rot: '180', image: 'tile-5.png'}
+],
+[
+{x: 2, y: 4, rot: '0',   image: 'tile-5.png'},
+{x: 2, y: 5, rot: '0',   image: 'tile-6.png'},
+{x: 2, y: 6, rot: '270', image: 'tile-6.png'}
+]
+]
+
+
     }]);
+
+
+
+    app.directive('rotateOnClick', function() {
+      return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+          var deg = 0;
+          element.bind('click', function() {
+            deg+= parseInt(attrs.rotateOnClick, 10);
+            element.css({
+              webkitTransform: 'rotate('+deg+'deg)',
+              mozTransform: 'rotate('+deg+'deg)',
+              msTransform: 'rotate('+deg+'deg)',
+              oTransform: 'rotate('+deg+'deg)',
+              transform: 'rotate('+deg+'deg)'
+            });
+          });
+        }
+      };
+    });
+
+
+
+
+
+
   </script>
 </html>
