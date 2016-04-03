@@ -23,16 +23,33 @@
       height:40px;
       display:inline-block;
       border: none;
-      background-color: lightgreen;
+      background-color: whitesmoke;
+      float: left;
+      position: relative;
+      }
+
+      .stacked-container{
+        position: relative;
+        margin: 0px;
+        padding: 0px;
+        display: inline-block;
+      }
+      .stacked-level{
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        opacity: 0.5;
       }
 
       tile{
-      width: 40px;
-      height: 40px;
-      margin: 0px;
-      padding: 0px;
-      display: inline-block;
-      position: relative;
+        width: 40px;
+        height: 40px;
+        margin: 0px;
+        padding: 0px;
+        display: inline-block;
+        position: absolute;
+        left: 0px;
+        top: 0px;
       }
 
       .tile-image{
@@ -80,7 +97,7 @@
         transform: rotate(270deg);
       }
       rzslider{
-      width: 80%;
+      width: 200px;
       }
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -92,18 +109,49 @@
     <div style="margin-top:50px;">
       <div class="row">
         <div class="col-sm-12">
-          <rzslider rz-slider-model="z" rz-slider-options="sliderOptions"></rzslider>
+          <label> <input type="radio" ng-model="visType" value="stacked"> Stacked</label><br>
+          <label> <input type="radio" ng-model="visType" value="slider"> Slider</label><br>
+          <label> <input type="radio" ng-model="visType" value="side"> Side-by-Side</label><br>
         </div>
       </div>
-      <div class="row">
+
+      <div class="row" ng-show="visType=='stacked'">
         <div class="col-md-12">
-          <div ng-repeat="r in range(length)">
+          <div ng-repeat="r in range(length)" class="row">
             <div ng-repeat="c in range(width)" class="slot">
-              <tile tile="tiles[c+','+r+','+z]"></tile>
+              <tile tile="tiles[c+','+r+','+z]" ng-repeat="z in range(height)" style="opacity:0.5"></tile>
             </div>
           </div>
         </div>
       </div>
+
+      <div class="row" ng-show="visType=='slider'">
+        <div class="col-md-12">
+          <div>
+           <rzslider rz-slider-model="z" rz-slider-options="sliderOptions"></rzslider>
+            <div ng-repeat="r in range(length)" class="row">
+              <div ng-repeat="c in range(width)" class="slot">
+                <tile tile="tiles[c+','+r+','+z]"></tile>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" ng-show="visType=='side'">
+        <div class="col-md-12">
+          <div ng-repeat="z in range(height)" style="float: left; border-left: 3px solid black;">
+            <div ng-repeat="r in range(length)">
+              <div ng-repeat="c in range(width)" class="slot">
+                <tile tile="tiles[c+','+r+','+z]"></tile>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
     </div>
   </body>
 </html>
