@@ -1,5 +1,5 @@
 // register the directive with your app module
-var app = angular.module('ddApp', ['lvl.services', 'ngAnimate', 'ui.bootstrap']);
+var app = angular.module('ddApp', ['lvl.services', 'ngAnimate', 'ui.bootstrap', 'rzModule']);
 
 // function referenced by the drop target
 app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, $uibModal, $log){
@@ -13,10 +13,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
             $scope.tiles[x+','+y+','+$scope.z].rot = 0;
     }
 
-    $scope.z = 0;
+    $scope.height = 2;
+    $scope.width = 4;
+    $scope.length = 7;
+    $scope.z = 1;
     $scope.tiles = {};
 
-    $scope.tiles["2,3,0"] = {rot: 0, image: 'tiles/tile-5.png', gaps: 2, obstacles: 0, speedbumps: 3, intersections: 0};
+    $scope.tiles["2,3,1"] = {rot: 0, image: 'tiles/tile-5.png', gaps: 2, obstacles: 0, speedbumps: 3, intersections: 0};
 /*    $scope.tiles["2,4"] = {rot: '0'};
     $scope.tiles["2,5"] = {rot: '270', image: 'tile-6.png'};
     $scope.tiles["3,3"] = {rot: '90',  image: 'tile-4.png'};
@@ -26,14 +29,22 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
 
 
 
-    $scope.items = ['item1', 'item2', 'item3'];
+    $scope.sliderOptions = {
+        floor: 1,
+        ceil: $scope.height,
+        vertical: true,
+        showSelectionBar: true,
+        showTicksValues: true,
+        ticksValuesTooltip: function (v) {
+            return 'Level ' + v;
+        }
+    };
 
-    $scope.animationsEnabled = true;
 
     $scope.open = function(x,y) {
         console.log(x+','+y+','+$scope.z);
         var modalInstance = $uibModal.open({
-            animation: $scope.animationsEnabled,
+            animation: true,
             templateUrl: 'add_difficulties.html',
             controller: 'ModalInstanceCtrl',
             size: 'sm',
