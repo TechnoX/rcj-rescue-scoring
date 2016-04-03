@@ -27,7 +27,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
     $scope.z = 1;
     $scope.tiles = {};
 
-    $scope.tiles["2,3,1"] = {rot: 0, image: 'tiles/tile-5.png', gaps: 2, obstacles: 0, speedbumps: 3, intersections: 0};
+    $scope.tiles["2,3,1"] = {rot: 0, image: 'tiles/tile-5.png',
+                             items: {gaps: 2, obstacles: 0, speedbumps: 3, intersections: 0}};
 /*    $scope.tiles["2,4"] = {rot: '0'};
     $scope.tiles["2,5"] = {rot: '270', image: 'tile-6.png'};
     $scope.tiles["3,3"] = {rot: '90',  image: 'tile-4.png'};
@@ -58,6 +59,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
             size: 'sm',
             resolve: {
                 tile: function () {
+                    console.log($scope.tiles[x+','+y+','+$scope.z]);
                     return $scope.tiles[x+','+y+','+$scope.z];
                 }
             }
@@ -219,10 +221,10 @@ app.directive('lvlDropTarget', ['$rootScope', 'uuid', function ($rootScope, uuid
                 }else if(drag[0].tagName == "IMG"){// If we drag out an image, this is a new tile
                     scope.tiles[drop.attr("x")+","+drop.attr("y")+","+drop.attr("z")] = {image: drag.attr("src"),
                                                                                          rot: +drag.attr("rot"),
-                                                                                         gaps: 0,
-                                                                                         obstacles: 0,
-                                                                                         speedbumps: 0,
-                                                                                         intersections: 0};
+                                                                                         items:{gaps: 0,
+                                                                                                obstacles: 0,
+                                                                                                speedbumps: 0,
+                                                                                                intersections: 0}};
                     // We dragged an non-existing tile
                 }else if(!scope.tiles[drag.attr("x")+","+drag.attr("y")+","+drag.attr("z")]){
                     // Just ignore!
