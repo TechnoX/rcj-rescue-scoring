@@ -19,16 +19,16 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
     $scope.numberOfDropTiles = 2;
     $scope.tiles = {};
 
-    $scope.tiles["2,3,1"] = {rot: 180, image: 'tiles/tile-5.png', dropTile: true,
+    $scope.tiles["2,3,1"] = {rot: 180, image: 'tiles/tile-5.png', dropTile: true, reach: false,
                              items: {gaps: 2, obstacles: 0, speedbumps: 3, intersections: 0},
                              scored: {gaps: [true,false], obstacles: [], speedbumps: [false,false,false], intersections: []}};
-    $scope.tiles["3,3,1"] = {rot: 90, image: 'tiles/tile-5.png', dropTile: false,
+    $scope.tiles["3,3,1"] = {rot: 90, image: 'tiles/tile-5.png', dropTile: false, reach: false,
                              items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 1},
                              scored: {gaps: [], obstacles: [], speedbumps: [], intersections: [false]}};
-    $scope.tiles["3,2,1"] = {rot: 0, image: 'tiles/tile-5.png', dropTile: false,
+    $scope.tiles["3,2,1"] = {rot: 0, image: 'tiles/tile-5.png', dropTile: false, reach: false,
                              items: {gaps: 0, obstacles: 1, speedbumps: 0, intersections: 0},
                              scored: {gaps: [], obstacles: [false], speedbumps: [], intersections: []}};
-    $scope.tiles["2,2,1"] = {rot: 270, image: 'tiles/tile-5.png', dropTile: false,
+    $scope.tiles["2,2,1"] = {rot: 270, image: 'tiles/tile-5.png', dropTile: false, reach: false,
                              items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 0},
                              scored: {gaps: [], obstacles: [], speedbumps: [], intersections: []}};
 
@@ -84,6 +84,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
                 tile.scored.obstacles[0] = !tile.scored.obstacles[0];
             else if(tile.items.intersections)
                 tile.scored.intersections[0] = !tile.scored.intersections[0];
+        }else if(tile.dropTile){
+            tile.reach = !tile.reach;
         }
     }
 
@@ -165,8 +167,8 @@ app.directive('tile', function() {
                     return "halfdone";
                 else if(possible > 0)
                     return "undone";
-                else
-                    return "";
+                else if(tile.dropTile)
+                    return tile.reach?"done":"undone";
             }
 
         }
