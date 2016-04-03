@@ -4,3 +4,10 @@
 <img ng-src="img/obstacle.png" class="tile-image" ng-show="tiles[x+','+y+','+z].obstacles">
 <img ng-src="img/intersection.png" class="tile-image" ng-show="tiles[x+','+y+','+z].intersections">
 
+if(totaltAntal>0 && antal==totaltAntal)
+                    var status = $('<img src="img/done.png">').appendTo(tile);
+                else if(antal>0)
+                    var status = $('<img src="img/halfdone.png">').appendTo(tile);
+                else if(totaltAntal>0)
+                    var status = $('<img src="img/undone.png">').appendTo(tile);
+                
