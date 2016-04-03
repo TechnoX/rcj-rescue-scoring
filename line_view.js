@@ -47,6 +47,17 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
                              scored: {gaps: [], obstacles: [], speedbumps: [], intersections: [], reach: [false,false]}};
 
 
+
+    $scope.getOpacity = function(x,y){
+        var stackedTiles = 0;
+        for(var z = 1; z <= $scope.height; z++){
+            if($scope.tiles[x+','+y+','+z])
+                stackedTiles++;
+        }
+        return 1.0/stackedTiles;
+    }
+
+
     $scope.sliderOptions = {
         floor: 1,
         ceil: $scope.height,

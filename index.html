@@ -28,19 +28,6 @@
       position: relative;
       }
 
-      .stacked-container{
-        position: relative;
-        margin: 0px;
-        padding: 0px;
-        display: inline-block;
-      }
-      .stacked-level{
-        position: absolute;
-        left: 0px;
-        top: 0px;
-        opacity: 0.5;
-      }
-
       tile{
         width: 40px;
         height: 40px;
@@ -119,7 +106,8 @@
         <div class="col-md-12">
           <div ng-repeat="r in range(length)" class="row">
             <div ng-repeat="c in range(width)" class="slot">
-              <tile tile="tiles[c+','+r+','+z]" ng-repeat="z in range(height)" style="opacity:0.5"></tile>
+              <tile tile="tiles[c+','+r+','+z]" ng-repeat="z in range(height)" ng-style="{'opacity': getOpacity(c,r)}">
+              </tile>
             </div>
           </div>
         </div>
