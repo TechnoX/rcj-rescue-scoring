@@ -54,7 +54,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
         console.log(x+','+y+','+$scope.z);
         var modalInstance = $uibModal.open({
             animation: true,
-            templateUrl: 'add_difficulties.html',
+            templateUrl: 'editor_items_modal.html',
             controller: 'ModalInstanceCtrl',
             size: 'sm',
             resolve: {
