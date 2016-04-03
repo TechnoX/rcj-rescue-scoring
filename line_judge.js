@@ -18,18 +18,27 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
     $scope.z = 1;
     $scope.tiles = {};
 
-    $scope.tiles["2,3,1"] = {rot: 180, image: 'tiles/tile-5.png',
+    $scope.tiles["2,3,1"] = {rot: 180, image: 'tiles/tile-5.png', dropPuck: false,
                              items: {gaps: 2, obstacles: 0, speedbumps: 3, intersections: 0},
                              scored: {gaps: [true,false], obstacles: [], speedbumps: [false,false,false], intersections: []}};
-    $scope.tiles["3,3,1"] = {rot: 90, image: 'tiles/tile-5.png',
+    $scope.tiles["3,3,1"] = {rot: 90, image: 'tiles/tile-5.png', dropPuck: false,
                              items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 1},
                              scored: {gaps: [], obstacles: [], speedbumps: [], intersections: [false]}};
-    $scope.tiles["3,2,1"] = {rot: 0, image: 'tiles/tile-5.png',
+    $scope.tiles["3,2,1"] = {rot: 0, image: 'tiles/tile-5.png', dropPuck: false,
                              items: {gaps: 0, obstacles: 1, speedbumps: 0, intersections: 0},
                              scored: {gaps: [], obstacles: [false], speedbumps: [], intersections: []}};
-    $scope.tiles["2,2,1"] = {rot: 270, image: 'tiles/tile-5.png',
+    $scope.tiles["2,2,1"] = {rot: 270, image: 'tiles/tile-5.png', dropPuck: false,
                              items: {gaps: 0, obstacles: 0, speedbumps: 2, intersections: 0},
                              scored: {gaps: [], obstacles: [], speedbumps: [true,false], intersections: []}};
+
+    $scope.started = false;
+
+    $scope.start = function(){
+        // Start timer
+        $scope.started = true;
+    }
+
+
 
     $scope.totalNumberOf = function(objects){
         return objects.gaps + objects.speedbumps + objects.obstacles + objects.intersections;
@@ -41,6 +50,12 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
         // If this is not a created tile
         if(!tile)
             return;
+
+        // If the run is not started, we can place drop pucks on this tile
+        if(!$scope.started){
+            tile.dropPuck = !tile.dropPuck;
+        }
+
         var total = $scope.totalNumberOf(tile.items);
         if(total > 1){
             // Show modal
@@ -104,10 +119,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, tile) {
 app.directive('tile', function() {
     return {
         scope: {
-            x: '@',
-            y: '@',
-            z: '@',
-            tiles: '='
+            tile: '='
         },
         restrict: 'E',
         templateUrl: 'tile.html',

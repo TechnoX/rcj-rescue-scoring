@@ -86,6 +86,7 @@
   <body ng-app="ddApp">
     <h1>Rescue Line Judge</h1>
     <p>Tap the tiles to do live scoring</p>
+    <p><button class="btn btn-primary" type="button" ng-click="start()">Start run</button></p>
 
     <div ng-controller="ddController" style="margin-top:50px;">
       <div class="row">
@@ -97,7 +98,7 @@
         <div class="col-md-12">
           <div ng-repeat="r in range(length)">
             <div ng-repeat="c in range(width)" class="slot">
-              <tile tiles="tiles" x="{{c}}" y="{{r}}" z="{{z}}" ng-click="doScoring(c,r,z)"></tile>
+              <tile tile="tiles[c+','+r+','+z]" ng-click="doScoring(c,r,z)"></tile>
             </div>
           </div>
         </div>
