@@ -3,6 +3,14 @@
 </div>
 <div class="modal-body">
   <ul>
+    <li ng-show="tile.dropTile">
+      <label>Reach droptile (note this is not attempts!):</label>
+      <ul>
+        <li ng-repeat="reached in tile.scored.reach track by $index">
+          <label><input type="checkbox" ng-model="tile.scored.reach[$index]"> Reach {{$index+1}}</label>
+        </li>
+      </ul>
+    </li>
     <li ng-show="tile.scored.speedbumps.length">
       <label>Speedbumps:</label>
       <ul>
