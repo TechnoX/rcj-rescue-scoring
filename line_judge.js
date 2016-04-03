@@ -19,34 +19,41 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
     $scope.tiles = {};
 
     $scope.tiles["2,3,1"] = {rot: 180, image: 'tiles/tile-5.png',
-                             gaps: 2, obstacles: 0, speedbumps: 3, intersections: 0,
+                             items: {gaps: 2, obstacles: 0, speedbumps: 3, intersections: 0},
                              scored: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 0}};
     $scope.tiles["3,3,1"] = {rot: 90, image: 'tiles/tile-5.png',
-                             gaps: 0, obstacles: 0, speedbumps: 0, intersections: 1,
+                             items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 1},
                              scored: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 0}};
     $scope.tiles["3,2,1"] = {rot: 0, image: 'tiles/tile-5.png',
-                             gaps: 0, obstacles: 1, speedbumps: 0, intersections: 0,
+                             items: {gaps: 0, obstacles: 1, speedbumps: 0, intersections: 0},
                              scored: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 0}};
     $scope.tiles["2,2,1"] = {rot: 270, image: 'tiles/tile-5.png',
-                             gaps: 0, obstacles: 0, speedbumps: 2, intersections: 0,
+                             items: {gaps: 0, obstacles: 0, speedbumps: 2, intersections: 0},
                              scored: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 0}};
+
+    $scope.totalNumberOf = function(objects){
+        return objects.gaps + objects.speedbumps + objects.obstacles + objects.intersections;
+    }
 
 
     $scope.doScoring = function(x,y,z){
         console.log(x,y,z);
         var tile = $scope.tiles[x+','+y+','+z];
-        var totaltAntal = tile.gaps + tile.speedbumps + tile.obstacles + tile.intersections;
-        if(totaltAntal > 1){
+        // If this is not a created tile
+        if(!tile)
+            return;
+        var total = $scope.totalNumberOf(tile.items);
+        if(total > 1){
             // Show modal
             $scope.open(x,y,z);
-        }else if(totaltAntal==1){
-            if(tile.gaps>0)
+        }else if(total==1){
+            if(tile.items.gaps>0)
                 tile.scored.gaps = (tile.scored.gaps == 0 ? 1 : 0);
-            else if(tile.speedbumps)
+            else if(tile.items.speedbumps)
                 tile.scored.speedbumps = (tile.scored.speedbumps == 0 ? 1 : 0);
-            else if(tile.obstacles)
+            else if(tile.items.obstacles)
                 tile.scored.obstacles = (tile.scored.obstacles == 0 ? 1 : 0);
-            else if(tile.intersections)
+            else if(tile.items.intersections)
                 tile.scored.intersections = (tile.scored.intersections == 0 ? 1 : 0);
         }
         console.log(tile);
@@ -106,7 +113,26 @@ app.directive('tile', function() {
             tiles: '='
         },
         restrict: 'E',
-        templateUrl: 'tile.html'
+        templateUrl: 'tile.html',
+        link : function($scope, element, attrs){
+            $scope.totalNumberOf = function(objects){
+                return objects.gaps + objects.speedbumps + objects.obstacles + objects.intersections;
+            }
+
+            $scope.tileStatus = function(tile){
+                // If this is a non-existent tile
+                if(!tile)
+                    return;
+
+                if($scope.totalNumberOf(tile.items) == $scope.totalNumberOf(tile.scored))
+                    return "done";
+                else if($scope.totalNumberOf(tile.scored) > 0)
+                    return "halfdone";
+                else if($scope.totalNumberOf(tile.items) > 0)
+                    return "undone";
+            }
+
+        }
     };
 });
 
