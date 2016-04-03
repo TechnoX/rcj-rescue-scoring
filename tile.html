@@ -1,4 +1,4 @@
-<img ng-src="{{tile.image}}"  class="rot{{tile.rot}} tile-image {drop-tile: tile.dropTile}" ng-show="tile.image">
+<img ng-src="{{tile.image}}"  class="rot{{tile.rot}} tile-image" ng-class="{'drop-tile': tile.dropTile}" ng-show="tile.image">
 <img ng-src="img/speedbump.png" class="tile-image" ng-show="tile.items.speedbumps>0">
 <img ng-src="img/gap.png" class="tile-image" ng-show="tile.items.gaps>0">
 <img ng-src="img/obstacle.png" class="tile-image" ng-show="tile.items.obstacles>0">

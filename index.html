@@ -1,4 +1,6 @@
-<html>
+<!DOCTYPE html>
+
+<html ng-app="ddApp">
   <head>
     <title>Rescue Line Judge</title>
 
@@ -44,6 +46,9 @@
         top: 0px;
         vertical-align: bottom;
       }
+      .drop-tile{
+      border: 2px solid orange;
+      }
 
       .rot0 {
         -webkit-transform: rotate(0deg);
@@ -83,12 +88,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 
   </head>
-  <body ng-app="ddApp">
+  <body ng-controller="ddController">
     <h1>Rescue Line Judge</h1>
     <p>Tap the tiles to do live scoring</p>
-    <p><button class="btn btn-primary" type="button" ng-click="start()">Start run</button></p>
+    <p>
+      <button class="btn btn-primary" type="button" ng-click="start()">Start run</button>
+      Droptiles left to be placed: {{numberOfDropTiles}}
+    </p>
 
-    <div ng-controller="ddController" style="margin-top:50px;">
+    <div style="margin-top:50px;">
       <div class="row">
         <div class="col-sm-12">
           <rzslider rz-slider-model="z" rz-slider-options="sliderOptions"></rzslider>

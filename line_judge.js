@@ -16,20 +16,21 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
     }
 
     $scope.z = 1;
+    $scope.numberOfDropTiles = 2;
     $scope.tiles = {};
 
-    $scope.tiles["2,3,1"] = {rot: 180, image: 'tiles/tile-5.png', dropPuck: false,
+    $scope.tiles["2,3,1"] = {rot: 180, image: 'tiles/tile-5.png', dropTile: true,
                              items: {gaps: 2, obstacles: 0, speedbumps: 3, intersections: 0},
                              scored: {gaps: [true,false], obstacles: [], speedbumps: [false,false,false], intersections: []}};
-    $scope.tiles["3,3,1"] = {rot: 90, image: 'tiles/tile-5.png', dropPuck: false,
+    $scope.tiles["3,3,1"] = {rot: 90, image: 'tiles/tile-5.png', dropTile: false,
                              items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 1},
                              scored: {gaps: [], obstacles: [], speedbumps: [], intersections: [false]}};
-    $scope.tiles["3,2,1"] = {rot: 0, image: 'tiles/tile-5.png', dropPuck: false,
+    $scope.tiles["3,2,1"] = {rot: 0, image: 'tiles/tile-5.png', dropTile: false,
                              items: {gaps: 0, obstacles: 1, speedbumps: 0, intersections: 0},
                              scored: {gaps: [], obstacles: [false], speedbumps: [], intersections: []}};
-    $scope.tiles["2,2,1"] = {rot: 270, image: 'tiles/tile-5.png', dropPuck: false,
-                             items: {gaps: 0, obstacles: 0, speedbumps: 2, intersections: 0},
-                             scored: {gaps: [], obstacles: [], speedbumps: [true,false], intersections: []}};
+    $scope.tiles["2,2,1"] = {rot: 270, image: 'tiles/tile-5.png', dropTile: false,
+                             items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 0},
+                             scored: {gaps: [], obstacles: [], speedbumps: [], intersections: []}};
 
     $scope.started = false;
 
@@ -51,13 +52,27 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
         if(!tile)
             return;
 
-        // If the run is not started, we can place drop pucks on this tile
-        if(!$scope.started){
-            tile.dropPuck = !tile.dropPuck;
-        }
 
         var total = $scope.totalNumberOf(tile.items);
-        if(total > 1){
+
+        // If the run is not started, we can place drop pucks on this tile
+        if(!$scope.started){
+            // We can only place drop markers on tiles without scoring elements (rule 3.3.4)
+            if(total > 0){
+                alert("Place drop markers on tiles without scoring elements (rule 3.3.4)");
+            }else{
+                if($scope.numberOfDropTiles > 0) {
+                    tile.dropTile = !tile.dropTile;
+                    if(tile.dropTile)
+                        $scope.numberOfDropTiles--;
+                    else
+                        $scope.numberOfDropTiles++;
+                }else if(tile.dropTile){
+                    tile.dropTile = false;
+                    $scope.numberOfDropTiles++;
+                }
+            }
+        }else if(total > 1){
             // Show modal
             $scope.open(x,y,z);
         }else if(total==1){
@@ -144,7 +159,7 @@ app.directive('tile', function() {
                 count(tile.scored.intersections);
                 count(tile.scored.obstacles);
 
-                if(successfully == possible)
+                if(possible > 0 && successfully == possible)
                     return "done";
                 else if(successfully > 0)
                     return "halfdone";
