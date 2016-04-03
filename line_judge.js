@@ -113,7 +113,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
     $scope.open = function(x,y,z) {
         var modalInstance = $uibModal.open({
             animation: true,
-            templateUrl: 'judge_modal.html',
+            templateUrl: 'line_judge_modal.html',
             controller: 'ModalInstanceCtrl',
             size: 'sm',
             resolve: {
