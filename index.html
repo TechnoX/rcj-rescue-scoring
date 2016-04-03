@@ -148,9 +148,9 @@
     <div ng-controller="ddController" style="margin-top:50px;">
       <div class="row">
         <div class="col-md-12">
-          Max height: <input type="number" ng-model="height" />
-          Max width: <input type="number" ng-model="width" />
-          Max length: <input type="number" ng-model="length" />
+          Max height: <input type="number" ng-model="height" ng-change="sliderOptions.ceil = height" min="1"/>
+          Max width: <input type="number" ng-model="width" min="1" />
+          Max length: <input type="number" ng-model="length" min="1" />
         </div>
       </div>
       <div class="row">
