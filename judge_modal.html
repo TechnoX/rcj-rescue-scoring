@@ -1,0 +1,38 @@
+<div class="modal-header">
+  <h3 class="modal-title">Change items</h3>
+</div>
+<div class="modal-body">
+  <ul>
+    <li>
+      <label>Speedbumps:</label>
+
+
+
+      <a href="#" ng-click="tile.scored.speedbumps>0?tile.items.speedbumps=tile.items.speedbumps-1:0">-</a>
+      {{tile.items.speedbumps}}
+      <a href="#" ng-click="tile.scored.speedbumps=tile.items.speedbumps+(tile.items.speedbumps)">+</a>
+    </li>
+    <li>
+      <label>Gaps:</label>
+      <a href="#" ng-click="tile.scored.gaps>0?tile.items.gaps=tile.items.gaps-1:0">-</a>
+      {{tile.items.gaps}}
+      <a href="#" ng-click="tile.items.gaps=tile.items.gaps+1">+</a>
+    </li>
+    <li>
+      <label>Obstacles:</label>
+      <a href="#" ng-click="tile.items.obstacles>0?tile.items.obstacles=tile.items.obstacles-1:0">-</a>
+      {{tile.items.obstacles}}
+      <a href="#" ng-click="tile.items.obstacles=tile.items.obstacles+1">+</a>
+    </li>
+    <li>
+      <label>Intersections:</label>
+      <a href="#" ng-click="tile.items.intersections>0?tile.items.intersections=tile.items.intersections-1:0">-</a>
+      {{tile.items.intersections}}
+      <a href="#" ng-click="tile.items.intersections=tile.items.intersections+1">+</a>
+    </li>
+  </ul>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+<!--  <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>-->
+</div>
