@@ -13,9 +13,17 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
             $scope.tiles[x+','+y+','+$scope.z].rot = 0;
     }
 
-    $scope.height = 2;
+    $scope.height = 4;
     $scope.width = 4;
     $scope.length = 7;
+    $scope.range = function(n){
+        arr = [];
+        for (var i=1; i<=n; i++) {
+            arr.push(i);
+        }
+        return arr;
+    }
+
     $scope.z = 1;
     $scope.tiles = {};
 
