@@ -20,7 +20,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
 
     $scope.tiles["2,3,1"] = {rot: 180, image: 'tiles/tile-5.png',
                              items: {gaps: 2, obstacles: 0, speedbumps: 3, intersections: 0},
-                             scored: {gaps: [false,false], obstacles: [], speedbumps: [false,false,false], intersections: []}};
+                             scored: {gaps: [true,false], obstacles: [], speedbumps: [false,false,false], intersections: []}};
     $scope.tiles["3,3,1"] = {rot: 90, image: 'tiles/tile-5.png',
                              items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 1},
                              scored: {gaps: [], obstacles: [], speedbumps: [], intersections: [false]}};
@@ -29,7 +29,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
                              scored: {gaps: [], obstacles: [false], speedbumps: [], intersections: []}};
     $scope.tiles["2,2,1"] = {rot: 270, image: 'tiles/tile-5.png',
                              items: {gaps: 0, obstacles: 0, speedbumps: 2, intersections: 0},
-                             scored: {gaps: [], obstacles: [], speedbumps: [false,false], intersections: []}};
+                             scored: {gaps: [], obstacles: [], speedbumps: [true,false], intersections: []}};
 
     $scope.totalNumberOf = function(objects){
         return objects.gaps + objects.speedbumps + objects.obstacles + objects.intersections;
@@ -37,7 +37,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
 
 
     $scope.doScoring = function(x,y,z){
-        console.log(x,y,z);
         var tile = $scope.tiles[x+','+y+','+z];
         // If this is not a created tile
         if(!tile)
@@ -56,7 +55,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
             else if(tile.items.intersections)
                 tile.scored.intersections[0] = !tile.scored.intersections[0];
         }
-        console.log(tile);
     }
 
 
@@ -93,7 +91,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
 
 app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, tile) {
     $scope.tile = tile;
-    console.log(tile);
     $scope.ok = function () {
         $uibModalInstance.close();
     };

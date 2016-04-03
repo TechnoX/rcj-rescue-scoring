@@ -1,8 +1,8 @@
 <img ng-src="{{tiles[x+','+y+','+z].image}}"  class="rot{{tiles[x+','+y+','+z].rot}} tile-image" ng-show="tiles[x+','+y+','+z].image">
-<img ng-src="img/speedbump.png" class="tile-image" ng-show="tiles[x+','+y+','+z].items.speedbumps">
-<img ng-src="img/gap.png" class="tile-image" ng-show="tiles[x+','+y+','+z].items.gaps">
-<img ng-src="img/obstacle.png" class="tile-image" ng-show="tiles[x+','+y+','+z].items.obstacles">
-<img ng-src="img/intersection.png" class="tile-image" ng-show="tiles[x+','+y+','+z].items.intersections">
+<img ng-src="img/speedbump.png" class="tile-image" ng-show="tiles[x+','+y+','+z].items.speedbumps>0">
+<img ng-src="img/gap.png" class="tile-image" ng-show="tiles[x+','+y+','+z].items.gaps>0">
+<img ng-src="img/obstacle.png" class="tile-image" ng-show="tiles[x+','+y+','+z].items.obstacles>0">
+<img ng-src="img/intersection.png" class="tile-image" ng-show="tiles[x+','+y+','+z].items.intersections>0">
 <img src="img/done.png" class="tile-image" ng-show="tileStatus(tiles[x+','+y+','+z]) == 'done'">
 <img src="img/halfdone.png" class="tile-image" ng-show="tileStatus(tiles[x+','+y+','+z]) == 'halfdone'">
 <img src="img/undone.png" class="tile-image" ng-show="tileStatus(tiles[x+','+y+','+z]) == 'undone'">
