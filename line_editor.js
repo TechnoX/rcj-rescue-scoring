@@ -18,16 +18,16 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
     $scope.length = 7;
     $scope.range = function(n){
         arr = [];
-        for (var i=1; i<=n; i++) {
+        for (var i=0; i < n; i++) {
             arr.push(i);
         }
         return arr;
     }
 
-    $scope.z = 1;
+    $scope.z = 0;
     $scope.tiles = {};
 
-    $scope.tiles["2,3,1"] = {rot: 0, image: 'tiles/tile-5.png',
+    $scope.tiles["2,3,0"] = {rot: 0, image: 'tiles/tile-5.png',
                              items: {gaps: 2, obstacles: 0, speedbumps: 3, intersections: 0}};
 /*    $scope.tiles["2,4"] = {rot: '0'};
     $scope.tiles["2,5"] = {rot: '270', image: 'tile-6.png'};
@@ -39,8 +39,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
 
 
     $scope.sliderOptions = {
-        floor: 1,
-        ceil: $scope.height,
+        floor: 0,
+        ceil: $scope.height-1,
         vertical: true,
         showSelectionBar: true,
         showTicksValues: true,
@@ -114,10 +114,7 @@ app.directive('ngRightClick', function($parse) {
 app.directive('tile', function() {
     return {
         scope: {
-            x: '@',
-            y: '@',
-            z: '@',
-            tiles: '='
+            tile: '='
         },
         restrict: 'E',
         templateUrl: 'tile.html'

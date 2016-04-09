@@ -9,7 +9,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
     $scope.length = 7;
     $scope.range = function(n){
         arr = [];
-        for (var i=1; i<=n; i++) {
+        for (var i=0; i < n; i++) {
             arr.push(i);
         }
         return arr;
@@ -17,7 +17,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
 
     $scope.visType = "slider";
 
-    $scope.z = 1;
+    $scope.z = 0;
     $scope.tiles = {};
 
     $scope.tiles["2,3,1"] = {rot: 180, image: 'tiles/tile-5.png', dropTile: true,
@@ -33,16 +33,16 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
                              items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 0},
                              scored: {gaps: [], obstacles: [], speedbumps: [], intersections: [], reach: [false,false]}};
 
-    $scope.tiles["2,4,2"] = {rot: 180, image: 'tiles/tile-6.png', dropTile: true,
+    $scope.tiles["2,4,0"] = {rot: 180, image: 'tiles/tile-6.png', dropTile: true,
                              items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 0},
                              scored: {gaps: [], obstacles: [], speedbumps: [], intersections: [], reach: [true]}};
-    $scope.tiles["3,4,2"] = {rot: 90, image: 'tiles/tile-6.png', dropTile: false,
+    $scope.tiles["3,4,0"] = {rot: 90, image: 'tiles/tile-6.png', dropTile: false,
                              items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 0},
                              scored: {gaps: [], obstacles: [], speedbumps: [], intersections: []}};
-    $scope.tiles["3,3,2"] = {rot: 0, image: 'tiles/tile-6.png', dropTile: false,
+    $scope.tiles["3,3,0"] = {rot: 0, image: 'tiles/tile-6.png', dropTile: false,
                              items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 0},
                              scored: {gaps: [], obstacles: [], speedbumps: [], intersections: []}};
-    $scope.tiles["2,3,2"] = {rot: 270, image: 'tiles/tile-6.png', dropTile: false,
+    $scope.tiles["2,3,0"] = {rot: 270, image: 'tiles/tile-6.png', dropTile: false,
                              items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 0},
                              scored: {gaps: [], obstacles: [], speedbumps: [], intersections: [], reach: [false,false]}};
 
@@ -50,7 +50,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
 
     $scope.getOpacity = function(x,y){
         var stackedTiles = 0;
-        for(var z = 1; z <= $scope.height; z++){
+        for(var z = 0; z < $scope.height; z++){
             if($scope.tiles[x+','+y+','+z])
                 stackedTiles++;
         }
@@ -59,8 +59,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
 
 
     $scope.sliderOptions = {
-        floor: 1,
-        ceil: $scope.height,
+        floor: 0,
+        ceil: $scope.height-1,
         showSelectionBar: true,
         showTicksValues: true,
         ticksValuesTooltip: function (v) {

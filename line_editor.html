@@ -125,7 +125,7 @@
     <div ng-controller="ddController" style="margin-top:50px;">
       <div class="row">
         <div class="col-md-12">
-          Max height: <input type="number" ng-model="height" ng-change="sliderOptions.ceil = height" min="1"/>
+          Max height: <input type="number" ng-model="height" ng-change="sliderOptions.ceil = height" min="0"/>
           Max width: <input type="number" ng-model="width" min="1" />
           Max length: <input type="number" ng-model="length" min="1" />
         </div>
@@ -141,7 +141,8 @@
         <div class="col-md-8">
           <div ng-repeat="r in range(length)">
             <div ng-repeat="c in range(width)" class="slot">
-              <tile tiles="tiles" x="{{c}}" y="{{r}}" z="{{z}}" x-lvl-draggable="true" x-lvl-drop-target="true" ng-right-click="open(c,r)" ng-click="$parent.rotateTile(c,r)"></tile>
+              <tile tile="tiles[c+','+r+','+z]" x="{{c}}" y="{{r}}" z="{{z}}" x-lvl-draggable="true"
+                    x-lvl-drop-target="true" ng-right-click="open(c,r)" ng-click="$parent.rotateTile(c,r)"></tile>
             </div>
           </div>
         </div>
