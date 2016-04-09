@@ -17,6 +17,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', funct
 
     $scope.z = 1;
     $scope.numberOfDropTiles = 2;
+    $scope.placedDropTiles = 0;
 
     $scope.tiles = {};
 
@@ -33,25 +34,53 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', funct
                              items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 0},
                              scored: {gaps: [], obstacles: [], speedbumps: [], intersections: [], reach: [false,false]}};
 
-    $scope.started = false;
+    $scope.startedScoring = false;
+
+    $scope.startScoring = function(){
+        // Start/stop scoring
+        $scope.startedScoring = !$scope.startedScoring;
+    }
+
     $scope.score = 123;
+    $scope.showedUp = false;
+
+    $scope.LoPs = [];
+    $scope.decrement = function(index){
+        if($scope.LoPs[index])
+            $scope.LoPs[index]--;
+        else
+            $scope.LoPs[index] = 0;
+        if($scope.LoPs[index] < 0)
+            $scope.LoPs[index] = 0;
+    }
+    $scope.increment = function(index){
+        if($scope.LoPs[index])
+            $scope.LoPs[index]++;
+        else
+            $scope.LoPs[index] = 1;
+        if($scope.LoPs[index] >= 3)
+            $timeout(function(){alert("The team *may* move to next drop tile now.");},20);
+    }
+
+
 
     // Verified time by timekeeper
     $scope.minutes = 0;
     $scope.seconds = 0;
 
+    $scope.startedTime = false;
     $scope.time = 0;
 
     var tick = function() {
         $scope.time += 1000;
-        if($scope.started)
+        if($scope.startedTime)
             $timeout(tick, 1000);
     }
 
-    $scope.start = function(){
-        // Start timer
-        $scope.started = !$scope.started;
-        if($scope.started){
+    $scope.startTime = function(){
+        // Start/stop timer
+        $scope.startedTime = !$scope.startedTime;
+        if($scope.startedTime){
             // Start the timer
             $timeout(tick, $scope.tickInterval);
         }
@@ -74,20 +103,20 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', funct
         var total = $scope.totalNumberOf(tile.items);
 
         // If the run is not started, we can place drop pucks on this tile
-        if(!$scope.started){
+        if(!$scope.startedScoring){
             // We can only place drop markers on tiles without scoring elements (rule 3.3.4)
             if(total > 0){
                 alert("Place drop markers on tiles without scoring elements (rule 3.3.4)");
             }else{
-                if($scope.numberOfDropTiles > 0) {
+                if($scope.numberOfDropTiles - $scope.placedDropTiles > 0) {
                     tile.dropTile = !tile.dropTile;
                     if(tile.dropTile)
-                        $scope.numberOfDropTiles--;
+                        $scope.placedDropTiles++;
                     else
-                        $scope.numberOfDropTiles++;
+                        $scope.placedDropTiles--;
                 }else if(tile.dropTile){
                     tile.dropTile = false;
-                    $scope.numberOfDropTiles++;
+                    $scope.placedDropTiles--;
                 }
             }
 
@@ -121,10 +150,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', funct
         floor: 1,
         ceil: $scope.height,
         showSelectionBar: true,
-        showTicksValues: true,
-        ticksValuesTooltip: function (v) {
-            return 'Level ' + v;
-        }
+        showTicksValues: true
     };
 
 

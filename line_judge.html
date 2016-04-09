@@ -87,6 +87,14 @@
         width: 300px;
         border: 1px dashed black;
       }
+      .plusminus{
+        box-sizing: content-box;
+        width: 2em;
+        padding: 0px 15px;
+      }
+      .count{
+        font-size: 2em;
+      }
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 
@@ -94,16 +102,31 @@
   <body ng-controller="ddController">
     <h1>Rescue Line Judge</h1>
     <p>Tap the tiles to do live scoring</p>
-    <p>
-      <button class="btn btn-primary" type="button" ng-click="start()">{{ started ? 'Stop' : 'Start' }} run!</button>
-    </p>
-    <p>
-      Scoring: {{score}} Time: {{time | date:'mm:ss'}}
-    </p>
-    <p>
-      Droptiles left to be placed: {{numberOfDropTiles}}
-    </p>
     <div style="margin-top:50px;">
+      <div class="row">
+        <div class="col-sm-12">
+          <p>
+            <button class="btn btn-primary" type="button" ng-click="startTime()">{{ startedTime ? 'Stop' : 'Start' }} time!</button>
+            <button class="btn btn-primary" type="button" ng-click="startScoring()">{{ startedScoring ? 'Stop' : 'Start' }} scoring!</button>
+          </p>
+          <p>
+            Score: {{score}}<br>
+            Time: {{time | date:'mm:ss'}}
+          </p>
+          <p ng-show="!startedScoring">
+            Droptiles left to be placed: {{numberOfDropTiles - placedDropTiles}}
+          </p>
+          <p ng-show="startedScoring">
+            <label>Team did show up for start within their time: <input type="checkbox" ng-model="showedUp"></label>
+          </p>
+          <p ng-repeat="dropTile in range(placedDropTiles) track by $index" ng-show="startedScoring">
+            LoPs between {{$index==0?'start':('droptile ' + ($index))}} and droptile {{$index+1}}:<br>
+            <img src="img/minus.png" alt="-" ng-click="decrement($index)" class="plusminus">
+            <span class="count">{{LoPs[$index]?LoPs[$index]:0}}</span>
+            <img src="img/plus.png" alt="+" ng-click="increment($index)" class="plusminus">
+          </p>
+        </div>
+      </div>
       <div class="row">
         <div class="col-sm-12">
           <rzslider rz-slider-model="z" rz-slider-options="sliderOptions"></rzslider>
