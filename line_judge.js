@@ -2,7 +2,7 @@
 var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'rzModule']);
 
 // function referenced by the drop target
-app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, $uibModal, $log){
+app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', function($scope, $uibModal, $log, $timeout){
 
     $scope.height = 4;
     $scope.width = 4;
@@ -17,6 +17,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
 
     $scope.z = 1;
     $scope.numberOfDropTiles = 2;
+
     $scope.tiles = {};
 
     $scope.tiles["2,3,1"] = {rot: 180, image: 'tiles/tile-5.png', dropTile: false,
@@ -33,10 +34,27 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
                              scored: {gaps: [], obstacles: [], speedbumps: [], intersections: [], reach: [false,false]}};
 
     $scope.started = false;
+    $scope.score = 123;
+
+    // Verified time by timekeeper
+    $scope.minutes = 0;
+    $scope.seconds = 0;
+
+    $scope.time = 0;
+
+    var tick = function() {
+        $scope.time += 1000;
+        if($scope.started)
+            $timeout(tick, 1000);
+    }
 
     $scope.start = function(){
         // Start timer
-        $scope.started = true;
+        $scope.started = !$scope.started;
+        if($scope.started){
+            // Start the timer
+            $timeout(tick, $scope.tickInterval);
+        }
     }
 
 

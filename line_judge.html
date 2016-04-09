@@ -82,6 +82,11 @@
       rzslider{
       width: 80%;
       }
+
+      .confirmation {
+        width: 300px;
+        border: 1px dashed black;
+      }
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 
@@ -90,10 +95,14 @@
     <h1>Rescue Line Judge</h1>
     <p>Tap the tiles to do live scoring</p>
     <p>
-      <button class="btn btn-primary" type="button" ng-click="start()">Start run</button>
+      <button class="btn btn-primary" type="button" ng-click="start()">{{ started ? 'Stop' : 'Start' }} run!</button>
+    </p>
+    <p>
+      Scoring: {{score}} Time: {{time | date:'mm:ss'}}
+    </p>
+    <p>
       Droptiles left to be placed: {{numberOfDropTiles}}
     </p>
-
     <div style="margin-top:50px;">
       <div class="row">
         <div class="col-sm-12">
@@ -109,6 +118,22 @@
           </div>
         </div>
       </div>
+
+      <div class="row">
+        <div class="col-md-12 confirmation">
+        <strong>Verified time: </strong><br>
+        <label>Minutes: <input type="number" min="0" max="8" ng-model="minutes"></label><br>
+        <label>Seconds: <input type="number" min="0" max="60" ng-model="seconds"></label><br>
+        <button type="button">Sign!</button><br>
+        <strong>
+          By clicking the "Sign!" button, you accept that the score {{score}}
+          and time {{minutes}}:{{seconds<10?'0':''}}{{seconds}} are correct.<br>
+          Your team also further undertakes to not appeal the score at a later stage.
+        </strong>
+        </div>
+      </div>
+
+
     </div>
   </body>
 </html>
