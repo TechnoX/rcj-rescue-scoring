@@ -136,8 +136,9 @@
           <rzslider rz-slider-model="z" rz-slider-options="sliderOptions"></rzslider>
         </div>
         <div class="col-md-3 tools">
-          <img x-lvl-draggable='true' x-lvl-drop-target="true" x-on-drop="dropped(dragEl, dropEl)"  ng-repeat="tile in tileBox" tile="tile" ng-src="tiles/{{tile.image}}" class="tools-image rot0" rotate-on-click rot="0">
-
+          <img x-lvl-draggable='true' x-lvl-drop-target="true" x-on-drop="dropped(dragEl, dropEl)"
+               ng-repeat="tile in tileBox" tile-id="{{tile._id}}" ng-src="tiles/{{tile.image}}"
+               class="tools-image rot0" rotate-on-click rot="0">
         </div>
         <div class="col-md-8">
           <div ng-repeat="r in range(length)">

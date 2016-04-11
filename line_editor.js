@@ -2,7 +2,7 @@
 var app = angular.module('ddApp', ['lvl.services', 'ngAnimate', 'ui.bootstrap', 'rzModule']);
 
 // function referenced by the drop target
-app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, $uibModal, $log){
+app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function($scope, $uibModal, $log, $http){
 
 
 
@@ -28,24 +28,162 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
         return arr;
     }
 
-    $scope.tileBox = [{"image":"tile-0.png","gaps":0,"intersections":0,"_id":"5708b8ff54deddcd27756aa3","paths":{"left":"right","right":"left"}},{"image":"tile-1.png","gaps":0,"intersections":0,"_id":"5708b91254deddcd27756aa4","paths":{"left":"right","right":"left"}},{"image":"tile-2.png","gaps":0,"intersections":0,"_id":"5708b91b54deddcd27756aa5","paths":{"left":"right","right":"left"}},{"image":"tile-3.png","gaps":0,"intersections":0,"_id":"5708b93754deddcd27756aa6","paths":{"left":"bottom","bottom":"left"}},{"image":"tile-4.png","gaps":0,"intersections":0,"_id":"5708b96054deddcd27756aa7","paths":{"left":"top","top":"left","right":"bottom","bottom":"right"}},{"image":"tile-5.png","gaps":0,"intersections":0,"_id":"5708b96c54deddcd27756aa8","paths":{"left":"bottom","bottom":"left"}},{"image":"tile-6.png","gaps":0,"intersections":0,"_id":"5708b97754deddcd27756aa9","paths":{"left":"bottom","bottom":"left"}},{"image":"tile-7.png","gaps":0,"intersections":0,"_id":"5708b98454deddcd27756aaa","paths":{"top":"bottom","bottom":"top"}},{"image":"tile-8.png","gaps":0,"intersections":0,"_id":"5708b99954deddcd27756aab","paths":{"left":"right","right":"left"}},{"image":"tile-9.png","gaps":0,"intersections":0,"_id":"5708b9ad54deddcd27756aac","paths":{"left":"right","right":"left"}},{"image":"tile-10.png","gaps":0,"intersections":0,"_id":"5708b9b554deddcd27756aad","paths":{"left":"bottom","bottom":"left"}},{"image":"tile-11.png","gaps":2,"intersections":0,"_id":"5708b9c354deddcd27756aae","paths":{"left":"right","right":"left"}},{"image":"tile-12.png","gaps":0,"intersections":0,"_id":"5708b9d254deddcd27756aaf","paths":{"right":"bottom","bottom":"right"}},{"image":"tile-13.png","gaps":0,"intersections":0,"_id":"5708b9f354deddcd27756ab0","paths":{"left":"right","right":"left"}},{"image":"tile-14.png","gaps":0,"intersections":0,"_id":"5708b9fb54deddcd27756ab1","paths":{"left":"right","right":"left"}},{"image":"tile-15.png","gaps":0,"intersections":1,"_id":"5708ba3554deddcd27756ab2","paths":{"left":"top","top":"left","right":"left"}},{"image":"tile-16.png","gaps":0,"intersections":1,"_id":"5708ba4d54deddcd27756ab3","paths":{"left":"right","right":"top","top":"right"}},{"image":"tile-17.png","gaps":0,"intersections":0,"_id":"5708ba5754deddcd27756ab4","paths":{"left":"right","right":"left"}},{"image":"tile-18.png","gaps":0,"intersections":0,"_id":"5708ba5e54deddcd27756ab5","paths":{"left":"right","right":"left"}},{"image":"tile-19.png","gaps":1,"intersections":0,"_id":"5708ba9f54deddcd27756ab6","paths":{"left":"right","right":"left","top":"bottom","bottom":"top"}},{"image":"tile-20.png","gaps":1,"intersections":0,"_id":"5708bab454deddcd27756ab7","paths":{"left":"right","right":"left"}},{"image":"tile-21.png","gaps":0,"intersections":0,"_id":"5708bac254deddcd27756ab8","paths":{"bottom":"right","right":"bottom"}},{"image":"tile-22.png","gaps":0,"intersections":0,"_id":"5708bacf54deddcd27756ab9","paths":{"bottom":"right","right":"bottom"}},{"image":"tile-23.png","gaps":0,"intersections":0,"_id":"5708baea54deddcd27756aba","paths":{"left":"right","right":"left"}},{"image":"tile-24.png","gaps":0,"intersections":0,"_id":"5708bb0154deddcd27756abb","paths":{"bottom":"right","right":"bottom"}},{"image":"tile-25.png","gaps":0,"intersections":0,"_id":"5708bb2454deddcd27756abc","paths":{"left":"top","top":"left","bottom":"right","right":"bottom"}},{"image":"tile-26.png","gaps":0,"intersections":0,"_id":"5708bb3054deddcd27756abd","paths":{"bottom":"right","right":"bottom"}},{"image":"tile-27.png","gaps":0,"intersections":1,"_id":"5708bb4654deddcd27756abe","paths":{"bottom":"right","right":"bottom"}},{"image":"tile-28.png","gaps":0,"intersections":1,"_id":"5708bba154deddcd27756abf","paths":{"left":"right","right":"left"}},{"image":"tile-29.png","gaps":0,"intersections":1,"_id":"5708bbba54deddcd27756ac0","paths":{"left":"bottom","bottom":"left"}}];
-
+    $http.get("dummy.json").then(function(response){
+        var tiles = {};
+        for(var i = 0; i < response.data.length; i++){
+            tiles[response.data[i]._id] = response.data[i];
+        }
+        $scope.tileBox = tiles;
+        console.log("Huhu" , $scope.tileBox);
+    }, function(response){
+        console.log("Error: " + response.statusText);
+    });
 
 
 
     $scope.z = 0;
     $scope.tiles = {};
 
-    $scope.tiles["2,3,0"] = {rot: 0, image: 'tiles/tile-5.png',
-                             items: {gaps: 2, obstacles: 0, speedbumps: 3, intersections: 0}};
-/*    $scope.tiles["2,4"] = {rot: '0'};
-    $scope.tiles["2,5"] = {rot: '270', image: 'tile-6.png'};
-    $scope.tiles["3,3"] = {rot: '90',  image: 'tile-4.png'};
-    $scope.tiles["3,4"] = {rot: '90',  image: 'tile-4.png'};
-    $scope.tiles["3,5"] = {rot: '180'};
-*/
-
-
+    $scope.tiles = {
+        "2,2,0": {
+            "image": "tiles/tile-7.png",
+            "rot": 0,
+            "tileType": "5708b98454deddcd27756aaa",
+            "items": {
+                "obstacles": 0,
+                "speedbumps": 0
+            }
+        },
+        "2,3,0": {
+            "image": "tiles/tile-13.png",
+            "rot": 90,
+            "tileType": "5708b9f354deddcd27756ab0",
+            "items": {
+                "obstacles": 0,
+                "speedbumps": 0
+            }
+        },
+        "2,4,0": {
+            "image": "tiles/tile-24.png",
+            "rot": 180,
+            "tileType": "5708bb0154deddcd27756abb",
+            "items": {
+                "obstacles": 0,
+                "speedbumps": 0
+            }
+        },
+        "1,4,0": {
+            "image": "tiles/tile-22.png",
+            "rot": 270,
+            "tileType": "5708bacf54deddcd27756ab9",
+            "items": {
+                "obstacles": 0,
+                "speedbumps": 0
+            }
+        },
+        "1,3,0": {
+            "image": "tiles/tile-16.png",
+            "rot": 270,
+            "tileType": "5708ba4d54deddcd27756ab3",
+            "items": {
+                "obstacles": 0,
+                "speedbumps": 0
+            }
+        },
+        "0,3,0": {
+            "image": "tiles/tile-12.png",
+            "rot": 270,
+            "tileType": "5708b9d254deddcd27756aaf",
+            "items": {
+                "obstacles": 0,
+                "speedbumps": 0
+            }
+        },
+        "0,1,0": {
+            "image": "tiles/tile-6.png",
+            "rot": 270,
+            "tileType": "5708b97754deddcd27756aa9",
+            "items": {
+                "obstacles": 0,
+                "speedbumps": 0
+            }
+        },
+        "0,2,0": {
+            "image": "tiles/tile-0.png",
+            "rot": 90,
+            "tileType": "5708b8ff54deddcd27756aa3",
+            "items": {
+                "obstacles": 1,
+                "speedbumps": 0
+            }
+        },
+        "1,1,0": {
+            "image": "tiles/tile-19.png",
+            "rot": 0,
+            "tileType": "5708ba9f54deddcd27756ab6",
+            "items": {
+                "obstacles": 0,
+                "speedbumps": 0
+            }
+        },
+        "2,1,0": {
+            "image": "tiles/tile-3.png",
+            "rot": 0,
+            "tileType": "5708b93754deddcd27756aa6",
+            "items": {
+                "obstacles": 0,
+                "speedbumps": 0
+            }
+        },
+        "1,2,0": {
+            "image": "tiles/tile-0.png",
+            "rot": 90,
+            "tileType": "5708b8ff54deddcd27756aa3",
+            "items": {
+                "obstacles": 0,
+                "speedbumps": 1
+            }
+        },
+        "1,0,0": {
+            "image": "tiles/tile-22.png",
+            "rot": 0,
+            "tileType": "5708bacf54deddcd27756ab9",
+            "items": {
+                "obstacles": 0,
+                "speedbumps": 0
+            },
+            levelUp: "right"
+        },
+        "2,0,0": {
+            "image": "tiles/tile-11.png",
+            "rot": 0,
+            "tileType": "5708b9c354deddcd27756aae",
+            "items": {
+                "obstacles": 0,
+                "speedbumps": 0
+            },
+            levelDown: "left"
+        },
+        "3,0,0": {
+            "image": "tiles/tile-29.png",
+            "rot": 0,
+            "tileType": "5708bbba54deddcd27756ac0",
+            "items": {
+                "obstacles": 0,
+                "speedbumps": 0
+            }
+        },
+        "3,1,0": {
+            "image": "tiles/tile-20.png",
+            "rot": 90,
+            "tileType": "5708bab454deddcd27756ab7",
+            "items": {
+                "obstacles": 0,
+                "speedbumps": 0
+            },
+            levelDown: "top"
+        }
+    };
 
     $scope.sliderOptions = {
         floor: 0,
@@ -63,7 +201,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
         console.log(x+','+y+','+$scope.z);
         var modalInstance = $uibModal.open({
             animation: true,
-            templateUrl: 'line_editor_modal.html',
+            templateUrl: 'line_editor_modal.html?b',
             controller: 'ModalInstanceCtrl',
             size: 'sm',
             resolve: {
@@ -126,7 +264,21 @@ app.directive('tile', function() {
             tile: '='
         },
         restrict: 'E',
-        templateUrl: 'tile.html'
+        templateUrl: 'tile.html',
+        link: function(scope, element, attrs) {
+            scope.rotateRamp = function(direction){
+                switch(direction){
+                case "bottom":
+                    return "rot0";
+                case "top":
+                    return "rot180";
+                case "left":
+                    return "rot90";
+                case "right":
+                    return "rot270";
+                }
+            }
+        }
     };
 });
 
@@ -225,12 +377,12 @@ app.directive('lvlDropTarget', ['$rootScope', 'uuid', function ($rootScope, uuid
                     // Remove the element from where we dragged it
                     scope.tiles[drag.attr("x")+","+drag.attr("y")+","+drag.attr("z")] = {};
                 }else if(drag[0].tagName == "IMG"){// If we drag out an image, this is a new tile
+                    console.log(drag.attr("id"));
                     scope.tiles[drop.attr("x")+","+drop.attr("y")+","+drop.attr("z")] = {image: drag.attr("src"),
                                                                                          rot: +drag.attr("rot"),
-                                                                                         items:{gaps: 0,
-                                                                                                obstacles: 0,
-                                                                                                speedbumps: 0,
-                                                                                                intersections: 0}};
+                                                                                         tileType: drag.attr("tile-id"),
+                                                                                         items:{obstacles: 0,
+                                                                                                speedbumps: 0}};
                     // We dragged an non-existing tile
                 }else if(!scope.tiles[drag.attr("x")+","+drag.attr("y")+","+drag.attr("z")]){
                     // Just ignore!

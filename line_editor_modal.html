@@ -9,25 +9,40 @@
       {{tile.items.speedbumps}}
       <a href="#" ng-click="tile.items.speedbumps=tile.items.speedbumps+1">+</a>
     </li>
-    <li>
+<!--    <li>
       <label>Gaps:</label>
       <a href="#" ng-click="tile.items.gaps>0?tile.items.gaps=tile.items.gaps-1:0">-</a>
       {{tile.items.gaps}}
       <a href="#" ng-click="tile.items.gaps=tile.items.gaps+1">+</a>
-    </li>
+    </li>-->
     <li>
       <label>Obstacles:</label>
       <a href="#" ng-click="tile.items.obstacles>0?tile.items.obstacles=tile.items.obstacles-1:0">-</a>
       {{tile.items.obstacles}}
       <a href="#" ng-click="tile.items.obstacles=tile.items.obstacles+1">+</a>
     </li>
-    <li>
+<!--    <li>
       <label>Intersections:</label>
       <a href="#" ng-click="tile.items.intersections>0?tile.items.intersections=tile.items.intersections-1:0">-</a>
       {{tile.items.intersections}}
       <a href="#" ng-click="tile.items.intersections=tile.items.intersections+1">+</a>
-    </li>
+    </li>-->
   </ul>
+
+  <h5>Direction if ramp down:</h5>
+  <label><input type="radio" ng-model="tile.levelDown" value="top"> Top</label> <br>
+  <label><input type="radio" ng-model="tile.levelDown" value="bottom"> Bottom</label> <br>
+  <label><input type="radio" ng-model="tile.levelDown" value="left"> Left</label> <br>
+  <label><input type="radio" ng-model="tile.levelDown" value="right"> Right</label> <br>
+  <label><input type="radio" ng-model="tile.levelDown" ng-click="tile.levelDown = undefined"> Nothing</label> <br>
+
+  <h5>Direction if ramp up:</h5>
+  <label><input type="radio" ng-model="tile.levelUp" value="top"> Top</label> <br>
+  <label><input type="radio" ng-model="tile.levelUp" value="bottom"> Bottom</label> <br>
+  <label><input type="radio" ng-model="tile.levelUp" value="left"> Left</label> <br>
+  <label><input type="radio" ng-model="tile.levelUp" value="right"> Right</label> <br>
+  <label><input type="radio" ng-model="tile.levelUp" ng-click="tile.levelUp = undefined"> Nothing</label> <br>
+
 </div>
 <div class="modal-footer">
   <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
