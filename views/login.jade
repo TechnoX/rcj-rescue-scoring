@@ -1,0 +1,10 @@
+//- -*- tab-width: 2 -*-
+doctype html
+html(ng-app="login")
+  head
+    script(src="/components/angular/angular.min.js")
+    script(src="/javascripts/login.js")
+  body(ng-controller="loginController")
+    input(type="text" placeholder="username" ng-model="username")
+    input(type="password" placeholder="password" ng-model="password")
+    input(type="submit" ng-click="login()")
