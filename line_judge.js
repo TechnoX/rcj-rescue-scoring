@@ -18,6 +18,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', funct
     $scope.z = 0;
     $scope.numberOfDropTiles = 2;
     $scope.placedDropTiles = 0;
+    $scope.rescuedVictims = 0;
 
     $scope.tiles = {};
 
@@ -37,6 +38,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', funct
     $scope.startedScoring = false;
 
     $scope.startScoring = function(){
+        if($scope.numberOfDropTiles - $scope.placedDropTiles > 0) {
+            alert("All droptiles are not yet placed.");
+            return;
+        }
         // Start/stop scoring
         $scope.startedScoring = !$scope.startedScoring;
     }
