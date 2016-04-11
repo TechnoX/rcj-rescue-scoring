@@ -20,6 +20,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
     $scope.height = 4;
     $scope.width = 4;
     $scope.length = 7;
+    $scope.name = "";
     $scope.range = function(n){
         arr = [];
         for (var i=0; i < n; i++) {
@@ -201,7 +202,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
         console.log(x+','+y+','+$scope.z);
         var modalInstance = $uibModal.open({
             animation: true,
-            templateUrl: 'line_editor_modal.html?b',
+            templateUrl: 'line_editor_modal.html?c',
             controller: 'ModalInstanceCtrl',
             size: 'sm',
             resolve: {
