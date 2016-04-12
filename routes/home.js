@@ -7,6 +7,18 @@ var router = express.Router()
 router.get('/', function (req, res) {
   res.render('home');
 })
+router.get('/line/', function (req, res) {
+  res.render('index');
+})
+router.get('/line/editor', function (req, res) {
+  res.render('line_editor');
+})
+router.get('/line/judge', function (req, res) {
+  res.render('line_judge');
+})
+router.get('/line/view', function (req, res) {
+  res.render('line_view');
+})
 
 
 
