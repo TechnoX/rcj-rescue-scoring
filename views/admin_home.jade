@@ -1,0 +1,19 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'AdminHome'
+
+append scripts
+  script(src='/javascripts/admin_home.js')
+
+block location
+  a(href='/home' style="color:#333333") Home
+  | >
+  a(href='/admin' style="color:#333333") Admin
+
+block content
+  .row
+    .col-md-offset-2.col-md-8
+      a(href='/admin/teams') Teams
+      a(href='/admin/runs') Runs

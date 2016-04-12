@@ -1,0 +1,31 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'RunAdmin'
+
+append scripts
+  script(src='/javascripts/run_admin.js')
+
+block location
+  a(href='/home' style="color:#333333") Home
+  | >
+  a(href='/admin' style="color:#333333") Admin
+  | >
+  a(href='/admin/team' style="color:#333333") Team
+
+block content
+  .row
+    .col-md-offset-2.col-md-8
+      h1 Teams
+      table
+        tr(ng-repeat='team in teams')
+          td(ng-bind='team.name')
+          td(ng-bind='team.league')
+          td
+            a(href="" ng-click='removeTeam(team._id)') Delete
+
+      h1 Add team
+      input(ng-model='teamName')
+      select(ng-model='teamLeague' ng-options='league for league in leagues')
+      button(ng-click='addTeam()') Add team
