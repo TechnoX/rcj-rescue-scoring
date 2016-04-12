@@ -1,6 +1,7 @@
 var mongoose = require('mongoose')
 var validator = require('validator')
 var Schema = mongoose.Schema
+var ObjectId = Schema.Types.ObjectId
 
 var logger = require('../config/logger').mainLogger
 
@@ -16,15 +17,15 @@ var pathFinder = require('../helper/pathFinder')
  * @param {Boolean} admin - If the user is admin or not
  */
 var mapSchema = new Schema({
-  name     : {type: String, required: true, unique: true},
-  height   : {type: Number, required: true, min: 1},
-  width    : {type: Number, required: true, min: 1},
-  length   : {type: Number, required: true, min: 1},
-  tiles    : [{
+  name             : {type: String, required: true, unique: true},
+  height           : {type: Number, required: true, min: 1},
+  width            : {type: Number, required: true, min: 1},
+  length           : {type: Number, required: true, min: 1},
+  tiles            : [{
     x        : {type: Number, required: true},
     y        : {type: Number, required: true},
     z        : {type: Number, required: true},
-    tileType : {type: Schema.Types.ObjectId, ref: 'TileType', required: true},
+    tileType : {type: ObjectId, ref: 'TileType', required: true},
     rot      : {type: Number, min: 0, max: 270, required: true},
     items    : {
       obstacles : {type: Number, required: true, min: 0},
@@ -33,7 +34,12 @@ var mapSchema = new Schema({
     levelUp  : {type: String, enum: ["top", "right", "bottom", "left"]},
     levelDown: {type: String, enum: ["top", "right", "bottom", "left"]}
   }],
-  startTile: {x: {type: Number, required: true}, y: {type: Number, required: true}, z: {type: Number, required: true}}
+  startTile        : {
+    x: {type: Number, required: true, min: 0},
+    y: {type: Number, required: true, min: 0},
+    z: {type: Number, required: true, min: 0}
+  },
+  numberOfDropTiles: {type: Number, required: true, min: 0}
 })
 
 var tileTypeSchema = new Schema({
@@ -55,36 +61,36 @@ var TileType = mongoose.model('TileType', tileTypeSchema)
 module.exports.map = Map
 module.exports.tileType = TileType
 
-var testMap = new Map({
-  name  : "Test2",
-  height: 1,
-  width : 2,
-  length: 3,
-  tiles : [{
-    x    : 1,
-    y    : 2,
-    z    : 3,
-    rot  : 0,
-    items: {
-      gaps         : 1,
-      obstacles    : 2,
-      speedbumps   : 3,
-      intersections: 4
-    }
-  },
-    {
-      x    : 2,
-      y    : 3,
-      z    : 4,
-      rot  : 90,
-      items: {
-        gaps         : 1,
-        obstacles    : 2,
-        speedbumps   : 3,
-        intersections: 4
-      }
-    }]
-})
+/*var testMap = new Map({
+ name  : "Test2",
+ height: 1,
+ width : 2,
+ length: 3,
+ tiles : [{
+ x    : 1,
+ y    : 2,
+ z    : 3,
+ rot  : 0,
+ items: {
+ gaps         : 1,
+ obstacles    : 2,
+ speedbumps   : 3,
+ intersections: 4
+ }
+ },
+ {
+ x    : 2,
+ y    : 3,
+ z    : 4,
+ rot  : 90,
+ items: {
+ gaps         : 1,
+ obstacles    : 2,
+ speedbumps   : 3,
+ intersections: 4
+ }
+ }]
+ })*/
 
 /*testMap.save(function (err, data) {
  if (err) {
@@ -150,7 +156,7 @@ pathFinder.findPath({
           intersections: 0,
           paths        : {
             "bottom": "left",
-            "left" : "bottom"
+            "left"  : "bottom"
           }
         }
       },
@@ -220,28 +226,28 @@ pathFinder.findPath({
           gaps         : 1,
           intersections: 0,
           paths        : {
-            "top": "bottom",
-            "bottom" : "top"
+            "top"   : "bottom",
+            "bottom": "top"
           }
         },
-        levelUp: "bottom"
+        levelUp : "bottom"
       }
       ,
       {
-        x       : 2,
-        y       : 3,
-        z       : 2,
-        rot     : 0,
-        items   : {
+        x        : 2,
+        y        : 3,
+        z        : 2,
+        rot      : 0,
+        items    : {
           obstacles : 2,
           speedbumps: 3
         },
-        tileType: {
+        tileType : {
           gaps         : 1,
           intersections: 0,
           paths        : {
-            "top": "bottom",
-            "bottom" : "top"
+            "top"   : "bottom",
+            "bottom": "top"
           }
         },
         levelDown: "top"

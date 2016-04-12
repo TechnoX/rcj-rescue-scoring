@@ -141,7 +141,13 @@ adminRouter.post('/createmap', function (req, res) {
     height: map.height,
     width : map.width,
     length: map.length,
-    tiles : tiles
+    tiles : tiles,
+    startTile : {
+      x : map.startTile.x,
+      y : map.startTile.y,
+      z : map.startTile.z
+    },
+    numberOfDropTiles : map.numberOfDropTiles
   })
 
   newMap.save(function (err, data) {

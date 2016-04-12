@@ -79,7 +79,7 @@ publicRouter.get('/leagues', function (req, res) {
  *
  * @apiSuccess (400) {String} err The error message
  */
-adminRouter.get('/:teamid', function (req, res, next) {
+publicRouter.get('/:teamid', function (req, res, next) {
   var id = req.params.teamid
 
   if (!ObjectId.isValid(id)) {
@@ -87,6 +87,22 @@ adminRouter.get('/:teamid', function (req, res, next) {
   }
 
   query.doIdQuery(req, res, id, "", competitiondb.team)
+})
+
+publicRouter.get('/:teamid/runs', function (req, res, next) {
+  var id = req.params.teamid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  competitiondb.run.find({team: id}, function (err, data) {
+    if (err) {
+      res.status(400).send({msg: "Could not get runs"})
+    } else {
+      res.status(200).send(data)
+    }
+  })
 })
 
 adminRouter.get('/:teamid/delete', function (req, res, next) {
@@ -110,7 +126,8 @@ adminRouter.post('/createteam', function (req, res) {
 
   var newTeam = new competitiondb.team({
     name : team.name,
-    league : team.league
+    league : team.league,
+    competition : team.competition
   })
 
   newTeam.save(function (err, data) {

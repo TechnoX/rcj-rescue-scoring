@@ -2,6 +2,8 @@ logs/*
 public/components/*
 node_modules/*
 
+.idea/
+
 #MEAN STACK 
 
 lib-cov

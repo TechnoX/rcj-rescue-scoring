@@ -85,6 +85,22 @@ publicRouter.get('/:competitionid', function (req, res, next) {
   query.doIdQuery(req, res, id, "", competitiondb.competition)
 })
 
+publicRouter.get('/:competitionid/teams', function (req, res, next) {
+  var id = req.params.competitionid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  competitiondb.team.find({competition: id}, function (err, data) {
+    if (err) {
+      res.status(400).send({msg: "Could not get teams"})
+    } else {
+      res.status(200).send(data)
+    }
+  })
+})
+
 publicRouter.get('/:competitionid/runs', function (req, res, next) {
   var id = req.params.competitionid
 
@@ -92,9 +108,25 @@ publicRouter.get('/:competitionid/runs', function (req, res, next) {
     return next()
   }
 
-  competitiondb.run.find({competition : id}, function (err, data) {
+  competitiondb.run.find({competition: id}, function (err, data) {
     if (err) {
       res.status(400).send({msg: "Could not get runs"})
+    } else {
+      res.status(200).send(data)
+    }
+  })
+})
+
+publicRouter.get('/:competitionid/fields', function (req, res, next) {
+  var id = req.params.competitionid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  competitiondb.field.find({competition: id}, function (err, data) {
+    if (err) {
+      res.status(400).send({msg: "Could not get fields"})
     } else {
       res.status(200).send(data)
     }
@@ -105,14 +137,17 @@ adminRouter.post('/createcompetition', function (req, res) {
   var competition = req.body
 
   var newCompetition = new competitiondb.competition({
-    name : competition.name
+    name: competition.name
   })
 
   newCompetition.save(function (err, data) {
     if (err) {
       res.status(400).send({msg: "Error saving competition"})
     } else {
-      res.status(201).send({msg: "New competition has been saved", id: data._id})
+      res.status(201).send({
+        msg: "New competition has been saved",
+        id : data._id
+      })
     }
   })
 })
