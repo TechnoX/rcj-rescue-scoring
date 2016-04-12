@@ -7,12 +7,14 @@ var publicRouter = express.Router()
 var privateRouter = express.Router()
 var adminRouter = express.Router()
 var competitiondb = require('../../models/competition')
+var mapdb = require('../../models/map')
 var query = require('../../helper/query-helper')
 var validator = require('validator')
 var async = require('async')
 var ObjectId = require('mongoose').Types.ObjectId
 var logger = require('../../config/logger').mainLogger
 var fs = require('fs')
+var pathFinder = require('../helper/pathFinder')
 //========================================================================
 //                          /maps Api endpoints
 //========================================================================
@@ -42,7 +44,7 @@ var fs = require('fs')
  * @apiSuccess (400) {String} err The error message
  */
 publicRouter.get('/', function (req, res) {
-  query.doFindResultSortQuery(req, res, null, null, competitiondb.competition)
+  query.doFindResultSortQuery(req, res, null, null, competitiondb.runs)
 })
 
 /**
@@ -75,105 +77,50 @@ publicRouter.get('/', function (req, res) {
  *
  * @apiSuccess (400) {String} err The error message
  */
-publicRouter.get('/:competitionid', function (req, res, next) {
-  var id = req.params.competitionid
+publicRouter.get('/:runid', function (req, res, next) {
+  var id = req.params.runid
 
   if (!ObjectId.isValid(id)) {
     return next()
   }
 
-  query.doIdQuery(req, res, id, "", competitiondb.competition)
+  query.doIdQuery(req, res, id, "", competitiondb.run)
 })
 
-publicRouter.get('/:competitionid/teams', function (req, res, next) {
-  var id = req.params.competitionid
+adminRouter.get('/:runid/delete', function (req, res, next) {
+  var id = req.params.runid
 
   if (!ObjectId.isValid(id)) {
     return next()
   }
 
-  competitiondb.team.find({competition: id}, function (err, data) {
+  competitiondb.run.remove({_id : id}, function (err) {
     if (err) {
-      res.status(400).send({msg: "Could not get teams"})
+      res.status(400).send({msg: "Could not remove run"})
     } else {
-      res.status(200).send(data)
+      res.status(200).send({msg: "Run has been removed!"})
     }
   })
 })
 
-publicRouter.get('/:competitionid/runs', function (req, res, next) {
-  var id = req.params.competitionid
+adminRouter.post('/createrun', function (req, res) {
+  var run = req.body
 
-  if (!ObjectId.isValid(id)) {
-    return next()
-  }
+  var mapId = run.map
+  var teamId = run.team
+  var fieldId = run.field
+  var competitionId = run.competition
 
-  var populate
-  if (req.query['populate'] !== undefined && req.query['populate']) {
-    populate = {path: 'tiles', populate: {path: 'tileType'}}
-  }
+  mapdb.map.findOne({_id : mapId}, function (err, map) {
+    pathFinder.findPath(map)
 
-  var query = competitiondb.run.find({competition: id}, "round team field")
-  if (populate !== undefined) {
-    query.populate(populate)
-  }
-  query.exec(function (err, data) {
-    if (err) {
-      res.status(400).send({msg: "Could not get runs"})
-    } else {
-      res.status(200).send(data)
-    }
-  })
-})
-
-publicRouter.get('/:competitionid/fields', function (req, res, next) {
-  var id = req.params.competitionid
-
-  if (!ObjectId.isValid(id)) {
-    return next()
-  }
-
-  competitiondb.field.find({competition: id}, function (err, data) {
-    if (err) {
-      res.status(400).send({msg: "Could not get fields"})
-    } else {
-      res.status(200).send(data)
-    }
-  })
-})
-
-publicRouter.get('/:competitionid/rounds', function (req, res, next) {
-  var id = req.params.competitionid
-
-  if (!ObjectId.isValid(id)) {
-    return next()
-  }
-
-  competitiondb.round.find({competition: id}, function (err, data) {
-    if (err) {
-      res.status(400).send({msg: "Could not get rounds"})
-    } else {
-      res.status(200).send(data)
-    }
-  })
-})
-
-adminRouter.post('/createcompetition', function (req, res) {
-  var competition = req.body
-
-  var newCompetition = new competitiondb.competition({
-    name: competition.name
-  })
-
-  newCompetition.save(function (err, data) {
-    if (err) {
-      res.status(400).send({msg: "Error saving competition"})
-    } else {
-      res.status(201).send({
-        msg: "New competition has been saved",
-        id : data._id
-      })
-    }
+    newRun.save(function (err, data) {
+      if (err) {
+        res.status(400).send({msg: "Error saving run"})
+      } else {
+        res.status(201).send({msg: "New run has been saved", id: data._id})
+      }
+    })
   })
 })
 

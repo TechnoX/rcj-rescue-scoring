@@ -1,0 +1,33 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'FieldAdmin'
+
+append scripts
+  script.
+    var competitionId = "#{id}"
+  script(src='/javascripts/field_admin.js')
+
+block location
+  a(href='/home' style="color:#333333") Home
+  | >
+  a(href='/admin' style="color:#333333") Admin
+  | >
+  a(ng-href='/admin/{{competitionId}}' style="color:#333333") {{competition.name}}
+  | >
+  a(href='/admin/{{competitionId}}/runs' style="color:#333333") Fields
+
+block content
+  .row
+    .col-md-offset-2.col-md-8
+      h1 Fields
+      table
+        tr(ng-repeat='field in fields')
+          td(ng-bind='field.name')
+          td
+            a(href="" ng-click='removeField(field._id)') Delete
+
+      h1 Add field
+      input(ng-model='fieldName')
+      button(ng-click='addField()') Add field

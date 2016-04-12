@@ -40,6 +40,7 @@ var runSchema = new Schema({
   round: {type: ObjectId, ref: 'Round', required: true},
   team : {type: ObjectId, ref: 'Team', required: true},
   field : {type: ObjectId, ref: 'Field', required: true},
+  competition: {type: ObjectId, ref: 'Competition', required: true},
 
   height           : {type: Number, required: true, min: 1},
   width            : {type: Number, required: true, min: 1},

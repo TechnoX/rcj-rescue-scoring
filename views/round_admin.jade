@@ -1,0 +1,33 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'RoundAdmin'
+
+append scripts
+  script.
+    var competitionId = "#{id}"
+  script(src='/javascripts/round_admin.js')
+
+block location
+  a(href='/home' style="color:#333333") Home
+  | >
+  a(href='/admin' style="color:#333333") Admin
+  | >
+  a(ng-href='/admin/{{competitionId}}' style="color:#333333") {{competition.name}}
+  | >
+  a(href='/admin/{{competitionId}}/rounds' style="color:#333333") Rounds
+
+block content
+  .row
+    .col-md-offset-2.col-md-8
+      h1 Rounds
+      table
+        tr(ng-repeat='round in rounds')
+          td(ng-bind='round.name')
+          td
+            a(href="" ng-click='removeRound(round._id)') Delete
+
+      h1 Add round
+      input(ng-model='roundName')
+      button(ng-click='addRound()') Add round

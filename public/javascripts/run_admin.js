@@ -1,35 +1,45 @@
 angular.module("RunAdmin", []).controller("RunAdminController", function ($scope, $http) {
+  $scope.competitionId = competitionId
 
-  updateTeamList()
+  updateRunList()
 
-  $http.get("/api/teams/leagues").then(function(response) {
-    $scope.leagues = response.data
-    console.log($scope.leagues)
+  $http.get("/api/competitions/" + competitionId).then(function (response) {
+    $scope.competition = response.data
   })
 
-  $scope.addTeam = function() {
-    var team = {name : $scope.teamName, league : $scope.teamLeague}
+  $http.get("/api/competitions/" + competitionId + "/teams").then(function (response) {
+    $scope.teams = response.data
+  })
+  $http.get("/api/competitions/" + competitionId + "/fields").then(function (response) {
+    $scope.fields = response.data
+  })
+  $http.get("/api/maps").then(function (response) {
+    $scope.maps = response.data
+  })
 
-    $http.post("/api/teams/createteam", {team: team}).then(function (response) {
+  $scope.addRun = function () {
+    var run = {team: $scope.runTeam, league: $scope.runLeague, field: $scope.runField, competition: competitionId}
+
+    $http.post("/api/runs/createrun", run).then(function (response) {
       console.log(response)
-      updateTeamList()
+      updateRunList()
     }, function (error) {
       console.log(error)
     })
   }
 
-  $scope.removeTeam = function(id) {
-    $http.get("/api/teams/" + id + "/delete").then(function (response) {
+  $scope.removeRun = function (id) {
+    $http.get("/api/runs/" + id + "/delete").then(function (response) {
       console.log(response)
-      updateTeamList()
+      updateRunList()
     }, function (error) {
       console.log(error)
     })
   }
 
-  function updateTeamList() {
-    $http.get("/api/teams").then(function(response) {
-      $scope.teams = response.data
+  function updateRunList() {
+    $http.get("/api/competitions/" + competitionId + "/runs?populate=true").then(function (response) {
+      $scope.runs = response.data
       console.log($scope.teams)
     })
   }

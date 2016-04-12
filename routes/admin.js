@@ -7,12 +7,20 @@ router.get('/', function (req, res) {
   res.render('admin_home')
 })
 
-router.get('/team', function (req, res) {
-  res.render('team_admin')
+router.get('/:competitionid/teams', function (req, res) {
+  res.render('team_admin', {id : req.params.competitionid})
 })
 
-router.get('/run', function (req, res) {
-  res.render('run_admin')
+router.get('/:competitionid/runs', function (req, res) {
+  res.render('run_admin', {id : req.params.competitionid})
+})
+
+router.get('/:competitionid/rounds', function (req, res) {
+  res.render('round_admin', {id : req.params.competitionid})
+})
+
+router.get('/:competitionid/fields', function (req, res) {
+  res.render('field_admin', {id : req.params.competitionid})
 })
 
 module.exports = router
