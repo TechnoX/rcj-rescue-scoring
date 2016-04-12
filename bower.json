@@ -20,7 +20,8 @@
     "alertifyjs": "~1.0.3",
     "datatables": "~1.10.9",
     "angular": "~1.4.5",
-    "angular-datatables": "~0.4.3"
+    "angular-datatables": "~0.4.3",
+    "angularjs-slider": "^2.11.0"
   },
   "description": "",
   "main": "",
