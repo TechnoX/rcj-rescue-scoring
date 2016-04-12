@@ -1,0 +1,170 @@
+<html ng-app="ddApp">
+  <head>
+    <title>Rescue Line Judge</title>
+
+    <script type="text/javascript"
+            src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.2/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.2/angular-animate.js"></script>
+    <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-1.2.5.js"></script>
+    <script src="/components/angularjs-slider/dist/rzslider.min.js"></script>
+
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/components/angularjs-slider/dist/rzslider.min.css" rel="stylesheet">
+
+    <script src="/javascripts/line_judge.js"></script>
+
+
+    <style>
+
+      .slot {
+      margin-right:2px;
+      margin-top:2px;
+      width:40px;
+      height:40px;
+      display:inline-block;
+      border: none;
+      background-color: lightgreen;
+      }
+
+      tile{
+      width: 40px;
+      height: 40px;
+      margin: 0px;
+      padding: 0px;
+      display: inline-block;
+      position: relative;
+      }
+
+      .tile-image{
+        width: 40px;
+        height: 40px;
+        z-index: 1;
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        vertical-align: bottom;
+      }
+      .drop-tile{
+      border: 2px solid orange;
+      }
+
+      .rot0 {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+      }
+
+      .rot90 {
+        -webkit-transform: rotate(90deg);
+        -moz-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        -o-transform: rotate(90deg);
+        transform: rotate(90deg);
+      }
+
+      .rot180 {
+        -webkit-transform: rotate(180deg);
+        -moz-transform: rotate(180deg);
+        -ms-transform: rotate(180deg);
+        -o-transform: rotate(180deg);
+        transform: rotate(180deg);
+      }
+
+      .rot270 {
+        -webkit-transform: rotate(270deg);
+        -moz-transform: rotate(270deg);
+        -ms-transform: rotate(270deg);
+        -o-transform: rotate(270deg);
+        transform: rotate(270deg);
+      }
+      rzslider{
+      width: 80%;
+      }
+
+      .confirmation {
+        width: 300px;
+        border: 1px dashed black;
+      }
+      .plusminus{
+        box-sizing: content-box;
+        width: 2em;
+        padding: 0px 15px;
+      }
+      .count{
+        font-size: 2em;
+      }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+
+  </head>
+  <body ng-controller="ddController">
+    <h1>Rescue Line Judge</h1>
+    <p>Tap the tiles to do live scoring</p>
+    <div style="margin-top:50px;">
+      <div class="row">
+        <div class="col-sm-12">
+          <p>
+            <button class="btn btn-primary" type="button" ng-click="startTime()">{{ startedTime ? 'Stop' : 'Start' }} time!</button>
+            <button class="btn btn-primary" type="button" ng-click="startScoring()">{{ startedScoring ? 'Stop' : 'Start' }} scoring!</button>
+          </p>
+          <p>
+            Score: {{score}}<br>
+            Time: {{time | date:'mm:ss'}}
+          </p>
+          <p ng-show="!startedScoring">
+            Droptiles left to be placed: {{numberOfDropTiles - placedDropTiles}}
+          </p>
+          <p ng-show="startedScoring">
+            <label>Team did show up for start within their time: <input type="checkbox" ng-model="showedUp"></label>
+          </p>
+          <p ng-repeat="dropTile in range(placedDropTiles) track by $index" ng-show="startedScoring">
+            LoPs between {{$index==0?'start':('droptile ' + ($index))}} and droptile {{$index+1}}:<br>
+            <img src="img/minus.png" alt="-" ng-click="decrement($index)" class="plusminus">
+            <span class="count">{{LoPs[$index]?LoPs[$index]:0}}</span>
+            <img src="img/plus.png" alt="+" ng-click="increment($index)" class="plusminus">
+          </p>
+          <p ng-show="startedScoring">
+            Number of Rescued Victims: <br>
+            <img src="img/minus.png" alt="-" ng-click="rescuedVictims = rescuedVictims <= 0 ? 0 : rescuedVictims - 1" class="plusminus">
+            <span class="count">{{rescuedVictims}}</span>
+            <img src="img/plus.png" alt="+" ng-click="rescuedVictims = rescuedVictims + 1" class="plusminus">
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <rzslider rz-slider-model="z" rz-slider-options="sliderOptions"></rzslider>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div ng-repeat="r in range(length)">
+            <div ng-repeat="c in range(width)" class="slot">
+              <tile tile="tiles[c+','+r+','+z]" ng-click="doScoring(c,r,z)"></tile>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12 confirmation">
+        <strong>Verified time: </strong><br>
+        <label>Minutes: <input type="number" min="0" max="8" ng-model="minutes"></label><br>
+        <label>Seconds: <input type="number" min="0" max="60" ng-model="seconds"></label><br>
+        <button type="button">Sign!</button><br>
+        <strong>
+          By clicking the "Sign!" button, you accept that the score {{score}}
+          and time {{minutes}}:{{seconds<10?'0':''}}{{seconds}} are correct.<br>
+          Your team also further undertakes to not appeal the score at a later stage.
+        </strong>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>
+
+
