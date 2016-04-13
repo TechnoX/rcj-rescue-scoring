@@ -94,7 +94,7 @@ adminRouter.get('/:runid/delete', function (req, res, next) {
     return next()
   }
 
-  competitiondb.run.remove({_id : id}, function (err) {
+  competitiondb.run.remove({_id: id}, function (err) {
     if (err) {
       res.status(400).send({msg: "Could not remove run"})
     } else {
@@ -107,20 +107,139 @@ adminRouter.post('/createrun', function (req, res) {
   var run = req.body
 
   var mapId = run.map
+  var roundId = run.round
   var teamId = run.team
   var fieldId = run.field
   var competitionId = run.competition
 
-  mapdb.map.findOne({_id : mapId}, function (err, map) {
-    pathFinder.findPath(map)
+  if (!ObjectId.isValid(mapId) || !ObjectId.isValid(roundId) ||
+      !ObjectId.isValid(teamId) || !ObjectId.isValid(fieldId) ||
+      !ObjectId.isValid(competitionId)) {
+    return next()
+  }
 
-    newRun.save(function (err, data) {
-      if (err) {
-        res.status(400).send({msg: "Error saving run"})
-      } else {
-        res.status(201).send({msg: "New run has been saved", id: data._id})
+  var map
+  var round
+  var team
+  var field
+  var competition
+
+  async.parallel([
+    function (cb) {
+      mapdb.map.findOne({_id: mapId}).populate({
+        path    : 'tiles',
+        populate: {path: 'tileType'}
+      }).exec(function (err, dbmap) {
+        map = dbmap
+        return cb(err)
+      })
+    },
+    function (cb) {
+      competitiondb.round.findOne({_id: roundId}, function (err, dbround) {
+        round = dbround
+        return cb(err)
+      })
+    },
+    function (cb) {
+      competitiondb.team.findOne({_id: teamId}, function (err, dbteam) {
+        team = dbteam
+        return cb(err)
+      })
+    },
+    function (cb) {
+      competitiondb.field.findOne({_id: fieldId}, function (err, dbfield) {
+        field = dbfield
+        return cb(err)
+      })
+    },
+    function (cb) {
+      competitiondb.competition.findOne({_id: competitionId}, function (err, dbcompetition) {
+        competition = dbcompetition
+        return cb(err)
+      })
+    }
+  ], function (err) {
+    if (err) {
+      return res.status(400).send({msg: "Error saving run"})
+    } else {
+      if (map === undefined ||
+          round === undefined ||
+          team === undefined ||
+          field === undefined ||
+          competition === undefined) {
+        return res.status(400).send({msg: "Error saving run"})
       }
-    })
+
+      if (team.competition != competition._id ||
+          round.competition != competition._id ||
+          field.competition != competition._id) {
+        return res.status(400).send({msg: "Error saving run"})
+      }
+
+      var path = pathFinder.findPath(map)
+
+      var tiles = []
+
+      for (var i in path) {
+        var tile = path[i]
+        var newTile = {
+          x          : tile.x,
+          y          : tile.y,
+          z          : tile.z,
+          tileType   : tile.tileType._id,
+          rot        : tile.rot,
+          items      : {
+            obstacles    : tile.scoreItems.obstacles,
+            speedbumps   : tile.scoreItems.speedbumps,
+            intersections: tile.scoreItems.intersections,
+            gaps         : tile.scoreItems.gaps
+          },
+          scoredItems: {
+            obstacles    : new Array(tile.scoreItems.obstacles).fill(false),
+            speedbumps   : new Array(tile.scoreItems.speedbumps).fill(false),
+            intersections: new Array(tile.scoreItems.intersections).fill(false),
+            gaps         : new Array(tile.scoreItems.gaps).fill(false),
+            dropTiles    : []
+          },
+          index      : tile.index,
+          levelUp    : tile.levelUp,
+          levelDown  : tile.levelDown
+        }
+        tiles.push(newTile)
+      }
+
+      var newRun = new competitiondb.run({
+        round      : round._id,
+        team       : team._id,
+        field      : field._id,
+        competition: competition._id,
+
+        height           : map.height,
+        width            : map.width,
+        length           : map.length,
+        tiles            : tiles,
+        startTile        : map.startTile,
+        numberOfDropTiles: map.numberOfDropTiles,
+        LoPs             : new Array(map.numberOfDropTiles),
+        rescuedVictims   : 0,
+        score            : 0,
+        time             : {
+          minutes: 0,
+          seconds: 0
+        }
+      })
+
+      newRun.save(function (err, data) {
+        if (err) {
+          return res.status(400).send({msg: "Error saving run"})
+        } else {
+          return res.status(201).send({
+            msg: "New run has been saved",
+            id : data._id
+          })
+        }
+      })
+    }
   })
 })
 
