@@ -14,7 +14,7 @@ var async = require('async')
 var ObjectId = require('mongoose').Types.ObjectId
 var logger = require('../../config/logger').mainLogger
 var fs = require('fs')
-var pathFinder = require('../helper/pathFinder')
+var pathFinder = require('../../helper/pathFinder')
 //========================================================================
 //                          /maps Api endpoints
 //========================================================================
@@ -160,20 +160,23 @@ adminRouter.post('/createrun', function (req, res) {
     }
   ], function (err) {
     if (err) {
-      return res.status(400).send({msg: "Error saving run"})
+      return res.status(400).send({msg: "Error saving run", err: err})
     } else {
       if (map === undefined ||
           round === undefined ||
           team === undefined ||
           field === undefined ||
           competition === undefined) {
-        return res.status(400).send({msg: "Error saving run"})
+        return res.status(400).send({msg: "Error saving run, could't find references in database"})
       }
+      logger.debug(team.competition + "=" + competition._id)
+      logger.debug(round.competition + "=" + competition._id)
+      logger.debug(field.competition + "=" + competition._id)
 
-      if (team.competition != competition._id ||
-          round.competition != competition._id ||
-          field.competition != competition._id) {
-        return res.status(400).send({msg: "Error saving run"})
+      if (team.competition != competition._id.toString() ||
+          round.competition != competition._id.toString() ||
+          field.competition != competition._id.toString()) {
+        return res.status(400).send({msg: "Error saving run, mismatch with competition id"})
       }
 
       var path = pathFinder.findPath(map)
@@ -231,7 +234,7 @@ adminRouter.post('/createrun', function (req, res) {
 
       newRun.save(function (err, data) {
         if (err) {
-          return res.status(400).send({msg: "Error saving run"})
+          return res.status(400).send({msg: "Error saving run in db"})
         } else {
           return res.status(201).send({
             msg: "New run has been saved",

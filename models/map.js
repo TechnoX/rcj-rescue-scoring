@@ -61,45 +61,46 @@ var TileType = mongoose.model('TileType', tileTypeSchema)
 module.exports.map = Map
 module.exports.tileType = TileType
 
-/*var testMap = new Map({
- name  : "Test2",
- height: 1,
- width : 2,
- length: 3,
- tiles : [{
- x    : 1,
- y    : 2,
- z    : 3,
- rot  : 0,
- items: {
- gaps         : 1,
- obstacles    : 2,
- speedbumps   : 3,
- intersections: 4
- }
- },
- {
- x    : 2,
- y    : 3,
- z    : 4,
- rot  : 90,
- items: {
- gaps         : 1,
- obstacles    : 2,
- speedbumps   : 3,
- intersections: 4
- }
- }]
- })*/
+var testMap = new Map({
+    name             : "Test1",
+    height           : 1,
+    width            : 2,
+    length           : 1,
+    tiles            : [{
+      x       : 0,
+      y       : 0,
+      z       : 0,
+      rot     : 0,
+      tileType: "570c27c3f5a9dabe23f3af90",
+      items   : {
+        obstacles : 2,
+        speedbumps: 1
+      }
+    },
+      {
+        x       : 1,
+        y       : 0,
+        z       : 0,
+        rot     : 0,
+        tileType: "570c27c3f5a9dabe23f3af90",
+        items   : {
+          obstacles : 2,
+          speedbumps: 0
+        }
+      }
+    ],
+    startTile        : {x: 0, y: 0, z: 0},
+    numberOfDropTiles: 1
+  })
 
-/*testMap.save(function (err, data) {
- if (err) {
- console.log(err);
- }
- else {
- console.log("saved map");
- }
- })*/
+testMap.save(function (err, data) {
+    if (err) {
+      console.log(err);
+    }
+    else {
+      console.log("saved map");
+    }
+  })
 
 pathFinder.findPath({
     name     : "Test2",

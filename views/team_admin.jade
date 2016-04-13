@@ -2,12 +2,12 @@
 extends includes/layout
 
 block vars
-  - var ngAppDef = 'RunAdmin'
+  - var ngAppDef = 'TeamAdmin'
 
 append scripts
   script.
     var competitionId = "#{id}"
-  script(src='/javascripts/run_admin.js')
+  script(src='/javascripts/team_admin.js')
 
 block location
   a(href='/home' style="color:#333333") Home

@@ -29,8 +29,9 @@ block content
           td
             a(href="" ng-click='removeRun(run._id)') Delete
 
-      h1 Add team
-      select(ng-model='run.team' ng-options='team.name for team in teams')
-      select(ng-model='run.map' ng-options='map.name for map in maps')
-      select(ng-model='run.field' ng-options='field.name for field in fields')
+      h1 Add run
+      select(ng-model='run.round' ng-options='round as round.name for round in rounds')
+      select(ng-model='run.team' ng-options='team as team.name for team in teams')
+      select(ng-model='run.map' ng-options='map as map.name for map in maps')
+      select(ng-model='run.field' ng-options='field as field.name for field in fields')
       button(ng-click='addRun()') Add Run

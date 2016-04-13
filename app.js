@@ -47,6 +47,7 @@ var apiMapsRoute = require('./routes/api/maps')
 var apiTeamsRoute = require('./routes/api/teams')
 var apiRoundsRoute = require('./routes/api/rounds')
 var apiFieldsRoute = require('./routes/api/fields')
+var apiRunsRoute = require('./routes/api/runs')
 var apiCompetitionsRoute = require('./routes/api/competitions')
 
 //========================================================================
@@ -95,6 +96,7 @@ app.use('/api/maps', [apiMapsRoute.public, pass.ensureLoginApi, apiMapsRoute.pri
 app.use('/api/teams', [apiTeamsRoute.public, pass.ensureLoginApi, apiTeamsRoute.private, pass.ensureAdminApi, apiTeamsRoute.admin])
 app.use('/api/rounds', [apiRoundsRoute.public, pass.ensureLoginApi, apiRoundsRoute.private, pass.ensureAdminApi, apiRoundsRoute.admin])
 app.use('/api/fields', [apiFieldsRoute.public, pass.ensureLoginApi, apiFieldsRoute.private, pass.ensureAdminApi, apiFieldsRoute.admin])
+app.use('/api/runs', [apiRunsRoute.public, pass.ensureLoginApi, apiRunsRoute.private, pass.ensureAdminApi, apiRunsRoute.admin])
 app.use('/api/competitions', [apiCompetitionsRoute.public, pass.ensureLoginApi, apiCompetitionsRoute.private, pass.ensureAdminApi, apiCompetitionsRoute.admin])
 
 //========================================================================
