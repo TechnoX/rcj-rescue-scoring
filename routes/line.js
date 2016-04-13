@@ -3,11 +3,21 @@ var express = require('express')
 var publicRouter = express.Router()
 var privateRouter = express.Router()
 var adminRouter = express.Router()
-
+var ObjectId = require('mongoose').Types.ObjectId
 
 /* GET home page. */
 publicRouter.get('/', function (req, res) {
   res.render('line_home');
+})
+
+publicRouter.get('/:competitionid', function (req, res, next) {
+  var id = req.params.competitionid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  res.render('line_competition', {id : id})
 })
 
 publicRouter.get('/view/:roundid', function (req, res) {

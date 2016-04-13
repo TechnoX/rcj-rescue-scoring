@@ -5,6 +5,8 @@ block vars
   - var ngAppDef = 'LineHome'
 
 append scripts
+  script.
+    var competitionId = "#{id}"
   script(src='/javascripts/line_home.js')
 
 block location
@@ -16,10 +18,10 @@ block content
   .row
     .col-md-offset-2.col-md-8
       h1 RoboCup Junior - Rescue Line
-      ul
-        li
-          a(href="/line/editor") Create a new field layout
-        li
-          a(href="/line/judge") Judge a run
-        li
-          a(href="/line/view") View a run
+
+      h1 Competitions
+      table
+        tr(ng-repeat='competition in competitions')
+          td
+            a(ng-bind='competition.name' ng-href="/line/{{competition._id}}")
+
