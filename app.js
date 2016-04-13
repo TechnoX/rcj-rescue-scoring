@@ -35,6 +35,7 @@ var connectMongo = require('connect-mongo')(session)
 //========================================================================
 
 var homeRoute = require('./routes/home')
+var lineRoute = require('./routes/line')
 var loginRoute = require('./routes/login')
 var adminRoute = require('./routes/admin')
 
@@ -108,7 +109,9 @@ app.use('/logout', pass.ensureAuthenticated, function (req, res, next) {
   req.logout()
   res.redirect('login')
 })
-app.use('/home', pass.ensureAuthenticated, homeRoute)
+app.use('/home', homeRoute)
+
+app.use('/line', [lineRoute.public, pass.ensureAuthenticated, lineRoute.private, pass.ensureAdmin, lineRoute.admin])
 
 app.use('/admin', pass.ensureAdmin, adminRoute)
 

@@ -94,6 +94,8 @@ adminRouter.post('/createmap', function (req, res) {
     })
   }
 
+  logger.debug(tiles)
+
   var newMap = new mapdb.map({
     name  : map.name,
     height: map.height,
@@ -108,8 +110,11 @@ adminRouter.post('/createmap', function (req, res) {
     numberOfDropTiles : map.numberOfDropTiles
   })
 
+  logger.debug(newMap)
+
   newMap.save(function (err, data) {
     if (err) {
+      logger.error(err)
       res.status(400).send({msg: "Error saving map"})
     } else {
       res.status(201).send({msg: "New map has been saved", id: data._id})
