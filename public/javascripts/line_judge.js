@@ -162,7 +162,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', funct
     $scope.open = function(x,y,z) {
         var modalInstance = $uibModal.open({
             animation: true,
-            templateUrl: 'line_judge_modal.html',
+            templateUrl: '/templates/line_judge_modal.html',
             controller: 'ModalInstanceCtrl',
             size: 'sm',
             resolve: {
@@ -197,7 +197,7 @@ app.directive('tile', function() {
             tile: '='
         },
         restrict: 'E',
-        templateUrl: 'tile.html',
+        templateUrl: '/templates/tile.html',
         link : function($scope, element, attrs){
 
             $scope.tileStatus = function(tile){
