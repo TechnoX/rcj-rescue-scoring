@@ -265,7 +265,7 @@ app.directive('lvlDropTarget', ['$rootScope', 'uuid', function ($rootScope, uuid
                 // If we dropped something on an image this is back to the tool box
                 if(drop[0].tagName == "IMG"){
                     // Remove the element from where we dragged it
-                    scope.tiles[drag.attr("x")+","+drag.attr("y")+","+drag.attr("z")] = {};
+                    delete scope.tiles[drag.attr("x")+","+drag.attr("y")+","+drag.attr("z")];
                 }else if(drag[0].tagName == "IMG"){// If we drag out an image, this is a new tile
                     console.log(drag.attr("id"));
                     scope.tiles[drop.attr("x")+","+drop.attr("y")+","+drop.attr("z")] = {image: drag.attr("src"),
@@ -283,7 +283,7 @@ app.directive('lvlDropTarget', ['$rootScope', 'uuid', function ($rootScope, uuid
                     scope.tiles[drop.attr("x")+","+drop.attr("y")+","+drop.attr("z")] =
                         scope.tiles[drag.attr("x")+","+drag.attr("y")+","+drag.attr("z")];
                     // Remove the element from where we dragged it
-                    scope.tiles[drag.attr("x")+","+drag.attr("y")+","+drag.attr("z")] = {};
+                    delete scope.tiles[drag.attr("x")+","+drag.attr("y")+","+drag.attr("z")];
                 }
                 console.log(scope.tiles);
                 scope.$apply();
