@@ -13,6 +13,9 @@ router.get('/line/', function (req, res) {
 router.get('/line/editor/:mapid', function (req, res) {
   res.render('line_editor', {id : req.params.mapid})
 })
+router.get('/line/editor/', function (req, res) {
+  res.render('line_editor')
+})
 router.get('/line/judge/:roundid', function (req, res) {
   res.render('line_judge', {id : req.params.roundid})
 })
