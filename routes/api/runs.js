@@ -1,7 +1,3 @@
-//========================================================================
-//                          Libraries
-//========================================================================
-
 var express = require('express')
 var publicRouter = express.Router()
 var privateRouter = express.Router()
@@ -15,68 +11,18 @@ var ObjectId = require('mongoose').Types.ObjectId
 var logger = require('../../config/logger').mainLogger
 var fs = require('fs')
 var pathFinder = require('../../helper/pathFinder')
-//========================================================================
-//                          /maps Api endpoints
-//========================================================================
+var scoreCalculator = require('../../helper/scoreCalculator')
 
+var socketIo
 
-/**
- * @api {get} /maps Request units
- * @apiName GetUnits
- * @apiGroup Unit
- * @apiVersion 1.0.0
- *
- * @apiParam {String} [result] Filter function
- * @apiParam {String} [find] Select function
- * @apiParam {String} [sort] Sort function
- *
- * @apiSuccess (200) {Object[]} Unit List of units who matched
- * @apiSuccess (200) {String} Unit._id The unique id
- * @apiSuccess (200) {Date}   Unit.createdAt The date this account was created
- * @apiSuccess (200) {Date}   Unit.updatedAt The latest date this account was updates
- * @apiSuccess (200) {String} Unit.file_desc The directory where the units has all its data
- * @apiSuccess (200) {String} Unit.mac_addr The mac address
- * @apiSuccess (200) {String} Unit.last_ip The last ip used by the unit
- * @apiSuccess (200) {String} Unit.name The specific name of this unit, for example "Zelda1"
- * @apiSuccess (200) {String} Unit.status The mode the unit is in
- * @apiSuccess (200) {String} Unit.latest_measure_session The latest measure session
- *
- * @apiSuccess (400) {String} err The error message
- */
+module.exports.connectSocketIo = function(io) {
+  socketIo = io
+}
+
 publicRouter.get('/', function (req, res) {
-  query.doFindResultSortQuery(req, res, null, null, competitiondb.runs)
+  query.doFindResultSortQuery(req, res, null, null, competitiondb.run)
 })
 
-/**
- * @api {get} /units/:unitid Request unit
- * @apiName GetUnit
- * @apiGroup Unit
- * @apiVersion 1.0.0
- *
- * @apiParam {Number} id Users unique ID
- *
- * @apiSuccess (200) {Object} Unit The unit matched to the uuid
- * @apiSuccess (200) {String} Unit._id The unique id
- * @apiSuccess (200) {Date}   Unit.createdAt The date this account was created
- * @apiSuccess (200) {Date}   Unit.updatedAt The latest date this account was updates
- * @apiSuccess (200) {String} Unit.file_desc The directory where the units has all its data
- * @apiSuccess (200) {String} Unit.mac_addr The mac address
- * @apiSuccess (200) {String} Unit.last_ip The last ip used by the unit
- * @apiSuccess (200) {String} Unit.name The specific name of this unit, for example "Zelda1"
- * @apiSuccess (200) {String} Unit.status The mode the unit is in
- * @apiSuccess (200) {String} Unit.MeasureSession The latest measure session
- * @apiSuccess (200) {String} Unit.MeasureSession._id The unique id
- * @apiSuccess (200) {Date}   Unit.MeasureSession.createdAt The date this account was created
- * @apiSuccess (200) {Date}   Unit.MeasureSession.updatedAt The latest date this account was updates
- * @apiSuccess (200) {String} Unit.MeasureSession.file_desc The directory where the session has all its data
- * @apiSuccess (200) {String} Unit.MeasureSession.unit What unit it is connected too
- * @apiSuccess (200) {String} Unit.MeasureSession.step_time Step time
- * @apiSuccess (200) {String} Unit.MeasureSession.sample_rate The sample rate
- * @apiSuccess (200) {String} Unit.MeasureSession.step_lvls Step levels
- * @apiSuccess (200) {String} Unit.MeasureSession.repeat_rate The repeat rate
- *
- * @apiSuccess (400) {String} err The error message
- */
 publicRouter.get('/:runid', function (req, res, next) {
   var id = req.params.runid
 
@@ -84,7 +30,96 @@ publicRouter.get('/:runid', function (req, res, next) {
     return next()
   }
 
-  query.doIdQuery(req, res, id, "", competitiondb.run)
+  var populate
+  if (req.query['populate'] !== undefined && req.query['populate']) {
+    populate = ["round", "team", "field", "competition", {path: 'tiles', populate: {path: 'tileType'}}]
+  }
+
+  var query = competitiondb.run.findById(id)
+  if (populate !== undefined) {
+    query.populate(populate)
+  }
+  query.exec(function (err, data) {
+    if (err) {
+      res.status(400).send({msg: "Could not get run"})
+    } else {
+      res.status(200).send(data)
+    }
+  })
+})
+
+privateRouter.post('/:runid/update', function (req, res, next) {
+  var id = req.params.runid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  var run = req.body
+
+  competitiondb.run.findById(id, function (err, dbrun) {
+    if (err) {
+      res.status(400).send({msg: "Could not get run"})
+    } else {
+      if (run.showedUp !== undefined) {
+        dbrun.showedUp = run.showedUp
+      }
+      if (run.LoPs !== undefined) {
+        dbrun.LoPs = run.LoPs
+      }
+      if (run.rescuedVictims !== undefined) {
+        dbrun.rescuedVictims = run.rescuedVictims
+      }
+      if (run.time !== undefined && run.time.minutes !== undefined && run.time.seconds !== undefined) {
+        dbrun.time.minutes = run.time.minutes
+        dbrun.time.seconds = run.time.seconds
+      }
+      if (run.tiles !== undefined) {
+
+        for (var i in run.tiles) {
+          var tile = run.tiles[i]
+
+          for (var j in dbrun.tiles) {
+            var dbtile = dbrun.tiles[j]
+            if (tile.x == dbtile.x &&
+                tile.y == dbtile.y &&
+                tile.z == dbtile.z) {
+
+              if (tile.scoredItems.obstacles !== undefined) {
+                dbtile.scoredItems.obstacles = tile.scoredItems.obstacles
+              }
+              if (tile.scoredItems.speedbumps !== undefined) {
+                dbtile.scoredItems.speedbumps = tile.scoredItems.speedbumps
+              }
+              if (tile.scoredItems.intersections !== undefined) {
+                dbtile.scoredItems.intersections = tile.scoredItems.intersections
+              }
+              if (tile.scoredItems.gaps !== undefined) {
+                dbtile.scoredItems.gaps = tile.scoredItems.gaps
+              }
+              if (tile.scoredItems.dropTiles !== undefined) {
+                dbtile.scoredItems.dropTiles = tile.scoredItems.dropTiles
+              }
+              break
+            }
+          }
+        }
+      }
+
+      dbrun.score = scoreCalculator.calculateScore(dbrun)
+
+      dbrun.save(function (err) {
+        if (err) {
+          res.status(400).send({msg: "Could not save run"})
+        } else {
+          if (socketIo !== undefined) {
+            socketIo.sockets.in('runs/' + dbrun._id).emit('data', dbrun)
+          }
+          res.status(200).send({msg: "Saved run"})
+        }
+      })
+    }
+  })
 })
 
 adminRouter.get('/:runid/delete', function (req, res, next) {
@@ -112,9 +147,8 @@ adminRouter.post('/createrun', function (req, res) {
   var fieldId = run.field
   var competitionId = run.competition
 
-  if (!ObjectId.isValid(mapId) || !ObjectId.isValid(roundId) ||
-      !ObjectId.isValid(teamId) || !ObjectId.isValid(fieldId) ||
-      !ObjectId.isValid(competitionId)) {
+  if (!ObjectId.isValid(mapId) || !ObjectId.isValid(roundId) || !ObjectId.isValid(teamId) ||
+      !ObjectId.isValid(fieldId) || !ObjectId.isValid(competitionId)) {
     return next()
   }
 
@@ -126,7 +160,7 @@ adminRouter.post('/createrun', function (req, res) {
 
   async.parallel([
     function (cb) {
-      mapdb.map.findOne({_id: mapId}).populate({
+      mapdb.map.findById(mapId).populate({
         path    : 'tiles',
         populate: {path: 'tileType'}
       }).exec(function (err, dbmap) {
@@ -135,31 +169,32 @@ adminRouter.post('/createrun', function (req, res) {
       })
     },
     function (cb) {
-      competitiondb.round.findOne({_id: roundId}, function (err, dbround) {
+      competitiondb.round.findById(roundId, function (err, dbround) {
         round = dbround
         return cb(err)
       })
     },
     function (cb) {
-      competitiondb.team.findOne({_id: teamId}, function (err, dbteam) {
+      competitiondb.team.findById(teamId, function (err, dbteam) {
         team = dbteam
         return cb(err)
       })
     },
     function (cb) {
-      competitiondb.field.findOne({_id: fieldId}, function (err, dbfield) {
+      competitiondb.field.findById(fieldId, function (err, dbfield) {
         field = dbfield
         return cb(err)
       })
     },
     function (cb) {
-      competitiondb.competition.findOne({_id: competitionId}, function (err, dbcompetition) {
+      competitiondb.competition.findById(competitionId, function (err, dbcompetition) {
         competition = dbcompetition
         return cb(err)
       })
     }
   ], function (err) {
     if (err) {
+      logger.error(err)
       return res.status(400).send({msg: "Error saving run", err: err})
     } else {
       if (map === undefined ||
@@ -179,12 +214,15 @@ adminRouter.post('/createrun', function (req, res) {
         return res.status(400).send({msg: "Error saving run, mismatch with competition id"})
       }
 
-      var path = pathFinder.findPath(map)
+      var foundPath = pathFinder.findPath(map)
 
       var tiles = []
+      logger.debug(foundPath)
+      for (var i in foundPath) {
+        var tile = foundPath[i]
+        logger.debug(i)
+        logger.debug(JSON.stringify(tile))
 
-      for (var i in path) {
-        var tile = path[i]
         var newTile = {
           x          : tile.x,
           y          : tile.y,
@@ -198,10 +236,10 @@ adminRouter.post('/createrun', function (req, res) {
             gaps         : tile.scoreItems.gaps
           },
           scoredItems: {
-            obstacles    : new Array(tile.scoreItems.obstacles).fill(false),
-            speedbumps   : new Array(tile.scoreItems.speedbumps).fill(false),
-            intersections: new Array(tile.scoreItems.intersections).fill(false),
-            gaps         : new Array(tile.scoreItems.gaps).fill(false),
+            obstacles    : filledArray(tile.scoreItems.obstacles, false),
+            speedbumps   : filledArray(tile.scoreItems.speedbumps, false),
+            intersections: filledArray(tile.scoreItems.intersections, false),
+            gaps         : filledArray(tile.scoreItems.gaps, false),
             dropTiles    : []
           },
           index      : tile.index,
@@ -223,9 +261,10 @@ adminRouter.post('/createrun', function (req, res) {
         tiles            : tiles,
         startTile        : map.startTile,
         numberOfDropTiles: map.numberOfDropTiles,
-        LoPs             : new Array(map.numberOfDropTiles),
+        LoPs             : filledArray(map.numberOfDropTiles, 0),
         rescuedVictims   : 0,
         score            : 0,
+        showedUp         : false,
         time             : {
           minutes: 0,
           seconds: 0
@@ -234,6 +273,7 @@ adminRouter.post('/createrun', function (req, res) {
 
       newRun.save(function (err, data) {
         if (err) {
+          logger.error(err)
           return res.status(400).send({msg: "Error saving run in db"})
         } else {
           return res.status(201).send({
@@ -245,6 +285,14 @@ adminRouter.post('/createrun', function (req, res) {
     }
   })
 })
+
+function filledArray(len, val) {
+  var arr = []
+  for (var i = 0; i < len; i++) {
+    arr.push(val)
+  }
+  return arr
+}
 
 publicRouter.all('*', function (req, res, next) {
   next()

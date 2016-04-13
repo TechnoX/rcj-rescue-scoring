@@ -1,6 +1,7 @@
 var logger = require('../config/logger').mainLogger
 
 module.exports.findPath = function (map) {
+  logger.debug(JSON.stringify(map))
   var tiles = []
   for (var i = 0; i < map.tiles.length; i++) {
     var tile = map.tiles[i]

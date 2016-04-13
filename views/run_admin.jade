@@ -24,8 +24,9 @@ block content
       h1 Runs
       table
         tr(ng-repeat='run in runs')
-          td(ng-bind='team.name')
-          td(ng-bind='team.league')
+          td(ng-bind='run.round.name')
+          td(ng-bind='run.team.name')
+          td(ng-bind='run.field.name')
           td
             a(href="" ng-click='removeRun(run._id)') Delete
 
