@@ -6,10 +6,12 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.tiles = {};
 
-    $http.get("/api/runs/570e77c0de01813819df4cf0?populate=true").then(function(response){
+    $http.get("/api/runs/"+runId+"?populate=true").then(function(response){
         $scope.height = response.data.height;
         $scope.width = response.data.width;
         $scope.length = response.data.length;
+        $scope.team = response.data.team;
+        $scope.field = response.data.field;
 
         $scope.numberOfDropTiles = response.data.numberOfDropTiles;;
         $scope.rescuedVictims = response.data.rescuedVictims;
