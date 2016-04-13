@@ -43,15 +43,12 @@ var adminRoute = require('./routes/admin')
 //========================================================================
 
 var apiAuthRoute = require('./routes/api/auth')
-var apiMapsRoutePublic = require('./routes/api/maps').public
-var apiMapsRoutePrivate = require('./routes/api/maps').private
-var apiMapsRouteAdmin = require('./routes/api/maps').admin
-var apiTeamsRoutePublic = require('./routes/api/teams').public
-var apiTeamsRoutePrivate = require('./routes/api/teams').private
-var apiTeamsRouteAdmin = require('./routes/api/teams').admin
-var apiCompetitionsRoutePublic = require('./routes/api/competitions').public
-var apiCompetitionsRoutePrivate = require('./routes/api/competitions').private
-var apiCompetitionsRouteAdmin = require('./routes/api/competitions').admin
+var apiMapsRoute = require('./routes/api/maps')
+var apiTeamsRoute = require('./routes/api/teams')
+var apiRoundsRoute = require('./routes/api/rounds')
+var apiFieldsRoute = require('./routes/api/fields')
+var apiRunsRoute = require('./routes/api/runs')
+var apiCompetitionsRoute = require('./routes/api/competitions')
 
 //========================================================================
 //                          Configuration
@@ -95,9 +92,12 @@ app.use(passport.session())
 //========================================================================
 
 app.use('/api/auth', apiAuthRoute)
-app.use('/api/maps', [apiMapsRoutePublic, pass.ensureLoginApi, apiMapsRoutePrivate, pass.ensureAdminApi, apiMapsRouteAdmin])
-app.use('/api/teams', [apiTeamsRoutePublic, pass.ensureLoginApi, apiTeamsRoutePrivate, pass.ensureAdminApi, apiTeamsRouteAdmin])
-app.use('/api/competitions', [apiCompetitionsRoutePublic, pass.ensureLoginApi, apiCompetitionsRoutePrivate, pass.ensureAdminApi, apiCompetitionsRouteAdmin])
+app.use('/api/maps', [apiMapsRoute.public, pass.ensureLoginApi, apiMapsRoute.private, pass.ensureAdminApi, apiMapsRoute.admin])
+app.use('/api/teams', [apiTeamsRoute.public, pass.ensureLoginApi, apiTeamsRoute.private, pass.ensureAdminApi, apiTeamsRoute.admin])
+app.use('/api/rounds', [apiRoundsRoute.public, pass.ensureLoginApi, apiRoundsRoute.private, pass.ensureAdminApi, apiRoundsRoute.admin])
+app.use('/api/fields', [apiFieldsRoute.public, pass.ensureLoginApi, apiFieldsRoute.private, pass.ensureAdminApi, apiFieldsRoute.admin])
+app.use('/api/runs', [apiRunsRoute.public, pass.ensureLoginApi, apiRunsRoute.private, pass.ensureAdminApi, apiRunsRoute.admin])
+app.use('/api/competitions', [apiCompetitionsRoute.public, pass.ensureLoginApi, apiCompetitionsRoute.private, pass.ensureAdminApi, apiCompetitionsRoute.admin])
 
 //========================================================================
 //                          Website static pages(ish)

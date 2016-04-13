@@ -42,7 +42,7 @@ var fs = require('fs')
  * @apiSuccess (400) {String} err The error message
  */
 publicRouter.get('/', function (req, res) {
-  query.doFindResultSortQuery(req, res, null, null, competitiondb.competition)
+  query.doFindResultSortQuery(req, res, null, null, competitiondb.field)
 })
 
 /**
@@ -75,49 +75,24 @@ publicRouter.get('/', function (req, res) {
  *
  * @apiSuccess (400) {String} err The error message
  */
-publicRouter.get('/:competitionid', function (req, res, next) {
-  var id = req.params.competitionid
+publicRouter.get('/:fieldid', function (req, res, next) {
+  var id = req.params.fieldid
 
   if (!ObjectId.isValid(id)) {
     return next()
   }
 
-  query.doIdQuery(req, res, id, "", competitiondb.competition)
+  query.doIdQuery(req, res, id, "", competitiondb.field)
 })
 
-publicRouter.get('/:competitionid/teams', function (req, res, next) {
-  var id = req.params.competitionid
+publicRouter.get('/:fieldid/runs', function (req, res, next) {
+  var id = req.params.fieldid
 
   if (!ObjectId.isValid(id)) {
     return next()
   }
 
-  competitiondb.team.find({competition: id}, function (err, data) {
-    if (err) {
-      res.status(400).send({msg: "Could not get teams"})
-    } else {
-      res.status(200).send(data)
-    }
-  })
-})
-
-publicRouter.get('/:competitionid/runs', function (req, res, next) {
-  var id = req.params.competitionid
-
-  if (!ObjectId.isValid(id)) {
-    return next()
-  }
-
-  var populate
-  if (req.query['populate'] !== undefined && req.query['populate']) {
-    populate = {path: 'tiles', populate: {path: 'tileType'}}
-  }
-
-  var query = competitiondb.run.find({competition: id}, "round team field")
-  if (populate !== undefined) {
-    query.populate(populate)
-  }
-  query.exec(function (err, data) {
+  competitiondb.run.find({field: id}, function (err, data) {
     if (err) {
       res.status(400).send({msg: "Could not get runs"})
     } else {
@@ -126,53 +101,35 @@ publicRouter.get('/:competitionid/runs', function (req, res, next) {
   })
 })
 
-publicRouter.get('/:competitionid/fields', function (req, res, next) {
-  var id = req.params.competitionid
+adminRouter.get('/:fieldid/delete', function (req, res, next) {
+  var id = req.params.fieldid
 
   if (!ObjectId.isValid(id)) {
     return next()
   }
 
-  competitiondb.field.find({competition: id}, function (err, data) {
+  competitiondb.field.remove({_id : id}, function (err) {
     if (err) {
-      res.status(400).send({msg: "Could not get fields"})
+      res.status(400).send({msg: "Could not remove field"})
     } else {
-      res.status(200).send(data)
+      res.status(200).send({msg: "Field has been removed!"})
     }
   })
 })
 
-publicRouter.get('/:competitionid/rounds', function (req, res, next) {
-  var id = req.params.competitionid
+adminRouter.post('/createfield', function (req, res) {
+  var field = req.body
 
-  if (!ObjectId.isValid(id)) {
-    return next()
-  }
-
-  competitiondb.round.find({competition: id}, function (err, data) {
-    if (err) {
-      res.status(400).send({msg: "Could not get rounds"})
-    } else {
-      res.status(200).send(data)
-    }
-  })
-})
-
-adminRouter.post('/createcompetition', function (req, res) {
-  var competition = req.body
-
-  var newCompetition = new competitiondb.competition({
-    name: competition.name
+  var newField = new competitiondb.field({
+    name : field.name,
+    competition : field.competition
   })
 
-  newCompetition.save(function (err, data) {
+  newField.save(function (err, data) {
     if (err) {
-      res.status(400).send({msg: "Error saving competition"})
+      res.status(400).send({msg: "Error saving field"})
     } else {
-      res.status(201).send({
-        msg: "New competition has been saved",
-        id : data._id
-      })
+      res.status(201).send({msg: "New field has been saved", id: data._id})
     }
   })
 })

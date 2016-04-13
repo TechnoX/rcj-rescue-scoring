@@ -21,6 +21,7 @@ module.exports.findPath = function (map) {
   traverse(startTile, startDir, tiles, map, 0)
 
   logger.debug(tiles)
+  return tiles
 }
 
 function traverse(curTile, entryDir, tiles, map, index) {
