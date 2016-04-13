@@ -22,29 +22,29 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
 
     $scope.tiles["2,3,1"] = {rot: 180, image: 'tiles/tile-5.png', dropTile: true,
                              items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 0},
-                             scored: {gaps: [], obstacles: [], speedbumps: [], intersections: [], reach: [true]}};
+                             scoredItems: {gaps: [], obstacles: [], speedbumps: [], intersections: [], dropTiles: [true]}};
     $scope.tiles["3,3,1"] = {rot: 90, image: 'tiles/tile-5.png', dropTile: false,
                              items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 1},
-                             scored: {gaps: [], obstacles: [], speedbumps: [], intersections: [false]}};
+                             scoredItems: {gaps: [], obstacles: [], speedbumps: [], intersections: [false]}};
     $scope.tiles["3,2,1"] = {rot: 0, image: 'tiles/tile-5.png', dropTile: false,
                              items: {gaps: 0, obstacles: 1, speedbumps: 0, intersections: 0},
-                             scored: {gaps: [], obstacles: [false], speedbumps: [], intersections: []}};
+                             scoredItems: {gaps: [], obstacles: [false], speedbumps: [], intersections: []}};
     $scope.tiles["2,2,1"] = {rot: 270, image: 'tiles/tile-5.png', dropTile: false,
                              items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 0},
-                             scored: {gaps: [], obstacles: [], speedbumps: [], intersections: [], reach: [false,false]}};
+                             scoredItems: {gaps: [], obstacles: [], speedbumps: [], intersections: [], dropTiles: [false,false]}};
 
     $scope.tiles["2,4,0"] = {rot: 180, image: 'tiles/tile-6.png', dropTile: true,
                              items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 0},
-                             scored: {gaps: [], obstacles: [], speedbumps: [], intersections: [], reach: [true]}};
+                             scoredItems: {gaps: [], obstacles: [], speedbumps: [], intersections: [], dropTiles: [true]}};
     $scope.tiles["3,4,0"] = {rot: 90, image: 'tiles/tile-6.png', dropTile: false,
                              items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 0},
-                             scored: {gaps: [], obstacles: [], speedbumps: [], intersections: []}};
+                             scoredItems: {gaps: [], obstacles: [], speedbumps: [], intersections: []}};
     $scope.tiles["3,3,0"] = {rot: 0, image: 'tiles/tile-6.png', dropTile: false,
                              items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 0},
-                             scored: {gaps: [], obstacles: [], speedbumps: [], intersections: []}};
+                             scoredItems: {gaps: [], obstacles: [], speedbumps: [], intersections: []}};
     $scope.tiles["2,3,0"] = {rot: 270, image: 'tiles/tile-6.png', dropTile: false,
                              items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 0},
-                             scored: {gaps: [], obstacles: [], speedbumps: [], intersections: [], reach: [false,false]}};
+                             scoredItems: {gaps: [], obstacles: [], speedbumps: [], intersections: [], dropTiles: [false,false]}};
 
 
 
@@ -95,12 +95,12 @@ app.directive('tile', function() {
                         possible++;
                     }
                 }
-                count(tile.scored.gaps);
-                count(tile.scored.speedbumps);
-                count(tile.scored.intersections);
-                count(tile.scored.obstacles);
+                count(tile.scoredItems.gaps);
+                count(tile.scoredItems.speedbumps);
+                count(tile.scoredItems.intersections);
+                count(tile.scoredItems.obstacles);
                 if(tile.dropTile)
-                    count(tile.scored.reach);
+                    count(tile.scoredItems.dropTiles);
 
                 if(possible > 0 && successfully == possible)
                     return "done";
