@@ -1,11 +1,19 @@
 var logger = require('../config/logger').mainLogger
 
 module.exports.findPath = function (map) {
-  logger.debug(JSON.stringify(map))
   var tiles = []
   for (var i = 0; i < map.tiles.length; i++) {
     var tile = map.tiles[i]
     tiles[tile.x + ',' + tile.y + ',' + tile.z] = tile
+
+    if (tile.scoreItems === undefined) {
+      tile.scoreItems = {
+        gaps : 0,
+        intersections : 0,
+        obstacles : 0,
+        speedbumps : 0
+      }
+    }
   }
 
   var startTile = tiles[map.startTile.x + ',' + map.startTile.y + ',' + map.startTile.z]
@@ -20,8 +28,6 @@ module.exports.findPath = function (map) {
   })
 
   traverse(startTile, startDir, tiles, map, 0)
-
-  logger.debug(tiles)
   return tiles
 }
 
@@ -30,15 +36,6 @@ function traverse(curTile, entryDir, tiles, map, index) {
     curTile.index = []
   }
   curTile.index.push(index)
-
-  if (curTile.scoreItems === undefined) {
-    curTile.scoreItems = {
-      gaps : 0,
-      intersections : 0,
-      obstacles : 0,
-      speedbumps : 0
-    }
-  }
 
   curTile.scoreItems.gaps += curTile.tileType.gaps
   curTile.scoreItems.intersections += curTile.tileType.intersections
@@ -96,26 +93,26 @@ function rotateDir(dir, rot) {
     case 90:
       switch (dir) {
         case "top":
-          return "left"
-        case "right":
-          return "top"
-        case "bottom":
           return "right"
-        case "left":
+        case "right":
           return "bottom"
+        case "bottom":
+          return "left"
+        case "left":
+          return "top"
       }
     case 180:
       return flipDir(dir)
     case 270:
       switch (dir) {
         case "top":
-          return "right"
-        case "right":
-          return "bottom"
-        case "bottom":
           return "left"
-        case "left":
+        case "right":
           return "top"
+        case "bottom":
+          return "right"
+        case "left":
+          return "bottom"
       }
   }
 }
