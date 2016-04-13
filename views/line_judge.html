@@ -121,15 +121,15 @@
           </p>
           <p ng-repeat="dropTile in range(placedDropTiles) track by $index" ng-show="startedScoring">
             LoPs between {{$index==0?'start':('droptile ' + ($index))}} and droptile {{$index+1}}:<br>
-            <img src="img/minus.png" alt="-" ng-click="decrement($index)" class="plusminus">
+            <img src="/images/minus.png" alt="-" ng-click="decrement($index)" class="plusminus">
             <span class="count">{{LoPs[$index]?LoPs[$index]:0}}</span>
-            <img src="img/plus.png" alt="+" ng-click="increment($index)" class="plusminus">
+            <img src="/images/plus.png" alt="+" ng-click="increment($index)" class="plusminus">
           </p>
           <p ng-show="startedScoring">
             Number of Rescued Victims: <br>
-            <img src="img/minus.png" alt="-" ng-click="rescuedVictims = rescuedVictims <= 0 ? 0 : rescuedVictims - 1" class="plusminus">
+            <img src="/images/minus.png" alt="-" ng-click="rescuedVictims = rescuedVictims <= 0 ? 0 : rescuedVictims - 1" class="plusminus">
             <span class="count">{{rescuedVictims}}</span>
-            <img src="img/plus.png" alt="+" ng-click="rescuedVictims = rescuedVictims + 1" class="plusminus">
+            <img src="/images/plus.png" alt="+" ng-click="rescuedVictims = rescuedVictims + 1" class="plusminus">
           </p>
         </div>
       </div>
