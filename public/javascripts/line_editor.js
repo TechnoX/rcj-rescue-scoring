@@ -4,31 +4,6 @@ var app = angular.module('ddApp', ['lvl.services', 'ngAnimate', 'ui.bootstrap', 
 // function referenced by the drop target
 app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function($scope, $uibModal, $log, $http){
 
-
-
-
-    $scope.rotateTile = function(x,y){
-        // If the tile doesn't exists yet
-        if(!$scope.tiles[x+','+y+','+$scope.z])
-            return;
-        $scope.tiles[x+','+y+','+$scope.z].rot += 90;
-        if($scope.tiles[x+','+y+','+$scope.z].rot >= 360)
-            $scope.tiles[x+','+y+','+$scope.z].rot = 0;
-    }
-
-    $scope.numberOfDropTiles = 0;
-    $scope.height = 4;
-    $scope.width = 4;
-    $scope.length = 7;
-    $scope.name = "";
-    $scope.range = function(n){
-        arr = [];
-        for (var i=0; i < n; i++) {
-            arr.push(i);
-        }
-        return arr;
-    }
-
     $scope.tileBox = {};
     $http.get("/api/maps/tiletypes").then(function(response){
         for(var i = 0; i < response.data.length; i++){
@@ -39,154 +14,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
     });
 
 
-
-    $scope.z = 0;
-    $scope.tiles = {};
-
-    $scope.tiles = {
-        "2,2,0": {
-            "image": "tiles/tile-7.png",
-            "rot": 0,
-            "tileType": "5708b98454deddcd27756aaa",
-            "items": {
-                "obstacles": 0,
-                "speedbumps": 0
-            }
-        },
-        "2,3,0": {
-            "image": "tiles/tile-13.png",
-            "rot": 90,
-            "tileType": "5708b9f354deddcd27756ab0",
-            "items": {
-                "obstacles": 0,
-                "speedbumps": 0
-            }
-        },
-        "2,4,0": {
-            "image": "tiles/tile-24.png",
-            "rot": 180,
-            "tileType": "5708bb0154deddcd27756abb",
-            "items": {
-                "obstacles": 0,
-                "speedbumps": 0
-            }
-        },
-        "1,4,0": {
-            "image": "tiles/tile-22.png",
-            "rot": 270,
-            "tileType": "5708bacf54deddcd27756ab9",
-            "items": {
-                "obstacles": 0,
-                "speedbumps": 0
-            }
-        },
-        "1,3,0": {
-            "image": "tiles/tile-16.png",
-            "rot": 270,
-            "tileType": "5708ba4d54deddcd27756ab3",
-            "items": {
-                "obstacles": 0,
-                "speedbumps": 0
-            }
-        },
-        "0,3,0": {
-            "image": "tiles/tile-12.png",
-            "rot": 270,
-            "tileType": "5708b9d254deddcd27756aaf",
-            "items": {
-                "obstacles": 0,
-                "speedbumps": 0
-            }
-        },
-        "0,1,0": {
-            "image": "tiles/tile-6.png",
-            "rot": 270,
-            "tileType": "5708b97754deddcd27756aa9",
-            "items": {
-                "obstacles": 0,
-                "speedbumps": 0
-            }
-        },
-        "0,2,0": {
-            "image": "tiles/tile-0.png",
-            "rot": 90,
-            "tileType": "5708b8ff54deddcd27756aa3",
-            "items": {
-                "obstacles": 1,
-                "speedbumps": 0
-            }
-        },
-        "1,1,0": {
-            "image": "tiles/tile-19.png",
-            "rot": 0,
-            "tileType": "5708ba9f54deddcd27756ab6",
-            "items": {
-                "obstacles": 0,
-                "speedbumps": 0
-            }
-        },
-        "2,1,0": {
-            "image": "tiles/tile-3.png",
-            "rot": 0,
-            "tileType": "5708b93754deddcd27756aa6",
-            "items": {
-                "obstacles": 0,
-                "speedbumps": 0
-            }
-        },
-        "1,2,0": {
-            "image": "tiles/tile-0.png",
-            "rot": 90,
-            "tileType": "5708b8ff54deddcd27756aa3",
-            "items": {
-                "obstacles": 0,
-                "speedbumps": 1
-            }
-        },
-        "1,0,0": {
-            "image": "tiles/tile-22.png",
-            "rot": 0,
-            "tileType": "5708bacf54deddcd27756ab9",
-            "items": {
-                "obstacles": 0,
-                "speedbumps": 0
-            },
-            levelUp: "right"
-        },
-        "2,0,0": {
-            "image": "tiles/tile-11.png",
-            "rot": 0,
-            "tileType": "5708b9c354deddcd27756aae",
-            "items": {
-                "obstacles": 0,
-                "speedbumps": 0
-            },
-            levelDown: "left"
-        },
-        "3,0,0": {
-            "image": "tiles/tile-29.png",
-            "rot": 0,
-            "tileType": "5708bbba54deddcd27756ac0",
-            "items": {
-                "obstacles": 0,
-                "speedbumps": 0
-            }
-        },
-        "3,1,0": {
-            "image": "tiles/tile-20.png",
-            "rot": 90,
-            "tileType": "5708bab454deddcd27756ab7",
-            "items": {
-                "obstacles": 0,
-                "speedbumps": 0
-            },
-            levelDown: "top"
-        }
-    };
-
     $scope.sliderOptions = {
         floor: 0,
-        ceil: $scope.height-1,
+        ceil: 0,
         vertical: true,
         showSelectionBar: true,
         showTicksValues: true,
@@ -194,13 +24,74 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
             return 'Level ' + v;
         }
     };
+    $scope.z = 0;
+    $scope.tiles = {};
+
+
+    $http.get("/api/maps/" + mapId + "?populate=true").then(function(response){
+        for(var i = 0; i < response.data.tiles.length; i++){
+            $scope.tiles[response.data.tiles[i].x + ',' +
+                         response.data.tiles[i].y + ',' +
+                         response.data.tiles[i].z] = response.data.tiles[i];
+        }
+
+        $scope.numberOfDropTiles = response.data.numberOfDropTiles;
+        $scope.height = response.data.height;
+        $scope.sliderOptions.ceil.height = $scope.height - 1;
+        $scope.width = response.data.width;
+        $scope.length = response.data.length;
+        $scope.name = response.data.name;
+
+    }, function(response){
+        console.log("Error: " + response.statusText);
+    });
+
+
+
+
+    $scope.range = function(n){
+        arr = [];
+        for (var i=0; i < n; i++) {
+            arr.push(i);
+        }
+        return arr;
+    }
+
+    $scope.rotateTile = function(x,y){
+        // If the tile doesn't exists yet
+        if(!$scope.tiles[x+','+y+','+$scope.z])
+            return;
+        $scope.tiles[x+','+y+','+$scope.z].rot += 90;
+        if($scope.tiles[x+','+y+','+$scope.z].rot >= 360)
+            $scope.tiles[x+','+y+','+$scope.z].rot = 0;
+    }
+
+    $scope.saveMap = function(){
+        var map = {
+            name: $scope.name,
+            length: $scope.length,
+            height: $scope.height,
+            width: $scope.width,
+            numberOfDropTiles: $scope.numberOfDropTiles,
+            tiles: $scope.tiles
+        };
+
+        console.log(map);
+        $http.post("/api/maps/createmap/", map).then(function(response){
+            alert("Success!");
+            console.log(response.data);
+        }, function(response){
+            console.log(response);
+            console.log("Error: " + response.statusText);
+        });
+    }
 
 
     $scope.open = function(x,y) {
         console.log(x+','+y+','+$scope.z);
         var modalInstance = $uibModal.open({
             animation: true,
-            templateUrl: 'line_editor_modal.html?c',
+            templateUrl: '/templates/line_editor_modal.html',
             controller: 'ModalInstanceCtrl',
             size: 'sm',
             resolve: {
@@ -263,7 +154,7 @@ app.directive('tile', function() {
             tile: '='
         },
         restrict: 'E',
-        templateUrl: 'tile.html',
+        templateUrl: '/templates/tile.html',
         link: function(scope, element, attrs) {
             scope.rotateRamp = function(direction){
                 switch(direction){

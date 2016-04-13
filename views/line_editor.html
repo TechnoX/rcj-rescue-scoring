@@ -4,8 +4,9 @@
 <div ng-controller="ddController" style="margin-top:50px;">
   <div class="row">
     <div class="col-md-12">
+        <button class="btn btn-primary" type="button" ng-click="saveMap()">Save map</button><br>
       <label>Name of design: <input type="text" ng-model="name"></label><br>
-      <label>Max height: <input type="number" ng-model="height" ng-change="sliderOptions.ceil = height" min="0"></label><br>
+      <label>Max height: <input type="number" ng-model="height" ng-change="sliderOptions.ceil = height - 1" min="1"></label><br>
       <label>Max width: <input type="number" ng-model="width" min="1" ></label><br>
       <label>Max length: <input type="number" ng-model="length" min="1" ></label><br>
       <label>Number of drop markers: <input type="number" ng-model="numberOfDropTiles" min="0" ></label><br>
@@ -13,11 +14,11 @@
   </div>
   <div class="row">
     <div class="col-md-1">
-      <rzslider rz-slider-model="z" rz-slider-options="sliderOptions"></rzslider>
+      <rzslider rz-slider-model="z" rz-slider-options="sliderOptions" ng-show="height > 1"></rzslider>
     </div>
     <div class="col-md-3 tools">
       <img x-lvl-draggable='true' x-lvl-drop-target="true" x-on-drop="dropped(dragEl, dropEl)"
-           ng-repeat="tile in tileBox" tile-id="{{tile._id}}" ng-src="tiles/{{tile.image}}"
+           ng-repeat="tile in tileBox" tile-id="{{tile._id}}" ng-src="/images/tiles/{{tile.image}}"
            class="tools-image rot0" rotate-on-click rot="0">
     </div>
     <div class="col-md-8">
