@@ -2,32 +2,35 @@
 var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'rzModule']);
 
 // function referenced by the drop target
-app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', function($scope, $uibModal, $log, $timeout){
-
-
-    $scope.data = {"round":{"name":"Testrunda","competition":"570a771354deddcd27756ac1","_id":"570d5a5b2d39ab0156e03eea","__v":0},"team":{"name":"The Saviors","league":"primary","_id":"570907176bdbcc4a434a4287","__v":0,"competition":"570a771354deddcd27756ac1"},"field":{"name":"Bana 1","competition":"570a771354deddcd27756ac1","_id":"570d63b3b40df5316136cd45","__v":0},"competition":{"name":"SM 2016","_id":"570a771354deddcd27756ac1"},"height":1,"width":2,"length":1,"numberOfDropTiles":1,"rescuedVictims":0,"score":0,"_id":"570e77c0de01813819df4cf0","__v":0,"time":{"minutes":0,"seconds":0},"LoPs":[0],"startTile":{"z":0,"y":0,"x":0},"tiles":[{"x":0,"y":0,"z":0,"tileType":{"image":"tile-0.png","gaps":0,"intersections":0,"_id":"5708b8ff54deddcd27756aa3","paths":{"left":"right","right":"left"}},"rot":0,"_id":"570e77c0de01813819df4cf2","index":[0],"scoredItems":{"dropTiles":[],"gaps":[],"intersections":[],"speedbumps":[false],"obstacles":[false,false]},"items":{"obstacles":2,"speedbumps":1,"intersections":0,"gaps":0}},{"x":1,"y":0,"z":0,"tileType":{"image":"tile-0.png","gaps":0,"intersections":0,"_id":"5708b8ff54deddcd27756aa3","paths":{"left":"right","right":"left"}},"rot":0,"_id":"570e77c0de01813819df4cf1","index":[1],"scoredItems":{"dropTiles":[],"gaps":[],"intersections":[],"speedbumps":[],"obstacles":[false,false]},"items":{"obstacles":2,"speedbumps":0,"intersections":0,"gaps":0}}]};
-
-    $scope.height = $scope.data.height;
-    $scope.width = $scope.data.width;
-    $scope.length = $scope.data.length;
-
-    $scope.numberOfDropTiles = $scope.data.numberOfDropTiles;;
-    $scope.rescuedVictims = $scope.data.rescuedVictims;
+app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', function($scope, $uibModal, $log, $timeout, $http){
 
     $scope.tiles = {};
-    for(var i = 0; i < $scope.data.tiles.length; i++){
-        $scope.tiles[$scope.data.tiles[i].x + ',' +
-                     $scope.data.tiles[i].y + ',' +
-                     $scope.data.tiles[i].z] = $scope.data.tiles[i];
-    }
 
+    $http.get("/api/runs/570e77c0de01813819df4cf0?populate=true").then(function(response){
+        $scope.height = response.data.height;
+        $scope.width = response.data.width;
+        $scope.length = response.data.length;
 
-    $scope.score = $scope.data.score;
-    $scope.showedUp = $scope.data.showedUp;
-    $scope.LoPs = $scope.data.LoPs;
-    // Verified time by timekeeper
-    $scope.minutes = $scope.data.time.minutes;;
-    $scope.seconds = $scope.data.time.seconds;
+        $scope.numberOfDropTiles = response.data.numberOfDropTiles;;
+        $scope.rescuedVictims = response.data.rescuedVictims;
+
+        for(var i = 0; i < response.data.tiles.length; i++){
+            $scope.tiles[response.data.tiles[i].x + ',' +
+                         response.data.tiles[i].y + ',' +
+                         response.data.tiles[i].z] = response.data.tiles[i];
+        }
+
+        $scope.score = response.data.score;
+        $scope.showedUp = response.data.showedUp;
+        $scope.LoPs = response.data.LoPs;
+        // Verified time by timekeeper
+        $scope.minutes = response.data.time.minutes;;
+        $scope.seconds = response.data.time.seconds;
+
+        console.log($scope.tiles);
+    }, function(response){
+        console.log("Error: " + response.statusText);
+    });
 
 
     $scope.z = 0;
