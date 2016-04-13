@@ -34,7 +34,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
                          response.data.tiles[i].y + ',' +
                          response.data.tiles[i].z] = response.data.tiles[i];
         }
-
+        $scope.startTile = response.data.startTile;
         $scope.numberOfDropTiles = response.data.numberOfDropTiles;
         $scope.height = response.data.height;
         $scope.sliderOptions.ceil.height = $scope.height - 1;
@@ -73,6 +73,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
             height: $scope.height,
             width: $scope.width,
             numberOfDropTiles: $scope.numberOfDropTiles,
+            startTile: $scope.startTile,
             tiles: $scope.tiles
         };
 
@@ -91,26 +92,32 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
         console.log(x+','+y+','+$scope.z);
         var modalInstance = $uibModal.open({
             animation: true,
-            templateUrl: '/templates/line_editor_modal.html',
+            templateUrl: '/templates/line_editor_modal.html?gs',
             controller: 'ModalInstanceCtrl',
             size: 'sm',
             resolve: {
                 tile: function () {
                     console.log($scope.tiles[x+','+y+','+$scope.z]);
                     return $scope.tiles[x+','+y+','+$scope.z];
+                },
+                start: function(){
+                    return $scope.startTile.x == x && $scope.startTile.y == y && $scope.startTile.z == $scope.z;
                 }
             }
         });
 
-        modalInstance.result.then(function (selectedItem) {
-            $scope.selected = selectedItem;
-        }, function () {
-            $log.info('Modal dismissed at: ' + new Date());
-        });
-    };
+        modalInstance.result.then(function (response) {
+            console.log("x",x, response);
+            if(response){
+                $scope.startTile.x = x;
+                $scope.startTile.y = y;
+                $scope.startTile.z = $scope.z;
+            }
+            console.log($scope.startTile);
 
-    $scope.toggleAnimation = function () {
-        $scope.animationsEnabled = !$scope.animationsEnabled;
+        }, function () {
+            console.log('Modal dismissed at: ' + new Date());
+        });
     };
 
 }]);
@@ -119,11 +126,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 // Please note that $uibModalInstance represents a modal window (instance) dependency.
 // It is not the same as the $uibModal service used above.
 
-app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, tile) {
+app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, tile, start) {
     $scope.tile = tile;
-    console.log(tile);
+    $scope.start = start;
     $scope.ok = function () {
-        $uibModalInstance.close($scope.tile);
+        $uibModalInstance.close($scope.start);
     };
 
     $scope.cancel = function () {
