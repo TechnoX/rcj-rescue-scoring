@@ -1,3 +1,26 @@
+.lvl-over {
+    /* applied to a drop target when a draggable object is over it */
+    border: 2px dashed black !important;
+}
+
+.lvl-target {
+    /* applied to all drop targets when a drag operation begins, used to indicate drop targets on a page */
+    background-color: #ddd;
+    opacity: .5;
+}
+
+[draggable] {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    /* Required to make elements draggable in old WebKit */
+    -khtml-user-drag: element;
+    -webkit-user-drag: element;
+    cursor: move;
+    border:1px solid black;
+}
+
 .slot {
     margin-right:2px;
     margin-top:2px;
@@ -7,6 +30,7 @@
     border: none;
     background-color: lightgreen;
 }
+
 
 tile{
     width: 40px;
@@ -24,8 +48,32 @@ tile{
     position: absolute;
     left: 0px;
     top: 0px;
+/*    left: -1px;
+    top: -1px;
+*/
     vertical-align: bottom;
 }
+
+.tools-image{
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+}
+
+rzslider{
+    width: 80%;
+}
+
+.vertical-sliders {
+    margin: 0;
+}
+.vertical-sliders > div {
+    height: 250px;
+}
+rzslider.rz-vertical {
+    height: 250px;
+}
+
 .drop-tile{
     border: 2px solid orange;
 }
@@ -60,9 +108,6 @@ tile{
     -ms-transform: rotate(270deg);
     -o-transform: rotate(270deg);
     transform: rotate(270deg);
-}
-rzslider{
-    width: 80%;
 }
 
 .confirmation {
