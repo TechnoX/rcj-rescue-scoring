@@ -50,18 +50,33 @@ privateRouter.get('/:mapid', function (req, res, next) {
   }
 })
 
+adminRouter.get('/:mapid/update', function (req, res, next) {
+  var id = req.params.mapid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+
+})
+
 adminRouter.post('/createmap', function (req, res) {
   var map = req.body
+
+  logger.debug(map)
+
   var tiles = []
-  for (var i in map.tiles.length) {
+  for (var i in map.tiles) {
     var tile = map.tiles[i]
 
-    if (isNan(i)) {
+    if (isNaN(i)) {
       var coords = i.split(',')
       tile.x = coords[0]
       tile.y = coords[1]
       tile.z = coords[2]
     }
+
+    logger.debug(tile)
 
     var tileTypeId = typeof tile.tileType === 'object' ? tile.tileType._id : tile.tileType
     tiles.push({
