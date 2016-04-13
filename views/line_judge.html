@@ -1,67 +1,66 @@
-
-    <h1>{{data.team.name}}</h1>
-    <p>{{data.field.name}}</p>
-    <div style="margin-top:50px;">
-      <div class="row">
-        <div class="col-sm-12">
-          <p>
-            <button class="btn btn-primary" type="button" ng-click="startTime()">{{ startedTime ? 'Stop' : 'Start' }} time!</button>
-            <button class="btn btn-primary" type="button" ng-click="startScoring()">{{ startedScoring ? 'Stop' : 'Start' }} scoring!</button>
-          </p>
-          <p>
-            Score: {{score}}<br>
-            Time: {{time | date:'mm:ss'}}
-          </p>
-          <p ng-show="!startedScoring">
-            Droptiles left to be placed: {{numberOfDropTiles - placedDropTiles}}
-          </p>
-          <p ng-show="startedScoring">
-            <label>Team did show up for start within their time: <input type="checkbox" ng-model="showedUp"></label>
-          </p>
-          <p ng-repeat="dropTile in range(placedDropTiles) track by $index" ng-show="startedScoring">
-            LoPs between {{$index==0?'start':('droptile ' + ($index))}} and droptile {{$index+1}}:<br>
-            <img src="/images/minus.png" alt="-" ng-click="decrement($index)" class="plusminus">
-            <span class="count">{{LoPs[$index]?LoPs[$index]:0}}</span>
-            <img src="/images/plus.png" alt="+" ng-click="increment($index)" class="plusminus">
-          </p>
-          <p ng-show="startedScoring">
-            Number of Rescued Victims: <br>
-            <img src="/images/minus.png" alt="-" ng-click="rescuedVictims = rescuedVictims <= 0 ? 0 : rescuedVictims - 1" class="plusminus">
-            <span class="count">{{rescuedVictims}}</span>
-            <img src="/images/plus.png" alt="+" ng-click="rescuedVictims = rescuedVictims + 1" class="plusminus">
-          </p>
-        </div>
-      </div>
-      <div class="row" ng-show="height>1">
-        <div class="col-sm-12">
-          <rzslider rz-slider-model="z" rz-slider-options="sliderOptions"></rzslider>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <div ng-repeat="r in range(length)">
-            <div ng-repeat="c in range(width)" class="slot">
-              <tile tile="tiles[c+','+r+','+z]" ng-click="doScoring(c,r,z)"></tile>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-12 confirmation">
-        <strong>Verified time: </strong><br>
-        <label>Minutes: <input type="number" min="0" max="8" ng-model="minutes"></label><br>
-        <label>Seconds: <input type="number" min="0" max="60" ng-model="seconds"></label><br>
-        <button type="button">Sign!</button><br>
-        <strong>
-          By clicking the "Sign!" button, you accept that the score {{score}}
-          and time {{minutes}}:{{seconds<10?'0':''}}{{seconds}} are correct.<br>
-          Your team also further undertakes to not appeal the score at a later stage.
-        </strong>
-        </div>
-      </div>
-
-
+<h1>{{data.team.name}}</h1>
+<p>{{data.field.name}}</p>
+<div style="margin-top:50px;">
+  <div class="row">
+    <div class="col-sm-12">
+      <p>
+        <button class="btn btn-primary" type="button" ng-click="startTime()">{{ startedTime ? 'Stop' : 'Start' }} time!</button>
+        <button class="btn btn-primary" type="button" ng-click="startScoring()">{{ startedScoring ? 'Stop' : 'Start' }} scoring!</button>
+      </p>
+      <p>
+        Score: {{score}}<br>
+        Time: {{time | date:'mm:ss'}}
+      </p>
+      <p ng-show="!startedScoring">
+        Droptiles left to be placed: {{numberOfDropTiles - placedDropTiles}}
+      </p>
+      <p ng-show="startedScoring">
+        <label>Team did show up for start within their time: <input type="checkbox" ng-model="showedUp"></label>
+      </p>
+      <p ng-repeat="dropTile in range(placedDropTiles) track by $index" ng-show="startedScoring">
+        LoPs between {{$index==0?'start':('droptile ' + ($index))}} and droptile {{$index+1}}:<br>
+        <img src="/images/minus.png" alt="-" ng-click="decrement($index)" class="plusminus">
+        <span class="count">{{LoPs[$index]?LoPs[$index]:0}}</span>
+        <img src="/images/plus.png" alt="+" ng-click="increment($index)" class="plusminus">
+      </p>
+      <p ng-show="startedScoring">
+        Number of Rescued Victims: <br>
+        <img src="/images/minus.png" alt="-" ng-click="rescuedVictims = rescuedVictims <= 0 ? 0 : rescuedVictims - 1" class="plusminus">
+        <span class="count">{{rescuedVictims}}</span>
+        <img src="/images/plus.png" alt="+" ng-click="rescuedVictims = rescuedVictims + 1" class="plusminus">
+      </p>
     </div>
+  </div>
+  <div class="row" ng-show="height>1">
+    <div class="col-sm-12">
+      <rzslider rz-slider-model="z" rz-slider-options="sliderOptions"></rzslider>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div ng-repeat="r in range(length)">
+        <div ng-repeat="c in range(width)" class="slot">
+          <tile tile="tiles[c+','+r+','+z]" ng-click="doScoring(c,r,z)"></tile>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 confirmation">
+      <strong>Verified time: </strong><br>
+      <label>Minutes: <input type="number" min="0" max="8" ng-model="minutes"></label><br>
+      <label>Seconds: <input type="number" min="0" max="60" ng-model="seconds"></label><br>
+      <button type="button">Sign!</button><br>
+      <strong>
+        By clicking the "Sign!" button, you accept that the score {{score}}
+        and time {{minutes}}:{{seconds<10?'0':''}}{{seconds}} are correct.<br>
+                                                              Your team also further undertakes to not appeal the score at a later stage.
+                                                              </strong>
+    </div>
+  </div>
+
+
+</div>
 
 
