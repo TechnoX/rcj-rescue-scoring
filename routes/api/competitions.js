@@ -29,6 +29,22 @@ publicRouter.get('/:competitionid', function (req, res, next) {
   query.doIdQuery(req, res, id, "", competitiondb.competition)
 })
 
+publicRouter.get('/:competitionid/delete', function (req, res, next) {
+  var id = req.params.competitionid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  competitiondb.competition.remove({_id: id}, function (err) {
+    if (err) {
+      res.status(400).send({msg: "Could not remove competition"})
+    } else {
+      res.status(200).send({msg: "Competition has been removed!"})
+    }
+  })
+})
+
 publicRouter.get('/:competitionid/teams', function (req, res, next) {
   var id = req.params.competitionid
 

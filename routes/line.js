@@ -7,7 +7,7 @@ var adminRouter = express.Router()
 
 /* GET home page. */
 publicRouter.get('/', function (req, res) {
-  res.render('index');
+  res.render('line_home');
 })
 
 publicRouter.get('/view/:roundid', function (req, res) {

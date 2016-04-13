@@ -1,0 +1,25 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'LineHome'
+
+append scripts
+  script(src='/javascripts/line_home.js')
+
+block location
+  a(href='/home' style="color:#333333") Home
+  | >
+  a(href='/line' style="color:#333333") Line
+
+block content
+  .row
+    .col-md-offset-2.col-md-8
+      h1 RoboCup Junior - Rescue Line
+      ul
+        li
+          a(href="/line/editor") Create a new field layout
+        li
+          a(href="/line/judge") Judge a run
+        li
+          a(href="/line/view") View a run
