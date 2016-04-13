@@ -29,13 +29,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
         return arr;
     }
 
-    $http.get("dummy.json").then(function(response){
-        var tiles = {};
+    $scope.tileBox = {};
+    $http.get("/api/maps/tiletypes").then(function(response){
         for(var i = 0; i < response.data.length; i++){
-            tiles[response.data[i]._id] = response.data[i];
+            $scope.tileBox[response.data[i]._id] = response.data[i];
         }
-        $scope.tileBox = tiles;
-        console.log("Huhu" , $scope.tileBox);
     }, function(response){
         console.log("Error: " + response.statusText);
     });
