@@ -270,7 +270,7 @@ app.directive('lvlDropTarget', ['$rootScope', 'uuid', function ($rootScope, uuid
                     console.log(drag.attr("id"));
                     scope.tiles[drop.attr("x")+","+drop.attr("y")+","+drop.attr("z")] = {image: drag.attr("src"),
                                                                                          rot: +drag.attr("rot"),
-                                                                                         tileType: drag.attr("tile-id"),
+                                                                                         tileType: scope.tileBox[drag.attr("tile-id")],
                                                                                          items:{obstacles: 0,
                                                                                                 speedbumps: 0}};
                     // We dragged an non-existing tile
