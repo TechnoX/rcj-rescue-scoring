@@ -89,7 +89,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 
 
     $scope.open = function(x,y) {
-        console.log(x+','+y+','+$scope.z);
         var modalInstance = $uibModal.open({
             animation: true,
             templateUrl: '/templates/line_editor_modal.html?gs',
@@ -97,7 +96,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
             size: 'sm',
             resolve: {
                 tile: function () {
-                    console.log($scope.tiles[x+','+y+','+$scope.z]);
                     return $scope.tiles[x+','+y+','+$scope.z];
                 },
                 start: function(){
@@ -107,13 +105,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
         });
 
         modalInstance.result.then(function (response) {
-            console.log("x",x, response);
             if(response){
                 $scope.startTile.x = x;
                 $scope.startTile.y = y;
                 $scope.startTile.z = $scope.z;
             }
-            console.log($scope.startTile);
 
         }, function () {
             console.log('Modal dismissed at: ' + new Date());
@@ -192,7 +188,6 @@ app.directive('rotateOnClick', function() {
                     deg = 0;
                 element.addClass('rot'+deg);
                 element.attr("rot",deg);
-                console.log(deg);
             });
         }
     };
@@ -292,7 +287,6 @@ app.directive('lvlDropTarget', ['$rootScope', 'uuid', function ($rootScope, uuid
                     // Remove the element from where we dragged it
                     delete scope.tiles[drag.attr("x")+","+drag.attr("y")+","+drag.attr("z")];
                 }
-                console.log(scope.tiles);
                 scope.$apply();
 
             });
