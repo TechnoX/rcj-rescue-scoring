@@ -62,45 +62,46 @@ module.exports.map = Map
 module.exports.tileType = TileType
 
 var testMap = new Map({
-    name             : "Test1",
-    height           : 1,
-    width            : 2,
-    length           : 1,
-    tiles            : [{
+  name             : "Test1",
+  height           : 1,
+  width            : 2,
+  length           : 1,
+  tiles            : [
+    {
       x       : 0,
       y       : 0,
       z       : 0,
       rot     : 0,
-      tileType: "570c27c3f5a9dabe23f3af90",
+      tileType: "5708b8ff54deddcd27756aa3",
       items   : {
         obstacles : 2,
         speedbumps: 1
       }
     },
-      {
-        x       : 1,
-        y       : 0,
-        z       : 0,
-        rot     : 0,
-        tileType: "570c27c3f5a9dabe23f3af90",
-        items   : {
-          obstacles : 2,
-          speedbumps: 0
-        }
+    {
+      x       : 1,
+      y       : 0,
+      z       : 0,
+      rot     : 0,
+      tileType: "5708b8ff54deddcd27756aa3",
+      items   : {
+        obstacles : 2,
+        speedbumps: 0
       }
-    ],
-    startTile        : {x: 0, y: 0, z: 0},
-    numberOfDropTiles: 1
-  })
+    }
+  ],
+  startTile        : {x: 0, y: 0, z: 0},
+  numberOfDropTiles: 1
+})
 
 testMap.save(function (err, data) {
-    if (err) {
-      console.log(err);
-    }
-    else {
-      console.log("saved map");
-    }
-  })
+  if (err) {
+    console.log(err);
+  }
+  else {
+    console.log("saved map");
+  }
+})
 
 pathFinder.findPath({
     name     : "Test2",

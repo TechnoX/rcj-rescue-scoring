@@ -86,6 +86,8 @@ else {
       socket.leave(data)
     })
   })
+
+  require('./routes/api/runs').connectSocketIo(io)
   
   
   /**

@@ -32,14 +32,14 @@ var teamSchema = new Schema({
 })
 
 var fieldSchema = new Schema({
-  name : {type: String, required: true},
+  name       : {type: String, required: true},
   competition: {type: ObjectId, ref: 'Competition', required: true}
 })
 
 var runSchema = new Schema({
-  round: {type: ObjectId, ref: 'Round', required: true},
-  team : {type: ObjectId, ref: 'Team', required: true},
-  field : {type: ObjectId, ref: 'Field', required: true},
+  round      : {type: ObjectId, ref: 'Round', required: true},
+  team       : {type: ObjectId, ref: 'Team', required: true},
+  field      : {type: ObjectId, ref: 'Field', required: true},
   competition: {type: ObjectId, ref: 'Competition', required: true},
 
   height           : {type: Number, required: true, min: 1},
@@ -78,6 +78,7 @@ var runSchema = new Schema({
   numberOfDropTiles: {type: Number, required: true, min: 0},
   rescuedVictims   : {type: Number, min: 0},
   score            : {type: Number, min: 0},
+  showedUp         : {type: Boolean},
   time             : {
     minutes: {type: Number, min: 0},
     seconds: {type: Number, min: 0, max: 59}

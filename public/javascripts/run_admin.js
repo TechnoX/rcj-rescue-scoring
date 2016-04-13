@@ -35,7 +35,7 @@ angular.module("RunAdmin", []).controller("RunAdminController", function ($scope
     var run = {
       round      : $scope.run.round._id,
       team       : $scope.run.team._id,
-      field     : $scope.run.field._id,
+      field      : $scope.run.field._id,
       map        : $scope.run.map._id,
       competition: competitionId
     }
