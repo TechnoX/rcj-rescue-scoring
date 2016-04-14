@@ -61,6 +61,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         return arr;
     }
 
+
     $scope.startScoring = function(){
         if($scope.numberOfDropTiles - $scope.placedDropTiles > 0) {
             alert("All checkpoints are not yet placed.");
@@ -236,6 +237,19 @@ app.directive('tile', function() {
                     return "undone";
                 else
                     return "";
+            }
+
+            $scope.rotateRamp = function(direction){
+                switch(direction){
+                case "bottom":
+                    return "rot0";
+                case "top":
+                    return "rot180";
+                case "left":
+                    return "rot90";
+                case "right":
+                    return "rot270";
+                }
             }
 
         }
