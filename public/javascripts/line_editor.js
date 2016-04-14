@@ -81,6 +81,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
         $http.post("/api/maps/createmap/", map).then(function(response){
             alert("Success!");
             console.log(response.data);
+            window.location.replace("/line/editor/" + response.data.id)
         }, function(response){
             console.log(response);
             console.log("Error: " + response.statusText);
