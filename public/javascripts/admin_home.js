@@ -14,13 +14,15 @@ angular.module("AdminHome", []).controller("AdminHomeController", function ($sco
     })
   }
 
-  $scope.removeCompetition = function (id) {
-    $http.get("/api/competitions/" + id + "/delete").then(function (response) {
-      console.log(response)
-      updateCompetitionList()
-    }, function (error) {
-      console.log(error)
-    })
+  $scope.removeCompetition = function (competition) {
+    if (confirm("Are you sure you want to remove the competition: " + competition.name + '?')) {
+      $http.get("/api/competitions/" + competition._id + "/delete").then(function (response) {
+        console.log(response)
+        updateCompetitionList()
+      }, function (error) {
+        console.log(error)
+      })
+    }
   }
 
   function updateCompetitionList() {

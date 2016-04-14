@@ -26,7 +26,7 @@ block content
         tr(ng-repeat='field in fields')
           td(ng-bind='field.name')
           td
-            a(href="" ng-click='removeField(field._id)') Delete
+            a(href="" ng-click='removeField(field)') Delete
 
       h1 Add field
       input(ng-model='fieldName')

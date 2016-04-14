@@ -24,7 +24,7 @@ block content
           td
             a(ng-bind='competition.name' ng-href="/admin/{{competition._id}}")
           td
-            a(href="" ng-click='removeRound(competition._id)') Delete
+            a(href="" ng-click='removeCompetition(competition)') Delete
 
       h1 Add competition
       input(ng-model='competitionName')
