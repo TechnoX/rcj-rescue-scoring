@@ -2,11 +2,50 @@
 var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'rzModule']);
 
 // function referenced by the drop target
-app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, $uibModal, $log){
+app.controller('ddController', ['$scope', '$http', '$log', function($scope, $http, $log){
 
-    $scope.height = 4;
-    $scope.width = 4;
-    $scope.length = 7;
+    $scope.sliderOptions = {
+        floor: 0,
+        ceil: 0,
+        showSelectionBar: true,
+        showTicksValues: true
+    };
+
+    $scope.visType = "slider";
+    $scope.z = 0;
+    $scope.tiles = {};
+    $http.get("/api/runs/570eb85c682468cf3e194637?populate=true").then(function(response){
+        $scope.height = response.data.height;
+        $scope.sliderOptions.ceil = $scope.height - 1;
+        $scope.width = response.data.width;
+        $scope.length = response.data.length;
+        $scope.team = response.data.team;
+        $scope.field = response.data.field;
+
+        $scope.numberOfDropTiles = response.data.numberOfDropTiles;;
+        $scope.rescuedVictims = response.data.rescuedVictims;
+
+        for(var i = 0; i < response.data.tiles.length; i++){
+            $scope.tiles[response.data.tiles[i].x + ',' +
+                         response.data.tiles[i].y + ',' +
+                         response.data.tiles[i].z] = response.data.tiles[i];
+        }
+
+        $scope.score = response.data.score;
+        $scope.showedUp = response.data.showedUp;
+        $scope.LoPs = response.data.LoPs;
+        // Verified time by timekeeper
+        $scope.minutes = response.data.time.minutes;;
+        $scope.seconds = response.data.time.seconds;
+
+        console.log($scope.tiles);
+    }, function(response){
+        console.log("Error: " + response.statusText);
+    });
+
+
+
+
     $scope.range = function(n){
         arr = [];
         for (var i=0; i < n; i++) {
@@ -14,39 +53,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
         }
         return arr;
     }
-
-    $scope.visType = "slider";
-
-    $scope.z = 0;
-    $scope.tiles = {};
-
-    $scope.tiles["2,3,1"] = {rot: 180, image: 'tiles/tile-5.png', dropTile: true,
-                             items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 0},
-                             scoredItems: {gaps: [], obstacles: [], speedbumps: [], intersections: [], dropTiles: [true]}};
-    $scope.tiles["3,3,1"] = {rot: 90, image: 'tiles/tile-5.png', dropTile: false,
-                             items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 1},
-                             scoredItems: {gaps: [], obstacles: [], speedbumps: [], intersections: [false]}};
-    $scope.tiles["3,2,1"] = {rot: 0, image: 'tiles/tile-5.png', dropTile: false,
-                             items: {gaps: 0, obstacles: 1, speedbumps: 0, intersections: 0},
-                             scoredItems: {gaps: [], obstacles: [false], speedbumps: [], intersections: []}};
-    $scope.tiles["2,2,1"] = {rot: 270, image: 'tiles/tile-5.png', dropTile: false,
-                             items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 0},
-                             scoredItems: {gaps: [], obstacles: [], speedbumps: [], intersections: [], dropTiles: [false,false]}};
-
-    $scope.tiles["2,4,0"] = {rot: 180, image: 'tiles/tile-6.png', dropTile: true,
-                             items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 0},
-                             scoredItems: {gaps: [], obstacles: [], speedbumps: [], intersections: [], dropTiles: [true]}};
-    $scope.tiles["3,4,0"] = {rot: 90, image: 'tiles/tile-6.png', dropTile: false,
-                             items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 0},
-                             scoredItems: {gaps: [], obstacles: [], speedbumps: [], intersections: []}};
-    $scope.tiles["3,3,0"] = {rot: 0, image: 'tiles/tile-6.png', dropTile: false,
-                             items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 0},
-                             scoredItems: {gaps: [], obstacles: [], speedbumps: [], intersections: []}};
-    $scope.tiles["2,3,0"] = {rot: 270, image: 'tiles/tile-6.png', dropTile: false,
-                             items: {gaps: 0, obstacles: 0, speedbumps: 0, intersections: 0},
-                             scoredItems: {gaps: [], obstacles: [], speedbumps: [], intersections: [], dropTiles: [false,false]}};
-
-
 
     $scope.getOpacity = function(x,y){
         var stackedTiles = 0;
@@ -58,15 +64,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', function($scope, 
     }
 
 
-    $scope.sliderOptions = {
-        floor: 0,
-        ceil: $scope.height-1,
-        showSelectionBar: true,
-        showTicksValues: true,
-        ticksValuesTooltip: function (v) {
-            return 'Level ' + v;
-        }
-    };
 
 }]);
 
@@ -78,7 +75,7 @@ app.directive('tile', function() {
             tile: '='
         },
         restrict: 'E',
-        templateUrl: 'tile.html',
+        templateUrl: '/templates/tile.html',
         link : function($scope, element, attrs){
 
             $scope.tileStatus = function(tile){
@@ -99,7 +96,7 @@ app.directive('tile', function() {
                 count(tile.scoredItems.speedbumps);
                 count(tile.scoredItems.intersections);
                 count(tile.scoredItems.obstacles);
-                if(tile.dropTile)
+                if(tile.scoredItems.dropTiles.length > 0)
                     count(tile.scoredItems.dropTiles);
 
                 if(possible > 0 && successfully == possible)
@@ -112,6 +109,18 @@ app.directive('tile', function() {
                     return "";
             }
 
+            $scope.rotateRamp = function(direction){
+                switch(direction){
+                case "bottom":
+                    return "rot0";
+                case "top":
+                    return "rot180";
+                case "left":
+                    return "rot90";
+                case "right":
+                    return "rot270";
+                }
+            }
         }
     };
 });
