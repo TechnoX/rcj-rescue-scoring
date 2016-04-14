@@ -38,6 +38,7 @@ publicRouter.get('/:roundid/runs', function (req, res, next) {
 
   competitiondb.run.find({round: id}, function (err, data) {
     if (err) {
+      logger.error(err)
       res.status(400).send({msg: "Could not get runs"})
     } else {
       res.status(200).send(data)
@@ -54,6 +55,7 @@ adminRouter.get('/:roundid/delete', function (req, res, next) {
 
   competitiondb.round.remove({_id : id}, function (err) {
     if (err) {
+      logger.error(err)
       res.status(400).send({msg: "Could not remove round"})
     } else {
       res.status(200).send({msg: "Round has been removed!"})
@@ -71,6 +73,7 @@ adminRouter.post('/createround', function (req, res) {
 
   newRound.save(function (err, data) {
     if (err) {
+      logger.error(err)
       res.status(400).send({msg: "Error saving round"})
     } else {
       res.status(201).send({msg: "New round has been saved", id: data._id})

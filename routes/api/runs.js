@@ -41,6 +41,7 @@ publicRouter.get('/:runid', function (req, res, next) {
   }
   query.exec(function (err, data) {
     if (err) {
+      logger.error(err)
       res.status(400).send({msg: "Could not get run"})
     } else {
       res.status(200).send(data)
@@ -59,6 +60,7 @@ privateRouter.post('/:runid/update', function (req, res, next) {
 
   competitiondb.run.findById(id, function (err, dbrun) {
     if (err) {
+      logger.error(err)
       res.status(400).send({msg: "Could not get run"})
     } else {
       if (run.showedUp !== undefined) {
@@ -118,6 +120,7 @@ privateRouter.post('/:runid/update', function (req, res, next) {
 
       dbrun.save(function (err) {
         if (err) {
+          logger.error(err)
           res.status(400).send({msg: "Could not save run"})
         } else {
           if (socketIo !== undefined) {
@@ -139,6 +142,7 @@ adminRouter.get('/:runid/delete', function (req, res, next) {
 
   competitiondb.run.remove({_id: id}, function (err) {
     if (err) {
+      logger.error(err)
       res.status(400).send({msg: "Could not remove run"})
     } else {
       res.status(200).send({msg: "Run has been removed!"})

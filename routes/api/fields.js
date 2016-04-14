@@ -18,63 +18,10 @@ var fs = require('fs')
 //========================================================================
 
 
-/**
- * @api {get} /maps Request units
- * @apiName GetUnits
- * @apiGroup Unit
- * @apiVersion 1.0.0
- *
- * @apiParam {String} [result] Filter function
- * @apiParam {String} [find] Select function
- * @apiParam {String} [sort] Sort function
- *
- * @apiSuccess (200) {Object[]} Unit List of units who matched
- * @apiSuccess (200) {String} Unit._id The unique id
- * @apiSuccess (200) {Date}   Unit.createdAt The date this account was created
- * @apiSuccess (200) {Date}   Unit.updatedAt The latest date this account was updates
- * @apiSuccess (200) {String} Unit.file_desc The directory where the units has all its data
- * @apiSuccess (200) {String} Unit.mac_addr The mac address
- * @apiSuccess (200) {String} Unit.last_ip The last ip used by the unit
- * @apiSuccess (200) {String} Unit.name The specific name of this unit, for example "Zelda1"
- * @apiSuccess (200) {String} Unit.status The mode the unit is in
- * @apiSuccess (200) {String} Unit.latest_measure_session The latest measure session
- *
- * @apiSuccess (400) {String} err The error message
- */
 publicRouter.get('/', function (req, res) {
   query.doFindResultSortQuery(req, res, null, null, competitiondb.field)
 })
 
-/**
- * @api {get} /units/:unitid Request unit
- * @apiName GetUnit
- * @apiGroup Unit
- * @apiVersion 1.0.0
- *
- * @apiParam {Number} id Users unique ID
- *
- * @apiSuccess (200) {Object} Unit The unit matched to the uuid
- * @apiSuccess (200) {String} Unit._id The unique id
- * @apiSuccess (200) {Date}   Unit.createdAt The date this account was created
- * @apiSuccess (200) {Date}   Unit.updatedAt The latest date this account was updates
- * @apiSuccess (200) {String} Unit.file_desc The directory where the units has all its data
- * @apiSuccess (200) {String} Unit.mac_addr The mac address
- * @apiSuccess (200) {String} Unit.last_ip The last ip used by the unit
- * @apiSuccess (200) {String} Unit.name The specific name of this unit, for example "Zelda1"
- * @apiSuccess (200) {String} Unit.status The mode the unit is in
- * @apiSuccess (200) {String} Unit.MeasureSession The latest measure session
- * @apiSuccess (200) {String} Unit.MeasureSession._id The unique id
- * @apiSuccess (200) {Date}   Unit.MeasureSession.createdAt The date this account was created
- * @apiSuccess (200) {Date}   Unit.MeasureSession.updatedAt The latest date this account was updates
- * @apiSuccess (200) {String} Unit.MeasureSession.file_desc The directory where the session has all its data
- * @apiSuccess (200) {String} Unit.MeasureSession.unit What unit it is connected too
- * @apiSuccess (200) {String} Unit.MeasureSession.step_time Step time
- * @apiSuccess (200) {String} Unit.MeasureSession.sample_rate The sample rate
- * @apiSuccess (200) {String} Unit.MeasureSession.step_lvls Step levels
- * @apiSuccess (200) {String} Unit.MeasureSession.repeat_rate The repeat rate
- *
- * @apiSuccess (400) {String} err The error message
- */
 publicRouter.get('/:fieldid', function (req, res, next) {
   var id = req.params.fieldid
 
@@ -94,6 +41,7 @@ publicRouter.get('/:fieldid/runs', function (req, res, next) {
 
   competitiondb.run.find({field: id}, function (err, data) {
     if (err) {
+      logger.error(err)
       res.status(400).send({msg: "Could not get runs"})
     } else {
       res.status(200).send(data)
@@ -110,6 +58,7 @@ adminRouter.get('/:fieldid/delete', function (req, res, next) {
 
   competitiondb.field.remove({_id : id}, function (err) {
     if (err) {
+      logger.error(err)
       res.status(400).send({msg: "Could not remove field"})
     } else {
       res.status(200).send({msg: "Field has been removed!"})
@@ -127,6 +76,7 @@ adminRouter.post('/createfield', function (req, res) {
 
   newField.save(function (err, data) {
     if (err) {
+      logger.error(err)
       res.status(400).send({msg: "Error saving field"})
     } else {
       res.status(201).send({msg: "New field has been saved", id: data._id})
