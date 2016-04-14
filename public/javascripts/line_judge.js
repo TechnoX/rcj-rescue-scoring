@@ -112,13 +112,18 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 alert("Place drop markers on tiles without scoring elements (rule 3.3.4)");
             }else{
                 if($scope.numberOfDropTiles - $scope.placedDropTiles > 0) {
-                    tile.dropTile = !tile.dropTile;
-                    if(tile.dropTile)
-                        $scope.placedDropTiles++;
-                    else
+                    if(tile.scoredItems.dropTiles.length > 0){
+                        tile.scoredItems.dropTiles = [];
                         $scope.placedDropTiles--;
-                }else if(tile.dropTile){
-                    tile.dropTile = false;
+                    }else{
+                        tile.scoredItems.dropTiles = [];
+                        for(var i = 0; i < tile.index.length; i++){
+                            tile.scoredItems.dropTiles.push(false);
+                        }
+                        $scope.placedDropTiles++;
+                    }
+                }else if(tile.scoredItems.dropTiles.length > 0){
+                    tile.scoredItems.dropTiles = [];
                     $scope.placedDropTiles--;
                 }
             }
@@ -126,8 +131,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         // Match has started!
         }else{
             // Add the number of possible passes for drop tiles
-            if(tile.dropTile) {
-                total += tile.scoredItems.dropTile.length;
+            if(tile.scoredItems.dropTiles.length > 0) {
+                total += tile.scoredItems.dropTiles.length;
             }
 
             if(total > 1){
@@ -142,7 +147,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     tile.scoredItems.obstacles[0] = !tile.scoredItems.obstacles[0];
                 else if(tile.items.intersections)
                     tile.scoredItems.intersections[0] = !tile.scoredItems.intersections[0];
-                else if(tile.dropTile)
+                else if(tile.scoredItems.dropTiles.length > 0)
                     tile.scoredItems.dropTiles[0] = !tile.scoredItems.dropTiles[0];
             }
         }
@@ -216,7 +221,7 @@ app.directive('tile', function() {
                 count(tile.scoredItems.speedbumps);
                 count(tile.scoredItems.intersections);
                 count(tile.scoredItems.obstacles);
-                if(tile.dropTile)
+                if(tile.scoredItems.dropTiles.length > 0)
                     count(tile.scoredItems.dropTiles);
 
                 if(possible > 0 && successfully == possible)
