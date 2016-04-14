@@ -35,9 +35,9 @@
     display:inline-block;
     border: none;
     background-color: whitesmoke;
-/*    background-color: lightgreen;
+/*    background-color: lightgreen;*/
     float: left;
-    position: relative;*/
+    position: relative;
 }
 
 tile{
@@ -46,10 +46,9 @@ tile{
     margin: 0px;
     padding: 0px;
     display: inline-block;
-    position: relative;
-/*    position: absolute;
+    position: absolute;
     left: 0px;
-    top: 0px;*/
+    top: 0px;
 }
 
 .tile-image{

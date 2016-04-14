@@ -22,7 +22,7 @@
            class="tools-image rot0" rotate-on-click rot="0">
     </div>
     <div class="col-md-8">
-      <div ng-repeat="r in range(length)">
+      <div ng-repeat="r in range(length)" class="row">
         <div ng-repeat="c in range(width)" class="slot">
           <tile tile="tiles[c+','+r+','+z]" x="{{c}}" y="{{r}}" z="{{z}}" x-lvl-draggable="true"
                 x-lvl-drop-target="true" ng-right-click="open(c,r)" ng-click="$parent.rotateTile(c,r)"></tile>
