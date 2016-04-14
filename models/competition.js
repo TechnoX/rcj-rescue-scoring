@@ -25,10 +25,10 @@ var roundSchema = new Schema({
   competition: {type: ObjectId, ref: 'Competition', required: true}
 })
 
-roundSchema.pre('save', function(next) {
+roundSchema.pre('save', function (next) {
   var self = this
   if (self.isNew) {
-    Round.findOne({competition : self._id, name : self.name}, function (err, dbRound) {
+    Round.findOne({competition: self._id, name: self.name}, function (err, dbRound) {
       if (err) {
         next(err)
       } else if (dbRound) {
@@ -49,10 +49,10 @@ var teamSchema = new Schema({
   competition: {type: ObjectId, ref: 'Competition', required: true}
 })
 
-teamSchema.pre('save', function(next) {
+teamSchema.pre('save', function (next) {
   var self = this
   if (self.isNew) {
-    Team.findOne({competition : self._id, name : self.name}, function (err, dbTeam) {
+    Team.findOne({competition: self._id, name: self.name}, function (err, dbTeam) {
       if (err) {
         next(err)
       } else if (dbTeam) {
@@ -72,10 +72,10 @@ var fieldSchema = new Schema({
   competition: {type: ObjectId, ref: 'Competition', required: true}
 })
 
-fieldSchema.pre('save', function(next) {
+fieldSchema.pre('save', function (next) {
   var self = this
   if (self.isNew) {
-    Field.findOne({competition : self._id, name : self.name}, function (err, dbField) {
+    Field.findOne({competition: self._id, name: self.name}, function (err, dbField) {
       if (err) {
         next(err)
       } else if (dbField) {
@@ -139,10 +139,10 @@ var runSchema = new Schema({
   }
 })
 
-runSchema.pre('save', function(next) {
+runSchema.pre('save', function (next) {
   var self = this
   if (self.isNew) {
-    Run.findOne({round : self.round, team : self.team}).populate("round team").exec(function (err, dbRun) {
+    Run.findOne({round: self.round, team: self.team}).populate("round team").exec(function (err, dbRun) {
       if (err) {
         next(err)
       } else if (dbRun) {

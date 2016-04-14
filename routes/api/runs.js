@@ -85,20 +85,28 @@ privateRouter.post('/:runid/update', function (req, res, next) {
                 tile.y == dbtile.y &&
                 tile.z == dbtile.z) {
 
-              if (tile.scoredItems.obstacles !== undefined) {
-                dbtile.scoredItems.obstacles = tile.scoredItems.obstacles
+              if (tile.items !== undefined) {
+                if (tile.items.dropTiles !== undefined) {
+                  dbtile.items.dropTiles = tile.items.dropTiles
+                }
               }
-              if (tile.scoredItems.speedbumps !== undefined) {
-                dbtile.scoredItems.speedbumps = tile.scoredItems.speedbumps
-              }
-              if (tile.scoredItems.intersections !== undefined) {
-                dbtile.scoredItems.intersections = tile.scoredItems.intersections
-              }
-              if (tile.scoredItems.gaps !== undefined) {
-                dbtile.scoredItems.gaps = tile.scoredItems.gaps
-              }
-              if (tile.scoredItems.dropTiles !== undefined) {
-                dbtile.scoredItems.dropTiles = tile.scoredItems.dropTiles
+
+              if (tile.scoredItems !== undefined) {
+                if (tile.scoredItems.obstacles !== undefined) {
+                  dbtile.scoredItems.obstacles = tile.scoredItems.obstacles
+                }
+                if (tile.scoredItems.speedbumps !== undefined) {
+                  dbtile.scoredItems.speedbumps = tile.scoredItems.speedbumps
+                }
+                if (tile.scoredItems.intersections !== undefined) {
+                  dbtile.scoredItems.intersections = tile.scoredItems.intersections
+                }
+                if (tile.scoredItems.gaps !== undefined) {
+                  dbtile.scoredItems.gaps = tile.scoredItems.gaps
+                }
+                if (tile.scoredItems.dropTiles !== undefined) {
+                  dbtile.scoredItems.dropTiles = tile.scoredItems.dropTiles
+                }
               }
               break
             }
@@ -233,7 +241,8 @@ adminRouter.post('/createrun', function (req, res) {
             obstacles    : tile.scoreItems.obstacles,
             speedbumps   : tile.scoreItems.speedbumps,
             intersections: tile.scoreItems.intersections,
-            gaps         : tile.scoreItems.gaps
+            gaps         : tile.scoreItems.gaps,
+            dropTiles : 0
           },
           scoredItems: {
             obstacles    : filledArray(tile.scoreItems.obstacles, false),
