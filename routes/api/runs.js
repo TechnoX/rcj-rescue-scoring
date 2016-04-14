@@ -216,9 +216,6 @@ adminRouter.post('/createrun', function (req, res) {
           competition === undefined) {
         return res.status(400).send({msg: "Error saving run, could't find references in database"})
       }
-      logger.debug(team.competition + "=" + competition._id)
-      logger.debug(round.competition + "=" + competition._id)
-      logger.debug(field.competition + "=" + competition._id)
 
       if (team.competition != competition._id.toString() ||
           round.competition != competition._id.toString() ||
@@ -229,11 +226,8 @@ adminRouter.post('/createrun', function (req, res) {
       var foundPath = pathFinder.findPath(map)
 
       var tiles = []
-      logger.debug(foundPath)
       for (var i in foundPath) {
         var tile = foundPath[i]
-        logger.debug(i)
-        logger.debug(JSON.stringify(tile))
 
         var newTile = {
           x          : tile.x,
