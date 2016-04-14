@@ -4,10 +4,28 @@ var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'rzModule']);
 // function referenced by the drop target
 app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', function($scope, $uibModal, $log, $timeout, $http){
 
+
+
+    $scope.z = 0;
+    $scope.placedDropTiles = 0;
+    $scope.startedScoring = false;
+    $scope.startedTime = false;
+    $scope.time = 0;
+
+    $scope.sliderOptions = {
+        floor: 0,
+        ceil: 0,
+        showSelectionBar: true,
+        showTicksValues: true
+    };
+
+
+
     $scope.tiles = {};
 
     $http.get("/api/runs/"+runId+"?populate=true").then(function(response){
         $scope.height = response.data.height;
+        $scope.sliderOptions.ceil = $scope.height - 1;
         $scope.width = response.data.width;
         $scope.length = response.data.length;
         $scope.team = response.data.team;
@@ -34,12 +52,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         console.log("Error: " + response.statusText);
     });
 
-
-    $scope.z = 0;
-    $scope.placedDropTiles = 0;
-    $scope.startedScoring = false;
-    $scope.startedTime = false;
-    $scope.time = 0;
 
     $scope.range = function(n){
         arr = [];
@@ -152,14 +164,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             }
         }
     }
-
-
-    $scope.sliderOptions = {
-        floor: 0,
-        ceil: $scope.height-1,
-        showSelectionBar: true,
-        showTicksValues: true
-    };
 
 
     $scope.open = function(x,y,z) {
