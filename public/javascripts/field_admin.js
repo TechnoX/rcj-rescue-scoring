@@ -18,13 +18,15 @@ angular.module("FieldAdmin", []).controller("FieldAdminController", function ($s
     })
   }
 
-  $scope.removeField = function (id) {
-    $http.get("/api/fields/" + id + "/delete").then(function (response) {
-      console.log(response)
-      updateFieldList()
-    }, function (error) {
-      console.log(error)
-    })
+  $scope.removeField = function (field) {
+    if (confirm("Are you sure you want to remove the field: " + field.name + '?')) {
+      $http.get("/api/fields/" + field._id + "/delete").then(function (response) {
+        console.log(response)
+        updateFieldList()
+      }, function (error) {
+        console.log(error)
+      })
+    }
   }
 
   function updateFieldList() {

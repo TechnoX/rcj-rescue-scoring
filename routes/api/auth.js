@@ -40,6 +40,7 @@ router.post('/login', function (req, res) {
     passport.authenticate('local', function (err, user, info) {
       if (err) {
         //return next(err);
+        logger.error(err)
         return res.status(400).send({msg: err})
       }
       if (!user) {
@@ -47,6 +48,7 @@ router.post('/login', function (req, res) {
       }
       req.logIn(user, function (err) {
         if (err) {
+          logger.error(err)
           return res.status(400).send({msg: err})
         }
         return res.send({msg: "Login successful"})

@@ -16,7 +16,7 @@ block location
   | >
   a(ng-href='/admin/{{competitionId}}' style="color:#333333") {{competition.name}}
   | >
-  a(href='/admin/{{competitionId}}/rounds' style="color:#333333") Rounds
+  a(ng-href='/admin/{{competitionId}}/rounds' style="color:#333333") Rounds
 
 block content
   .row
@@ -26,7 +26,7 @@ block content
         tr(ng-repeat='round in rounds')
           td(ng-bind='round.name')
           td
-            a(href="" ng-click='removeRound(round._id)') Delete
+            a(href="" ng-click='removeRound(round)') Delete
 
       h1 Add round
       input(ng-model='roundName')

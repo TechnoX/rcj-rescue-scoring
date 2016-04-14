@@ -1,0 +1,25 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'CompetitionAdmin'
+
+append scripts
+  script.
+    var competitionId = "#{id}"
+  script(src='/javascripts/competition_admin.js')
+
+block location
+  a(href='/home' style="color:#333333") Home
+  | >
+  a(href='/admin' style="color:#333333") Admin
+  | >
+  a(ng-href='/admin/{{competitionId}}' style="color:#333333") {{competition.name}}
+
+block content
+  .row
+    .col-md-offset-2.col-md-8
+      a(ng-href='/admin/{{competitionId}}/teams') Teams
+      a(ng-href='/admin/{{competitionId}}/rounds') Rounds
+      a(ng-href='/admin/{{competitionId}}/fields') Fields
+      a(ng-href='/admin/{{competitionId}}/runs') Runs

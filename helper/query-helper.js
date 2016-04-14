@@ -268,6 +268,7 @@ var doFindResultSortQuery = function (req, res, result_regex, populate, schema, 
   function parseValues(cb) {
     parseFindResultSort(req, function (err, values) {
       if (err) {
+        logger.error(err)
         res.status(400).send({err: "" + err});
         cb(err)
       } else {
@@ -295,6 +296,7 @@ var doFindResultSortQuery = function (req, res, result_regex, populate, schema, 
       if (alrighty) {
         restQuery(result, find, sort, schema, populate, function (err, data) {
           if (err) {
+            logger.error(err)
             res.status(400).send({err: err});
           } else {
             res.send(data);
@@ -341,6 +343,7 @@ var doIdQuery = function (req, res, id, select_format, schema, populate) {
     query.exec(function (err, data) {
 
       if (err) {
+        logger.error(err)
         res.status(400).send({err: err})
       }
 

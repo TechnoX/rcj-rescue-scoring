@@ -41,6 +41,7 @@ publicRouter.get('/:runid', function (req, res, next) {
   }
   query.exec(function (err, data) {
     if (err) {
+      logger.error(err)
       res.status(400).send({msg: "Could not get run"})
     } else {
       res.status(200).send(data)
@@ -59,6 +60,7 @@ privateRouter.post('/:runid/update', function (req, res, next) {
 
   competitiondb.run.findById(id, function (err, dbrun) {
     if (err) {
+      logger.error(err)
       res.status(400).send({msg: "Could not get run"})
     } else {
       if (run.showedUp !== undefined) {
@@ -85,20 +87,28 @@ privateRouter.post('/:runid/update', function (req, res, next) {
                 tile.y == dbtile.y &&
                 tile.z == dbtile.z) {
 
-              if (tile.scoredItems.obstacles !== undefined) {
-                dbtile.scoredItems.obstacles = tile.scoredItems.obstacles
+              if (tile.items !== undefined) {
+                if (tile.items.dropTiles !== undefined) {
+                  dbtile.items.dropTiles = tile.items.dropTiles
+                }
               }
-              if (tile.scoredItems.speedbumps !== undefined) {
-                dbtile.scoredItems.speedbumps = tile.scoredItems.speedbumps
-              }
-              if (tile.scoredItems.intersections !== undefined) {
-                dbtile.scoredItems.intersections = tile.scoredItems.intersections
-              }
-              if (tile.scoredItems.gaps !== undefined) {
-                dbtile.scoredItems.gaps = tile.scoredItems.gaps
-              }
-              if (tile.scoredItems.dropTiles !== undefined) {
-                dbtile.scoredItems.dropTiles = tile.scoredItems.dropTiles
+
+              if (tile.scoredItems !== undefined) {
+                if (tile.scoredItems.obstacles !== undefined) {
+                  dbtile.scoredItems.obstacles = tile.scoredItems.obstacles
+                }
+                if (tile.scoredItems.speedbumps !== undefined) {
+                  dbtile.scoredItems.speedbumps = tile.scoredItems.speedbumps
+                }
+                if (tile.scoredItems.intersections !== undefined) {
+                  dbtile.scoredItems.intersections = tile.scoredItems.intersections
+                }
+                if (tile.scoredItems.gaps !== undefined) {
+                  dbtile.scoredItems.gaps = tile.scoredItems.gaps
+                }
+                if (tile.scoredItems.dropTiles !== undefined) {
+                  dbtile.scoredItems.dropTiles = tile.scoredItems.dropTiles
+                }
               }
               break
             }
@@ -110,6 +120,7 @@ privateRouter.post('/:runid/update', function (req, res, next) {
 
       dbrun.save(function (err) {
         if (err) {
+          logger.error(err)
           res.status(400).send({msg: "Could not save run"})
         } else {
           if (socketIo !== undefined) {
@@ -131,6 +142,7 @@ adminRouter.get('/:runid/delete', function (req, res, next) {
 
   competitiondb.run.remove({_id: id}, function (err) {
     if (err) {
+      logger.error(err)
       res.status(400).send({msg: "Could not remove run"})
     } else {
       res.status(200).send({msg: "Run has been removed!"})
@@ -204,9 +216,6 @@ adminRouter.post('/createrun', function (req, res) {
           competition === undefined) {
         return res.status(400).send({msg: "Error saving run, could't find references in database"})
       }
-      logger.debug(team.competition + "=" + competition._id)
-      logger.debug(round.competition + "=" + competition._id)
-      logger.debug(field.competition + "=" + competition._id)
 
       if (team.competition != competition._id.toString() ||
           round.competition != competition._id.toString() ||
@@ -217,11 +226,8 @@ adminRouter.post('/createrun', function (req, res) {
       var foundPath = pathFinder.findPath(map)
 
       var tiles = []
-      logger.debug(foundPath)
       for (var i in foundPath) {
         var tile = foundPath[i]
-        logger.debug(i)
-        logger.debug(JSON.stringify(tile))
 
         var newTile = {
           x          : tile.x,
@@ -233,7 +239,8 @@ adminRouter.post('/createrun', function (req, res) {
             obstacles    : tile.scoreItems.obstacles,
             speedbumps   : tile.scoreItems.speedbumps,
             intersections: tile.scoreItems.intersections,
-            gaps         : tile.scoreItems.gaps
+            gaps         : tile.scoreItems.gaps,
+            dropTiles : 0
           },
           scoredItems: {
             obstacles    : filledArray(tile.scoreItems.obstacles, false),

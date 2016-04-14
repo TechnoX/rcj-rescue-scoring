@@ -16,7 +16,7 @@ block location
   | >
   a(ng-href='/admin/{{competitionId}}' style="color:#333333") {{competition.name}}
   | >
-  a(href='/admin/{{competitionId}}/teams' style="color:#333333") Teams
+  a(ng-href='/admin/{{competitionId}}/teams' style="color:#333333") Teams
 
 block content
   .row
@@ -27,7 +27,7 @@ block content
           td(ng-bind='team.name')
           td(ng-bind='team.league')
           td
-            a(href="" ng-click='removeTeam(team._id)') Delete
+            a(href="" ng-click='removeTeam(team)') Delete
 
       h1 Add team
       input(ng-model='teamName')

@@ -7,6 +7,10 @@ router.get('/', function (req, res) {
   res.render('admin_home')
 })
 
+router.get('/:competitionid', function (req, res) {
+  res.render('competition_admin', {id : req.params.competitionid})
+})
+
 router.get('/:competitionid/teams', function (req, res) {
   res.render('team_admin', {id : req.params.competitionid})
 })

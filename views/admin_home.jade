@@ -5,6 +5,8 @@ block vars
   - var ngAppDef = 'AdminHome'
 
 append scripts
+  script.
+    var competitionId = "#{id}"
   script(src='/javascripts/admin_home.js')
 
 block location
@@ -15,5 +17,15 @@ block location
 block content
   .row
     .col-md-offset-2.col-md-8
-      a(href='/admin/teams') Teams
-      a(href='/admin/runs') Runs
+      a(href="/line/editor") Create a new map layout
+      h1 Competitions
+      table
+        tr(ng-repeat='competition in competitions')
+          td
+            a(ng-bind='competition.name' ng-href="/admin/{{competition._id}}")
+          td
+            a(href="" ng-click='removeCompetition(competition)') Delete
+
+      h1 Add competition
+      input(ng-model='competitionName')
+      button(ng-click='addCompetition()') Add competition

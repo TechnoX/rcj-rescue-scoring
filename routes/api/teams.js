@@ -42,6 +42,7 @@ publicRouter.get('/:teamid/runs', function (req, res, next) {
 
   competitiondb.run.find({team: id}, function (err, data) {
     if (err) {
+      logger.error(err)
       res.status(400).send({msg: "Could not get runs"})
     } else {
       res.status(200).send(data)
@@ -58,6 +59,7 @@ adminRouter.get('/:teamid/delete', function (req, res, next) {
 
   competitiondb.team.remove({_id : id}, function (err) {
     if (err) {
+      logger.error(err)
       res.status(400).send({msg: "Could not remove team"})
     } else {
       res.status(200).send({msg: "Team has been removed!"})
@@ -76,6 +78,7 @@ adminRouter.post('/createteam', function (req, res) {
 
   newTeam.save(function (err, data) {
     if (err) {
+      logger.error(err)
       res.status(400).send({msg: "Error saving team"})
     } else {
       res.status(201).send({msg: "New team has been saved", id: data._id})

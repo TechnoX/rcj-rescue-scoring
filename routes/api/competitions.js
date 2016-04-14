@@ -29,6 +29,23 @@ publicRouter.get('/:competitionid', function (req, res, next) {
   query.doIdQuery(req, res, id, "", competitiondb.competition)
 })
 
+publicRouter.get('/:competitionid/delete', function (req, res, next) {
+  var id = req.params.competitionid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  competitiondb.competition.remove({_id: id}, function (err) {
+    if (err) {
+      logger.error(err)
+      res.status(400).send({msg: "Could not remove competition"})
+    } else {
+      res.status(200).send({msg: "Competition has been removed!"})
+    }
+  })
+})
+
 publicRouter.get('/:competitionid/teams', function (req, res, next) {
   var id = req.params.competitionid
 
@@ -38,6 +55,7 @@ publicRouter.get('/:competitionid/teams', function (req, res, next) {
 
   competitiondb.team.find({competition: id}, function (err, data) {
     if (err) {
+      logger.error(err)
       res.status(400).send({msg: "Could not get teams"})
     } else {
       res.status(200).send(data)
@@ -63,6 +81,7 @@ publicRouter.get('/:competitionid/runs', function (req, res, next) {
   }
   query.exec(function (err, data) {
     if (err) {
+      logger.error(err)
       res.status(400).send({msg: "Could not get runs"})
     } else {
       res.status(200).send(data)
@@ -79,6 +98,7 @@ publicRouter.get('/:competitionid/fields', function (req, res, next) {
 
   competitiondb.field.find({competition: id}, function (err, data) {
     if (err) {
+      logger.error(err)
       res.status(400).send({msg: "Could not get fields"})
     } else {
       res.status(200).send(data)
@@ -95,6 +115,7 @@ publicRouter.get('/:competitionid/rounds', function (req, res, next) {
 
   competitiondb.round.find({competition: id}, function (err, data) {
     if (err) {
+      logger.error(err)
       res.status(400).send({msg: "Could not get rounds"})
     } else {
       res.status(200).send(data)
@@ -111,6 +132,7 @@ adminRouter.post('/createcompetition', function (req, res) {
 
   newCompetition.save(function (err, data) {
     if (err) {
+      logger.error(err)
       res.status(400).send({msg: "Error saving competition"})
     } else {
       res.status(201).send({
