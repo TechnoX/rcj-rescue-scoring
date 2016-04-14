@@ -25,15 +25,69 @@ var roundSchema = new Schema({
   competition: {type: ObjectId, ref: 'Competition', required: true}
 })
 
+roundSchema.pre('save', function(next) {
+  var self = this
+  if (self.isNew) {
+    Round.findOne({competition : self._id, name : self.name}, function (err, dbRound) {
+      if (err) {
+        next(err)
+      } else if (dbRound) {
+        err = new Error('Round with name "' + self.name + '" already exists!')
+        next(err)
+      } else {
+        next()
+      }
+    })
+  } else {
+    next()
+  }
+})
+
 var teamSchema = new Schema({
   name       : {type: String, required: true},
   league     : {type: String, enum: ["primary", "secondary"], required: true},
   competition: {type: ObjectId, ref: 'Competition', required: true}
 })
 
+teamSchema.pre('save', function(next) {
+  var self = this
+  if (self.isNew) {
+    Team.findOne({competition : self._id, name : self.name}, function (err, dbTeam) {
+      if (err) {
+        next(err)
+      } else if (dbTeam) {
+        err = new Error('Team with name "' + self.name + '" already exists!')
+        next(err)
+      } else {
+        next()
+      }
+    })
+  } else {
+    next()
+  }
+})
+
 var fieldSchema = new Schema({
   name       : {type: String, required: true},
   competition: {type: ObjectId, ref: 'Competition', required: true}
+})
+
+fieldSchema.pre('save', function(next) {
+  var self = this
+  if (self.isNew) {
+    Field.findOne({competition : self._id, name : self.name}, function (err, dbField) {
+      if (err) {
+        next(err)
+      } else if (dbField) {
+        err = new Error('Field with name "' + self.name + '" already exists!')
+        next(err)
+      } else {
+        next()
+      }
+    })
+  } else {
+    next()
+  }
 })
 
 var runSchema = new Schema({
@@ -85,6 +139,23 @@ var runSchema = new Schema({
   }
 })
 
+runSchema.pre('save', function(next) {
+  var self = this
+  if (self.isNew) {
+    Run.findOne({round : self.round, team : self.team}).populate("round team").exec(function (err, dbRun) {
+      if (err) {
+        next(err)
+      } else if (dbRun) {
+        err = new Error('Team "' + dbRun.team.name + '" already has a run in round "' + dbRun.round.name + '"!')
+        next(err)
+      } else {
+        next()
+      }
+    })
+  } else {
+    next()
+  }
+})
 
 var Competition = mongoose.model('Competition', competitionSchema)
 var Round = mongoose.model('Round', roundSchema)

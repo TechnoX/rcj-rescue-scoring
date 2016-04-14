@@ -134,6 +134,11 @@ var testUser = new User({
   password: process.env.password,
   admin: true
 });
+var testUser2 = new User({
+  username: "judge",
+  password: "judge",
+  admin: false
+});
 
 testUser.save(function (err, data) {
   if (err) {
@@ -141,5 +146,13 @@ testUser.save(function (err, data) {
   }
   else {
     console.log("saved admin user for the first time, this will only get saved if it is a new installation");
+  }
+});
+testUser2.save(function (err, data) {
+  if (err) {
+    //  console.log(err);
+  }
+  else {
+    console.log("saved judge user for the first time, this will only get saved if it is a new installation");
   }
 });
