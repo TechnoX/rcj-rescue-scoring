@@ -37,7 +37,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
         $scope.startTile = response.data.startTile;
         $scope.numberOfDropTiles = response.data.numberOfDropTiles;
         $scope.height = response.data.height;
-        $scope.sliderOptions.ceil.height = $scope.height - 1;
+        $scope.sliderOptions.ceil = $scope.height - 1;
         $scope.width = response.data.width;
         $scope.length = response.data.length;
         $scope.name = response.data.name;
