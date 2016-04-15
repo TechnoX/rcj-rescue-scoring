@@ -139,6 +139,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     tile.scoredItems.dropTiles = [];
                     $scope.placedDropTiles--;
                 }
+                $http.post("/api/runs/"+runId+"/update", {tiles:[{tile}]}).then(function(response){
+                    $scope.score = response.data.score;
+                }, function(response){
+                    console.log("Error: " + response.statusText);
+                });
             }
 
         // Match has started!
@@ -148,7 +153,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 total += tile.scoredItems.dropTiles.length;
             }
 
-            if(total > 1){
+            if(total == 0){
+                return;
+            }else if(total > 1){
                 // Show modal
                 $scope.open(x,y,z);
             }else if(total==1){
@@ -163,6 +170,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 else if(tile.scoredItems.dropTiles.length > 0)
                     tile.scoredItems.dropTiles[0] = !tile.scoredItems.dropTiles[0];
             }
+            $http.post("/api/runs/"+runId+"/update", {tiles:[{tile}]}).then(function(response){
+                $scope.score = response.data.score;
+            }, function(response){
+                console.log("Error: " + response.statusText);
+            });
+
+
         }
     }
 
