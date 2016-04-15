@@ -14,7 +14,7 @@ module.exports.calculateScore = function (run) {
 
     if (tile.scoredItems.dropTiles !== undefined) {
       if (tile.scoredItems.dropTiles.length > 0) {
-        dropTileIndexes.concat(tile.index)
+        dropTileIndexes = dropTileIndexes.concat(tile.index)
       }
     }
   }
@@ -64,7 +64,6 @@ module.exports.calculateScore = function (run) {
           } else {
             count = tile.index[j] - dropTileIndexes[index - 1]
           }
-
           score += Math.max(count * (3 - run.LoPs[index]), 0)
         }
       }
