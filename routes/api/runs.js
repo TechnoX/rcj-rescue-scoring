@@ -125,6 +125,7 @@ privateRouter.post('/:runid/update', function (req, res, next) {
         } else {
           if (socketIo !== undefined) {
             socketIo.sockets.in('runs/' + dbrun._id).emit('data', dbrun)
+            socketIo.sockets.in('fields/' + dbrun.field).emit('data', {newRun : dbrun._id})
           }
           res.status(200).send({msg: "Saved run", score : dbrun.score})
         }
