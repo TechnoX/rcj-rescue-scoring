@@ -17,7 +17,14 @@ block location
 block content
   .row
     .col-md-offset-2.col-md-8
+      h1 Maps
       a(href="/line/editor") Create a new map layout
+      table
+        tr(ng-repeat='map in maps')
+          td
+            a(ng-bind='map.name' ng-href="/line/editor/{{map._id}}")
+          td
+            a(href="" ng-click='removeMap(map)') Delete
       h1 Competitions
       table
         tr(ng-repeat='competition in competitions')

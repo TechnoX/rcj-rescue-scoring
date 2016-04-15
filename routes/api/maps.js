@@ -50,6 +50,23 @@ privateRouter.get('/:mapid', function (req, res, next) {
   }
 })
 
+adminRouter.get('/:mapid/delete', function (req, res, next) {
+  var id = req.params.mapid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  mapdb.map.remove({_id : id}, function (err) {
+    if (err) {
+      logger.error(err)
+      res.status(400).send({msg: "Could not remove map"})
+    } else {
+      res.status(200).send({msg: "Map has been removed!"})
+    }
+  })
+})
+
 adminRouter.get('/:mapid/update', function (req, res, next) {
   var id = req.params.mapid
 
