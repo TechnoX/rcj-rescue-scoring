@@ -65,7 +65,7 @@ module.exports.calculateScore = function (run) {
             count = tile.index[j] - dropTileIndexes[index - 1]
           }
 
-          score += max(count * (3 - run.LoPs[index]), 0)
+          score += Math.max(count * (3 - run.LoPs[index]), 0)
         }
       }
     }
