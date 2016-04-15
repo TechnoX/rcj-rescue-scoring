@@ -4,8 +4,8 @@
   <div class="row">
     <div class="col-sm-12">
       <p>
-        <button class="btn btn-primary" type="button" ng-click="startTime()">{{ startedTime ? 'Stop' : 'Start' }} time!</button>
-        <button class="btn btn-primary" type="button" ng-click="startScoring()">{{ startedScoring ? 'Stop' : 'Start' }} scoring!</button>
+        <button class="btn btn-primary" type="button" ng-click="toggleTime()">{{ startedTime ? 'Stop' : 'Start' }} time!</button>
+        <button class="btn btn-primary" type="button" ng-click="toggleScoring()">{{ startedScoring ? 'Stop' : 'Start' }} scoring!</button>
       </p>
       <p>
         Score: {{score}}<br>
@@ -15,7 +15,7 @@
         Checkpoints left to be placed: {{numberOfDropTiles - placedDropTiles}}
       </p>
       <p ng-show="startedScoring">
-        <label>Team did show up for start within their time: <input type="checkbox" ng-model="showedUp"></label>
+        <label>Team did show up for start within their time: <input type="checkbox" ng-model="showedUp" ng-change="changeShowedUp()"></label>
       </p>
       <p ng-repeat="dropTile in range(placedDropTiles) track by $index" ng-show="startedScoring">
         LoPs between {{$index==0?'start':('checkpoint ' + ($index))}} and checkpoint {{$index+1}}:<br>
@@ -25,9 +25,9 @@
       </p>
       <p ng-show="startedScoring">
         Number of Rescued Victims: <br>
-        <img src="/images/minus.png" alt="-" ng-click="rescuedVictims = rescuedVictims <= 0 ? 0 : rescuedVictims - 1" class="plusminus">
+        <img src="/images/minus.png" alt="-" ng-click="decVictims()" class="plusminus">
         <span class="count">{{rescuedVictims}}</span>
-        <img src="/images/plus.png" alt="+" ng-click="rescuedVictims = rescuedVictims + 1" class="plusminus">
+        <img src="/images/plus.png" alt="+" ng-click="incVictims()" class="plusminus">
       </p>
     </div>
   </div>
@@ -53,12 +53,12 @@
       <strong>Verified time: </strong><br>
       <label>Minutes: <input type="number" min="0" max="8" ng-model="minutes"></label><br>
       <label>Seconds: <input type="number" min="0" max="60" ng-model="seconds"></label><br>
-      <button type="button">Sign!</button><br>
+      <button type="button" ng-click="sign()">Sign!</button><br>
       <strong>
         By clicking the "Sign!" button, you accept that the score {{score}}
         and time {{minutes}}:{{seconds<10?'0':''}}{{seconds}} are correct.<br>
-                                                              Your team also further undertakes to not appeal the score at a later stage.
-                                                              </strong>
+        Your team also further undertakes to not appeal the score at a later stage.
+      </strong>
     </div>
   </div>
 

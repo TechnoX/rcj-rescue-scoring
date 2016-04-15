@@ -64,13 +64,15 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 
 
-    $scope.startScoring = function(){
+    $scope.toggleScoring = function(){
         if($scope.numberOfDropTiles - $scope.placedDropTiles > 0) {
             alert("All checkpoints are not yet placed.");
             return;
         }
         // Start/stop scoring
         $scope.startedScoring = !$scope.startedScoring;
+        if(!$scope.startedScoring)
+            $scope.saveEverything();
     }
 
     $scope.decrement = function(index){
@@ -103,18 +105,43 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         });
     }
 
+    $scope.decVictims = function(){
+        $scope.rescuedVictims--;
+        if($scope.rescuedVictims <= 0)
+            $scope.rescuedVictims = 0;
+
+        $http.post("/api/runs/"+runId+"/update", {rescuedVictims: $scope.rescuedVictims}).then(function(response){
+            $scope.score = response.data.score;
+        }, function(response){
+            console.log("Error: " + response.statusText);
+        });
+
+    }
+    $scope.incVictims = function(){
+        $scope.rescuedVictims++;
+        $http.post("/api/runs/"+runId+"/update", {rescuedVictims: $scope.rescuedVictims}).then(function(response){
+            $scope.score = response.data.score;
+        }, function(response){
+            console.log("Error: " + response.statusText);
+        });
+
+    }
+
     var tick = function() {
         $scope.time += 1000;
         if($scope.startedTime)
             $timeout(tick, 1000);
     }
 
-    $scope.startTime = function(){
+    $scope.toggleTime = function(){
         // Start/stop timer
         $scope.startedTime = !$scope.startedTime;
         if($scope.startedTime){
             // Start the timer
             $timeout(tick, $scope.tickInterval);
+        }else{
+            // Save everything when you stop the time
+            $scope.saveEverything();
         }
     }
 
@@ -123,6 +150,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         return objects.gaps + objects.speedbumps + objects.obstacles + objects.intersections;
     }
 
+    $scope.changeShowedUp = function(){
+        $http.post("/api/runs/"+runId+"/update", {showedUp: $scope.showedUp}).then(function(response){
+            $scope.score = response.data.score;
+        }, function(response){
+            console.log("Error: " + response.statusText);
+        });
+
+    }
 
     $scope.doScoring = function(x,y,z){
         var tile = $scope.tiles[x+','+y+','+z];
@@ -173,6 +208,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             }else if(total > 1){
                 // Show modal
                 $scope.open(x,y,z);
+                // Save data from modal when closing it
             }else if(total==1){
                 if(tile.items.gaps>0)
                     tile.scoredItems.gaps[0] = !tile.scoredItems.gaps[0];
@@ -184,13 +220,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     tile.scoredItems.intersections[0] = !tile.scoredItems.intersections[0];
                 else if(tile.scoredItems.dropTiles.length > 0)
                     tile.scoredItems.dropTiles[0] = !tile.scoredItems.dropTiles[0];
-            }
-            $http.post("/api/runs/"+runId+"/update", {tiles:[tile]}).then(function(response){
-                $scope.score = response.data.score;
-            }, function(response){
-                console.log("Error: " + response.statusText);
-            });
 
+                $http.post("/api/runs/"+runId+"/update", {tiles:[tile]}).then(function(response){
+                    $scope.score = response.data.score;
+                }, function(response){
+                    console.log("Error: " + response.statusText);
+                });
+
+            }
 
         }
     }
@@ -207,6 +244,49 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     return $scope.tiles[x+','+y+','+z];
                 }
             }
+        }).closed.then(function(result){
+            console.log("Closed modal");
+            $http.post("/api/runs/"+runId+"/update", {tiles:[$scope.tiles[x+','+y+','+z]]}).then(function(response){
+                $scope.score = response.data.score;
+            }, function(response){
+                console.log("Error: " + response.statusText);
+            });
+        });
+    };
+
+    $scope.saveEverything = function(){
+        var run = {}
+        run.height = $scope.height;
+        run.width = $scope.width;
+        run.length = $scope.length;
+        run.rescuedVictims = $scope.rescuedVictims;
+        run.tiles = $scope.tiles;
+        run.showedUp = $scope.showedUp;
+        run.LoPs = $scope.LoPs;
+
+        $http.post("/api/runs/"+runId+"/update", run).then(function(response){
+            $scope.score = response.data.score;
+        }, function(response){
+            console.log("Error: " + response.statusText);
+        });
+    };
+
+    $scope.sign = function(){
+        var run = {}
+        run.rescuedVictims = $scope.rescuedVictims;
+        run.tiles = $scope.tiles;
+        run.showedUp = $scope.showedUp;
+        run.LoPs = $scope.LoPs;
+        // Verified time by timekeeper
+        run.time = {};
+        run.time.minutes = $scope.minutes;;
+        run.time.seconds = $scope.seconds;
+
+        $http.post("/api/runs/"+runId+"/update", run).then(function(response){
+            $scope.score = response.data.score;
+            alert("Run signed");
+        }, function(response){
+            console.log("Error: " + response.statusText);
         });
     };
 
@@ -220,10 +300,6 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, tile) {
     $scope.tile = tile;
     $scope.ok = function () {
         $uibModalInstance.close();
-    };
-
-    $scope.cancel = function () {
-        $uibModalInstance.dismiss('cancel');
     };
 });
 

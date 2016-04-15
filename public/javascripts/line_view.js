@@ -44,7 +44,27 @@ app.controller('ddController', ['$scope', '$http', '$log', function($scope, $htt
     });
 
 
+    (function launchSocketIo() {
+        // launch socket.io
+        var socket = io.connect(window.location.origin);
+        socket.emit('subscribe', 'runs/' + runId);
+        socket.on('data', function(data) {
+            $scope.rescuedVictims = data.rescuedVictims;
 
+            for(var i = 0; i < data.tiles.length; i++){
+                $scope.tiles[data.tiles[i].x + ',' +
+                             data.tiles[i].y + ',' +
+                             data.tiles[i].z].scoredItems = data.tiles[i].scoredItems;
+         }
+            $scope.score = data.score;
+            $scope.showedUp = data.showedUp;
+            $scope.LoPs = data.LoPs;
+            $scope.minutes = data.time.minutes;;
+            $scope.seconds = data.time.seconds;
+            $scope.$apply();
+            console.log("Updated view from socket.io");
+        });
+    })();
 
     $scope.range = function(n){
         arr = [];
@@ -124,12 +144,3 @@ app.directive('tile', function() {
         }
     };
 });
-
-function launchSocketIo() {
-    // launch socket.io
-    var socket = io.connect(window.location.origin)
-    socket.emit('subscribe', 'runs/' + runId)
-    socket.on('data', function(data) {
-        console.log(data)
-    })
-}
