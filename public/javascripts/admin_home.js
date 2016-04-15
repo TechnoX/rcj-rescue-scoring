@@ -33,7 +33,7 @@ angular.module("AdminHome", []).controller("AdminHomeController", function ($sco
     })
   }
 
-  $scope.removeMap = function (competition) {
+  $scope.removeMap = function (map) {
     if (confirm("Are you sure you want to remove the map: " + map.name + '?')) {
       $http.get("/api/maps/" + map._id + "/delete").then(function (response) {
         console.log(response)
