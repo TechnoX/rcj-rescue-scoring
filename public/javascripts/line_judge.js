@@ -173,6 +173,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             }else if(total > 1){
                 // Show modal
                 $scope.open(x,y,z);
+                // Save data from modal when closing it
             }else if(total==1){
                 if(tile.items.gaps>0)
                     tile.scoredItems.gaps[0] = !tile.scoredItems.gaps[0];
@@ -184,13 +185,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     tile.scoredItems.intersections[0] = !tile.scoredItems.intersections[0];
                 else if(tile.scoredItems.dropTiles.length > 0)
                     tile.scoredItems.dropTiles[0] = !tile.scoredItems.dropTiles[0];
-            }
-            $http.post("/api/runs/"+runId+"/update", {tiles:[tile]}).then(function(response){
-                $scope.score = response.data.score;
-            }, function(response){
-                console.log("Error: " + response.statusText);
-            });
 
+                $http.post("/api/runs/"+runId+"/update", {tiles:[tile]}).then(function(response){
+                    $scope.score = response.data.score;
+                }, function(response){
+                    console.log("Error: " + response.statusText);
+                });
+
+            }
 
         }
     }
@@ -207,6 +209,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     return $scope.tiles[x+','+y+','+z];
                 }
             }
+        }).closed.then(function(result){
+            console.log("Closed modal");
+            $http.post("/api/runs/"+runId+"/update", {tiles:[$scope.tiles[x+','+y+','+z]]}).then(function(response){
+                $scope.score = response.data.score;
+            }, function(response){
+                console.log("Error: " + response.statusText);
+            });
         });
     };
 
@@ -223,6 +232,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, tile) {
     };
 
     $scope.cancel = function () {
+        
         $uibModalInstance.dismiss('cancel');
     };
 });
