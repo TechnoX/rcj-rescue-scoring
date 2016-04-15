@@ -14,7 +14,7 @@ app.controller('ddController', ['$scope', '$http', '$log', function($scope, $htt
     $scope.visType = "slider";
     $scope.z = 0;
     $scope.tiles = {};
-    $http.get("/api/runs/570eb85c682468cf3e194637?populate=true").then(function(response){
+    $http.get("/api/runs/"+runId+"?populate=true").then(function(response){
         $scope.height = response.data.height;
         $scope.sliderOptions.ceil = $scope.height - 1;
         $scope.width = response.data.width;
