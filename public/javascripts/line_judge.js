@@ -38,6 +38,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.tiles[response.data.tiles[i].x + ',' +
                          response.data.tiles[i].y + ',' +
                          response.data.tiles[i].z] = response.data.tiles[i];
+            if(response.data.tiles[i].scoredItems.dropTiles.length>0)
+                $scope.placedDropTiles++;
         }
 
         $scope.score = response.data.score;
