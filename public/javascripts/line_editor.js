@@ -26,25 +26,33 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
     };
     $scope.z = 0;
     $scope.tiles = {};
+    $scope.startTile = {x: 0, y: 0, z: 0};
+    $scope.numberOfDropTiles = 0;
+    $scope.height = 1;
+    $scope.sliderOptions.ceil = $scope.height - 1;
+    $scope.width = 1;
+    $scope.length = 1;
+    $scope.name = "Awesome Testbana";
 
+    if(mapId){
+        $http.get("/api/maps/" + mapId + "?populate=true").then(function(response){
+            for(var i = 0; i < response.data.tiles.length; i++){
+                $scope.tiles[response.data.tiles[i].x + ',' +
+                             response.data.tiles[i].y + ',' +
+                             response.data.tiles[i].z] = response.data.tiles[i];
+            }
+            $scope.startTile = response.data.startTile;
+            $scope.numberOfDropTiles = response.data.numberOfDropTiles;
+            $scope.height = response.data.height;
+            $scope.sliderOptions.ceil = $scope.height - 1;
+            $scope.width = response.data.width;
+            $scope.length = response.data.length;
+            $scope.name = response.data.name;
 
-    $http.get("/api/maps/" + mapId + "?populate=true").then(function(response){
-        for(var i = 0; i < response.data.tiles.length; i++){
-            $scope.tiles[response.data.tiles[i].x + ',' +
-                         response.data.tiles[i].y + ',' +
-                         response.data.tiles[i].z] = response.data.tiles[i];
-        }
-        $scope.startTile = response.data.startTile;
-        $scope.numberOfDropTiles = response.data.numberOfDropTiles;
-        $scope.height = response.data.height;
-        $scope.sliderOptions.ceil = $scope.height - 1;
-        $scope.width = response.data.width;
-        $scope.length = response.data.length;
-        $scope.name = response.data.name;
-
-    }, function(response){
-        console.log("Error: " + response.statusText);
-    });
+        }, function(response){
+            console.log("Error: " + response.statusText);
+        });
+    }
 
 
 
