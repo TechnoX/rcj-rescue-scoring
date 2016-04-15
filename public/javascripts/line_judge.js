@@ -78,6 +78,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.LoPs[index] = 0;
         if($scope.LoPs[index] < 0)
             $scope.LoPs[index] = 0;
+        $http.post("/api/runs/"+runId+"/update", {LoPs: $scope.LoPs}).then(function(response){
+            console.log(response);
+            $scope.score = response.data.score;
+        }, function(response){
+            console.log("Error: " + response.statusText);
+        });
+
     }
     $scope.increment = function(index){
         if($scope.LoPs[index])
@@ -86,6 +93,12 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.LoPs[index] = 1;
         if($scope.LoPs[index] >= 3)
             $timeout(function(){alert("The team *may* move to next drop tile now.");},20);
+        $http.post("/api/runs/"+runId+"/update", {LoPs: $scope.LoPs}).then(function(response){
+            console.log(response);
+            $scope.score = response.data.score;
+        }, function(response){
+            console.log("Error: " + response.statusText);
+        });
     }
 
     var tick = function() {
