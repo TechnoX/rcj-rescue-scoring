@@ -103,6 +103,28 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         });
     }
 
+    $scope.decVictims = function(){
+        $scope.rescuedVictims--;
+        if($scope.rescuedVictims <= 0)
+            $scope.rescuedVictims = 0;
+
+        $http.post("/api/runs/"+runId+"/update", {rescuedVictims: $scope.rescuedVictims}).then(function(response){
+            $scope.score = response.data.score;
+        }, function(response){
+            console.log("Error: " + response.statusText);
+        });
+
+    }
+    $scope.incVictims = function(){
+        $scope.rescuedVictims++;
+        $http.post("/api/runs/"+runId+"/update", {rescuedVictims: $scope.rescuedVictims}).then(function(response){
+            $scope.score = response.data.score;
+        }, function(response){
+            console.log("Error: " + response.statusText);
+        });
+
+    }
+
     var tick = function() {
         $scope.time += 1000;
         if($scope.startedTime)
@@ -229,11 +251,6 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, tile) {
     $scope.tile = tile;
     $scope.ok = function () {
         $uibModalInstance.close();
-    };
-
-    $scope.cancel = function () {
-        
-        $uibModalInstance.dismiss('cancel');
     };
 });
 

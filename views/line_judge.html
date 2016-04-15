@@ -25,9 +25,9 @@
       </p>
       <p ng-show="startedScoring">
         Number of Rescued Victims: <br>
-        <img src="/images/minus.png" alt="-" ng-click="rescuedVictims = rescuedVictims <= 0 ? 0 : rescuedVictims - 1" class="plusminus">
+        <img src="/images/minus.png" alt="-" ng-click="decVictims()" class="plusminus">
         <span class="count">{{rescuedVictims}}</span>
-        <img src="/images/plus.png" alt="+" ng-click="rescuedVictims = rescuedVictims + 1" class="plusminus">
+        <img src="/images/plus.png" alt="+" ng-click="incVictims()" class="plusminus">
       </p>
     </div>
   </div>
