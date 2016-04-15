@@ -15,7 +15,7 @@
         Checkpoints left to be placed: {{numberOfDropTiles - placedDropTiles}}
       </p>
       <p ng-show="startedScoring">
-        <label>Team did show up for start within their time: <input type="checkbox" ng-model="showedUp"></label>
+        <label>Team did show up for start within their time: <input type="checkbox" ng-model="showedUp" ng-change="changeShowedUp()"></label>
       </p>
       <p ng-repeat="dropTile in range(placedDropTiles) track by $index" ng-show="startedScoring">
         LoPs between {{$index==0?'start':('checkpoint ' + ($index))}} and checkpoint {{$index+1}}:<br>

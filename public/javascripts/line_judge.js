@@ -150,6 +150,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         return objects.gaps + objects.speedbumps + objects.obstacles + objects.intersections;
     }
 
+    $scope.changeShowedUp = function(){
+        $http.post("/api/runs/"+runId+"/update", {showedUp: $scope.showedUp}).then(function(response){
+            $scope.score = response.data.score;
+        }, function(response){
+            console.log("Error: " + response.statusText);
+        });
+
+    }
 
     $scope.doScoring = function(x,y,z){
         var tile = $scope.tiles[x+','+y+','+z];
