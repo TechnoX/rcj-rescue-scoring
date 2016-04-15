@@ -4,8 +4,8 @@
   <div class="row">
     <div class="col-sm-12">
       <p>
-        <button class="btn btn-primary" type="button" ng-click="startTime()">{{ startedTime ? 'Stop' : 'Start' }} time!</button>
-        <button class="btn btn-primary" type="button" ng-click="startScoring()">{{ startedScoring ? 'Stop' : 'Start' }} scoring!</button>
+        <button class="btn btn-primary" type="button" ng-click="toggleTime()">{{ startedTime ? 'Stop' : 'Start' }} time!</button>
+        <button class="btn btn-primary" type="button" ng-click="toggleScoring()">{{ startedScoring ? 'Stop' : 'Start' }} scoring!</button>
       </p>
       <p>
         Score: {{score}}<br>
@@ -53,12 +53,12 @@
       <strong>Verified time: </strong><br>
       <label>Minutes: <input type="number" min="0" max="8" ng-model="minutes"></label><br>
       <label>Seconds: <input type="number" min="0" max="60" ng-model="seconds"></label><br>
-      <button type="button">Sign!</button><br>
+      <button type="button" ng-click="sign()">Sign!</button><br>
       <strong>
         By clicking the "Sign!" button, you accept that the score {{score}}
         and time {{minutes}}:{{seconds<10?'0':''}}{{seconds}} are correct.<br>
-                                                              Your team also further undertakes to not appeal the score at a later stage.
-                                                              </strong>
+        Your team also further undertakes to not appeal the score at a later stage.
+      </strong>
     </div>
   </div>
 

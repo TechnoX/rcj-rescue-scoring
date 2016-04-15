@@ -64,13 +64,15 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 
 
-    $scope.startScoring = function(){
+    $scope.toggleScoring = function(){
         if($scope.numberOfDropTiles - $scope.placedDropTiles > 0) {
             alert("All checkpoints are not yet placed.");
             return;
         }
         // Start/stop scoring
         $scope.startedScoring = !$scope.startedScoring;
+        if(!$scope.startedScoring)
+            $scope.saveEverything();
     }
 
     $scope.decrement = function(index){
@@ -131,12 +133,15 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $timeout(tick, 1000);
     }
 
-    $scope.startTime = function(){
+    $scope.toggleTime = function(){
         // Start/stop timer
         $scope.startedTime = !$scope.startedTime;
         if($scope.startedTime){
             // Start the timer
             $timeout(tick, $scope.tickInterval);
+        }else{
+            // Save everything when you stop the time
+            $scope.saveEverything();
         }
     }
 
@@ -238,6 +243,42 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             }, function(response){
                 console.log("Error: " + response.statusText);
             });
+        });
+    };
+
+    $scope.saveEverything = function(){
+        var run = {}
+        run.height = $scope.height;
+        run.width = $scope.width;
+        run.length = $scope.length;
+        run.rescuedVictims = $scope.rescuedVictims;
+        run.tiles = $scope.tiles;
+        run.showedUp = $scope.showedUp;
+        run.LoPs = $scope.LoPs;
+
+        $http.post("/api/runs/"+runId+"/update", run).then(function(response){
+            $scope.score = response.data.score;
+        }, function(response){
+            console.log("Error: " + response.statusText);
+        });
+    };
+
+    $scope.sign = function(){
+        var run = {}
+        run.rescuedVictims = $scope.rescuedVictims;
+        run.tiles = $scope.tiles;
+        run.showedUp = $scope.showedUp;
+        run.LoPs = $scope.LoPs;
+        // Verified time by timekeeper
+        run.time = {};
+        run.time.minutes = $scope.minutes;;
+        run.time.seconds = $scope.seconds;
+
+        $http.post("/api/runs/"+runId+"/update", run).then(function(response){
+            $scope.score = response.data.score;
+            alert("Run signed");
+        }, function(response){
+            console.log("Error: " + response.statusText);
         });
     };
 
