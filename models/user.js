@@ -128,31 +128,33 @@ var User = mongoose.model('User', userSchema);
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
 module.exports.user = User;
 
+User.remove({}, function (err) {
 
-var testUser = new User({
-  username: process.env.user,
-  password: process.env.password,
-  admin: true
-});
-var testUser2 = new User({
-  username: "judge",
-  password: "judge",
-  admin: false
-});
+  var testUser = new User({
+    username: "admin",
+    password: "secretadminpassword",
+    admin   : true
+  });
+  var testUser2 = new User({
+    username: "judge",
+    password: "rcj2016judge",
+    admin   : false
+  });
 
-testUser.save(function (err, data) {
-  if (err) {
-    //  console.log(err);
-  }
-  else {
-    console.log("saved admin user for the first time, this will only get saved if it is a new installation");
-  }
-});
-testUser2.save(function (err, data) {
-  if (err) {
-    //  console.log(err);
-  }
-  else {
-    console.log("saved judge user for the first time, this will only get saved if it is a new installation");
-  }
-});
+  testUser.save(function (err, data) {
+    if (err) {
+      //  console.log(err);
+    }
+    else {
+      console.log("saved admin user for the first time, this will only get saved if it is a new installation");
+    }
+  });
+  testUser2.save(function (err, data) {
+    if (err) {
+      //  console.log(err);
+    }
+    else {
+      console.log("saved judge user for the first time, this will only get saved if it is a new installation");
+    }
+  });
+})
