@@ -124,12 +124,12 @@ app.directive('tile', function() {
         }
     };
 });
-
+launchSocketIo();
 function launchSocketIo() {
     // launch socket.io
-    var socket = io.connect(window.location.origin)
-    socket.emit('subscribe', 'runs/' + runId)
+    var socket = io.connect(window.location.origin);
+    socket.emit('subscribe', 'runs/' + runId);
     socket.on('data', function(data) {
-        console.log(data)
-    })
+        console.log(data);
+  });
 }
