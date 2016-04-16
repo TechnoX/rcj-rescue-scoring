@@ -14,57 +14,82 @@ app.controller('ddController', ['$scope', '$http', '$log', function($scope, $htt
     $scope.visType = "slider";
     $scope.z = 0;
     $scope.tiles = {};
-    $http.get("/api/runs/"+runId+"?populate=true").then(function(response){
-        $scope.height = response.data.height;
-        $scope.sliderOptions.ceil = $scope.height - 1;
-        $scope.width = response.data.width;
-        $scope.length = response.data.length;
-        $scope.team = response.data.team;
-        $scope.field = response.data.field;
-
-        $scope.numberOfDropTiles = response.data.numberOfDropTiles;;
-        $scope.rescuedVictims = response.data.rescuedVictims;
-
-        for(var i = 0; i < response.data.tiles.length; i++){
-            $scope.tiles[response.data.tiles[i].x + ',' +
-                         response.data.tiles[i].y + ',' +
-                         response.data.tiles[i].z] = response.data.tiles[i];
-        }
-
-        $scope.score = response.data.score;
-        $scope.showedUp = response.data.showedUp;
-        $scope.LoPs = response.data.LoPs;
-        // Verified time by timekeeper
-        $scope.minutes = response.data.time.minutes;;
-        $scope.seconds = response.data.time.seconds;
-
-        console.log($scope.tiles);
-    }, function(response){
-        console.log("Error: " + response.statusText);
-    });
-
+    if(typeof runId !== 'undefined'){
+        loadNewRun();
+    }
 
     (function launchSocketIo() {
         // launch socket.io
         var socket = io.connect(window.location.origin);
-        socket.emit('subscribe', 'runs/' + runId);
-        socket.on('data', function(data) {
-            $scope.rescuedVictims = data.rescuedVictims;
+        if(typeof runId !== 'undefined'){
+            socket.emit('subscribe', 'runs/' + runId);
+            socket.on('data', function(data) {
+                $scope.rescuedVictims = data.rescuedVictims;
 
-            for(var i = 0; i < data.tiles.length; i++){
-                $scope.tiles[data.tiles[i].x + ',' +
-                             data.tiles[i].y + ',' +
-                             data.tiles[i].z].scoredItems = data.tiles[i].scoredItems;
-         }
-            $scope.score = data.score;
-            $scope.showedUp = data.showedUp;
-            $scope.LoPs = data.LoPs;
-            $scope.minutes = data.time.minutes;;
-            $scope.seconds = data.time.seconds;
-            $scope.$apply();
-            console.log("Updated view from socket.io");
-        });
+                for(var i = 0; i < data.tiles.length; i++){
+                    $scope.tiles[data.tiles[i].x + ',' +
+                                 data.tiles[i].y + ',' +
+                                 data.tiles[i].z].scoredItems = data.tiles[i].scoredItems;
+                }
+                $scope.score = data.score;
+                $scope.showedUp = data.showedUp;
+                $scope.LoPs = data.LoPs;
+                $scope.minutes = data.time.minutes;;
+                $scope.seconds = data.time.seconds;
+                $scope.$apply();
+                console.log("Updated view from socket.io");
+            });
+        }
+
+        if(typeof fieldId !== 'undefined'){
+            socket.emit('subscribe', 'fields/' + fieldId);
+            socket.on('data', function(data) {
+                if(typeof runId === 'undefined' || runId != data.newRun){
+                    console.log("Judge changed to a new run");
+                    runId = data.newRun;
+                    loadNewRun();
+                }
+            });
+
+
+        }
+
     })();
+
+
+
+
+    function loadNewRun(){
+        $http.get("/api/runs/"+runId+"?populate=true").then(function(response){
+            $scope.height = response.data.height;
+            $scope.sliderOptions.ceil = $scope.height - 1;
+            $scope.width = response.data.width;
+            $scope.length = response.data.length;
+            $scope.team = response.data.team;
+            $scope.field = response.data.field;
+
+            $scope.numberOfDropTiles = response.data.numberOfDropTiles;;
+            $scope.rescuedVictims = response.data.rescuedVictims;
+
+            for(var i = 0; i < response.data.tiles.length; i++){
+                $scope.tiles[response.data.tiles[i].x + ',' +
+                             response.data.tiles[i].y + ',' +
+                             response.data.tiles[i].z] = response.data.tiles[i];
+            }
+
+            $scope.score = response.data.score;
+            $scope.showedUp = response.data.showedUp;
+            $scope.LoPs = response.data.LoPs;
+            // Verified time by timekeeper
+            $scope.minutes = response.data.time.minutes;;
+            $scope.seconds = response.data.time.seconds;
+
+            console.log($scope.tiles);
+        }, function(response){
+            console.log("Error: " + response.statusText);
+        });
+    }
+
 
     $scope.range = function(n){
         arr = [];
