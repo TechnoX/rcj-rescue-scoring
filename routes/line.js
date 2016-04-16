@@ -33,6 +33,12 @@ publicRouter.get('/:competitionid/score', function (req, res, next) {
 publicRouter.get('/view/:roundid', function (req, res) {
   res.render('line_view', {id : req.params.roundid})
 })
+publicRouter.get('/viewfield/:fieldid', function (req, res) {
+  res.render('line_view_field', {id : req.params.fieldid})
+})
+publicRouter.get('/viewcurrent', function (req, res) {
+  res.render('line_view_current')
+})
 
 privateRouter.get('/judge/:roundid', function (req, res) {
   res.render('line_judge', {id : req.params.roundid})
