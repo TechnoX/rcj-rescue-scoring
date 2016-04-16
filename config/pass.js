@@ -56,13 +56,13 @@ exports.ensureAuthenticated = function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
-    res.redirect('login');
+    res.redirect('/login');
 }
 
 // check to see that user is not logged in, check for visiting /login
 exports.ensureNotAuthenticated = function ensureNotAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
-        return res.redirect('home')
+        return res.redirect('/home')
     }
     next();
 }
@@ -82,7 +82,7 @@ exports.ensureAdmin = function ensureAdmin(req, res, next) {
     if (req.user && req.user.admin === true)
         next();
     else
-        res.redirect('login');
+        res.redirect('/login');
 }
 
 // Check for admin, json resp for api calls

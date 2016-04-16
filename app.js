@@ -107,7 +107,7 @@ app.use('/api/competitions', [apiCompetitionsRoute.public, pass.ensureLoginApi, 
 app.use('/login', pass.ensureNotAuthenticated, loginRoute)
 app.use('/logout', pass.ensureAuthenticated, function (req, res, next) {
   req.logout()
-  res.redirect('login')
+  res.redirect('/login')
 })
 app.use('/home', homeRoute)
 
@@ -142,7 +142,7 @@ app.use(function (err, req, res, next) {
 
   // is at base, send to login
   if (req.originalUrl === "/") {
-    res.redirect("login")
+    res.redirect("home")
   }
 
   /*

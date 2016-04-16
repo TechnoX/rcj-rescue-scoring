@@ -124,6 +124,7 @@ privateRouter.post('/:runid/update', function (req, res, next) {
           res.status(400).send({msg: "Could not save run"})
         } else {
           if (socketIo !== undefined) {
+            socketIo.sockets.in('runs/').emit('changed')
             socketIo.sockets.in('runs/' + dbrun._id).emit('data', dbrun)
             socketIo.sockets.in('fields/' + dbrun.field).emit('data', {newRun : dbrun._id})
           }

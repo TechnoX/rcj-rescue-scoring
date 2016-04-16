@@ -19,6 +19,8 @@ block location
 block content
   .row
     .col-md-offset-2.col-md-8
+      a(ng-href='/line/{{competitionId}}/score') Score
+
       h1 Runs
       table
         tr(ng-repeat='run in runs')

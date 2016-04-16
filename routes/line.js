@@ -20,6 +20,16 @@ publicRouter.get('/:competitionid', function (req, res, next) {
   res.render('line_competition', {id : id})
 })
 
+publicRouter.get('/:competitionid/score', function (req, res, next) {
+  var id = req.params.competitionid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  res.render('line_score', {id : id})
+})
+
 publicRouter.get('/view/:roundid', function (req, res) {
   res.render('line_view', {id : req.params.roundid})
 })

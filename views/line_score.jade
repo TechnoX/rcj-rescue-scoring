@@ -1,0 +1,113 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'LineScore'
+
+append scripts
+  script.
+    var competitionId = "#{id}"
+  script(src = '/components/datatables/media/js/jquery.dataTables.min.js')
+  script(src = '/components/angular-datatables/dist/angular-datatables.min.js')
+  script(src="/components/socket.io-client/socket.io.js")
+  script(src='/javascripts/line_score.js')
+
+append css
+  link(rel='stylesheet', href='/components/datatables/media/css/jquery.dataTables.min.css')
+  style(type='text/css').
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    table td {
+      padding: 7px;
+      border: #4e95a4 1px solid;
+    }
+
+    table thead {
+      background: #a8d1f3;
+    }
+
+    table tbody tr:hover {
+      background: #A0A0FF;
+    }
+
+block location
+  a(href='/home' style="color:#333333") Home
+  | >
+  a(href='/line' style="color:#333333") Line
+  | >
+  a(ng-href='/line/{{competitionId}}' style="color:#333333") {{competition.name}}
+  | >
+  a(ng-href='/line/{{competitionId}}/score' style="color:#333333") Score
+
+block content
+  .row
+    .col-md-offset-1.col-md-10
+      .row
+        .col-md-6
+          h3 Primary - Topp
+          table
+            thead
+              tr
+                th Placering
+                th Lag
+                th Totalpoäng
+                th Totaltid
+            tbody
+              tr(ng-repeat='run in primaryRunsTop track by $index')
+                td(ng-bind='$index + 1')
+                td(ng-bind='run.team.name')
+                td(ng-bind='run.score')
+                td {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+
+        .col-md-6
+          h3 Secondary - Topp
+          table
+            thead
+              tr
+                th Placering
+                th Lag
+                th Totalpoäng
+                th Totaltid
+            tbody
+              tr(ng-repeat='run in secondaryRunsTop track by $index')
+                td(ng-bind='$index + 1')
+                td(ng-bind='run.team.name')
+                td(ng-bind='run.score')
+                td {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+      .row
+        hr
+      .row
+        .col-md-6
+          h3 Primary - Alla rundor
+          table(datatable='ng')
+            thead
+              tr
+                th Lag
+                th Runda
+                th Poäng
+                th Tid
+            tbody
+              tr(ng-repeat='run in primaryRuns')
+                td(ng-bind='run.team.name')
+                td(ng-bind='run.round.name')
+                td(ng-bind='run.score')
+                td {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+
+        .col-md-6
+          h3 Secondary - Alla rundor
+          table(datatable='ng')
+            thead
+              tr
+                th Lag
+                th Runda
+                th Poäng
+                th Tid
+            tbody
+              tr(ng-repeat='run in secondaryRuns')
+                td(ng-bind='run.team.name')
+                td(ng-bind='run.round.name')
+                td(ng-bind='run.score')
+                td {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
