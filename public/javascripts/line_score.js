@@ -9,7 +9,8 @@ angular.module("LineScore", ['datatables']).controller("LineScoreController", fu
   })
 
   function updateRunList() {
-    $http.get("/api/competitions/" + competitionId + "/runs?populate=true").then(function (response) {
+    $http.get("/api/competitions/" + competitionId +
+              "/runs?populate=true").then(function (response) {
       var runs = response.data
       $scope.primaryRuns = []
       var primaryTeamRuns = {}
@@ -24,7 +25,7 @@ angular.module("LineScore", ['datatables']).controller("LineScoreController", fu
             $scope.primaryRuns.push(run)
             if (primaryTeamRuns[run.team._id] === undefined) {
               primaryTeamRuns[run.team._id] = {
-                team : {name : run.team.name},
+                team: {name: run.team.name},
                 runs: [run]
               }
             } else {
@@ -38,7 +39,7 @@ angular.module("LineScore", ['datatables']).controller("LineScoreController", fu
             $scope.secondaryRuns.push(run)
             if (secondaryTeamRuns[run.team._id] === undefined) {
               secondaryTeamRuns[run.team._id] = {
-                team : {name : run.team.name},
+                team: {name: run.team.name},
                 runs: [run]
               }
             } else {
@@ -56,14 +57,22 @@ angular.module("LineScore", ['datatables']).controller("LineScoreController", fu
       $scope.primaryRunsTop = []
       for (var i in primaryTeamRuns) {
         var teamRun = primaryTeamRuns[i]
-        $scope.primaryRunsTop.push({team : {name : teamRun.team.name}, score : teamRun.sumScore, time : teamRun.sumTime})
+        $scope.primaryRunsTop.push({
+          team : {name: teamRun.team.name},
+          score: teamRun.sumScore,
+          time : teamRun.sumTime
+        })
       }
       $scope.primaryRunsTop.sort(sortRuns)
 
       $scope.secondaryRunsTop = []
       for (var i in secondaryTeamRuns) {
         var teamRun = secondaryTeamRuns[i]
-        $scope.secondaryRunsTop.push({team : {name : teamRun.team.name}, score : teamRun.sumScore, time : teamRun.sumTime})
+        $scope.secondaryRunsTop.push({
+          team : {name: teamRun.team.name},
+          score: teamRun.sumScore,
+          time : teamRun.sumTime
+        })
       }
       $scope.secondaryRunsTop.sort(sortRuns)
     })
@@ -73,7 +82,7 @@ angular.module("LineScore", ['datatables']).controller("LineScoreController", fu
     // launch socket.io
     var socket = io.connect(window.location.origin)
     socket.emit('subscribe', 'runs/')
-    socket.on('changed', function() {
+    socket.on('changed', function () {
       updateRunList()
     })
   }
