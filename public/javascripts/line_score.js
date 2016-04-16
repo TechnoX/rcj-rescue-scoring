@@ -54,14 +54,14 @@ angular.module("LineScore", ['datatables']).controller("LineScoreController", fu
       $scope.primaryRunsTop = []
       for (var i in primaryTeamRuns) {
         var teamRun = primaryTeamRuns[i]
-        $scope.primaryRunsTop .push({team : {name : teamRun.team.name}, score : teamRun.sumScore, time : teamRun.sumTime})
+        $scope.primaryRunsTop.push({team : {name : teamRun.team.name}, score : teamRun.sumScore, time : teamRun.sumTime})
       }
       $scope.primaryRunsTop.sort(sortRuns)
 
       $scope.secondaryRunsTop = []
       for (var i in secondaryTeamRuns) {
         var teamRun = secondaryTeamRuns[i]
-        $scope.secondaryRunsTop .push({team : {name : teamRun.team.name}, score : teamRun.sumScore, time : teamRun.sumTime})
+        $scope.secondaryRunsTop.push({team : {name : teamRun.team.name}, score : teamRun.sumScore, time : teamRun.sumTime})
       }
       $scope.secondaryRunsTop.sort(sortRuns)
     })
