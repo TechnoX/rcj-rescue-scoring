@@ -44,11 +44,11 @@ app.controller('ddController', ['$scope', '$http', '$log', function($scope, $htt
         if(typeof fieldId !== 'undefined'){
             socket.emit('subscribe', 'fields/' + fieldId);
             socket.on('data', function(data) {
-                if(typeof runId === 'undefined' || runId != data.newRun){
+//                if(typeof runId === 'undefined') || runId != data.newRun){ // TODO: FIX!
                     console.log("Judge changed to a new run");
                     runId = data.newRun;
                     loadNewRun();
-                }
+//                }
             });
 
 
