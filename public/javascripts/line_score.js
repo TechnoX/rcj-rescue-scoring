@@ -50,6 +50,8 @@ angular.module("LineScore", ['datatables']).controller("LineScoreController", fu
           }
         }
       }
+      $scope.primaryRuns.sort(sortRuns)
+      $scope.secondaryRuns.sort(sortRuns)
 
       $scope.primaryRunsTop = []
       for (var i in primaryTeamRuns) {
