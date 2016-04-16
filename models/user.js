@@ -128,7 +128,7 @@ var User = mongoose.model('User', userSchema);
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
 module.exports.user = User;
 
-User.remove({}, function (err) {
+/*User.remove({}, function (err) {
 
   var testUser = new User({
     username: "admin",
@@ -157,4 +157,4 @@ User.remove({}, function (err) {
       console.log("saved judge user for the first time, this will only get saved if it is a new installation");
     }
   });
-})
+})*/
