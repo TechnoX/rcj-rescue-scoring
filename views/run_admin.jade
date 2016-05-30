@@ -1,0 +1,38 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'RunAdmin'
+
+append scripts
+  script.
+    var competitionId = "#{id}"
+  script(src='/javascripts/run_admin.js')
+
+block location
+  a(href='/home' style="color:#333333") Home
+  | >
+  a(href='/admin' style="color:#333333") Admin
+  | >
+  a(ng-href='/admin/{{competitionId}}' style="color:#333333") {{competition.name}}
+  | >
+  a(ng-href='/admin/{{competitionId}}/runs' style="color:#333333") Runs
+
+block content
+  .row
+    .col-md-offset-2.col-md-8
+      h1 Runs
+      table
+        tr(ng-repeat='run in runs')
+          td(ng-bind='run.round.name')
+          td(ng-bind='run.team.name')
+          td(ng-bind='run.field.name')
+          td
+            a(href="" ng-click='removeRun(run)') Delete
+
+      h1 Add run
+      select(ng-model='run.round' ng-options='round as round.name for round in rounds')
+      select(ng-model='run.team' ng-options='team as team.name for team in teams')
+      select(ng-model='run.map' ng-options='map as map.name for map in maps')
+      select(ng-model='run.field' ng-options='field as field.name for field in fields')
+      button(ng-click='addRun()') Add Run

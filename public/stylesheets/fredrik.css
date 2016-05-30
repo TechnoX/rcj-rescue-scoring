@@ -1,0 +1,137 @@
+.row{
+    margin-right: 15px;
+    margin-left: 15px;
+}
+
+.lvl-over {
+    /* applied to a drop target when a draggable object is over it */
+    border: 2px dashed black !important;
+}
+
+.lvl-target {
+    /* applied to all drop targets when a drag operation begins, used to indicate drop targets on a page */
+    background-color: #ddd;
+    opacity: .5;
+}
+
+[draggable] {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    /* Required to make elements draggable in old WebKit */
+    -khtml-user-drag: element;
+    -webkit-user-drag: element;
+    cursor: move;
+    border:1px solid black;
+}
+
+
+.slot {
+    margin-right:2px;
+    margin-top:2px;
+    width:40px;
+    height:40px;
+    display:inline-block;
+    border: none;
+    background-color: whitesmoke;
+/*    background-color: lightgreen;*/
+    float: left;
+    position: relative;
+}
+
+tile{
+    width: 40px;
+    height: 40px;
+    margin: 0px;
+    padding: 0px;
+    display: inline-block;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}
+
+.tile-image{
+    width: 40px;
+    height: 40px;
+    z-index: 1;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+/*    left: -1px;
+    top: -1px;
+*/
+    vertical-align: bottom;
+}
+
+.tools-image{
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+}
+
+rzslider{
+    width: 200px;
+/*    width: 80%;*/
+}
+
+.vertical-sliders {
+    margin: 0;
+}
+.vertical-sliders > div {
+    height: 250px;
+}
+rzslider.rz-vertical {
+    height: 250px;
+}
+
+
+
+.drop-tile{
+    border: 2px solid orange;
+}
+
+.rot0 {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+}
+
+.rot90 {
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+.rot180 {
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
+.rot270 {
+    -webkit-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    transform: rotate(270deg);
+}
+
+.confirmation {
+    width: 300px;
+    border: 1px dashed black;
+}
+.plusminus{
+    box-sizing: content-box;
+    width: 2em;
+    padding: 0px 15px;
+}
+.count{
+    font-size: 2em;
+}

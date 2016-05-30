@@ -1,0 +1,11 @@
+//- -*- tab-width: 2 -*-
+doctype html
+- var ngAppDef = ""
+- var ngInit = ""
+block vars
+html(style='height:100%; overflow-y:scroll;' ng-app='#{ngAppDef}' ng-init='#{ngInit}')
+    include ./head.jade
+    body(style='background-color:#A8D1F3;height:100%' ng-controller='#{ngAppDef}Controller')
+        .container(style='background-color:#FFFFFF;border-left: 1px solid #89B7DD;border-right: 1px solid #89B7DD;padding:0px;min-height: 100%;')
+            include ./navbar.jade
+            block content

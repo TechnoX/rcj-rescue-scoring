@@ -1,0 +1,49 @@
+.DS_Store
+
+logs/*
+public/components/*
+node_modules/*
+
+.idea/
+
+#MEAN STACK 
+
+lib-cov
+*.seed
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.gz
+
+pids
+logs
+results
+node_modules
+
+npm-debug.log
+
+#END MEAN STACK
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+*~
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows shortcuts
+*.lnk

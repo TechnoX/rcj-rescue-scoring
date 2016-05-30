@@ -1,0 +1,17 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'Home'
+
+append scripts
+  script(src='/javascripts/home.js')
+
+block location
+  a(href='/home' style="color:#333333") Home
+
+block content
+  .row
+    .col-md-offset-2.col-md-8
+      a(href='/line') Line
+      a(href='/admin') Admin
