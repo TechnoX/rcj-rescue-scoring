@@ -353,7 +353,7 @@ var tileTypes = [
   {
     "image": "tile-28.png",
     "gaps": 0,
-    "intersections": 2,
+    "intersections": 1,
     "paths": {
       "left": "right",
       "right": "left"
@@ -373,7 +373,7 @@ var tileTypes = [
   {
     "image": "tile-30.png",
     "gaps": 0,
-    "intersections": 2,
+    "intersections": 1,
     "paths": {
       "left": "right",
       "bottom": "top",
@@ -385,7 +385,7 @@ var tileTypes = [
   {
     "image": "tile-31.png",
     "gaps": 0,
-    "intersections": 2,
+    "intersections": 1,
     "paths": {
       "left": "right",
       "bottom": "right",
@@ -445,7 +445,7 @@ var tileTypes = [
   {
     "image": "tile-36.png",
     "gaps": 0,
-    "intersections": 2,
+    "intersections": 1,
     "paths": {
       "left": "right",
       "top": "bottom",
