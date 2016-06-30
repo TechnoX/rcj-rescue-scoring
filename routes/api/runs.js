@@ -161,10 +161,23 @@ adminRouter.post('/createrun', function (req, res) {
   var fieldId = run.field
   var competitionId = run.competition
 
-  if (!ObjectId.isValid(mapId) || !ObjectId.isValid(roundId) || !ObjectId.isValid(teamId) ||
-      !ObjectId.isValid(fieldId) || !ObjectId.isValid(competitionId)) {
-    return next()
+  if (!ObjectId.isValid(mapId)) {
+    return res.status(400).send({ msg: "mapId is not a valid ObjectId" });
+  
+  } else if (!ObjectId.isValid(roundId)) {
+    return res.status(400).send({ msg: "roundId is not a valid ObjectId" });
+  
+  } else if (!ObjectId.isValid(teamId)) {
+    return res.status(400).send({ msg: "teamId is not a valid ObjectId" });
+
+  } else if (!ObjectId.isValid(fieldId)) {
+    return res.status(400).send({ msg: "fieldId is not a valid ObjectId" });
+  
+  } else if (!ObjectId.isValid(competitionId)) {
+    return res.status(400).send({ msg: "competitionId is not a valid ObjectId" });
   }
+
+
 
   var map
   var round

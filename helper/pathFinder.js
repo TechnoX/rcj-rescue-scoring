@@ -16,7 +16,12 @@ module.exports.findPath = function (map) {
     }
   }
 
+  logger.info("tiles", tiles);
+  logger.info("map.startTile", map.startTile);
+
   var startTile = tiles[map.startTile.x + ',' + map.startTile.y + ',' + map.startTile.z]
+
+  logger.info("startTile", startTile);
 
   var startDir = ""
   var startPaths = startTile.tileType.paths
