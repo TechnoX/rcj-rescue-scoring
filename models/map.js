@@ -176,7 +176,7 @@ var tileTypes = [
   },
   {
     "image": "tile-11.png",
-    "gaps": 2,
+    "gaps": 0,
     "intersections": 0,
     "paths": {
       "left": "right",
@@ -217,7 +217,7 @@ var tileTypes = [
   {
     "image": "tile-15.png",
     "gaps": 0,
-    "intersections": 1,
+    "intersections": 0,
     "paths": {
       "left": "top",
       "top": "left",
@@ -228,7 +228,7 @@ var tileTypes = [
   {
     "image": "tile-16.png",
     "gaps": 0,
-    "intersections": 1,
+    "intersections": 0,
     "paths": {
       "left": "right",
       "right": "top",
@@ -258,7 +258,7 @@ var tileTypes = [
   },
   {
     "image": "tile-19.png",
-    "gaps": 1,
+    "gaps": 0,
     "intersections": 0,
     "paths": {
       "left": "right",
@@ -270,7 +270,7 @@ var tileTypes = [
   },
   {
     "image": "tile-20.png",
-    "gaps": 1,
+    "gaps": 0,
     "intersections": 0,
     "paths": {
       "left": "right",
@@ -343,7 +343,7 @@ var tileTypes = [
   {
     "image": "tile-27.png",
     "gaps": 0,
-    "intersections": 1,
+    "intersections": 0,
     "paths": {
       "bottom": "right",
       "right": "bottom"
@@ -353,7 +353,7 @@ var tileTypes = [
   {
     "image": "tile-28.png",
     "gaps": 0,
-    "intersections": 1,
+    "intersections": 2,
     "paths": {
       "left": "right",
       "right": "left"
@@ -363,7 +363,7 @@ var tileTypes = [
   {
     "image": "tile-29.png",
     "gaps": 0,
-    "intersections": 1,
+    "intersections": 0,
     "paths": {
       "left": "bottom",
       "bottom": "left"
@@ -373,7 +373,7 @@ var tileTypes = [
   {
     "image": "tile-30.png",
     "gaps": 0,
-    "intersections": 1,
+    "intersections": 2,
     "paths": {
       "left": "right",
       "bottom": "top",
@@ -385,7 +385,7 @@ var tileTypes = [
   {
     "image": "tile-31.png",
     "gaps": 0,
-    "intersections": 1,
+    "intersections": 2,
     "paths": {
       "left": "right",
       "bottom": "right",
@@ -397,7 +397,7 @@ var tileTypes = [
   {
     "image": "tile-32.png",
     "gaps": 0,
-    "intersections": 1,
+    "intersections": 0,
     "paths": {
       "left": "bottom",
       "bottom": "top",
@@ -409,7 +409,7 @@ var tileTypes = [
   {
     "image": "tile-33.png",
     "gaps": 0,
-    "intersections": 1,
+    "intersections": 0,
     "paths": {
       "left": "top",
       "top": "left",
@@ -421,7 +421,7 @@ var tileTypes = [
   {
     "image": "tile-34.png",
     "gaps": 0,
-    "intersections": 1,
+    "intersections": 0,
     "paths": {
       "left": "top",
       "top": "left",
@@ -445,7 +445,7 @@ var tileTypes = [
   {
     "image": "tile-36.png",
     "gaps": 0,
-    "intersections": 1,
+    "intersections": 2,
     "paths": {
       "left": "right",
       "top": "bottom",
@@ -453,6 +453,42 @@ var tileTypes = [
       "bottom": "top"
     },
     "_id": "570c27c3f5a9dabe23f3afb4"
+  },
+  {
+    "image": "tile-37.png",
+    "gaps": 0,
+    "intersections": 1,
+    "paths": {
+      "left": "right",
+      "top": "bottom",
+      "right": "left",
+      "bottom": "top"
+    },
+    "_id": "570c27c3f5a9dabe23f3afb5"
+  },
+  {
+    "image": "tile-38.png",
+    "gaps": 0,
+    "intersections": 1,
+    "paths": {
+      "left": "right",
+      "top": "bottom",
+      "right": "left",
+      "bottom": "top"
+    },
+    "_id": "570c27c3f5a9dabe23f3afb6"
+  },
+  {
+    "image": "tile-39.png",
+    "gaps": 0,
+    "intersections": 0,
+    "paths": {
+      "left": "right",
+      "top": "bottom",
+      "right": "left",
+      "bottom": "top"
+    },
+    "_id": "570c27c3f5a9dabe23f3afb7"
   }
 ]
 
