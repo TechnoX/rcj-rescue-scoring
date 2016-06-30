@@ -169,7 +169,6 @@ adminRouter.post('/createrun', function (req, res) {
   
   } else if (!ObjectId.isValid(teamId)) {
     return res.status(400).send({ msg: "teamId is not a valid ObjectId" });
-  }
 
   } else if (!ObjectId.isValid(fieldId)) {
     return res.status(400).send({ msg: "fieldId is not a valid ObjectId" });
