@@ -163,7 +163,8 @@ adminRouter.post('/createrun', function (req, res) {
 
   if (!ObjectId.isValid(mapId) || !ObjectId.isValid(roundId) || !ObjectId.isValid(teamId) ||
       !ObjectId.isValid(fieldId) || !ObjectId.isValid(competitionId)) {
-    return next()
+    //return next()
+    return res.status(400).send({ msg: "malformed input" });
   }
 
   var map
