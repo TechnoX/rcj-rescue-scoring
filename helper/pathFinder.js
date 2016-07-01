@@ -52,7 +52,7 @@ function traverse(curTile, entryDir, tiles, map, index) {
   if (nextTile === undefined) {
     return
   }
-
+    logger.info("Goto ", nextTile.x , nextTile.y, nextTile.z);
   traverse(nextTile, flipDir(exitDir(curTile, entryDir)), tiles, map, index + 1)
 }
 
