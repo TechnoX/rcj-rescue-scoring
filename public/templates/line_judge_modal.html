@@ -3,7 +3,7 @@
 </div>
 <div class="modal-body">
   <ul>
-    <li ng-show="tile.dropTile">
+    <li ng-show="tile.scoredItems.dropTiles.length > 0">
       <label>Reach checkpoint (note this is not attempts!):</label>
       <ul>
         <li ng-repeat="dropTile in tile.scoredItems.dropTiles track by $index">
