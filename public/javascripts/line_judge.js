@@ -8,6 +8,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.z = 0;
     $scope.placedDropTiles = 0;
+    $scope.actualUsedDropTiles = 0; // Count droptiles twice that will be passed two times
     $scope.startedScoring = false;
     $scope.startedTime = false;
     $scope.time = 0;
@@ -38,8 +39,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.tiles[response.data.tiles[i].x + ',' +
                          response.data.tiles[i].y + ',' +
                          response.data.tiles[i].z] = response.data.tiles[i];
-            if(response.data.tiles[i].scoredItems.dropTiles.length>0)
+            if(response.data.tiles[i].scoredItems.dropTiles.length>0){
                 $scope.placedDropTiles++;
+		$scope.actualUsedDropTile += response.data.tiles[i].scoredItems.dropTiles.length;
+	    }
         }
 
         $scope.score = response.data.score;
@@ -175,19 +178,22 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 alert("Place drop markers on tiles without scoring elements (rule 3.3.4)");
             }else{
                 if($scope.numberOfDropTiles - $scope.placedDropTiles > 0) {
-                    if(tile.scoredItems.dropTiles.length > 0){
+		    if(tile.scoredItems.dropTiles.length > 0){
                         tile.scoredItems.dropTiles = [];
                         $scope.placedDropTiles--;
+			$scope.actualUsedDropTiles -= tile.index.length;
                     }else{
                         tile.scoredItems.dropTiles = [];
                         for(var i = 0; i < tile.index.length; i++){
                             tile.scoredItems.dropTiles.push(false);
                         }
                         $scope.placedDropTiles++;
+			$scope.actualUsedDropTiles += tile.index.length;
                     }
                 }else if(tile.scoredItems.dropTiles.length > 0){
                     tile.scoredItems.dropTiles = [];
                     $scope.placedDropTiles--;
+		    $scope.actualUsedDropTiles -= tile.index.length;
                 }
                 $http.post("/api/runs/"+runId+"/update", {tiles:[tile]}).then(function(response){
                     $scope.score = response.data.score;
