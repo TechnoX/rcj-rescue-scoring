@@ -41,7 +41,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                          response.data.tiles[i].z] = response.data.tiles[i];
             if(response.data.tiles[i].scoredItems.dropTiles.length>0){
                 $scope.placedDropTiles++;
-		$scope.actualUsedDropTile += response.data.tiles[i].scoredItems.dropTiles.length;
+		$scope.actualUsedDropTiles += response.data.tiles[i].scoredItems.dropTiles.length;
 	    }
         }
 
