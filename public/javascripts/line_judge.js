@@ -177,23 +177,19 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             if(total > 0){
                 alert("Place drop markers on tiles without scoring elements (rule 3.3.4)");
             }else{
-                if($scope.numberOfDropTiles - $scope.placedDropTiles > 0) {
-		    if(tile.scoredItems.dropTiles.length > 0){
-                        tile.scoredItems.dropTiles = [];
-                        $scope.placedDropTiles--;
-			$scope.actualUsedDropTiles -= tile.index.length;
-                    }else{
-                        tile.scoredItems.dropTiles = [];
-                        for(var i = 0; i < tile.index.length; i++){
-                            tile.scoredItems.dropTiles.push(false);
-                        }
-                        $scope.placedDropTiles++;
-			$scope.actualUsedDropTiles += tile.index.length;
-                    }
-                }else if(tile.scoredItems.dropTiles.length > 0){
+		// If this tile already contains a droptile, we should remove it
+		if(tile.scoredItems.dropTiles.length > 0){
                     tile.scoredItems.dropTiles = [];
                     $scope.placedDropTiles--;
 		    $scope.actualUsedDropTiles -= tile.index.length;
+                }// If this tile doesn't contain a droptile, we should add one, IF we have any left to place
+		else if($scope.numberOfDropTiles - $scope.placedDropTiles > 0) {
+                    tile.scoredItems.dropTiles = [];
+                    for(var i = 0; i < tile.index.length; i++){
+                        tile.scoredItems.dropTiles.push(false);
+                    }
+                    $scope.placedDropTiles++;
+		    $scope.actualUsedDropTiles += tile.index.length;
                 }
                 $http.post("/api/runs/"+runId+"/update", {tiles:[tile]}).then(function(response){
                     $scope.score = response.data.score;
