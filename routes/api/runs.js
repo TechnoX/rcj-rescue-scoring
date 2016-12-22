@@ -115,6 +115,7 @@ privateRouter.post('/:runid/update', function (req, res, next) {
           }
         }
       }
+
       dbrun.score = scoreCalculator.calculateScore(dbrun)
 
       dbrun.save(function (err) {
@@ -269,7 +270,7 @@ adminRouter.post('/createrun', function (req, res) {
         tiles            : tiles,
         startTile        : map.startTile,
         numberOfDropTiles: map.numberOfDropTiles,
-        LoPs             : filledArray(map.numberOfDropTiles, 0),
+        LoPs             : filledArray(map.numberOfDropTiles*2, 0),
         rescuedVictims   : 0,
         score            : 0,
         showedUp         : false,
