@@ -59,18 +59,20 @@ module.exports.calculateScore = function (run) {
         if (tile.scoredItems.dropTiles[j]) {
           var count
           var index = dropTileIndexes.indexOf(tile.index[j])
+          while(run.LoPs[index]==null){
+              run.LoPs.push(0)
+          }
           if (index == 0) {
             count = tile.index[j]
           } else {
             count = tile.index[j] - dropTileIndexes[index - 1]
           }
-          score += Math.max(count * (3 - run.LoPs[index]), 0)
+         score += Math.max(count * (3 - run.LoPs[index]), 0)
         }
       }
     }
   }
 
   score += run.rescuedVictims * 40
-
   return score
 }
