@@ -110,14 +110,18 @@ privateRouter.post('/:runid/update', function (req, res, next) {
                   dbtile.scoredItems.dropTiles = tile.scoredItems.dropTiles
                 }
               }
+	      console.log("Tile: ")
+	      console.log(dbtile)
               break
             }
           }
         }
       }
-
+      console.log(dbrun.score)
+      console.log(dbrun.LoPs)
+      console.log("Before")
       dbrun.score = scoreCalculator.calculateScore(dbrun)
-
+      console.log("After")
       dbrun.save(function (err) {
         if (err) {
           logger.error(err)
