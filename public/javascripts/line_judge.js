@@ -247,7 +247,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 }
             }
         }).closed.then(function(result){
-            console.log("Closed modal");
             $http.post("/api/runs/"+runId+"/update", {tiles:[$scope.tiles[x+','+y+','+z]]}).then(function(response){
                 $scope.score = response.data.score;
             }, function(response){
