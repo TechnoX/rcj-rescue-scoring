@@ -222,8 +222,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     tile.scoredItems.intersections[0] = !tile.scoredItems.intersections[0];
                 else if(tile.scoredItems.dropTiles.length > 0)
                     tile.scoredItems.dropTiles[0] = !tile.scoredItems.dropTiles[0];
-		console.log(runId);
-		console.log(tile);
+
                 $http.post("/api/runs/"+runId+"/update", {tiles:[tile]}).then(function(response){
                     $scope.score = response.data.score;
                 }, function(response){
