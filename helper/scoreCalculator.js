@@ -57,14 +57,14 @@ module.exports.calculateScore = function (run) {
     if (tile.scoredItems.dropTiles !== undefined) {
       for (var j in tile.scoredItems.dropTiles) {
         if (tile.scoredItems.dropTiles[j]) {
-          var count
+          var couNt
           var index = dropTileIndexes.indexOf(tile.index[j])
-	  console.log(run.LoPs);
+	  logger.info(run.LoPs);
           while(run.LoPs[index]==null){
               run.LoPs.push(0)
           }
-	  console.log(run.LoPs);
-	  console.log(index);
+	  logger.info(run.LoPs);
+	  logger.info(index);
           if (index == 0) {
             count = tile.index[j]
           } else {
