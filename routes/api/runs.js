@@ -77,7 +77,7 @@ privateRouter.post('/:runid/update', function (req, res, next) {
         dbrun.time.seconds = run.time.seconds
       }
       if (run.tiles !== undefined) {
-	var numOfDropTiles = 0;
+
         for (var i in run.tiles) {
           var tile = run.tiles[i]
 
@@ -108,7 +108,6 @@ privateRouter.post('/:runid/update', function (req, res, next) {
                 }
                 if (tile.scoredItems.dropTiles !== undefined) {
                   dbtile.scoredItems.dropTiles = tile.scoredItems.dropTiles
-		  numOfDropTiles += tile.scoredItems.dropTiles.length
                 }
               }
               break
@@ -116,10 +115,6 @@ privateRouter.post('/:runid/update', function (req, res, next) {
           }
         }
       }
-      while(dbrun.LoPs.length < numOfDropTiles){
-        dbrun.LoPs.push(0);
-      }
-
 
       dbrun.score = scoreCalculator.calculateScore(dbrun)
 
