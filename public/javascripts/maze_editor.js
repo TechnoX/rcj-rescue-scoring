@@ -88,6 +88,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
     }
 
     $scope.open = function(x,y,z) {
+	console.log("opens", x,y,z);
         var modalInstance = $uibModal.open({
             animation: true,
             templateUrl: '/templates/maze_editor_modal.html',
@@ -103,7 +104,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
                     return $scope.startTile.x == x && $scope.startTile.y == y && $scope.startTile.z == z;
                 }
             }
-        });/*.closed.then(function(isStart){
+        });
+
+	console.log(modalInstance);
+/*.closed.then(function(isStart){
 	    console.log(isStart);
 	    if(isStart){
                 $scope.startTile.x = x;
