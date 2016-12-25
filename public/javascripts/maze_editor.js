@@ -74,7 +74,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 	// If wall 
 	if(isWall){
 	    if(!cell){
-		cell.isWall = true;
+		$scope.cells[x+','+y+','+z] = {isWall: true};
 	    }else{
 		cell.isWall = !cell.isWall;
 	    }
