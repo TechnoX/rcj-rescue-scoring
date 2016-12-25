@@ -21,6 +21,10 @@ tr td:nth-child(even) {
   background-color: black;
 }
 
+.tile{
+  background-color: lightblue;
+}
+
 rzslider{
     width: 200px;
 /*    width: 80%;*/
