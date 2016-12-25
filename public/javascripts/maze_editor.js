@@ -86,7 +86,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 		$scope.cells[x+','+y+','+z] = {isTile: true};
 	    }
 	    console.log("Before open");
-	    open(x,y,z);
+	    $scope.open(x,y,z);
 	    console.log("After open");
 	}
     }
