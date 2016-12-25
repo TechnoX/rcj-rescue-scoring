@@ -70,7 +70,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
     $scope.cellClick = function(x,y,z,isWall,isTile){
 
 	var cell = $scope.cells[x+','+y+','+z];
-
+	console.log("cellClick");
+	console.log(cell);
 	// If wall 
 	if(isWall){
 	    if(!cell){
@@ -80,10 +81,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 	    }
 	}
 	else if(isTile){
+	    console.log("isTile", isTile);
 	    if(!cell){
 		$scope.cells[x+','+y+','+z] = {isTile: true};
 	    }
+	    console.log("Before open");
 	    open(z,y,z);
+	    console.log("After open");
 	}
     }
 
