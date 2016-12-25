@@ -101,13 +101,19 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
                     return $scope.startTile.x == x && $scope.startTile.y == y && $scope.startTile.z == z;
                 }
             }
-        }).closed.then(function(isStart){
-	    console.log("Closed: ",isStart);
+        });
+
+
+
+        modalInstance.result.then(function(isStart) {
+            console.log("Closed: ",isStart);
 	    if(isStart){
                 $scope.startTile.x = x;
                 $scope.startTile.y = y;
                 $scope.startTile.z = z;
             }
+        }, function () {
+            console.log('Modal dismissed at: ' + new Date());
         });
     };
 
