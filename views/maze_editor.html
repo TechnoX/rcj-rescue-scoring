@@ -19,7 +19,8 @@
     <div class="col-md-10">
       <table>
       <tr ng-repeat="r in range(2*length + 1)">
-	<td ng-repeat="c in range(2*width + 1)" ng-class="{'wallspot': $odd != $parent.$odd, 'tile': $odd && $parent.$odd}"></td>
+	<td ng-repeat="c in range(2*width + 1)" ng-class="{'wallspot': $odd != $parent.$odd, 'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall}"
+	    ng-click="cellClick(c, r, z, $odd != $parent.$odd, $odd && $parent.$odd)"></td>
       </tr>
       </table>
     </div>

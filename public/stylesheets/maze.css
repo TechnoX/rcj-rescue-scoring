@@ -17,7 +17,7 @@ tr td:nth-child(even) {
   width: 40px;
 }
 
-.wallspot:hover{
+.wall, .wallspot:hover{
   background-color: black;
 }
 

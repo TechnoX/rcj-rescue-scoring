@@ -21,6 +21,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
     $scope.width = 1;
     $scope.length = 1;
     $scope.name = "Awesome Testbana";
+    $scope.cells = {};
+
+
 
     if(mapId){
         $http.get("/api/maps/" + mapId + "?populate=true").then(function(response){
@@ -63,5 +66,23 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
             console.log("Error: " + response.statusText);
         });
     }
+
+    $scope.cellClick = function(x,y,z,isWall,isTile){
+
+	var cell = $scope.cells[x+','+y+','+z];
+
+	// If wall 
+	if(isWall){
+	    if(!cell){
+		cell.isWall = true;
+	    }else{
+		cell.isWall = !cell.isWall;
+	    }
+	}
+	else if(isTile){
+
+	}
+    }
+
 
 }]);
