@@ -16,9 +16,11 @@ tr td:nth-child(odd) {
 tr td:nth-child(even) {
   width: 40px;
 }
-
-.wall, .wallspot:hover{
+.wall{
   background-color: black;
+}
+.wallspot:hover{
+  background-color: darkgrey;
 }
 
 .tile{
