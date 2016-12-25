@@ -1,0 +1,27 @@
+rzslider{
+    width: 200px;
+/*    width: 80%;*/
+}
+
+.vertical-sliders {
+    margin: 0;
+}
+.vertical-sliders > div {
+    height: 250px;
+}
+rzslider.rz-vertical {
+    height: 250px;
+}
+
+.confirmation {
+    width: 300px;
+    border: 1px dashed black;
+}
+.plusminus{
+    box-sizing: content-box;
+    width: 2em;
+    padding: 0px 15px;
+}
+.count{
+    font-size: 2em;
+}
