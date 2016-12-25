@@ -1,3 +1,19 @@
+table{
+  border-collapse: collapse;
+}
+td{
+border: 1px solid grey;
+}
+td.cell{
+  width: 40px;
+  height: 40px;
+}
+td.wall{
+  min-width: 5px;
+  min-height: 5px;
+  background-color: black;
+}
+
 rzslider{
     width: 200px;
 /*    width: 80%;*/
