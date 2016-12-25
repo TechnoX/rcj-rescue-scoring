@@ -80,6 +80,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 	    }
 	}
 	else if(isTile){
+	    if(!cell){
+		$scope.cells[x+','+y+','+z] = {isTile: true};
+	    }
 	    open(z,y,z);
 	}
     }
