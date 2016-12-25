@@ -102,7 +102,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
                 }
             }
         }).closed.then(function(isStart){
-	    console.log(isStart);
+	    console.log("Closed: ",isStart);
 	    if(isStart){
                 $scope.startTile.x = x;
                 $scope.startTile.y = y;
@@ -120,7 +120,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, tile, start) {
     $scope.tile = tile;
     $scope.start = start;
+    console.log("controller ran");
     $scope.ok = function () {
+	console.log("WHen OK: ", $scope.start);
         $uibModalInstance.close($scope.start);
     };
 });
