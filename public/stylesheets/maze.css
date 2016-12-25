@@ -4,14 +4,19 @@ table{
 td{
 border: 1px solid grey;
 }
-td.cell{
-  width: 40px;
+table tr:nth-child(odd) {
+  height: 5px;
+}
+table tr:nth-child(even) {
   height: 40px;
 }
-td.wall{
-  min-width: 5px;
-  min-height: 5px;
-  background-color: black;
+tr td:nth-child(odd) {
+  width: 5px;
+  background-color: #f1f1f1;
+}
+tr td:nth-child(even) {
+  width: 40px;
+  background-color: #000000;
 }
 
 rzslider{

@@ -18,9 +18,8 @@
     </div>
     <div class="col-md-10">
       <table>
-      <tr ng-repeat="r in range(length)">
-	<td ng-repeat="c in range(width)" ng-class-even="$parent.$even?wall:cell" ng-class-odd="$parent.$even?cell:wall"></td>
-	<td ng-class="$parent.$even?wall:cell"></td>
+      <tr ng-repeat="r in range(2*length + 1)">
+	<td ng-repeat="c in range(2*width + 1)"></td>
       </tr>
       </table>
     </div>
