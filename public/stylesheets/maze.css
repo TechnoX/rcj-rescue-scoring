@@ -12,11 +12,13 @@ table tr:nth-child(even) {
 }
 tr td:nth-child(odd) {
   width: 5px;
-  background-color: #f1f1f1;
 }
 tr td:nth-child(even) {
   width: 40px;
-  background-color: #000000;
+}
+
+.wallspot:hover{
+  background-color: black;
 }
 
 rzslider{
