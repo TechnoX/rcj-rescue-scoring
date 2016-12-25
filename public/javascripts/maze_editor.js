@@ -70,8 +70,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
     $scope.cellClick = function(x,y,z,isWall,isTile){
 
 	var cell = $scope.cells[x+','+y+','+z];
-	console.log("cellClick");
-	console.log(cell);
+	
 	// If wall 
 	if(isWall){
 	    if(!cell){
@@ -81,18 +80,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 	    }
 	}
 	else if(isTile){
-	    console.log("isTile", isTile);
 	    if(!cell){
 		$scope.cells[x+','+y+','+z] = {isTile: true};
 	    }
-	    console.log("Before open");
 	    $scope.open(x,y,z);
-	    console.log("After open");
 	}
     }
 
     $scope.open = function(x,y,z) {
-	console.log("opens", x,y,z);
         var modalInstance = $uibModal.open({
             animation: true,
             templateUrl: '/templates/maze_editor_modal.html',
@@ -100,25 +95,20 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
             size: 'sm',
             resolve: {
                 tile: function () {
-		    console.log("tile",$scope.cells[x+','+y+','+z]);
                     return $scope.cells[x+','+y+','+z];
                 },
                 start: function(){
-		    console.log("start",$scope.startTile.x == x && $scope.startTile.y == y && $scope.startTile.z == z);
                     return $scope.startTile.x == x && $scope.startTile.y == y && $scope.startTile.z == z;
                 }
             }
-        });
-
-	console.log(modalInstance);
-/*.closed.then(function(isStart){
+        }).closed.then(function(isStart){
 	    console.log(isStart);
 	    if(isStart){
                 $scope.startTile.x = x;
                 $scope.startTile.y = y;
                 $scope.startTile.z = z;
             }
-        });*/
+        });
     };
 
 }]);
@@ -128,11 +118,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 // It is not the same as the $uibModal service used above.
 
 app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, tile, start) {
-    console.log("controller", tile, start);
     $scope.tile = tile;
     $scope.start = start;
     $scope.ok = function () {
-	console.log("Close modal");
         $uibModalInstance.close($scope.start);
     };
 });
