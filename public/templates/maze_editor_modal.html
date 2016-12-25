@@ -1,0 +1,28 @@
+<div class="modal-header">
+  <h3 class="modal-title">Change items</h3>
+</div>
+<div class="modal-body">
+  <ul>
+    <li>
+      <label>Has speedbumps: <input type="checkbox" ng-model="tile.speedbump"></label>
+    </li>
+    <li>
+      <label>Top horizontal tile at ramp: <input type="checkbox" ng-model="tile.rampTop"></label>
+    </li>
+    <li>
+      <label>Bottom horizontal tile at ramp: <input type="checkbox" ng-model="tile.rampBottom"></label>
+    </li>
+  </ul>
+
+  <label><input type="checkbox" ng-model="start" ng-disabled="start"> Is start</label>
+
+  <h5>Placement of victims:</h5>
+  <label><input type="checkbox" ng-model="tile.victim.top" value="top"> Top</label> <br>
+  <label><input type="checkbox" ng-model="tile.victim.bottom" value="bottom"> Bottom</label> <br>
+  <label><input type="checkbox" ng-model="tile.victim.left" value="left"> Left</label> <br>
+  <label><input type="checkbox" ng-model="tile.victim.right" value="right"> Right</label> <br>
+
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+</div>

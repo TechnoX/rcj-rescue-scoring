@@ -80,9 +80,45 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 	    }
 	}
 	else if(isTile){
-
+	    open(z,y,z);
 	}
     }
 
+    $scope.open = function(x,y,z) {
+        var modalInstance = $uibModal.open({
+            animation: true,
+            templateUrl: '/templates/maze_editor_modal.html',
+            controller: 'ModalInstanceCtrl',
+            size: 'sm',
+            resolve: {
+                tile: function () {
+                    return $scope.cells[x+','+y+','+z];
+                },
+                start: function(){
+                    return $scope.startTile.x == x && $scope.startTile.y == y && $scope.startTile.z == z;
+                }
+            }
+        }).closed.then(function(isStart){
+	    console.log(isStart);
+	    if(isStart){
+                $scope.startTile.x = x;
+                $scope.startTile.y = y;
+                $scope.startTile.z = z;
+            }
+        });
+    };
 
 }]);
+
+
+// Please note that $uibModalInstance represents a modal window (instance) dependency.
+// It is not the same as the $uibModal service used above.
+
+app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, tile, start) {
+    $scope.tile = tile;
+    $scope.start = start;
+    $scope.ok = function () {
+        $uibModalInstance.close($scope.start);
+    };
+});
+
