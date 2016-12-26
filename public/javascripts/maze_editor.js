@@ -48,6 +48,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
     }
 
     $scope.$watch('startTile', function(newValue, oldValue){
+	// If initialization
+	if(newValue === oldValue)
+	    return;
 	console.log("new:",newValue);
 	console.log("old:",oldValue);
 	$scope.cells[oldValue.x+','+oldValue.y+','+oldValue.z].checkpoint = false;
