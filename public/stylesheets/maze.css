@@ -19,6 +19,9 @@ tr td:nth-child(even) {
 .wall{
   background-color: black;
 }
+.floating-wall{
+  background-color: navy;
+}
 .wallspot:hover{
   background-color: darkgrey;
 }
@@ -26,7 +29,18 @@ tr td:nth-child(even) {
 .tile{
   background-color: lightblue;
 }
-
+.checkpoint{
+  background-color: silver;
+}
+.tile-image{
+    width: 40px;
+    height: 40px;
+    z-index: 1;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    vertical-align: bottom;
+}
 rzslider{
     width: 200px;
 /*    width: 80%;*/
