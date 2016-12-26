@@ -32,10 +32,17 @@ tr td:nth-child(even) {
 .checkpoint{
   background-color: silver;
 }
+
+.tile-image-container{
+  position: relative;
+}
 .tile-image{
-    width: 40px;
-    height: 40px;
-    z-index: 1;
+  width: 40px;
+  height: 40px;
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  bottom: 0;
 }
 rzslider{
     width: 200px;

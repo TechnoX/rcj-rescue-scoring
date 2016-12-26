@@ -21,13 +21,15 @@
       <tr ng-repeat="r in range(2*length + 1)">
 	<td ng-repeat="c in range(2*width + 1)" ng-class="{'wallspot': $odd != $parent.$odd, 'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall, 'checkpoint': cells[c+','+r+','+z].checkpoint, 'floating-wall': cells[c+','+r+','+z].floatingWall}"
 	    ng-click="cellClick(c, r, z, $odd != $parent.$odd, $odd && $parent.$odd)">
-	  <img ng-src="/images/log.png" class="tile-image" ng-show="cells[c+','+r+','+z].speedbump">
-	  <img ng-src="/images/ramp_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].rampTop">
-	  <img ng-src="/images/ramp_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].rampBottom">
-	  <img ng-src="/images/victim_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].victim.top">
-	  <img ng-src="/images/victim_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].victim.right">
-	  <img ng-src="/images/victim_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].victim.bottom">
-	  <img ng-src="/images/victim_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].victim.left">
+	  <div class="tile-image-container">
+	    <img ng-src="/images/log.png" class="tile-image" ng-show="cells[c+','+r+','+z].speedbump">
+	    <img ng-src="/images/ramp_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].rampTop">
+	    <img ng-src="/images/ramp_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].rampBottom">
+	    <img ng-src="/images/victim_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].victim.top">
+	    <img ng-src="/images/victim_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].victim.right">
+	    <img ng-src="/images/victim_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].victim.bottom">
+	    <img ng-src="/images/victim_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].victim.left">
+	  </div>
 	</td>
       </tr>
       </table>
