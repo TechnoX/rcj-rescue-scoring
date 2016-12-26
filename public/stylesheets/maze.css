@@ -35,6 +35,9 @@ tr td:nth-child(even) {
 .tile.checkpoint{
   background-color: silver;
 }
+.tile.black{
+  background-color: black;
+}
 
 .tile-image-container{
   position: relative;

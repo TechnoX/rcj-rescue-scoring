@@ -20,7 +20,7 @@
     <div class="col-md-10">
       <table>
       <tr ng-repeat="r in range(2*length + 1)">
-	<td ng-repeat="c in range(2*width + 1)" ng-class="{'wallspot': $odd != $parent.$odd, 'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall, 'checkpoint': cells[c+','+r+','+z].checkpoint, 'linear': cells[c+','+r+','+z].isLinear}"
+	<td ng-repeat="c in range(2*width + 1)" ng-class="{'wallspot': $odd != $parent.$odd, 'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall, 'checkpoint': cells[c+','+r+','+z].checkpoint, 'black': cells[c+','+r+','+z].black, 'linear': cells[c+','+r+','+z].isLinear}"
 	    ng-click="cellClick(c, r, z, $odd != $parent.$odd, $odd && $parent.$odd)">
 	  <div class="tile-image-container" ng-show="cells[c+','+r+','+z].isTile">
 	    <img ng-src="/images/log.png" class="tile-image" ng-show="cells[c+','+r+','+z].speedbump">
