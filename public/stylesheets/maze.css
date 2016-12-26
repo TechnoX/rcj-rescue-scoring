@@ -47,6 +47,10 @@ tr td:nth-child(even) {
   bottom: 0;
   vertical-align: bottom;
 }
+.error{
+    color: red;
+    font-weight: bold;
+}
 rzslider{
     width: 200px;
 /*    width: 80%;*/

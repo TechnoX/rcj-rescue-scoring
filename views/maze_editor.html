@@ -10,6 +10,7 @@
       <label>Max width: <input type="number" ng-model="width" min="1" ></label><br>
       <label>Max length: <input type="number" ng-model="length" min="1" ></label><br>
       <label>Number of checkpoints: <input type="number" ng-model="numberOfCheckpoints" min="0" ></label><br>
+      <div class="error" ng-show="startTile.x == 0 && startTile.y == 0 && startTile.z == 0">No start tile is defined!</div>
     </div>
   </div>
   <div class="row">
