@@ -17,21 +17,22 @@ tr td:nth-child(even) {
   width: 40px;
 }
 .wall{
-  background-color: black;
-}
-.wall.linear{
   background-color: navy;
 }
+.wall.linear{
+  background-color: black;
+}
+.tile{
+  background-color: LightSeaGreen;
+}
 .tile.linear{
- background-color: LightSeaGreen;
+ background-color: lightblue;
 }
 .wallspot:hover{
   background-color: darkgrey;
 }
-.tile{
-  background-color: lightblue;
-}
-.checkpoint{
+
+.tile.checkpoint{
   background-color: silver;
 }
 
