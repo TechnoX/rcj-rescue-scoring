@@ -54,7 +54,91 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 	if($scope.cells[oldValue.x+','+oldValue.y+','+oldValue.z])
 	    $scope.cells[oldValue.x+','+oldValue.y+','+oldValue.z].checkpoint = false;
 	$scope.cells[newValue.x+','+newValue.y+','+newValue.z].checkpoint = true;
+	$scope.recalculateFloating();
     });
+
+    $scope.isUndefined = function (thing) {
+	return (typeof thing === "undefined");
+    }
+    $scope.recalculateFloating = function(){
+	if($scope.startNotSet())
+	    return;
+
+	// Reset all previous floatings
+	for(var index in $scope.cells){
+	    console.log("Initiate " + index + " to floating");
+	    $scope.cells[index].isFloating = true;
+	}
+
+	// Start it will all 4 walls around the starting tile
+	recurs($scope.startTile.x-1, $scope.startTile.y, $scope.startTile.z);
+	recurs($scope.startTile.x+1, $scope.startTile.y, $scope.startTile.z);
+	recurs($scope.startTile.x, $scope.startTile.y-1, $scope.startTile.z);
+	recurs($scope.startTile.x, $scope.startTile.y+1, $scope.startTile.z);
+    }
+    function isOdd(num) { return num % 2;}
+    function recurs(x,y,z){
+	var cell = $scope.cells[x+','+y+','+z];
+	// If this is a wall that doesn't exists
+	if(!cell)
+	    return;
+	// Already visited this, returning
+	if(!cell.isFloating)
+	    return;
+	if(cell.isWall){
+	    console.log("Set wall " + x+','+y+','+z + " to non-floating");
+	    cell.isFloating = false;
+
+	    
+	    // horizontal walls
+	    if(isOdd(x) && !isOdd(y)){
+		// Set tiles around this wall to non floating
+		setTileNonFloating(x-2,y-1,z);
+		setTileNonFloating(x,y-1,z);
+		setTileNonFloating(x+2,y-1,z);
+		setTileNonFloating(x-2,y+1,z);
+		setTileNonFloating(x,y+1,z);
+		setTileNonFloating(x+2,y+1,z);
+		// Check neighbours
+		recurs(x+2,y,z);
+		recurs(x-2,y,z);
+		recurs(x-1,y-1,z);
+		recurs(x-1,y+1,z);
+		recurs(x+1,y-1,z);
+		recurs(x+1,y+1,z);
+	    }// Vertical wall
+	    else if(!isOdd(x) && isOdd(y)){
+		// Set tiles around this wall to non floating
+		setTileNonFloating(x-1,y-2,z);
+		setTileNonFloating(x-1,y,z);
+		setTileNonFloating(x-1,y+2,z);
+		setTileNonFloating(x+1,y-2,z);
+		setTileNonFloating(x+1,y,z);
+		setTileNonFloating(x+1,y+2,z);
+		// Check neighbours
+		recurs(x,y-2,z);
+		recurs(x,y+2,z);
+		recurs(x-1,y-1,z);
+		recurs(x-1,y+1,z);
+		recurs(x+1,y-1,z);
+		recurs(x+1,y+1,z);
+	    }
+	}
+    }
+    function setTileNonFloating(x,y,z){
+	// Check that this is an actual tile, not a wall
+	console.log("Set tile " + x+','+y+','+z + " to non floating");
+	var cell = $scope.cells[x+','+y+','+z];
+	if(cell){
+	    cell.isFloating = false;
+	}else{
+	    $scope.cells[x+','+y+','+z] = {isTile: true, isFloating: false};
+	}
+    }
+
+    $scope.startNotSet = function(){
+	return $scope.startTile.x == 0 && $scope.startTile.y == 0 && $scope.startTile.z == 0;
+    }
 
     $scope.saveMap = function(){
         var map = {
@@ -87,6 +171,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 	    }else{
 		cell.isWall = !cell.isWall;
 	    }
+	    $scope.recalculateFloating();
 	}
 	else if(isTile){
 	    if(!cell){

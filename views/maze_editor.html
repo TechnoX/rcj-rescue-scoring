@@ -10,7 +10,7 @@
       <label>Max width: <input type="number" ng-model="width" min="1" ></label><br>
       <label>Max length: <input type="number" ng-model="length" min="1" ></label><br>
       <label>Number of checkpoints: <input type="number" ng-model="numberOfCheckpoints" min="0" ></label><br>
-      <div class="error" ng-show="startTile.x == 0 && startTile.y == 0 && startTile.z == 0">No start tile is defined!</div>
+      <div class="error" ng-show="startNotSet()">No start tile is defined!</div>
     </div>
   </div>
   <div class="row">
@@ -20,7 +20,7 @@
     <div class="col-md-10">
       <table>
       <tr ng-repeat="r in range(2*length + 1)">
-	<td ng-repeat="c in range(2*width + 1)" ng-class="{'wallspot': $odd != $parent.$odd, 'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall, 'checkpoint': cells[c+','+r+','+z].checkpoint, 'floating-wall': cells[c+','+r+','+z].floatingWall}"
+	<td ng-repeat="c in range(2*width + 1)" ng-class="{'wallspot': $odd != $parent.$odd, 'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall, 'checkpoint': cells[c+','+r+','+z].checkpoint, 'floating': isUndefined(cells[c+','+r+','+z]) || cells[c+','+r+','+z].isFloating}"
 	    ng-click="cellClick(c, r, z, $odd != $parent.$odd, $odd && $parent.$odd)">
 	  <div class="tile-image-container" ng-show="cells[c+','+r+','+z].isTile">
 	    <img ng-src="/images/log.png" class="tile-image" ng-show="cells[c+','+r+','+z].speedbump">
