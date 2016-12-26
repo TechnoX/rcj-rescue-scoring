@@ -48,6 +48,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
     }
 
     $scope.$watch('startTile', function(newValue, oldValue){
+	console.log("new:",newValue);
+	console.log("old:",oldValue);
 	$scope.cells[oldValue.x+','+oldValue.y+','+oldValue.z].checkpoint = false;
 	$scope.cells[newValue.x+','+newValue.y+','+newValue.z].checkpoint = true;
     });
