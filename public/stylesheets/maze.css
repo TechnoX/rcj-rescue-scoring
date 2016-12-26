@@ -23,12 +23,11 @@ tr td:nth-child(even) {
   background-color: navy;
 }
 .floating.tile{
- background-color: darkgreen;
+ background-color: LightSeaGreen;
 }
 .wallspot:hover{
   background-color: darkgrey;
 }
-
 .tile{
   background-color: lightblue;
 }
