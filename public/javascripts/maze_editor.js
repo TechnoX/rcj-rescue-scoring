@@ -53,7 +53,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 	console.log("old:",oldValue);
 	if(newValue === oldValue)
 	    return;
-	$scope.cells[oldValue.x+','+oldValue.y+','+oldValue.z].checkpoint = false;
+	if($scope.cells[oldValue.x+','+oldValue.y+','+oldValue.z])
+	    $scope.cells[oldValue.x+','+oldValue.y+','+oldValue.z].checkpoint = false;
 	$scope.cells[newValue.x+','+newValue.y+','+newValue.z].checkpoint = true;
     });
 
