@@ -18,6 +18,14 @@
     <li>
       <label>Bottom horizontal tile at ramp: <input type="checkbox" ng-model="tile.rampBottom"></label>
     </li>
+    <li ng-show="height > 1">
+      <label>Change floor to: </label><br>
+      <ul>
+	<li ng-repeat="h in range(height)">
+	  <label><input type="radio" ng-model="tile.changeFloorTo" ng-value="h"> {{h}}<span ng-show="h == z"> No change</span></label>
+	</li>
+      </ul>
+    </li>
   </ul>
 
   <label><input type="checkbox" ng-model="start" ng-disabled="start"> Is start</label>

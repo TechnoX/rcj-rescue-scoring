@@ -194,7 +194,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
                 },
                 start: function(){
                     return $scope.startTile.x == x && $scope.startTile.y == y && $scope.startTile.z == z;
-                }
+                },
+		height: function(){
+		    return $scope.height;
+		},
+		z: function(){
+		    return z;
+		}
             }
         });
 
@@ -217,9 +223,18 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 // Please note that $uibModalInstance represents a modal window (instance) dependency.
 // It is not the same as the $uibModal service used above.
 
-app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, tile, start) {
+app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, tile, start,height,z) {
     $scope.tile = tile;
     $scope.start = start;
+    $scope.height = height;
+    $scope.z = z;
+    $scope.range = function(n){
+        arr = [];
+        for (var i=0; i < n; i++) {
+            arr.push(i);
+        }
+        return arr;
+    }
     $scope.ok = function () {
 	$uibModalInstance.close($scope.start);
     };
