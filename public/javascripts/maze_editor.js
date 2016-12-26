@@ -82,6 +82,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 	// If this is a wall that doesn't exists
 	if(!cell)
 	    return;
+
+	// Outside of the current maze size. 
+	if(x > $scope.width*2 + 1 || x < 0 ||
+	   y > $scope.length*2 + 1 || y < 0 ||
+	   z > $scope.height || z < 0)
+	    return;
+
 	// Already visited this, returning
 	if(!cell.isFloating)
 	    return;
