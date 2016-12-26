@@ -47,12 +47,12 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
         return arr;
     }
 
-    $scope.$watch('startTile', function(newValue, oldValue){
+    $scope.$watchCollection('startTile', function(newValue, oldValue){
 	// If initialization
-	if(newValue === oldValue)
-	    return;
 	console.log("new:",newValue);
 	console.log("old:",oldValue);
+	if(newValue === oldValue)
+	    return;
 	$scope.cells[oldValue.x+','+oldValue.y+','+oldValue.z].checkpoint = false;
 	$scope.cells[newValue.x+','+newValue.y+','+newValue.z].checkpoint = true;
     });
