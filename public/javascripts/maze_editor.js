@@ -49,8 +49,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 
     $scope.$watchCollection('startTile', function(newValue, oldValue){
 	// If initialization
-	console.log("new:",newValue);
-	console.log("old:",oldValue);
 	if(newValue === oldValue)
 	    return;
 	if($scope.cells[oldValue.x+','+oldValue.y+','+oldValue.z])
