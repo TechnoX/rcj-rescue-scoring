@@ -66,7 +66,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 
 	// Reset all previous linear walls
 	for(var index in $scope.cells){
-	    console.log("Initiate " + index + " to floating");
 	    $scope.cells[index].isLinear = false;
 	}
 
@@ -93,7 +92,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 	if(cell.isLinear)
 	    return;
 	if(cell.isWall){
-	    console.log("Set wall " + x+','+y+','+z + " to linear");
 	    cell.isLinear = true;
 
 	    
@@ -134,7 +132,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
     }
     function setTileLinear(x,y,z){
 	// Check that this is an actual tile, not a wall
-	console.log("Set tile " + x+','+y+','+z + " to linear");
 	var cell = $scope.cells[x+','+y+','+z];
 	if(cell){
 	    cell.isLinear = true;
