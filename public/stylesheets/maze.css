@@ -19,10 +19,10 @@ tr td:nth-child(even) {
 .wall{
   background-color: black;
 }
-.floating.wall{
+.wall.linear{
   background-color: navy;
 }
-.floating.tile{
+.tile.linear{
  background-color: LightSeaGreen;
 }
 .wallspot:hover{

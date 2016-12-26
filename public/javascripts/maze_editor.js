@@ -54,20 +54,20 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 	if($scope.cells[oldValue.x+','+oldValue.y+','+oldValue.z])
 	    $scope.cells[oldValue.x+','+oldValue.y+','+oldValue.z].checkpoint = false;
 	$scope.cells[newValue.x+','+newValue.y+','+newValue.z].checkpoint = true;
-	$scope.recalculateFloating();
+	$scope.recalculateLinear();
     });
 
     $scope.isUndefined = function (thing) {
 	return (typeof thing === "undefined");
     }
-    $scope.recalculateFloating = function(){
+    $scope.recalculateLinear = function(){
 	if($scope.startNotSet())
 	    return;
 
-	// Reset all previous floatings
+	// Reset all previous linear walls
 	for(var index in $scope.cells){
 	    console.log("Initiate " + index + " to floating");
-	    $scope.cells[index].isFloating = true;
+	    $scope.cells[index].isLinear = false;
 	}
 
 	// Start it will all 4 walls around the starting tile
@@ -90,22 +90,22 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 	    return;
 
 	// Already visited this, returning
-	if(!cell.isFloating)
+	if(cell.isLinear)
 	    return;
 	if(cell.isWall){
-	    console.log("Set wall " + x+','+y+','+z + " to non-floating");
-	    cell.isFloating = false;
+	    console.log("Set wall " + x+','+y+','+z + " to linear");
+	    cell.isLinear = true;
 
 	    
 	    // horizontal walls
 	    if(isOdd(x) && !isOdd(y)){
-		// Set tiles around this wall to non floating
-		setTileNonFloating(x-2,y-1,z);
-		setTileNonFloating(x,y-1,z);
-		setTileNonFloating(x+2,y-1,z);
-		setTileNonFloating(x-2,y+1,z);
-		setTileNonFloating(x,y+1,z);
-		setTileNonFloating(x+2,y+1,z);
+		// Set tiles around this wall to linear
+		setTileLinear(x-2,y-1,z);
+		setTileLinear(x,y-1,z);
+		setTileLinear(x+2,y-1,z);
+		setTileLinear(x-2,y+1,z);
+		setTileLinear(x,y+1,z);
+		setTileLinear(x+2,y+1,z);
 		// Check neighbours
 		recurs(x+2,y,z);
 		recurs(x-2,y,z);
@@ -115,13 +115,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 		recurs(x+1,y+1,z);
 	    }// Vertical wall
 	    else if(!isOdd(x) && isOdd(y)){
-		// Set tiles around this wall to non floating
-		setTileNonFloating(x-1,y-2,z);
-		setTileNonFloating(x-1,y,z);
-		setTileNonFloating(x-1,y+2,z);
-		setTileNonFloating(x+1,y-2,z);
-		setTileNonFloating(x+1,y,z);
-		setTileNonFloating(x+1,y+2,z);
+		// Set tiles around this wall to linear
+		setTileLinear(x-1,y-2,z);
+		setTileLinear(x-1,y,z);
+		setTileLinear(x-1,y+2,z);
+		setTileLinear(x+1,y-2,z);
+		setTileLinear(x+1,y,z);
+		setTileLinear(x+1,y+2,z);
 		// Check neighbours
 		recurs(x,y-2,z);
 		recurs(x,y+2,z);
@@ -132,14 +132,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 	    }
 	}
     }
-    function setTileNonFloating(x,y,z){
+    function setTileLinear(x,y,z){
 	// Check that this is an actual tile, not a wall
-	console.log("Set tile " + x+','+y+','+z + " to non floating");
+	console.log("Set tile " + x+','+y+','+z + " to linear");
 	var cell = $scope.cells[x+','+y+','+z];
 	if(cell){
-	    cell.isFloating = false;
+	    cell.isLinear = true;
 	}else{
-	    $scope.cells[x+','+y+','+z] = {isTile: true, isFloating: false};
+	    $scope.cells[x+','+y+','+z] = {isTile: true, isLinear: true};
 	}
     }
 
@@ -178,7 +178,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 	    }else{
 		cell.isWall = !cell.isWall;
 	    }
-	    $scope.recalculateFloating();
+	    $scope.recalculateLinear();
 	}
 	else if(isTile){
 	    if(!cell){
