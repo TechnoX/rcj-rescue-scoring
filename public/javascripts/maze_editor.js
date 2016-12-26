@@ -15,7 +15,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
     };
     $scope.z = 0;
     $scope.startTile = {x: 0, y: 0, z: 0};
-    $scope.numberOfCheckpoints = 0;
     $scope.height = 1;
     $scope.sliderOptions.ceil = $scope.height - 1;
     $scope.width = 1;
@@ -28,7 +27,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
     if(mapId){
         $http.get("/api/maps/" + mapId + "?populate=true").then(function(response){
             $scope.startTile = response.data.startTile;
-            $scope.numberOfCheckpoints = response.data.numberOfCheckpoints;
             $scope.height = response.data.height;
             $scope.sliderOptions.ceil = $scope.height - 1;
             $scope.width = response.data.width;
@@ -150,7 +148,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
             length: $scope.length,
             height: $scope.height,
             width: $scope.width,
-            numberOfCheckpoints: $scope.numberOfCheckpoints,
             startTile: $scope.startTile
         };
 
