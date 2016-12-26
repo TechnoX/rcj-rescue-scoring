@@ -36,10 +36,6 @@ tr td:nth-child(even) {
     width: 40px;
     height: 40px;
     z-index: 1;
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    vertical-align: bottom;
 }
 rzslider{
     width: 200px;
