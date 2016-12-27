@@ -209,16 +209,20 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, x, y, z
     $scope.z = z;
     $scope.oldFloorDestination = $scope.tile.changeFloorTo;
     $scope.elevatorChanged = function(newValue){
-	
+	console.log("old", $scope.oldFloorDestination);
+	console.log("new", newValue);
 	// Remove the old one
 	if($scope.$parent.cells[x+','+y+','+$scope.oldFloorDestination]){
+	    console.log("Remove old elevator on " + x+','+y+','+$scope.oldFloorDestination);
 	    $scope.$parent.cells[x+','+y+','+$scope.oldFloorDestination].changeFloorTo = $scope.oldFloorDestination;
 	}
 
 	// Set the new one
 	if($scope.$parent.cells[x+','+y+','+newValue]){
+	    console.log("Create new elevator on " +x+','+y+','+newValue + " (1) to floor "+ z);
 	    $scope.$parent.cells[x+','+y+','+newValue].changeFloorTo = z;
 	}else{
+	    console.log("Create new elevator on " +x+','+y+','+newValue + " (2) to floor "+ z);
 	    $scope.$parent.cells[x+','+y+','+newValue] = {isTile: true, changeFloorTo: z};
 	}
 	$scope.oldFloorDestination = newValue;
