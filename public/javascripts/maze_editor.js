@@ -212,7 +212,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, x, y, z
 	console.log("old", $scope.oldFloorDestination);
 	console.log("new", newValue);
 	// Remove the old one
-	if($scope.$parent.cells[x+','+y+','+$scope.oldFloorDestination]){
+	if($scope.oldFloorDestination != z && $scope.$parent.cells[x+','+y+','+$scope.oldFloorDestination]){
 	    console.log("Remove old elevator on " + x+','+y+','+$scope.oldFloorDestination);
 	    $scope.$parent.cells[x+','+y+','+$scope.oldFloorDestination].changeFloorTo = $scope.oldFloorDestination;
 	}
