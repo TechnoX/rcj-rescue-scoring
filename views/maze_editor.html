@@ -23,7 +23,7 @@
 	    ng-click="cellClick(c, r, z, $odd != $parent.$odd, $odd && $parent.$odd)">
 	  <div class="tile-image-container" ng-show="cells[c+','+r+','+z].isTile">
 	    <img ng-src="/images/log.png" class="tile-image" ng-show="cells[c+','+r+','+z].speedbump">
-	    <img ng-src="/images/elevator.png" class="tile-image" ng-show="cells[c+','+r+','+z].changeFloorTo && cells[c+','+r+','+z].changeFloorTo != z">
+	    <img ng-src="/images/elevator.png" class="tile-image" ng-show="!isUndefined(cells[c+','+r+','+z].changeFloorTo) && cells[c+','+r+','+z].changeFloorTo != z">
 	    <img ng-src="/images/start.png" class="tile-image" ng-show="startTile.x == c && startTile.y == r && startTile.z == z">
 	    <img ng-src="/images/ramp_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].rampTop">
 	    <img ng-src="/images/ramp_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].rampBottom">

@@ -134,7 +134,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 	if(cell){
 	    cell.isLinear = true;
 	}else{
-	    $scope.cells[x+','+y+','+z] = {isTile: true, isLinear: true};
+	    $scope.cells[x+','+y+','+z] = {isTile: true, isLinear: true, changeFloorTo: z};
 	}
     }
 
@@ -176,7 +176,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 	}
 	else if(isTile){
 	    if(!cell){
-		$scope.cells[x+','+y+','+z] = {isTile: true};
+		$scope.cells[x+','+y+','+z] = {isTile: true, changeFloorTo: z};
 	    }
 	    $scope.open(x,y,z);
 	}
@@ -188,46 +188,50 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
             templateUrl: '/templates/maze_editor_modal.html',
             controller: 'ModalInstanceCtrl',
             size: 'sm',
+	    scope: $scope,
             resolve: {
-                tile: function () {
-                    return $scope.cells[x+','+y+','+z];
-                },
-                start: function(){
-                    return $scope.startTile.x == x && $scope.startTile.y == y && $scope.startTile.z == z;
-                },
-		height: function(){
-		    return $scope.height;
-		},
-		z: function(){
-		    return z;
-		}
+                x: function(){return x;},
+		y: function(){return y;},
+		z: function(){return z;}
             }
-        });
-
-
-
-        modalInstance.result.then(function(isStart) {
-            if(isStart){
-                $scope.startTile.x = x;
-                $scope.startTile.y = y;
-                $scope.startTile.z = z;
-            }
-        }, function () {
-            console.log('Modal dismissed at: ' + new Date());
         });
     };
-
 }]);
 
 
 // Please note that $uibModalInstance represents a modal window (instance) dependency.
 // It is not the same as the $uibModal service used above.
 
-app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, tile, start,height,z) {
-    $scope.tile = tile;
-    $scope.start = start;
-    $scope.height = height;
+app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, x, y, z) {
+    $scope.tile = $scope.$parent.cells[x+','+y+','+z];;
+    $scope.isStart = $scope.$parent.startTile.x == x && $scope.$parent.startTile.y == y && $scope.$parent.startTile.z == z;
+    $scope.height = $scope.$parent.height;
     $scope.z = z;
+    $scope.oldFloorDestination = $scope.tile.changeFloorTo;
+    $scope.elevatorChanged = function(newValue){
+	
+	// Remove the old one
+	if($scope.$parent.cells[x+','+y+','+$scope.oldFloorDestination]){
+	    $scope.$parent.cells[x+','+y+','+$scope.oldFloorDestination].changeFloorTo = $scope.oldFloorDestination;
+	}
+
+	// Set the new one
+	if($scope.$parent.cells[x+','+y+','+newValue]){
+	    $scope.$parent.cells[x+','+y+','+newValue].changeFloorTo = z;
+	}else{
+	    $scope.$parent.cells[x+','+y+','+newValue] = {isTile: true, changeFloorTo: z};
+	}
+	$scope.oldFloorDestination = newValue;
+    }
+
+    $scope.startChanged = function(){
+	if($scope.isStart){
+            $scope.$parent.startTile.x = x;
+            $scope.$parent.startTile.y = y;
+            $scope.$parent.startTile.z = z;
+        }
+    }
+
     $scope.range = function(n){
         arr = [];
         for (var i=0; i < n; i++) {
@@ -236,7 +240,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, tile, s
         return arr;
     }
     $scope.ok = function () {
-	$uibModalInstance.close($scope.start);
+	$uibModalInstance.close();
     };
 });
 
