@@ -28,7 +28,10 @@ var roundSchema = new Schema({
 roundSchema.pre('save', function (next) {
   var self = this
   if (self.isNew) {
-    Round.findOne({competition: self._id, name: self.name}, function (err, dbRound) {
+    Round.findOne({
+      competition: self._id,
+      name       : self.name
+    }, function (err, dbRound) {
       if (err) {
         next(err)
       } else if (dbRound) {
@@ -52,7 +55,10 @@ var teamSchema = new Schema({
 teamSchema.pre('save', function (next) {
   var self = this
   if (self.isNew) {
-    Team.findOne({competition: self._id, name: self.name}, function (err, dbTeam) {
+    Team.findOne({
+      competition: self._id,
+      name       : self.name
+    }, function (err, dbTeam) {
       if (err) {
         next(err)
       } else if (dbTeam) {
@@ -75,7 +81,10 @@ var fieldSchema = new Schema({
 fieldSchema.pre('save', function (next) {
   var self = this
   if (self.isNew) {
-    Field.findOne({competition: self._id, name: self.name}, function (err, dbField) {
+    Field.findOne({
+      competition: self._id,
+      name       : self.name
+    }, function (err, dbField) {
       if (err) {
         next(err)
       } else if (dbField) {
@@ -95,46 +104,26 @@ var runSchema = new Schema({
   team       : {type: ObjectId, ref: 'Team', required: true},
   field      : {type: ObjectId, ref: 'Field', required: true},
   competition: {type: ObjectId, ref: 'Competition', required: true},
+  map        : {type: ObjectId, ref: 'Map', required: true},
 
-  height           : {type: Number, required: true, min: 1},
-  width            : {type: Number, required: true, min: 1},
-  length           : {type: Number, required: true, min: 1},
-  tiles            : [{
-    x          : {type: Number, required: true},
-    y          : {type: Number, required: true},
-    z          : {type: Number, required: true},
-    tileType   : {type: ObjectId, ref: 'TileType', required: true},
-    rot        : {type: Number, min: 0, max: 270, required: true},
-    items      : {
-      obstacles    : {type: Number, min: 0},
-      speedbumps   : {type: Number, min: 0},
-      intersections: {type: Number, min: 0},
-      gaps         : {type: Number, min: 0},
-      dropTiles    : {type: Number, min: 0}
-    },
+  scoring          : [{
+    index      : {type: Number, min: 0},
+    dropTile   : {type: Boolean},
     scoredItems: {
-      obstacles    : {type: [Boolean]},
-      speedbumps   : {type: [Boolean]},
-      intersections: {type: [Boolean]},
-      gaps         : {type: [Boolean]},
-      dropTiles    : {type: [Boolean]}
-    },
-    index      : {type: [Number], min: 0},
-    levelUp    : {type: String, enum: ["top", "right", "bottom", "left"]},
-    levelDown  : {type: String, enum: ["top", "right", "bottom", "left"]}
+      obstacle    : {type: Boolean},
+      speedbump   : {type: Boolean},
+      intersection: {type: Boolean},
+      gap         : {type: Boolean},
+      dropTile    : {type: Boolean}
+    }
   }],
-  startTile        : {
-    x: {type: Number, required: true, min: 0},
-    y: {type: Number, required: true, min: 0},
-    z: {type: Number, required: true, min: 0}
-  },
   LoPs             : {type: [Number], min: 0},
   numberOfDropTiles: {type: Number, required: true, min: 0},
   rescuedVictims   : {type: Number, min: 0},
   score            : {type: Number, min: 0},
   showedUp         : {type: Boolean},
   time             : {
-    minutes: {type: Number, min: 0},
+    minutes: {type: Number, min: 0, max: 8},
     seconds: {type: Number, min: 0, max: 59}
   }
 })
@@ -142,11 +131,16 @@ var runSchema = new Schema({
 runSchema.pre('save', function (next) {
   var self = this
   if (self.isNew) {
-    Run.findOne({round: self.round, team: self.team}).populate("round team").exec(function (err, dbRun) {
+    Run.findOne({
+      round: self.round,
+      team : self.team
+    }).populate("round team").exec(function (err, dbRun) {
       if (err) {
         next(err)
       } else if (dbRun) {
-        err = new Error('Team "' + dbRun.team.name + '" already has a run in round "' + dbRun.round.name + '"!')
+        err = new Error('Team "' + dbRun.team.name +
+                        '" already has a run in round "' + dbRun.round.name +
+                        '"!')
         next(err)
       } else {
         next()
