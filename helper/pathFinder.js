@@ -16,7 +16,7 @@ module.exports.findPath = function (map) {
   Object.keys(startPaths).forEach(function (dir, index) {
     var nextTile = tiles[nextCoord(startTile, dir)]
     if (nextTile !== undefined) {
-      startDir = key
+      startDir = dir
     }
   })
 

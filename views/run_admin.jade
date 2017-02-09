@@ -31,6 +31,7 @@ block content
             a(href="" ng-click='removeRun(run)') Delete
 
       h1 Add run
+      select(ng-model='league' ng-options='league for league in leagues' ng-change='updateLists()')
       select(ng-model='run.round' ng-options='round as round.name for round in rounds')
       select(ng-model='run.team' ng-options='team as team.name for team in teams')
       select(ng-model='run.map' ng-options='map as map.name for map in maps')

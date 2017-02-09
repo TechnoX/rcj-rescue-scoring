@@ -25,9 +25,11 @@ block content
       table
         tr(ng-repeat='round in rounds')
           td(ng-bind='round.name')
+          td(ng-bind='round.league')
           td
             a(href="" ng-click='removeRound(round)') Delete
 
       h1 Add round
       input(ng-model='roundName')
+      select(ng-model='roundLeague' ng-options='league for league in leagues')
       button(ng-click='addRound()') Add round

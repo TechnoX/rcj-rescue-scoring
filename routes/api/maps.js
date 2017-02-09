@@ -6,7 +6,7 @@ var express = require('express')
 var publicRouter = express.Router()
 var privateRouter = express.Router()
 var adminRouter = express.Router()
-var mapdb = require('../../models/map')
+var lineMapdb = require('../../models/lineMap')
 var query = require('../../helper/query-helper')
 var validator = require('validator')
 var async = require('async')
@@ -19,13 +19,21 @@ var async = require('async')
 privateRouter.get('/', function (req, res) {
   var populate
   if (req.query['populate'] !== undefined) {
-    populate = req.query['populate']
+    populate = {path: 'tiles', populate: {path: 'tileType'}}
   }
-  if (populate !== undefined && populate) {
-    query.doFindResultSortQuery(req, res, null, {path: 'tiles', populate: {path: 'tileType'}}, mapdb.map)
-  } else {
-    query.doFindResultSortQuery(req, res, null, null, mapdb.map)
+
+  var query = lineMapdb.lineMap.findById(id)
+  if (populate !== undefined) {
+    query.populate(populate)
   }
+  query.exec(function (err, data) {
+    if (err) {
+      logger.error(err)
+      res.status(400).send({msg: "Could not get map"})
+    } else {
+      res.status(200).send(data)
+    }
+  })
 })
 
 adminRouter.get('/tiletypes', function (req, res) {
@@ -41,13 +49,21 @@ privateRouter.get('/:mapid', function (req, res, next) {
 
   var populate
   if (req.query['populate'] !== undefined) {
-    populate = req.query['populate']
+    populate = {path: 'tiles', populate: {path: 'tileType'}}
   }
-  if (populate !== undefined && populate) {
-    query.doIdQuery(req, res, id, "", mapdb.map, {path: 'tiles', populate: {path: 'tileType'}})
-  } else {
-    query.doIdQuery(req, res, id, "", mapdb.map)
+
+  var query = lineMapdb.lineMap.findById(id)
+  if (populate !== undefined) {
+    query.populate(populate)
   }
+  query.exec(function (err, data) {
+    if (err) {
+      logger.error(err)
+      res.status(400).send({msg: "Could not get map"})
+    } else {
+      res.status(200).send(data)
+    }
+  })
 })
 
 adminRouter.get('/:mapid/delete', function (req, res, next) {

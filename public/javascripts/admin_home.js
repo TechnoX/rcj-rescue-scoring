@@ -2,7 +2,7 @@ angular.module("AdminHome", []).controller("AdminHomeController", function ($sco
   $scope.competitionId = competitionId
 
   updateCompetitionList()
-  updateMapList()
+  //updateMapList()
 
   $scope.addCompetition = function () {
     var competition = {name: $scope.competitionName}

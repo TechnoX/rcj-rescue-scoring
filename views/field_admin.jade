@@ -25,9 +25,11 @@ block content
       table
         tr(ng-repeat='field in fields')
           td(ng-bind='field.name')
+          td(ng-bind='field.league')
           td
             a(href="" ng-click='removeField(field)') Delete
 
       h1 Add field
       input(ng-model='fieldName')
+      select(ng-model='fieldLeague' ng-options='league for league in leagues')
       button(ng-click='addField()') Add field

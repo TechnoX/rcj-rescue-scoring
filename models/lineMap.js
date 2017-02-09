@@ -16,9 +16,9 @@ const pathFinder = require('../helper/pathFinder')
  * @param {String} salt - The salt used, unique for every user
  * @param {Boolean} admin - If the user is admin or not
  */
-const mapSchema = new Schema({
+const lineMapSchema = new Schema({
   competition      : {type: ObjectId, ref: 'Competition', required: true},
-  name             : {type: String, required: true, unique: true},
+  name             : {type: String, required: true},
   height           : {type: Number, required: true, min: 1},
   width            : {type: Number, required: true, min: 1},
   length           : {type: Number, required: true, min: 1},
@@ -48,6 +48,29 @@ const mapSchema = new Schema({
   numberOfDropTiles: {type: Number, required: true, min: 0}
 })
 
+lineMapSchema.pre('save', function (next) {
+  const self = this
+  if (self.isNew) {
+    LineMap.findOne({
+      competition: self.competition,
+      name       : self.name
+    }).populate("competition", "name").exec(function (err, dbMap) {
+      if (err) {
+        return next(err)
+      } else if (dbMap) {
+        err = new Error('Map "' + dbMap.name +
+                        '" already exists in competition "' +
+                        dbMap.competition.name + '"!')
+        return next(err)
+      } else {
+        return next()
+      }
+    })
+  } else {
+    return next()
+  }
+})
+
 const tileSetSchema = new Schema({
     tiles: [{
       tileType: {type: ObjectId, ref: 'TileType', required: true},
@@ -68,16 +91,16 @@ const tileTypeSchema = new Schema({
   }
 })
 
-const Map = mongoose.model('Map', mapSchema)
+const LineMap = mongoose.model('LineMap', lineMapSchema)
 const TileSet = mongoose.model('TileSet', tileSetSchema)
 const TileType = mongoose.model('TileType', tileTypeSchema)
 
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
-module.exports.map = Map
+module.exports.lineMap = LineMap
 module.exports.tileSetSchema = TileSet
 module.exports.tileType = TileType
 
-var tileTypes = [
+const tileTypes = [
   {
     "image"        : "tile-0.png",
     "gaps"         : 0,
@@ -473,7 +496,7 @@ var tileTypes = [
 ]
 
 for (i in tileTypes) {
-  var tileType = new TileType(tileTypes[i])
+  const tileType = new TileType(tileTypes[i])
   tileType.save(function (err, data) {
     if (err) {
       console.log(err);

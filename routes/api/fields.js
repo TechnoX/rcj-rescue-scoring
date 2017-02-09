@@ -56,7 +56,7 @@ adminRouter.get('/:fieldid/delete', function (req, res, next) {
     return next()
   }
 
-  competitiondb.field.remove({_id : id}, function (err) {
+  competitiondb.field.remove({_id: id}, function (err) {
     if (err) {
       logger.error(err)
       res.status(400).send({msg: "Could not remove field"})
@@ -70,8 +70,9 @@ adminRouter.post('/createfield', function (req, res) {
   var field = req.body
 
   var newField = new competitiondb.field({
-    name : field.name,
-    competition : field.competition
+    name       : field.name,
+    competition: field.competition,
+    league     : field.league
   })
 
   newField.save(function (err, data) {

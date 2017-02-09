@@ -2,21 +2,33 @@
 //                          Libraries
 //========================================================================
 
-var express = require('express')
-var publicRouter = express.Router()
-var privateRouter = express.Router()
-var adminRouter = express.Router()
-var competitiondb = require('../../models/competition')
-var query = require('../../helper/query-helper')
-var validator = require('validator')
-var async = require('async')
-var ObjectId = require('mongoose').Types.ObjectId
-var logger = require('../../config/logger').mainLogger
-var fs = require('fs')
+const express = require('express')
+const publicRouter = express.Router()
+const privateRouter = express.Router()
+const adminRouter = express.Router()
+const competitiondb = require('../../models/competition')
+const lineRundb = require('../../models/lineRun')
+const lineMapdb = require('../../models/lineMap')
+const query = require('../../helper/query-helper')
+const validator = require('validator')
+const async = require('async')
+const ObjectId = require('mongoose').Types.ObjectId
+const logger = require('../../config/logger').mainLogger
+const fs = require('fs')
 
+const LINE_LEAGUES = competitiondb.LINE_LEAGUES
+const MAZE_LEAGUES = competitiondb.MAZE_LEAGUES
+const LEAGUES = competitiondb.LEAGUES
 
 publicRouter.get('/', function (req, res) {
-  query.doFindResultSortQuery(req, res, null, null, competitiondb.competition)
+  competitiondb.competition.find({}, function (err, data) {
+    if (err) {
+      logger.error(err)
+      res.status(400).send({msg: "Could not get competitions"})
+    } else {
+      res.status(200).send(data)
+    }
+  })
 })
 
 publicRouter.get('/:competitionid', function (req, res, next) {
@@ -47,7 +59,7 @@ publicRouter.get('/:competitionid/delete', function (req, res, next) {
 })
 
 publicRouter.get('/:competitionid/teams', function (req, res, next) {
-  var id = req.params.competitionid
+  const id = req.params.competitionid
 
   if (!ObjectId.isValid(id)) {
     return next()
@@ -63,7 +75,32 @@ publicRouter.get('/:competitionid/teams', function (req, res, next) {
   })
 })
 
-publicRouter.get('/:competitionid/runs', function (req, res, next) {
+publicRouter.get('/:competitionid/:league/teams', function (req, res, next) {
+  const id = req.params.competitionid
+  const league = req.params.league
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  if (LEAGUES.indexOf(league) == -1) {
+    return next()
+  }
+
+  competitiondb.team.find({
+    competition: id,
+    league     : league
+  }, function (err, data) {
+    if (err) {
+      logger.error(err)
+      res.status(400).send({msg: "Could not get teams"})
+    } else {
+      res.status(200).send(data)
+    }
+  })
+})
+
+publicRouter.get('/:competitionid/line/runs', function (req, res, next) {
   var id = req.params.competitionid
 
   if (!ObjectId.isValid(id)) {
@@ -72,10 +109,10 @@ publicRouter.get('/:competitionid/runs', function (req, res, next) {
 
   var populate
   if (req.query['populate'] !== undefined && req.query['populate']) {
-    populate = ["round", "team", "field", "competition", {path: 'tiles', populate: {path: 'tileType'}}]
+    populate = ["round", "team", "field", "competition"/*, {path: 'tiles', populate: {path: 'tileType'}}*/]
   }
 
-  var query = competitiondb.run.find({competition: id}, "round team field competition score time")
+  const query = lineRundb.lineRun.find({competition: id}, "round team field competition score time")
   if (populate !== undefined) {
     query.populate(populate)
   }
@@ -88,6 +125,47 @@ publicRouter.get('/:competitionid/runs', function (req, res, next) {
     }
   })
 })
+publicRouter.get('/:competitionid/:league/maps', function (req, res, next) {
+  const id = req.params.competitionid
+  const league = req.params.league
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  if (LINE_LEAGUES.indexOf(league) != -1) {
+    return getLineMaps(req, res, next)
+  }
+
+  return next()
+})
+publicRouter.get('/:competitionid/line/maps', getLineMaps)
+
+function getLineMaps(req, res, next) {
+  const id = req.params.competitionid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  var populate
+  if (req.query['populate'] !== undefined && req.query['populate']) {
+    populate = {path: 'tiles', populate: {path: 'tileType'}}
+  }
+
+  const query = lineMapdb.lineMap.find({competition: id})
+  if (populate !== undefined) {
+    query.populate(populate)
+  }
+  query.exec(function (err, data) {
+    if (err) {
+      logger.error(err)
+      res.status(400).send({msg: "Could not get maps"})
+    } else {
+      res.status(200).send(data)
+    }
+  })
+}
 
 publicRouter.get('/:competitionid/fields', function (req, res, next) {
   var id = req.params.competitionid
@@ -106,6 +184,31 @@ publicRouter.get('/:competitionid/fields', function (req, res, next) {
   })
 })
 
+publicRouter.get('/:competitionid/:league/fields', function (req, res, next) {
+  const id = req.params.competitionid
+  const league = req.params.league
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  if (LEAGUES.indexOf(league) == -1) {
+    return next()
+  }
+
+  competitiondb.field.find({
+    competition: id,
+    league     : league
+  }, function (err, data) {
+    if (err) {
+      logger.error(err)
+      res.status(400).send({msg: "Could not get fields"})
+    } else {
+      res.status(200).send(data)
+    }
+  })
+})
+
 publicRouter.get('/:competitionid/rounds', function (req, res, next) {
   var id = req.params.competitionid
 
@@ -114,6 +217,31 @@ publicRouter.get('/:competitionid/rounds', function (req, res, next) {
   }
 
   competitiondb.round.find({competition: id}, function (err, data) {
+    if (err) {
+      logger.error(err)
+      res.status(400).send({msg: "Could not get rounds"})
+    } else {
+      res.status(200).send(data)
+    }
+  })
+})
+
+publicRouter.get('/:competitionid/:league/rounds', function (req, res, next) {
+  var id = req.params.competitionid
+  const league = req.params.league
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  if (LEAGUES.indexOf(league) == -1) {
+    return next()
+  }
+
+  competitiondb.round.find({
+    competition: id,
+    league     : league
+  }, function (err, data) {
     if (err) {
       logger.error(err)
       res.status(400).send({msg: "Could not get rounds"})

@@ -7,21 +7,29 @@ angular.module("RunAdmin", []).controller("RunAdminController", function ($scope
     $scope.competition = response.data
   })
 
-  $http.get("/api/competitions/" + competitionId +
-            "/teams").then(function (response) {
-    $scope.teams = response.data
+  $http.get("/api/teams/leagues").then(function (response) {
+    $scope.leagues = response.data
+    console.log($scope.leagues)
   })
-  $http.get("/api/competitions/" + competitionId +
-            "/rounds").then(function (response) {
-    $scope.rounds = response.data
-  })
-  $http.get("/api/competitions/" + competitionId +
-            "/fields").then(function (response) {
-    $scope.fields = response.data
-  })
-  $http.get("/api/maps").then(function (response) {
-    $scope.maps = response.data
-  })
+
+  $scope.updateLists = function () {
+    $http.get("/api/competitions/" + competitionId +
+              "/" + $scope.league + "/teams").then(function (response) {
+      $scope.teams = response.data
+    })
+    $http.get("/api/competitions/" + competitionId +
+              "/" + $scope.league + "/rounds").then(function (response) {
+      $scope.rounds = response.data
+    })
+    $http.get("/api/competitions/" + competitionId +
+              "/" + $scope.league + "/fields").then(function (response) {
+      $scope.fields = response.data
+    })
+    $http.get("/api/competitions/" + competitionId +
+              "/line/maps").then(function (response) {
+      $scope.maps = response.data
+    })
+  }
 
   $scope.addRun = function () {
     if ($scope.run === undefined ||
@@ -51,7 +59,7 @@ angular.module("RunAdmin", []).controller("RunAdminController", function ($scope
   }
 
   $scope.removeRun = function (run) {
-    if (confirm("Are you sure you want to remove the run: "  + '?')) {
+    if (confirm("Are you sure you want to remove the run: " + '?')) {
       $http.get("/api/runs/" + run._id + "/delete").then(function (response) {
         console.log(response)
         updateRunList()
@@ -63,7 +71,7 @@ angular.module("RunAdmin", []).controller("RunAdminController", function ($scope
 
   function updateRunList() {
     $http.get("/api/competitions/" + competitionId +
-              "/runs?populate=true").then(function (response) {
+              "/line/runs?populate=true").then(function (response) {
       $scope.runs = response.data
       console.log($scope.teams)
     })

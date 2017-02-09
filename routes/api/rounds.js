@@ -68,7 +68,8 @@ adminRouter.post('/createround', function (req, res) {
 
   var newRound = new competitiondb.round({
     name : round.name,
-    competition : round.competition
+    competition : round.competition,
+    league : round.league
   })
 
   newRound.save(function (err, data) {
