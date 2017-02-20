@@ -3,6 +3,7 @@
 logs/*
 public/components/*
 node_modules/*
+doc/*
 
 .idea/
 

@@ -5,7 +5,6 @@ const privateRouter = express.Router()
 const adminRouter = express.Router()
 const lineRun = require('../../models/lineRun').lineRun
 const competitiondb = require('../../models/competition')
-const mapdb = require('../../models/lineMap')
 const query = require('../../helper/query-helper')
 const validator = require('validator')
 const async = require('async')
@@ -61,6 +60,39 @@ publicRouter.get('/:runid', function (req, res, next) {
   })
 })
 
+/**
+ * @api {put} /runs/line/:runid Update run
+ * @apiName PutRun
+ * @apiGroup Run
+ * @apiVersion 1.0.0
+ *
+ * @apiParam {String} runid The run id
+
+ * @apiParam {Object[]} [tiles]
+ * @apiParam {Boolean}  [tiles.isDropTile]
+ * @apiParam {Object}   [tiles.scoredItems]
+ * @apiParam {Boolean}  [tiles.scoredItems.obstacles]
+ * @apiParam {Boolean}  [tiles.scoredItems.speedbumps]
+ * @apiParam {Boolean}  [tiles.scoredItems.intersection]
+ * @apiParam {Boolean}  [tiles.scoredItems.gaps]
+ * @apiParam {Boolean}  [tiles.scoredItems.dropTile]
+ * @apiParam {Number[]} [LoPs]
+ * @apiParam {Number}   [evacuationLevel]
+ * @apiParam {Boolean}  [exitBonus]
+ * @apiParam {Number}   [rescuedLiveVictims]
+ * @apiParam {Number}   [rescuedDeadVictims]
+ * @apiParam {Number}   [score]
+ * @apiParam {Boolean}  [showedUp]
+ * @apiParam {Object}   [time]
+ * @apiParam {Object}   [time.minutes]
+ * @apiParam {Object}   [time.seconds]
+ *
+ * @apiSuccess (200) {String} msg   Success msg
+ * @apiSuccess (200) {String} score The current score
+ *
+ * @apiError (400) {String} err The error message
+ * @apiError (400) {String} msg The error message
+ */
 privateRouter.put('/:runid', function (req, res, next) {
   const id = req.params.runid
   if (!ObjectId.isValid(id)) {
@@ -88,7 +120,8 @@ privateRouter.put('/:runid', function (req, res, next) {
       // Recursively updates properties in "dbObj" from "obj"
       const copyProperties = function (obj, dbObj) {
         for (let prop in obj) {
-          if (obj.hasOwnProperty(prop) && dbObj.hasOwnProperty(prop) || dbObj.get(prop) !== undefined) {
+          if (obj.hasOwnProperty(prop) && dbObj.hasOwnProperty(prop) ||
+              dbObj.get(prop) !== undefined) {
             if (typeof obj[prop] == 'object') {
               return copyProperties(obj[prop], dbObj[prop])
             } else if (obj[prop] !== undefined) {
@@ -104,7 +137,10 @@ privateRouter.put('/:runid', function (req, res, next) {
 
       if (err) {
         logger.error(err)
-        return res.status(400).send({err: err.message, msg: "Could not save run"})
+        return res.status(400).send({
+          err: err.message,
+          msg: "Could not save run"
+        })
       }
 
       dbRun.score = scoreCalculator.calculateScore(dbRun)
@@ -112,7 +148,10 @@ privateRouter.put('/:runid', function (req, res, next) {
       dbRun.save(function (err) {
         if (err) {
           logger.error(err)
-          return res.status(400).send({err: err.message, msg: "Could not save run"})
+          return res.status(400).send({
+            err: err.message,
+            msg: "Could not save run"
+          })
         } else {
           if (socketIo !== undefined) {
             socketIo.sockets.in('runs/').emit('changed')
@@ -133,7 +172,7 @@ privateRouter.put('/:runid', function (req, res, next) {
  * @apiGroup Run
  * @apiVersion 1.0.0
  *
- * @apiParam {String} runid The competition id
+ * @apiParam {String} runid The run id
  *
  * @apiSuccess (200) {String} msg Success msg
  *
@@ -157,7 +196,7 @@ adminRouter.delete('/:runid', function (req, res, next) {
 })
 
 /**
- * @api {post} /runs/line/createrun Create new run
+ * @api {post} /runs/line Create new run
  * @apiName PostRun
  * @apiGroup Run
  * @apiVersion 1.0.0
