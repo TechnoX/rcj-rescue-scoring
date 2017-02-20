@@ -2,18 +2,17 @@
 //                          Libraries
 //========================================================================
 
-var express = require('express')
-var publicRouter = express.Router()
-var privateRouter = express.Router()
-var adminRouter = express.Router()
-var lineMapdb = require('../../models/lineMap')
-var query = require('../../helper/query-helper')
-var validator = require('validator')
-var async = require('async')
-var ObjectId = require('mongoose').Types.ObjectId
-var logger = require('../../config/logger').mainLogger
-var fs = require('fs')
-var async = require('async')
+const express = require('express')
+const publicRouter = express.Router()
+const privateRouter = express.Router()
+const adminRouter = express.Router()
+const lineMapdb = require('../../models/lineMap')
+const query = require('../../helper/query-helper')
+const validator = require('validator')
+const async = require('async')
+const ObjectId = require('mongoose').Types.ObjectId
+const logger = require('../../config/logger').mainLogger
+const fs = require('fs')
 
 
 publicRouter.get('/', function (req, res) {

@@ -75,7 +75,7 @@ privateRouter.put('/:runid', function (req, res, next) {
       res.status(400).send({msg: "Could not get run"})
     } else {
 
-      if (!Array.isArray(run.tiles) && typeof run.tiles == 'object') { // Handle object as "sparse" array
+      if (!Array.isArray(run.tiles) && typeof run.tiles == 'object') { // Handle dict as "sparse" array
         const tiles = run.tiles
         run.tiles = []
         Object.keys(tiles).forEach(function (key) {
@@ -100,19 +100,19 @@ privateRouter.put('/:runid', function (req, res, next) {
         }
       }
 
-      let err = copyProperties(run, dbRun)
+      err = copyProperties(run, dbRun)
 
       if (err) {
         logger.error(err)
-        res.status(400).send({err: err, msg: "Could not save run"})
+        return res.status(400).send({err: err.message, msg: "Could not save run"})
       }
-      
+
       dbRun.score = scoreCalculator.calculateScore(dbRun)
 
       dbRun.save(function (err) {
         if (err) {
           logger.error(err)
-          res.status(400).send({err: err, msg: "Could not save run"})
+          return res.status(400).send({err: err.message, msg: "Could not save run"})
         } else {
           if (socketIo !== undefined) {
             socketIo.sockets.in('runs/').emit('changed')
@@ -120,7 +120,7 @@ privateRouter.put('/:runid', function (req, res, next) {
             socketIo.sockets.in('fields/' +
                                 dbRun.field).emit('data', {newRun: dbRun._id})
           }
-          res.status(200).send({msg: "Saved run", score: dbRun.score})
+          return res.status(200).send({msg: "Saved run", score: dbRun.score})
         }
       })
     }
