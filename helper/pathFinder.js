@@ -21,7 +21,6 @@ module.exports.findPath = function (map) {
   })
 
   traverse(startTile, startDir, tiles, map, 0)
-  return tiles
 }
 
 /**
@@ -38,6 +37,7 @@ function traverse(curTile, entryDir, tiles, map, index) {
   var nextTile = tiles[nextCoord(curTile, entryDir)]
 
   if (nextTile === undefined) {
+    map.indexCount = index + 1
     return
   }
 

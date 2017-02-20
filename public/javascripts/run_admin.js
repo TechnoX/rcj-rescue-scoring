@@ -50,7 +50,7 @@ angular.module("RunAdmin", []).controller("RunAdminController", function ($scope
 
     console.log(run)
 
-    $http.post("/api/runs/createrun", run).then(function (response) {
+    $http.post("/api/runs/line", run).then(function (response) {
       console.log(response)
       updateRunList()
     }, function (error) {

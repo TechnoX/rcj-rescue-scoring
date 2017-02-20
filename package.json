@@ -6,7 +6,7 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "async": "^0.9.0",
+    "async": "^2.1.5",
     "body-parser": "~1.10.1",
     "chance": "^0.7.3",
     "connect-flash": "^0.1.1",

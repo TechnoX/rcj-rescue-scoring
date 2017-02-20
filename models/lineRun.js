@@ -1,3 +1,4 @@
+"use strict"
 const mongoose = require('mongoose')
 const validator = require('validator')
 const Schema = mongoose.Schema
@@ -17,29 +18,37 @@ const lineRunSchema = new Schema({
   team       : {type: ObjectId, ref: 'Team', required: true},
   field      : {type: ObjectId, ref: 'Field', required: true},
   map        : {type: ObjectId, ref: 'LineMap', required: true},
-
-  tiles         : [{
-    dropTile   : {type: Boolean, default: false},
+  
+  tiles             : [{
+    isDropTile : {type: Boolean, default: false},
     scoredItems: {
-      obstacle    : {type: Boolean, default: false},
-      speedbump   : {type: Boolean, default: false},
+      obstacles   : {type: Boolean, default: false},
+      speedbumps  : {type: Boolean, default: false},
       intersection: {type: Boolean, default: false},
-      gap         : {type: Boolean, default: false},
+      gaps        : {type: Boolean, default: false},
       dropTile    : {type: Boolean, default: false}
     }
   }],
-  LoPs          : {type: [Number], min: 0},
-  rescuedVictims: {type: Number, min: 0, default: 0},
-  score         : {type: Number, min: 0, default: 0},
-  showedUp      : {type: Boolean, default: false},
-  time          : {
+  LoPs              : {type: [Number], min: 0},
+  evacuationLevel   : {
+    type: Number, default: 1, validate: function (l) {
+      return l == 1 || l == 2
+    }
+  },
+  exitBonus         : {type: Boolean, default: false},
+  rescuedLiveVictims: {type: Number, min: 0, default: 0},
+  rescuedDeadVictims: {type: Number, min: 0, default: 0},
+  score             : {type: Number, min: 0, default: 0},
+  showedUp          : {type: Boolean, default: false},
+  time              : {
     minutes: {type: Number, min: 0, max: 8, default: 0},
     seconds: {type: Number, min: 0, max: 59, default: 0}
   }
 })
 
 lineRunSchema.pre('save', function (next) {
-  var self = this
+  const self = this
+  
   if (self.isNew) {
     LineRun.findOne({
       round: self.round,
@@ -60,7 +69,7 @@ lineRunSchema.pre('save', function (next) {
                 if (err) {
                   return callback(err)
                 } else if (!dbCompetition) {
-                  return callback("No competition with that id!")
+                  return callback(new Error("No competition with that id!"))
                 } else {
                   return callback(null, dbCompetition)
                 }
@@ -71,7 +80,7 @@ lineRunSchema.pre('save', function (next) {
                 if (err) {
                   return callback(err)
                 } else if (!dbRound) {
-                  return callback("No round with that id!")
+                  return callback(new Error("No round with that id!"))
                 } else {
                   return callback(null, dbRound)
                 }
@@ -82,7 +91,7 @@ lineRunSchema.pre('save', function (next) {
                 if (err) {
                   return callback(err)
                 } else if (!dbTeam) {
-                  return callback("No team with that id!")
+                  return callback(new Error("No team with that id!"))
                 } else {
                   return callback(null, dbTeam)
                 }
@@ -93,7 +102,7 @@ lineRunSchema.pre('save', function (next) {
                 if (err) {
                   return callback(err)
                 } else if (!dbField) {
-                  return callback("No field with that id!")
+                  return callback(new Error("No field with that id!"))
                 } else {
                   return callback(null, dbField)
                 }
@@ -104,7 +113,7 @@ lineRunSchema.pre('save', function (next) {
                 if (err) {
                   return callback(err)
                 } else if (!dbMap) {
-                  return callback("No map with that id!")
+                  return callback(new Error("No map with that id!"))
                 } else {
                   return callback(null, dbMap)
                 }
@@ -115,35 +124,35 @@ lineRunSchema.pre('save', function (next) {
             if (err) {
               return next(err)
             } else {
-              const competitionId = results.competition._id
-
+              const competitionId = results.competition.id
+              
               if (results.round.competition != competitionId) {
                 return next(new Error("Round does not match competition!"))
               }
               if (LINE_LEAGUES.indexOf(results.round.league) == -1) {
                 return next(new Error("Round does not match league!"))
               }
-
+              
               if (results.team.competition != competitionId) {
                 return next(new Error("Team does not match competition!"))
               }
               if (LINE_LEAGUES.indexOf(results.team.league) == -1) {
                 return next(new Error("Team does not match league!"))
               }
-
+              
               if (results.field.competition != competitionId) {
                 return next(new Error("Field does not match competition!"))
               }
               if (LINE_LEAGUES.indexOf(results.field.league) == -1) {
                 return next(new Error("Field does not match league!"))
               }
-
+              
               if (results.map.competition != competitionId) {
                 return next(new Error("Map does not match competition!"))
               }
-
+              
               self.LoPs = new Array(results.map.numberOfDropTiles).fill(0)
-
+              self.tiles = new Array(results.map.indexCount).fill({})
               return next()
             }
           })

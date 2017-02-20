@@ -31,7 +31,7 @@ var logger = require('../../config/logger').mainLogger;
 router.post('/login', function (req, res) {
   var username = req.body.username;
   var password = req.body.password;
-
+  
   if (!validator.isAscii(password) || !validator.isAscii(username)) {
     return res.status(400).send({msg: "Invalid characters"})
   }

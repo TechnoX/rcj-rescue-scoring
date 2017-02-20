@@ -21,7 +21,7 @@ const MAZE_LEAGUES = competitiondb.MAZE_LEAGUES
 const LEAGUES = competitiondb.LEAGUES
 
 publicRouter.get('/', function (req, res) {
-  competitiondb.competition.find({}, function (err, data) {
+  competitiondb.competition.find({}).lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
       res.status(400).send({msg: "Could not get competitions"})
@@ -32,17 +32,24 @@ publicRouter.get('/', function (req, res) {
 })
 
 publicRouter.get('/:competitionid', function (req, res, next) {
-  var id = req.params.competitionid
+  const id = req.params.competitionid
 
   if (!ObjectId.isValid(id)) {
     return next()
   }
 
-  query.doIdQuery(req, res, id, "", competitiondb.competition)
+  competitiondb.competition.findById(id).lean().exec(function (err, data) {
+    if (err) {
+      logger.error(err)
+      res.status(400).send({msg: "Could not get competition"})
+    } else {
+      res.status(200).send(data)
+    }
+  })
 })
 
 publicRouter.get('/:competitionid/delete', function (req, res, next) {
-  var id = req.params.competitionid
+  const id = req.params.competitionid
 
   if (!ObjectId.isValid(id)) {
     return next()
@@ -90,7 +97,7 @@ publicRouter.get('/:competitionid/:league/teams', function (req, res, next) {
   competitiondb.team.find({
     competition: id,
     league     : league
-  }, function (err, data) {
+  }).lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
       res.status(400).send({msg: "Could not get teams"})
@@ -116,7 +123,7 @@ publicRouter.get('/:competitionid/line/runs', function (req, res, next) {
   if (populate !== undefined) {
     query.populate(populate)
   }
-  query.exec(function (err, data) {
+  query.lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
       res.status(400).send({msg: "Could not get runs"})
@@ -174,7 +181,7 @@ publicRouter.get('/:competitionid/fields', function (req, res, next) {
     return next()
   }
 
-  competitiondb.field.find({competition: id}, function (err, data) {
+  competitiondb.field.find({competition: id}).lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
       res.status(400).send({msg: "Could not get fields"})
@@ -263,6 +270,7 @@ adminRouter.post('/createcompetition', function (req, res) {
       logger.error(err)
       res.status(400).send({msg: "Error saving competition"})
     } else {
+      res.location("/api/competitions/" + data._id)
       res.status(201).send({
         msg: "New competition has been saved",
         id : data._id

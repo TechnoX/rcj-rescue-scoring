@@ -5,8 +5,8 @@ const ObjectId = Schema.Types.ObjectId
 
 const logger = require('../config/logger').mainLogger
 
-const LINE_LEAGUES = ["primary", "secondary"]
-const MAZE_LEAGUES = ["maze"]
+const LINE_LEAGUES = ["Primary", "Secondary"]
+const MAZE_LEAGUES = ["Maze"]
 
 const LEAGUES = [].concat(LINE_LEAGUES, MAZE_LEAGUES)
 

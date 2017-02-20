@@ -1,7 +1,9 @@
+"use strict"
 const mongoose = require('mongoose')
 const validator = require('validator')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
+const async = require('async')
 
 const logger = require('../config/logger').mainLogger
 
@@ -22,6 +24,7 @@ const lineMapSchema = new Schema({
   height           : {type: Number, required: true, min: 1},
   width            : {type: Number, required: true, min: 1},
   length           : {type: Number, required: true, min: 1},
+  indexCount       : {type: Number, min: 1},
   tiles            : [{
     x        : {type: Number, required: true},
     y        : {type: Number, required: true},
@@ -34,7 +37,7 @@ const lineMapSchema = new Schema({
     },
     items    : {
       obstacles : {type: Number, required: true, min: 0},
-      speedbumps: {type: Number, required: true, min: 0, max: 1}
+      speedbumps: {type: Number, required: true, min: 0}
     },
     index    : {type: [Number], min: 0},
     levelUp  : {type: String, enum: ["top", "right", "bottom", "left"]},
@@ -49,41 +52,54 @@ const lineMapSchema = new Schema({
 })
 
 lineMapSchema.pre('save', function (next) {
-  const self = this
-  if (self.isNew) {
-    LineMap.findOne({
-      competition: self.competition,
-      name       : self.name
-    }).populate("competition", "name").exec(function (err, dbMap) {
-      if (err) {
-        return next(err)
-      } else if (dbMap) {
-        err = new Error('Map "' + dbMap.name +
-                        '" already exists in competition "' +
-                        dbMap.competition.name + '"!')
-        return next(err)
+  var self = this
+
+  self.populate('tiles.tileType', function (err, populatedMap) {
+    if (err) {
+      return next(err)
+    } else {
+      self = populatedMap
+      logger.debug(self)
+
+      pathFinder.findPath(self)
+
+      if (self.isNew) {
+        LineMap.findOne({
+          competition: self.competition,
+          name       : self.name
+        }).populate("competition", "name").exec(function (err, dbMap) {
+          if (err) {
+            return next(err)
+          } else if (dbMap) {
+            err = new Error('Map "' + dbMap.name +
+                            '" already exists in competition "' +
+                            dbMap.competition.name + '"!')
+            return next(err)
+          } else {
+            return next()
+          }
+        })
       } else {
         return next()
       }
-    })
-  } else {
-    return next()
-  }
+    }
+  })
 })
 
 const tileSetSchema = new Schema({
-    tiles: [{
-      tileType: {type: ObjectId, ref: 'TileType', required: true},
-      count   : {type: Number}
-    }]
-  }
-)
+  competition: {type: ObjectId, ref: 'Competition', required: true},
+  name       : {type: String, required: true, unique: true},
+  tiles      : [{
+    tileType: {type: ObjectId, ref: 'TileType', required: true},
+    count   : {type: Number, default: 0}
+  }]
+})
 
 const tileTypeSchema = new Schema({
-  image        : {type: String, required: true, unique: true},
-  gaps         : {type: Number, required: true, min: 0},
-  intersections: {type: Number, required: true, min: 0, max: 1},
-  paths        : {
+  image       : {type: String, required: true, unique: true},
+  gaps        : {type: Number, required: true, min: 0},
+  intersection: {type: Boolean, required: true, default: false},
+  paths       : {
     "top"   : {type: String, enum: ["top", "right", "bottom", "left"]},
     "right" : {type: String, enum: ["top", "right", "bottom", "left"]},
     "bottom": {type: String, enum: ["top", "right", "bottom", "left"]},
@@ -495,7 +511,7 @@ const tileTypes = [
   }
 ]
 
-for (i in tileTypes) {
+for (var i in tileTypes) {
   const tileType = new TileType(tileTypes[i])
   tileType.save(function (err, data) {
     if (err) {
