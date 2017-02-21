@@ -48,7 +48,7 @@ publicRouter.get('/:competitionid', function (req, res, next) {
   })
 })
 
-publicRouter.get('/:competitionid/delete', function (req, res, next) {
+publicRouter.delete('/:competitionid', function (req, res, next) {
   const id = req.params.competitionid
 
   if (!ObjectId.isValid(id)) {
@@ -72,7 +72,7 @@ publicRouter.get('/:competitionid/teams', function (req, res, next) {
     return next()
   }
 
-  competitiondb.team.find({competition: id}, function (err, data) {
+  competitiondb.team.find({competition: id}).lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
       res.status(400).send({msg: "Could not get teams"})

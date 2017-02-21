@@ -4,8 +4,6 @@ const publicRouter = express.Router()
 const privateRouter = express.Router()
 const adminRouter = express.Router()
 const lineRun = require('../../models/lineRun').lineRun
-const competitiondb = require('../../models/competition')
-const query = require('../../helper/query-helper')
 const validator = require('validator')
 const async = require('async')
 const ObjectId = require('mongoose').Types.ObjectId
@@ -20,8 +18,43 @@ module.exports.connectSocketIo = function (io) {
   socketIo = io
 }
 
+/**
+ * @api {get} /runs/line Get runs
+ * @apiName GetRun
+ * @apiGroup Run
+ * @apiVersion 1.0.0
+ *
+ * @apiParam {Boolean} [populate] Whether to populate references with name
+ *
+ * @apiSuccess (200) {Object[]} -             Array of runs
+ * @apiSuccess (200) {String}   -._id
+ * @apiSuccess (200) {String}   -.competition
+ * @apiSuccess (200) {String}   -.round
+ * @apiSuccess (200) {String}   -.team
+ * @apiSuccess (200) {String}   -.field
+ * @apiSuccess (200) {String}   -.map
+ * @apiSuccess (200) {Number}   -.score
+ * @apiSuccess (200) {Object}   -.time
+ * @apiSuccess (200) {Number}   -.time.minutes
+ * @apiSuccess (200) {Number}   -.time.seconds
+ *
+ * @apiError (400) {String} msg The error message
+ */
 publicRouter.get('/', function (req, res) {
-  lineRun.find({}).lean().exec(function (err, data) {
+
+  const query = lineRun.find({}, "competition round team field map score time")
+  query.populate({path: "competition", select: "name"})
+  if (req.query['populate'] !== undefined && req.query['populate']) {
+    query.populate([
+      {path: "competition", select: "name"},
+      {path: "round", select: "name"},
+      {path: "team", select: "name"},
+      {path: "field", select: "name"},
+      {path: "map", select: "name"}
+    ])
+  }
+
+  query.lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
       res.status(400).send({msg: "Could not get runs"})
@@ -31,31 +64,67 @@ publicRouter.get('/', function (req, res) {
   })
 })
 
+/**
+ * @api {get} /runs/line/:runid Get run
+ * @apiName GetRun
+ * @apiGroup Run
+ * @apiVersion 1.0.0
+ *
+ * @apiParam {String} runid The run id
+ *
+ * @apiParam {Boolean} [populate] Whether to populate object references
+ *
+ * @apiSuccess (200) {String}       _id
+ * @apiSuccess (200) {String}       competition
+ * @apiSuccess (200) {String}       round
+ * @apiSuccess (200) {String}       team
+ * @apiSuccess (200) {String}       field
+ * @apiSuccess (200) {String}       map
+ *
+ * @apiSuccess (200) {Object[]}     tiles
+ * @apiSuccess (200) {Boolean}      tiles.isDropTile
+ * @apiSuccess (200) {Object}       tiles.scoredItems
+ * @apiSuccess (200) {Boolean}      tiles.scoredItems.obstacles
+ * @apiSuccess (200) {Boolean}      tiles.scoredItems.speedbumps
+ * @apiSuccess (200) {Boolean}      tiles.scoredItems.intersection
+ * @apiSuccess (200) {Boolean}      tiles.scoredItems.gaps
+ * @apiSuccess (200) {Boolean}      tiles.scoredItems.dropTile
+ * @apiSuccess (200) {Number[]}     LoPs
+ * @apiSuccess (200) {Number}       evacuationLevel
+ * @apiSuccess (200) {Boolean}      exitBonus
+ * @apiSuccess (200) {Number}       rescuedLiveVictims
+ * @apiSuccess (200) {Number}       rescuedDeadVictims
+ * @apiSuccess (200) {Number}       score
+ * @apiSuccess (200) {Boolean}      showedUp
+ * @apiSuccess (200) {Object}       time
+ * @apiSuccess (200) {Number{0-8}}  time.minutes
+ * @apiSuccess (200) {Number{0-59}} time.seconds
+ *
+ * @apiError (400) {String} err The error message
+ * @apiError (400) {String} msg The error message
+ */
 publicRouter.get('/:runid', function (req, res, next) {
-  var id = req.params.runid
+  const id = req.params.runid
   
   if (!ObjectId.isValid(id)) {
     return next()
   }
-  
-  var populate
+
+  const query = lineRun.findById(id, "-__v")
+
   if (req.query['populate'] !== undefined && req.query['populate']) {
-    populate = ["round", "team", "field", "competition", {
+    query.populate(["round", "team", "field", "competition", {
       path    : 'tiles',
       populate: {path: 'tileType'}
-    }]
+    }])
   }
-  
-  var query = competitiondb.run.findById(id)
-  if (populate !== undefined) {
-    query.populate(populate)
-  }
-  query.exec(function (err, data) {
+
+  query.lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not get run"})
+      return res.status(400).send({err: err.message, msg: "Could not get run"})
     } else {
-      res.status(200).send(data)
+      return res.status(200).send(data)
     }
   })
 })
@@ -68,24 +137,23 @@ publicRouter.get('/:runid', function (req, res, next) {
  *
  * @apiParam {String} runid The run id
 
- * @apiParam {Object[]} [tiles]
- * @apiParam {Boolean}  [tiles.isDropTile]
- * @apiParam {Object}   [tiles.scoredItems]
- * @apiParam {Boolean}  [tiles.scoredItems.obstacles]
- * @apiParam {Boolean}  [tiles.scoredItems.speedbumps]
- * @apiParam {Boolean}  [tiles.scoredItems.intersection]
- * @apiParam {Boolean}  [tiles.scoredItems.gaps]
- * @apiParam {Boolean}  [tiles.scoredItems.dropTile]
- * @apiParam {Number[]} [LoPs]
- * @apiParam {Number}   [evacuationLevel]
- * @apiParam {Boolean}  [exitBonus]
- * @apiParam {Number}   [rescuedLiveVictims]
- * @apiParam {Number}   [rescuedDeadVictims]
- * @apiParam {Number}   [score]
- * @apiParam {Boolean}  [showedUp]
- * @apiParam {Object}   [time]
- * @apiParam {Object}   [time.minutes]
- * @apiParam {Object}   [time.seconds]
+ * @apiParam {Object[]}     [tiles]
+ * @apiParam {Boolean}      [tiles.isDropTile]
+ * @apiParam {Object}       [tiles.scoredItems]
+ * @apiParam {Boolean}      [tiles.scoredItems.obstacles]
+ * @apiParam {Boolean}      [tiles.scoredItems.speedbumps]
+ * @apiParam {Boolean}      [tiles.scoredItems.intersection]
+ * @apiParam {Boolean}      [tiles.scoredItems.gaps]
+ * @apiParam {Boolean}      [tiles.scoredItems.dropTile]
+ * @apiParam {Number[]}     [LoPs]
+ * @apiParam {Number=1,2}   [evacuationLevel]
+ * @apiParam {Boolean}      [exitBonus]
+ * @apiParam {Number}       [rescuedLiveVictims]
+ * @apiParam {Number}       [rescuedDeadVictims]
+ * @apiParam {Boolean}      [showedUp]
+ * @apiParam {Object}       [time]
+ * @apiParam {Number{0-8}}  [time.minutes]
+ * @apiParam {Number{0-59}} [time.seconds]
  *
  * @apiSuccess (200) {String} msg   Success msg
  * @apiSuccess (200) {String} score The current score
@@ -101,13 +169,14 @@ privateRouter.put('/:runid', function (req, res, next) {
   
   const run = req.body
 
-  lineRun.findById(id, function (err, dbRun) {
+  // Exclude fields that are not allowed to be publicly changed
+  lineRun.findById(id, "-_id -__v -competition -round -team -field -map -score", function (err, dbRun) {
     if (err) {
       logger.error(err)
       res.status(400).send({msg: "Could not get run"})
     } else {
 
-      if (!Array.isArray(run.tiles) && typeof run.tiles == 'object') { // Handle dict as "sparse" array
+      if (run.tiles.constructor === Object) { // Handle dict as "sparse" array
         const tiles = run.tiles
         run.tiles = []
         Object.keys(tiles).forEach(function (key) {
@@ -121,8 +190,8 @@ privateRouter.put('/:runid', function (req, res, next) {
       const copyProperties = function (obj, dbObj) {
         for (let prop in obj) {
           if (obj.hasOwnProperty(prop) && dbObj.hasOwnProperty(prop) ||
-              dbObj.get(prop) !== undefined) {
-            if (typeof obj[prop] == 'object') {
+              dbObj.get(prop) !== undefined) { // Mongoose objects don't have hasOwnProperty
+            if (typeof obj[prop] == 'object') { // Catches object and array
               return copyProperties(obj[prop], dbObj[prop])
             } else if (obj[prop] !== undefined) {
               dbObj[prop] = obj[prop]

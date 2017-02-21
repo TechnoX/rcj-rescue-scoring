@@ -7,7 +7,6 @@ const publicRouter = express.Router()
 const privateRouter = express.Router()
 const adminRouter = express.Router()
 const lineMapdb = require('../../models/lineMap')
-const query = require('../../helper/query-helper')
 const validator = require('validator')
 const async = require('async')
 const ObjectId = require('mongoose').Types.ObjectId
@@ -16,7 +15,7 @@ const fs = require('fs')
 
 
 publicRouter.get('/', function (req, res) {
-  lineMapdb.lineMap.find({}).lean().exec(function (err, data) {
+  lineMapdb.lineMap.find({}, "competition name").lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
       res.status(400).send({msg: "Could not get maps"})
@@ -26,12 +25,31 @@ publicRouter.get('/', function (req, res) {
   })
 })
 
-adminRouter.get('/tiletypes', function (req, res) {
-  query.doFindResultSortQuery(req, res, null, null, mapdb.tileType)
+
+publicRouter.get('/tiletypes', function (req, res) {
+  const tileTypes = req.query.id || req.body.id
+
+  var query
+  if (tileTypes != null && tileTypes.constructor === String) {
+    query = lineMapdb.tileType.findById(tileTypes)
+  } else if (Array.isArray(tileTypes)) {
+    query = lineMapdb.tileType.find({_id : {$in : tileTypes.filter(ObjectId.isValid)}})
+  } else {
+    query = lineMapdb.tileType.find({})
+  }
+
+  query.lean().exec(function (err, data) {
+    if (err) {
+      logger.error(err)
+      res.status(400).send({msg: "Could not get tiletypes"})
+    } else {
+      res.status(200).send(data)
+    }
+  })
 })
 
 publicRouter.get('/:mapid', function (req, res, next) {
-  var id = req.params.mapid
+  const id = req.params.mapid
 
   if (!ObjectId.isValid(id)) {
     return next()
@@ -46,7 +64,7 @@ publicRouter.get('/:mapid', function (req, res, next) {
   if (populate !== undefined) {
     query.populate(populate)
   }
-  query.exec(function (err, data) {
+  query.lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
       res.status(400).send({msg: "Could not get map"})
