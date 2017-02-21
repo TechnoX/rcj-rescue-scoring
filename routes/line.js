@@ -10,8 +10,8 @@ publicRouter.get('/', function (req, res) {
   res.render('line_home');
 })
 
-publicRouter.get('/:competitionid', function (req, res, next) {
-  var id = req.params.competitionid
+publicRouter.get('/:competition', function (req, res, next) {
+  var id = req.params.competition
 
   if (!ObjectId.isValid(id)) {
     return next()
@@ -20,8 +20,8 @@ publicRouter.get('/:competitionid', function (req, res, next) {
   res.render('line_competition', {id : id})
 })
 
-publicRouter.get('/:competitionid/score', function (req, res, next) {
-  var id = req.params.competitionid
+publicRouter.get('/:competition/score', function (req, res, next) {
+  var id = req.params.competition
 
   if (!ObjectId.isValid(id)) {
     return next()

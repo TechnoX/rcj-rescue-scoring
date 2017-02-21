@@ -14,17 +14,31 @@ const logger = require('../../config/logger').mainLogger
 const fs = require('fs')
 
 
-publicRouter.get('/', function (req, res) {
-  lineMapdb.lineMap.find({}, "competition name").lean().exec(function (err, data) {
+publicRouter.get('/', getLineMaps)
+function getLineMaps(req, res) {
+  const competition = req.query.competition || req.params.competition
+
+  var query
+  if (competition != null && competition.constructor === String) {
+    query = lineMapdb.lineMap.find({competition: competition})
+  } else if (Array.isArray(competition)) {
+    query = lineMapdb.lineMap.find({competition: {$in: competition.filter(ObjectId.isValid)}})
+  } else {
+    query = lineMapdb.lineMap.find({})
+  }
+
+  query.select("competition name")
+
+  query.lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not get maps"})
+      return res.status(400).send({msg: "Could not get maps"})
     } else {
-      res.status(200).send(data)
+      return res.status(200).send(data)
     }
   })
-})
-
+}
+module.exports.getLineMaps = getLineMaps
 
 publicRouter.get('/tiletypes', function (req, res) {
   const tileTypes = req.query.id || req.body.id
@@ -33,7 +47,7 @@ publicRouter.get('/tiletypes', function (req, res) {
   if (tileTypes != null && tileTypes.constructor === String) {
     query = lineMapdb.tileType.findById(tileTypes)
   } else if (Array.isArray(tileTypes)) {
-    query = lineMapdb.tileType.find({_id : {$in : tileTypes.filter(ObjectId.isValid)}})
+    query = lineMapdb.tileType.find({_id: {$in: tileTypes.filter(ObjectId.isValid)}})
   } else {
     query = lineMapdb.tileType.find({})
   }

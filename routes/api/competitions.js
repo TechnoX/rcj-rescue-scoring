@@ -9,6 +9,8 @@ const adminRouter = express.Router()
 const competitiondb = require('../../models/competition')
 const lineRundb = require('../../models/lineRun')
 const lineMapdb = require('../../models/lineMap')
+const lineMapsApi = require('./lineMaps')
+const lineRunsApi = require('./lineRuns')
 const query = require('../../helper/query-helper')
 const validator = require('validator')
 const async = require('async')
@@ -31,8 +33,8 @@ publicRouter.get('/', function (req, res) {
   })
 })
 
-publicRouter.get('/:competitionid', function (req, res, next) {
-  const id = req.params.competitionid
+publicRouter.get('/:competition', function (req, res, next) {
+  const id = req.params.competition
 
   if (!ObjectId.isValid(id)) {
     return next()
@@ -48,25 +50,8 @@ publicRouter.get('/:competitionid', function (req, res, next) {
   })
 })
 
-publicRouter.delete('/:competitionid', function (req, res, next) {
-  const id = req.params.competitionid
-
-  if (!ObjectId.isValid(id)) {
-    return next()
-  }
-
-  competitiondb.competition.remove({_id: id}, function (err) {
-    if (err) {
-      logger.error(err)
-      res.status(400).send({msg: "Could not remove competition"})
-    } else {
-      res.status(200).send({msg: "Competition has been removed!"})
-    }
-  })
-})
-
-publicRouter.get('/:competitionid/teams', function (req, res, next) {
-  const id = req.params.competitionid
+publicRouter.get('/:competition/teams', function (req, res, next) {
+  const id = req.params.competition
 
   if (!ObjectId.isValid(id)) {
     return next()
@@ -82,8 +67,8 @@ publicRouter.get('/:competitionid/teams', function (req, res, next) {
   })
 })
 
-publicRouter.get('/:competitionid/:league/teams', function (req, res, next) {
-  const id = req.params.competitionid
+publicRouter.get('/:competition/:league/teams', function (req, res, next) {
+  const id = req.params.competition
   const league = req.params.league
 
   if (!ObjectId.isValid(id)) {
@@ -107,72 +92,38 @@ publicRouter.get('/:competitionid/:league/teams', function (req, res, next) {
   })
 })
 
-publicRouter.get('/:competitionid/line/runs', function (req, res, next) {
-  var id = req.params.competitionid
+publicRouter.get('/:competition/line/runs', function (req, res, next) {
+  var id = req.params.competition
 
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
-  var populate
-  if (req.query['populate'] !== undefined && req.query['populate']) {
-    populate = ["round", "team", "field", "competition"/*, {path: 'tiles', populate: {path: 'tileType'}}*/]
-  }
-
-  const query = lineRundb.lineRun.find({competition: id}, "round team field competition score time")
-  if (populate !== undefined) {
-    query.populate(populate)
-  }
-  query.lean().exec(function (err, data) {
-    if (err) {
-      logger.error(err)
-      res.status(400).send({msg: "Could not get runs"})
-    } else {
-      res.status(200).send(data)
-    }
-  })
+  return lineRunsApi.getLineRuns(req, res, next)
 })
-publicRouter.get('/:competitionid/:league/maps', function (req, res, next) {
-  const id = req.params.competitionid
+
+publicRouter.get('/:competition/:league/maps', function (req, res, next) {
+  const id = req.params.competition
   const league = req.params.league
 
   if (!ObjectId.isValid(id)) {
     return next()
   }
 
-  if (LINE_LEAGUES.indexOf(league) != -1) {
-    return getLineMaps(req, res, next)
+  if (LINE_LEAGUES.indexOf(league) == -1) {
+    return next()
   }
 
-  return next()
+  return lineMapsApi.getLineMaps(req, res, next)
 })
-publicRouter.get('/:competitionid/line/maps', getLineMaps)
-
-function getLineMaps(req, res, next) {
-  const id = req.params.competitionid
+publicRouter.get('/:competition/line/maps', function (req, res, next) {
+  const id = req.params.competition
 
   if (!ObjectId.isValid(id)) {
     return next()
   }
 
-  var populate
-  if (req.query['populate'] !== undefined && req.query['populate']) {
-    populate = {path: 'tiles', populate: {path: 'tileType'}}
-  }
-
-  const query = lineMapdb.lineMap.find({competition: id})
-  if (populate !== undefined) {
-    query.populate(populate)
-  }
-  query.exec(function (err, data) {
-    if (err) {
-      logger.error(err)
-      res.status(400).send({msg: "Could not get maps"})
-    } else {
-      res.status(200).send(data)
-    }
-  })
-}
+  return lineMapsApi.getLineMaps(req, res, next)
+})
 
 publicRouter.get('/:competitionid/fields', function (req, res, next) {
   var id = req.params.competitionid
@@ -206,7 +157,7 @@ publicRouter.get('/:competitionid/:league/fields', function (req, res, next) {
   competitiondb.field.find({
     competition: id,
     league     : league
-  }, function (err, data) {
+  }).lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
       res.status(400).send({msg: "Could not get fields"})
@@ -223,7 +174,7 @@ publicRouter.get('/:competitionid/rounds', function (req, res, next) {
     return next()
   }
 
-  competitiondb.round.find({competition: id}, function (err, data) {
+  competitiondb.round.find({competition: id}).lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
       res.status(400).send({msg: "Could not get rounds"})
@@ -248,7 +199,7 @@ publicRouter.get('/:competitionid/:league/rounds', function (req, res, next) {
   competitiondb.round.find({
     competition: id,
     league     : league
-  }, function (err, data) {
+  }).lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
       res.status(400).send({msg: "Could not get rounds"})
@@ -258,14 +209,12 @@ publicRouter.get('/:competitionid/:league/rounds', function (req, res, next) {
   })
 })
 
-adminRouter.post('/createcompetition', function (req, res) {
-  var competition = req.body
+adminRouter.post('/', function (req, res) {
+  const competition = req.body
 
-  var newCompetition = new competitiondb.competition({
+  new competitiondb.competition({
     name: competition.name
-  })
-
-  newCompetition.save(function (err, data) {
+  }).save(function (err, data) {
     if (err) {
       logger.error(err)
       res.status(400).send({msg: "Error saving competition"})

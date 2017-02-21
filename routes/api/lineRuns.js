@@ -40,10 +40,21 @@ module.exports.connectSocketIo = function (io) {
  *
  * @apiError (400) {String} msg The error message
  */
-publicRouter.get('/', function (req, res) {
+publicRouter.get('/', getLineRuns)
+function getLineRuns(req, res) {
+  const competition = req.query.competition || req.params.competition
 
-  const query = lineRun.find({}, "competition round team field map score time")
-  query.populate({path: "competition", select: "name"})
+  var query
+  if (competition != null && competition.constructor === String) {
+    query = lineRun.find({competition: competition})
+  } else if (Array.isArray(competition)) {
+    query = lineRun.find({competition: {$in: competition.filter(ObjectId.isValid)}})
+  } else {
+    query = lineRun.find({})
+  }
+
+  query.select("competition round team field map score time")
+
   if (req.query['populate'] !== undefined && req.query['populate']) {
     query.populate([
       {path: "competition", select: "name"},
@@ -62,7 +73,8 @@ publicRouter.get('/', function (req, res) {
       res.status(200).send(data)
     }
   })
-})
+}
+module.exports.getLineRuns = getLineRuns
 
 /**
  * @api {get} /runs/line/:runid Get run
