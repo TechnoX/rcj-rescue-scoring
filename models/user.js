@@ -128,7 +128,7 @@ var User = mongoose.model('User', userSchema);
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
 module.exports.user = User;
 
-/*User.remove({}, function (err) {
+User.remove({}, function (err) {
 
   var testUser = new User({
     username: "admin",
@@ -136,8 +136,8 @@ module.exports.user = User;
     admin   : true
   });
   var testUser2 = new User({
-    username: "judge",
-    password: "rcj2016judge",
+    username: "kanto",
+    password: "rcj2017judge",
     admin   : false
   });
 
@@ -157,4 +157,4 @@ module.exports.user = User;
       console.log("saved judge user for the first time, this will only get saved if it is a new installation");
     }
   });
-})*/
+})

@@ -7,13 +7,13 @@ var ObjectId = require('mongoose').Types.ObjectId
 
 /* GET home page. */
 publicRouter.get('/', function (req, res) {
-  res.render('maze_home');
+  res.render('maze_home',{user: req.user});
 })
 adminRouter.get('/editor', function (req, res) {
-  res.render('maze_editor')
+  res.render('maze_editor',{user: req.user})
 })
 adminRouter.get('/editor/:mapid', function (req, res) {
-  res.render('maze_editor', {id : req.params.mapid})
+  res.render('maze_editor', {id : req.params.mapid , user: req.user})
 })
 
 publicRouter.all('*', function (req, res, next) {

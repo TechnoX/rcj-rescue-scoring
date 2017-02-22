@@ -20,8 +20,4 @@ block content
       h1 RoboCup Junior - Rescue Line
 
       h1 Competitions
-      table
-        tr(ng-repeat='competition in competitions')
-          td
-            a(ng-bind='competition.name' ng-href="/line/{{competition._id}}")
-
+      button(ng-click="go('/line/' + competition._id)" class='button-s button-bb' ng-repeat='competition in competitions') {{competition.name}}

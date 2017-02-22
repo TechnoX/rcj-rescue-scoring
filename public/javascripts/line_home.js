@@ -5,4 +5,8 @@ angular.module("LineHome", []).controller("LineHomeController", function ($scope
     $scope.competitions = response.data
     console.log($scope.competitions)
   })
+  
+  $scope.go = function(path){
+      window.location = path
+  }
 })

@@ -75,7 +75,7 @@ publicRouter.get('/:competitionid/runs', function (req, res, next) {
     populate = ["round", "team", "field", "competition", {path: 'tiles', populate: {path: 'tileType'}}]
   }
 
-  var query = competitiondb.run.find({competition: id}, "round team field competition score time")
+  var query = competitiondb.run.find({competition: id}, "round team field competition score time rescuedVictims LoPs")
   if (populate !== undefined) {
     query.populate(populate)
   }

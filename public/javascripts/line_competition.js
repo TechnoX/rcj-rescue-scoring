@@ -26,4 +26,35 @@ angular.module("LineCompetition", []).controller("LineCompetitionController", fu
   $http.get("/api/maps").then(function (response) {
     $scope.maps = response.data
   })
+  
+  $scope.go = function(path){
+      window.location = path
+  }
 })
+.directive("runsReadFinished", function($timeout){
+    return function(scope, element, attrs){
+      if (scope.$last){
+        $('.refine').css("visibility","visible");
+        $('.loader').remove();
+        $timeout(function(){
+          $('table.comp').exTableFilter({
+            filters : {
+                0 : {
+                    append : {
+                        to : 'div.filter-round',
+                        type : 'checkbox'
+                    }
+                },
+                2 : {
+                    append : {
+                        to : 'div.filter-arena',
+                        type : 'checkbox'
+                    }
+                }
+            }
+          });
+        });
+      }
+    }
+})
+

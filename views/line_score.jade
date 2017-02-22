@@ -47,67 +47,87 @@ block content
     .col-md-offset-1.col-md-10
       .row
         .col-md-6
-          h3 Primary - Top
+          h3 NIPPON League - Rank
           table
             thead
               tr
                 th.text-center Rank
                 th.text-center Team
-                th.text-center Score sum
-                th.text-center Total time
+                th.text-center Score
+                th.text-center Time
+                th.text-center Rescued
+                th.text-center LoPs
             tbody
               tr(ng-repeat='run in primaryRunsTop track by $index')
                 td.text-center(ng-bind='$index + 1')
                 td.text-center(ng-bind='run.team.name')
                 td.text-center(ng-bind='run.score')
                 td.text-center {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+                td.text-center(ng-bind='run.rescuedVictims')
+                td.text-center(ng-bind='run.LoPsNum')
 
         .col-md-6
-          h3 Secondary - Top
+          h3 WORLD League - Rank
           table
             thead
               tr
                 th.text-center Rank
                 th.text-center Team
-                th.text-center Score sum
-                th.text-center Total time
+                th.text-center Score
+                th.text-center Time
+                th.text-center Rescued
+                th.text-center LoPs
             tbody
               tr(ng-repeat='run in secondaryRunsTop track by $index')
                 td.text-center(ng-bind='$index + 1')
                 td.text-center(ng-bind='run.team.name')
                 td.text-center(ng-bind='run.score')
                 td.text-center {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+                td.text-center(ng-bind='run.rescuedVictims')
+                td.text-center(ng-bind='run.LoPsNum')
       .row
         hr
       .row
         .col-md-6
-          h3 Primary - All rounds
+          h3 NIPPON League - All Runs
           table
             thead
               tr
                 th.text-center Team
                 th.text-center Round
+                th.text-center Field
                 th.text-center Score
                 th.text-center Time
+                th.text-center Rescued
+                th.text-center LoPs
             tbody
               tr(ng-repeat='run in primaryRuns')
                 td.text-center(ng-bind='run.team.name')
                 td.text-center(ng-bind='run.round.name')
+                td.text-center(ng-bind='run.field.name')
                 td.text-center(ng-bind='run.score')
                 td.text-center {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+                td.text-center(ng-bind='run.rescuedVictims')
+                td.text-center(ng-bind='run.LoPsNum')
 
         .col-md-6
-          h3 Secondary - All rounds
+          h3 WORLD League - All Runs
           table
             thead
               tr
                 th.text-center Team
                 th.text-center Round
+                th.text-center Field
                 th.text-center Score
                 th.text-center Time
+                th.text-center Rescued
+                th.text-center LoPs
             tbody
               tr(ng-repeat='run in secondaryRuns')
-                td.text-center(ng-bind='run.team.name')
-                td.text-center(ng-bind='run.round.name')
-                td.text-center(ng-bind='run.score')
-                td.text-center {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+                    td.text-center(ng-bind='run.team.name')
+                    td.text-center(ng-bind='run.round.name')
+                    td.text-center(ng-bind='run.field.name')
+                    td.text-center(ng-bind='run.score')
+                    td.text-center {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+                    td.text-center(ng-bind='run.rescuedVictims')
+                    td.text-center(ng-bind='run.LoPsNum')

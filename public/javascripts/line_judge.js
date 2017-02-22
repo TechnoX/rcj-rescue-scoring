@@ -34,24 +34,23 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
         $scope.numberOfDropTiles = response.data.numberOfDropTiles;;
         $scope.rescuedVictims = response.data.rescuedVictims;
-
         for(var i = 0; i < response.data.tiles.length; i++){
             $scope.tiles[response.data.tiles[i].x + ',' +
                          response.data.tiles[i].y + ',' +
                          response.data.tiles[i].z] = response.data.tiles[i];
             if(response.data.tiles[i].scoredItems.dropTiles.length>0){
                 $scope.placedDropTiles++;
-		$scope.actualUsedDropTiles += response.data.tiles[i].scoredItems.dropTiles.length;
-	    }
+		        $scope.actualUsedDropTiles += response.data.tiles[i].scoredItems.dropTiles.length;
+	           }
         }
 
         $scope.score = response.data.score;
         $scope.showedUp = response.data.showedUp;
         $scope.LoPs = response.data.LoPs;
+        console.log($scope.LoPs)
         // Verified time by timekeeper
         $scope.minutes = response.data.time.minutes;;
         $scope.seconds = response.data.time.seconds;
-
         console.log($scope.tiles);
     }, function(response){
         console.log("Error: " + response.statusText);
@@ -93,20 +92,21 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         });
 
     }
-    $scope.increment = function(index){
+    $scope.increment = function(index,last){
         if($scope.LoPs[index])
             $scope.LoPs[index]++;
         else
             $scope.LoPs[index] = 1;
-        if($scope.LoPs[index] >= 3)
-            $timeout(function(){alert("The team *may* move to next drop tile now.");},20);
         $http.post("/api/runs/"+runId+"/update", {LoPs: $scope.LoPs}).then(function(response){
             console.log(response);
             $scope.score = response.data.score;
         }, function(response){
             console.log("Error: " + response.statusText);
         });
+        if($scope.LoPs[index] >= 3 && !last)alert("The team *may* move to next checkpoint tile now.")
     }
+    
+
 
     $scope.decVictims = function(){
         $scope.rescuedVictims--;
@@ -132,6 +132,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     var tick = function() {
         $scope.time += 1000;
+        if($scope.time == 480000){
+            $scope.startedTime = !$scope.startedTime;
+            $scope.minutes = Math.floor($scope.time/60000)
+            $scope.seconds = (Math.floor($scope.time%60000))/1000
+            $scope.saveEverything();
+            alert("Time UP!")
+            
+        }
         if($scope.startedTime)
             $timeout(tick, 1000);
     }
@@ -144,6 +152,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $timeout(tick, $scope.tickInterval);
         }else{
             // Save everything when you stop the time
+            
+            $scope.minutes = Math.floor($scope.time/60000)
+            $scope.seconds = (Math.floor($scope.time%60000))/1000
             $scope.saveEverything();
         }
     }
@@ -175,7 +186,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         if(!$scope.startedScoring){
             // We can only place drop markers on tiles without scoring elements (rule 3.3.4)
             if(total > 0){
-                alert("Place drop markers on tiles without scoring elements (rule 3.3.4)");
+                alert("Place checkpoint markers on tiles without scoring elements (rule 3.3.4)");
             }else{
 		// If this tile already contains a droptile, we should remove it
 		if(tile.scoredItems.dropTiles.length > 0){
@@ -247,6 +258,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 }
             }
         }).closed.then(function(result){
+            console.log("Closed modal");
             $http.post("/api/runs/"+runId+"/update", {tiles:[$scope.tiles[x+','+y+','+z]]}).then(function(response){
                 $scope.score = response.data.score;
             }, function(response){
@@ -271,8 +283,33 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             console.log("Error: " + response.statusText);
         });
     };
+    
+    $scope.retire = function(){
+        if(window.confirm('【Confirm】Do you want to retire?')){
+        }
+        else{
+
+            window.alert('Operation Canceled.');
+            return false;
+
+        }
+        $scope.startedTime = 0;
+        $scope.minutes = 8
+        $scope.seconds = 0
+        $scope.saveEverything();
+
+    }
 
     $scope.sign = function(){
+        if(window.confirm('【Final Confirmation】Do you want to finish run?')){ // 確認ダイアログを表示
+        }
+        else{ // 「キャンセル」時の処理
+
+            window.alert('Operation Canceled.'); // 警告ダイアログを表示
+            return false; // 送信を中止
+
+        }
+
         var run = {}
         run.rescuedVictims = $scope.rescuedVictims;
         run.tiles = $scope.tiles;
@@ -285,7 +322,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
         $http.post("/api/runs/"+runId+"/update", run).then(function(response){
             $scope.score = response.data.score;
-            alert("Run signed");
+            alert("Score was recorded.");
+            history.go(-1);
         }, function(response){
             console.log("Error: " + response.statusText);
         });

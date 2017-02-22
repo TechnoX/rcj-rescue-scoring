@@ -1,10 +1,16 @@
 //- -*- tab-width: 2 -*-
 doctype html
-html(ng-app="login")
+html(ng-app="login" )
   head
     script(src="/components/angular/angular.min.js")
     script(src="/javascripts/login.js")
+    link(rel='stylesheet',href='/stylesheets/style-login.css')
+    meta(name="viewport" content="width=device-width,initial-scale=1.0")
   body(ng-controller="loginController")
-    input(type="text" placeholder="username" ng-model="username")
-    input(type="password" placeholder="password" ng-model="password")
-    input(type="submit" ng-click="login()")
+    .login
+      .login-triangle
+      h2(class="login-header") Staff Login
+      form(class="login-container")
+        input(type="text" placeholder="Username" ng-model="username")
+        input(type="password" placeholder="Password" ng-model="password")
+        input(type="submit" ng-click="login()" value="Login")

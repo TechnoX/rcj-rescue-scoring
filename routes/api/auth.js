@@ -51,6 +51,7 @@ router.post('/login', function (req, res) {
           logger.error(err)
           return res.status(400).send({msg: err})
         }
+        res.locals.user = username
         return res.send({msg: "Login successful"})
       });
     })(req, res);

@@ -113,9 +113,7 @@ app.use('/logout', pass.ensureAuthenticated, function (req, res, next) {
 app.use('/home', homeRoute)
 
 app.use('/line', [lineRoute.public, pass.ensureAuthenticated, lineRoute.private, pass.ensureAdmin, lineRoute.admin])
-
 app.use('/maze', [mazeRoute.public, pass.ensureAuthenticated, mazeRoute.private, pass.ensureAdmin, mazeRoute.admin])
-
 app.use('/admin', pass.ensureAdmin, adminRoute)
 
 //========================================================================

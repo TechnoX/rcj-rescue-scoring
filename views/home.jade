@@ -13,6 +13,22 @@ block location
 block content
   .row
     .col-md-offset-2.col-md-8
-      a(href='/line') Line
-      a(href='/maze') Maze
-      a(href='/admin') Admin
+      p RCJ Scoring System 2016 Edition
+      if typeof(user) != "undefined"
+        p 
+          font(color="red") You are logged in as #{user.username} 
+      button(onclick="location.href='/line'" class='button-s button-green') Rescue Line
+      button(onclick="location.href='/maze'" class='button-s button-green') Rescue Maze
+      if typeof(user) == "undefined"
+        button(onclick="location.href='/login'" class='button-s button-yellow') Login
+      else
+        button(onclick="location.href='/logout'" class='button-s button-red') Logout
+      br
+      br
+      br
+      if typeof(user) != "undefined"
+        if user.admin
+            button(onclick="location.href='/admin'" class='button-s button-bb') Competition Management
+        else
+            button(onclick="location.href='/'" class='button-s button-bb' disabled) Competition Management
+            p ※Your account [#{user.username}] has no authority to access Competition Management.

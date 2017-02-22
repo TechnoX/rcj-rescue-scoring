@@ -7,7 +7,7 @@ var ObjectId = require('mongoose').Types.ObjectId
 
 /* GET home page. */
 publicRouter.get('/', function (req, res) {
-  res.render('line_home');
+  res.render('line_home',{user: req.user});
 })
 
 publicRouter.get('/:competitionid', function (req, res, next) {
@@ -17,7 +17,7 @@ publicRouter.get('/:competitionid', function (req, res, next) {
     return next()
   }
 
-  res.render('line_competition', {id : id})
+  res.render('line_competition', {id : id , user: req.user})
 })
 
 publicRouter.get('/:competitionid/score', function (req, res, next) {
@@ -27,7 +27,7 @@ publicRouter.get('/:competitionid/score', function (req, res, next) {
     return next()
   }
 
-  res.render('line_score', {id : id})
+  res.render('line_score', {id : id ,user: req.user})
 })
 
 publicRouter.get('/view/:roundid', function (req, res) {

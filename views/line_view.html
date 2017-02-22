@@ -1,5 +1,17 @@
 <h1>{{team.name}}</h1>
-<h2>{{score}} points</h2>
+<p>Field：{{field.name}}</p>
+<h2>Score：{{score}}</h2>
+<h2>Time：{{minutes}} min {{seconds}} sec</h2>
+<br>
+<p>Rescued：{{rescuedVictims}}</p>
+
+<p>Number of LoPs</p>
+
+<p ng-repeat="dropTile in range(actualUsedDropTiles+1) track by $index">
+    Between <b>{{$index==0?'start':('checkpoint ' + ($index))}}</b> and <b>{{!$last?('checkpoint ' + ($index+1)):'Evacuation Zone'}}</b>:<br>
+        <span class="count">{{LoPs[$index]?LoPs[$index]:0}}</span>
+      </p>
+
 <div style="margin-top:30px;">
   <div class="row">
     <div class="col-sm-12">

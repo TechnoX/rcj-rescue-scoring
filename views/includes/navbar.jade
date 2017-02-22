@@ -4,7 +4,11 @@
     a.navbar-brand.pull-left(href='/home')
         img(alt='Brand', src='/images/Homesmall.png')
     a.navbar-brand.pull-right(href='')
-        img(alt='Brand', src='/images/user.png')
+        if typeof(user) == "undefined"
+            p Not Logged in
+        else
+            p #{user.username}
+        #img(alt='Brand', src='/images/user.png')
     div(style='display:inline;position:relative;float:left;')
         div(style='display:inline;position:absolute;line-height:60px;height:60px;width:400px;font-size: 18px;text-align:left;')
             block location

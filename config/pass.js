@@ -56,13 +56,15 @@ exports.ensureAuthenticated = function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
-    res.redirect('/login');
+    now_access = req.originalUrl;
+    res.redirect('/login?page=' + now_access);
 }
 
 // check to see that user is not logged in, check for visiting /login
 exports.ensureNotAuthenticated = function ensureNotAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
-        return res.redirect('/home')
+        if(req.query.page === undefined)return res.redirect('/home')
+        else return res.redirect(req.query.page)
     }
     next();
 }

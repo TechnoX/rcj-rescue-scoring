@@ -22,15 +22,16 @@ app.controller('ddController', ['$scope', '$http', '$log', function($scope, $htt
         // launch socket.io
         var socket = io.connect(window.location.origin);
         if(typeof runId !== 'undefined'){
+            $scope.actualUsedDropTiles = 0; 
             socket.emit('subscribe', 'runs/' + runId);
             socket.on('data', function(data) {
-                $scope.rescuedVictims = data.rescuedVictims;
 
                 for(var i = 0; i < data.tiles.length; i++){
                     $scope.tiles[data.tiles[i].x + ',' +
                                  data.tiles[i].y + ',' +
                                  data.tiles[i].z].scoredItems = data.tiles[i].scoredItems;
                 }
+                $scope.rescuedVictims = data.rescuedVictims;
                 $scope.score = data.score;
                 $scope.showedUp = data.showedUp;
                 $scope.LoPs = data.LoPs;
@@ -75,6 +76,10 @@ app.controller('ddController', ['$scope', '$http', '$log', function($scope, $htt
                 $scope.tiles[response.data.tiles[i].x + ',' +
                              response.data.tiles[i].y + ',' +
                              response.data.tiles[i].z] = response.data.tiles[i];
+                if(response.data.tiles[i].scoredItems.dropTiles.length>0){
+                $scope.placedDropTiles++;
+		        $scope.actualUsedDropTiles += response.data.tiles[i].scoredItems.dropTiles.length;
+	           }
             }
 
             $scope.score = response.data.score;

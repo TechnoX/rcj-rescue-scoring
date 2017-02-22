@@ -8,6 +8,7 @@ append scripts
   script.
     var competitionId = "#{id}"
   script(src='/javascripts/line_competition.js')
+  
 
 block location
   a(href='/home' style="color:#333333") Home
@@ -19,15 +20,40 @@ block location
 block content
   .row
     .col-md-offset-2.col-md-8
-      a(ng-href='/line/{{competitionId}}/score') Score
+      button(ng-click="go('/line/' + competition._id + '/score')" class='button-s button-yellow') Score Result
 
-      h1 Runs
-      table
-        tr(ng-repeat='run in runs')
-          td(ng-bind='run.round.name')
-          td(ng-bind='run.team.name')
-          td(ng-bind='run.field.name')
-          td
-            a(ng-href="/line/view/{{run._id}}") View
-          td
-            a(ng-href="/line/judge/{{run._id}}") Judge
+      h1 Runs - {{competition.name}}
+      .refine(style="visibility:hidden")
+          form
+              label Refine by Round
+              .filter-round
+              label Refine by Field
+              .filter-arena
+      br
+      center
+          .loader
+            img(src="/images/loader.gif")
+            p Now Loading...
+      table(class="comp")
+        thead
+            tr
+              th Round
+              th Team
+              th Field
+              th 
+              th
+        tbody
+            tr(ng-repeat='run in runs' runs-read-finished='')
+              td(ng-bind='run.round.name')
+              td(ng-bind='run.team.name')
+              td(ng-bind='run.field.name')
+              td
+                button(ng-click="go('/line/view/' + run._id)" class='button-ss button-green-s') View
+
+              td
+                button(ng-click="go('/line/judge/' + run._id)" class='button-ss button-red-s') Judge
+      br
+      br
+      br
+
+    
