@@ -9,6 +9,8 @@ const logger = require('../config/logger').mainLogger
 
 const pathFinder = require('../helper/pathFinder')
 
+const LineRun = require('./lineRun').lineRun
+
 /**
  *
  *@constructor
@@ -48,21 +50,27 @@ const lineMapSchema = new Schema({
     y: {type: Number, required: true, min: 0},
     z: {type: Number, required: true, min: 0}
   },
-  numberOfDropTiles: {type: Number, required: true, min: 0}
+  numberOfDropTiles: {type: Number, required: true, min: 0},
+  finished         : {type: Boolean, default: false}
 })
 
 lineMapSchema.pre('save', function (next) {
   var self = this
-
+  
   self.populate('tiles.tileType', function (err, populatedMap) {
     if (err) {
       return next(err)
     } else {
       self = populatedMap
       logger.debug(self)
-
-      pathFinder.findPath(self)
-
+      
+      try {
+        pathFinder.findPath(self)
+      } catch (err) {
+        logger.error(err)
+        self.finished = false
+      }
+      
       if (self.isNew) {
         LineMap.findOne({
           competition: self.competition,
@@ -80,7 +88,20 @@ lineMapSchema.pre('save', function (next) {
           }
         })
       } else {
-        return next()
+        LineRun.findOne({
+          map    : self._id,
+          started: true
+        }).lean().exec(function (err, dbRun) {
+          if (err) {
+            return next(err)
+          } else if (dbRun) {
+            err = new Error('Map "' + self.name +
+                            '" used in started runs, cannot modify!')
+            return next(err)
+          } else {
+            return next()
+          }
+        })
       }
     }
   })
