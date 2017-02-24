@@ -7,8 +7,6 @@ const publicRouter = express.Router()
 const privateRouter = express.Router()
 const adminRouter = express.Router()
 const competitiondb = require('../../models/competition')
-const lineRundb = require('../../models/lineRun')
-const lineMapdb = require('../../models/lineMap')
 const lineMapsApi = require('./lineMaps')
 const lineRunsApi = require('./lineRuns')
 const query = require('../../helper/query-helper')
@@ -109,11 +107,15 @@ publicRouter.get('/:competition/:league/maps', function (req, res, next) {
     return next()
   }
 
-  if (LINE_LEAGUES.indexOf(league) == -1) {
-    return next()
+  if (LINE_LEAGUES.indexOf(league) != -1) {
+    return lineMapsApi.getLineMaps(req, res, next)
   }
 
-  return lineMapsApi.getLineMaps(req, res, next)
+  if (MAZE_LEAGUES.indexOf(league) != -1) {
+    //return lineMapsApi.getLineMaps(req, res, next)
+  }
+
+  return next()
 })
 publicRouter.get('/:competition/line/maps', function (req, res, next) {
   const id = req.params.competition
@@ -124,9 +126,18 @@ publicRouter.get('/:competition/line/maps', function (req, res, next) {
 
   return lineMapsApi.getLineMaps(req, res, next)
 })
+publicRouter.get('/:competition/line/tilesets', function (req, res, next) {
+  const id = req.params.competition
 
-publicRouter.get('/:competitionid/fields', function (req, res, next) {
-  var id = req.params.competitionid
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  return lineMapsApi.getTileSets(req, res, next)
+})
+
+publicRouter.get('/:competition/fields', function (req, res, next) {
+  var id = req.params.competition
 
   if (!ObjectId.isValid(id)) {
     return next()
@@ -142,8 +153,8 @@ publicRouter.get('/:competitionid/fields', function (req, res, next) {
   })
 })
 
-publicRouter.get('/:competitionid/:league/fields', function (req, res, next) {
-  const id = req.params.competitionid
+publicRouter.get('/:competition/:league/fields', function (req, res, next) {
+  const id = req.params.competition
   const league = req.params.league
 
   if (!ObjectId.isValid(id)) {
@@ -167,8 +178,8 @@ publicRouter.get('/:competitionid/:league/fields', function (req, res, next) {
   })
 })
 
-publicRouter.get('/:competitionid/rounds', function (req, res, next) {
-  var id = req.params.competitionid
+publicRouter.get('/:competition/rounds', function (req, res, next) {
+  var id = req.params.competition
 
   if (!ObjectId.isValid(id)) {
     return next()
@@ -184,8 +195,8 @@ publicRouter.get('/:competitionid/rounds', function (req, res, next) {
   })
 })
 
-publicRouter.get('/:competitionid/:league/rounds', function (req, res, next) {
-  var id = req.params.competitionid
+publicRouter.get('/:competition/:league/rounds', function (req, res, next) {
+  var id = req.params.competition
   const league = req.params.league
 
   if (!ObjectId.isValid(id)) {

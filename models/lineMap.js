@@ -134,7 +134,7 @@ const TileType = mongoose.model('TileType', tileTypeSchema)
 
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
 module.exports.lineMap = LineMap
-module.exports.tileSetSchema = TileSet
+module.exports.tileSet = TileSet
 module.exports.tileType = TileType
 
 const tileTypes = [
