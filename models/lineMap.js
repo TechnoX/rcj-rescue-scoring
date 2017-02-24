@@ -128,7 +128,7 @@ const tileTypeSchema = new Schema({
   }
 })
 
-const LineMap = mongoose.model('MazeMap', lineMapSchema)
+const LineMap = mongoose.model('LineMap', lineMapSchema)
 const TileSet = mongoose.model('TileSet', tileSetSchema)
 const TileType = mongoose.model('TileType', tileTypeSchema)
 

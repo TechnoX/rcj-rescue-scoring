@@ -114,15 +114,12 @@ publicRouter.get('/:map', function (req, res, next) {
     return next()
   }
 
+  const query = lineMap.findById(id)
   var populate
-  if (req.query['populate'] !== undefined) {
-    populate = {path: 'tiles', populate: {path: 'tileType'}}
+  if (req.query['populate'] !== undefined && req.query['populate']) {
+    query.populate("tiles.tileType", "-paths -__v")
   }
 
-  var query = lineMap.findById(id)
-  if (populate !== undefined) {
-    query.populate(populate)
-  }
   query.lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
