@@ -215,6 +215,11 @@ function getTileSets(req, res) {
 
   query.select("competition name")
 
+  if (req.query['populate'] !== undefined && req.query['populate']) {
+    query.select("tiles")
+    query.populate("tiles.tileType", "-gaps -intersections -paths -__v")
+  }
+
   query.lean().exec(function (err, data) {
     if (err) {
       logger.error(err)

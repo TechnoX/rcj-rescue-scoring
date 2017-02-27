@@ -27,4 +27,8 @@ router.get('/:competitionid/fields', function (req, res) {
   res.render('field_admin', {id : req.params.competitionid})
 })
 
+router.get('/:competitionid/line/tilesets', function (req, res) {
+  res.render('tileset_admin', {id : req.params.competitionid})
+})
+
 module.exports = router
