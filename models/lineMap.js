@@ -112,7 +112,7 @@ const tileSetSchema = new Schema({
   name       : {type: String, required: true, unique: true},
   tiles      : [{
     tileType: {type: ObjectId, ref: 'TileType', required: true},
-    count   : {type: Number, default: 0}
+    count   : {type: Number, default: 1}
   }]
 })
 

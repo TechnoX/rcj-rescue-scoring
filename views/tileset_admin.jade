@@ -41,8 +41,18 @@ block content
       .row
         .col-md-offset-2.col-md-8
           .form-group
+            label.control-label New tileset:
+            input.control-input(ng-model='newTileSetName')
+            button(ng-click='createNewTileSet()') Create
+      .row
+        .col-md-offset-2.col-md-8
+          .form-group
             label.control-label Tileset:
             select(ng-model='tileSet' ng-options='set as set.name for set in tileSets')
+            button(ng-click='delete()') Delete
+      .row
+        .col-md-offset-5.col-md-2
+            button.btn.btn-primary.btn-lg.btn-block(ng-click='save()') Save!
       .row
         .col-md-6
           h2 Available tiles

@@ -232,7 +232,20 @@ function getTileSets(req, res) {
 module.exports.getTileSets = getTileSets
 
 adminRouter.post('/tilesets', function (req, res, next) {
+  const tileset = req.body
 
+  new tileSet({
+    competition: tileset.competition,
+    name       : tileset.name
+  }).save(function (err, data) {
+    if (err) {
+      logger.error(err)
+      res.status(400).send({msg: "Error saving tileset"})
+    } else {
+      res.location("/api/maps/line/tilesets" + data._id)
+      res.status(201).send({msg: "New tileset has been saved", id: data._id})
+    }
+  })
 })
 
 publicRouter.get('/tilesets/:tileset', function (req, res, next) {
@@ -259,6 +272,25 @@ adminRouter.put('/tilesets/:tileset', function (req, res, next) {
     return next()
   }
 
+  const _tileSet = req.body
+
+  tileSet.findById(id, (err, dbTileSet) => {
+    if (err) {
+      logger.error(err)
+      res.status(400).send({msg: "Could not get tile set"})
+    } else {
+      dbTileSet.tiles = _tileSet.tiles
+      dbTileSet.save((err, data)=> {
+        if (err) {
+          logger.error(err)
+          res.status(400).send({msg: "Could not get tile set"})
+        } else {
+          res.status(200).send({msg: "TileSet updated!"})
+        }
+      })
+    }
+  })
+
 })
 
 adminRouter.delete('/tilesets/:tileset', function (req, res, next) {
@@ -268,6 +300,14 @@ adminRouter.delete('/tilesets/:tileset', function (req, res, next) {
     return next()
   }
 
+  tileSet.remove({_id: id}, (err) => {
+    if (err) {
+      logger.error(err)
+      res.status(400).send({msg: "Could not remove tileset"})
+    } else {
+      res.status(200).send({msg: "Tileset has been removed!"})
+    }
+  })
 })
 
 publicRouter.all('*', function (req, res, next) {
