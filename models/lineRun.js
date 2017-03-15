@@ -17,7 +17,7 @@ const lineRunSchema = new Schema({
   round      : {type: ObjectId, ref: 'Round', required: true},
   team       : {type: ObjectId, ref: 'Team', required: true},
   field      : {type: ObjectId, ref: 'Field', required: true},
-  map        : {type: ObjectId, ref: 'MazeMap', required: true},
+  map        : {type: ObjectId, ref: 'LineMap', required: true},
   
   tiles             : [{
     isDropTile : {type: Boolean, default: false},
