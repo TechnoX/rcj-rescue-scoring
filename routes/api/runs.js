@@ -76,6 +76,18 @@ privateRouter.post('/:runid/update', function (req, res, next) {
         dbrun.time.minutes = run.time.minutes
         dbrun.time.seconds = run.time.seconds
       }
+      if (run.status !== undefined) {
+        dbrun.status = run.status
+      }
+      if (run.sign !== undefined && run.sign.captain !== undefined) {
+        dbrun.sign.captain = run.sign.captain
+      }
+      if (run.sign !== undefined && run.sign.referee !== undefined) {
+        dbrun.sign.referee = run.sign.referee
+      }
+      if (run.sign !== undefined && run.sign.referee_as !== undefined) {
+        dbrun.sign.referee_as = run.sign.referee_as
+      }
       if (run.tiles !== undefined) {
 
         for (var i in run.tiles) {
@@ -124,6 +136,7 @@ privateRouter.post('/:runid/update', function (req, res, next) {
         } else {
           if (socketIo !== undefined) {
             socketIo.sockets.in('runs/').emit('changed')
+            socketIo.sockets.in('competition/'+ dbrun.competition).emit('changed')
             socketIo.sockets.in('runs/' + dbrun._id).emit('data', dbrun)
             socketIo.sockets.in('fields/' + dbrun.field).emit('data', {newRun : dbrun._id})
           }
@@ -276,6 +289,12 @@ adminRouter.post('/createrun', function (req, res) {
         time             : {
           minutes: 0,
           seconds: 0
+        },
+        status           : 0,
+        sign             :{
+            captain: "",
+            referee: "",
+            referee_as: ""
         }
       })
 

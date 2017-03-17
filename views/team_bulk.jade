@@ -1,0 +1,55 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'TeamAdmin'
+
+append scripts
+  script.
+    var competitionId = "#{id}"
+  script(src='/javascripts/team_bulk.js')
+
+block location
+    a.breadcrumb-item(href='/home') Home
+    a.breadcrumb-item(href='/admin') Admin
+    a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition.name}}
+    a.breadcrumb-item(ng-href='/admin/{{competitionId}}/teams') Teams
+    span.breadcrumb-item.active Bulk Registration
+
+
+block content
+  .row
+    .col-md-1
+    .col-md-10
+      h1 {{competition.name}} - Teams Bulk Registration
+      br
+      br
+      h3 STEP1 テンプレートファイルをダウンロード
+      p 下のリンクから，テンプレートファイルをダウンロードします．
+      a(href="/tmp/team_bulk.csv") Download!
+      br
+      br
+      h3 STEP2 ファイルを編集
+      p Excel等のcsv形式を編集可能なソフトウェアで開き，情報を埋めます.
+      | leagueには，{{leagues}}の内から１つ選んで入力します．
+      | 保存は，Shift-JISで，コンマ区切りで行なってください．
+      |　チーム名の最後を，スペースで終わると，run登録の際にエラーになります．
+      br
+      br
+      h3 STEP3 ファイルをアップロード
+      input#select(type="file" name="select")
+      p ファイル選択後，下に表示される内容を確認してください．
+      #result ここに表が表示されます．
+      br
+      br
+      center(ng-if="processing")
+        img(src="/images/loader2.gif")
+        p {{now}} / {{total}} 登録処理中...
+      center(ng-if="completed" style="color:#2ecc71;")
+        i.fa.fa-check-circle-o.fa-5x(aria-hidden="true")
+        p {{total}}件 登録完了しました
+      br
+      br
+      button(ng-click="addTeam()" class='btn btn-primary') 処理実行
+      
+      
