@@ -30,9 +30,14 @@ publicRouter.get('/:competitionid/score', function (req, res, next) {
   res.render('line_score', {id : id ,user: req.user})
 })
 
-publicRouter.get('/view/:roundid', function (req, res) {
-  res.render('line_view', {id : req.params.roundid})
+publicRouter.get('/view/:runid', function (req, res) {
+  res.render('line_view', {id : req.params.runid})
 })
+
+publicRouter.get('/view/inline/:runid', function (req, res) {
+  res.render('line_inline_view', {id : req.params.runid})
+})
+
 publicRouter.get('/viewfield/:fieldid', function (req, res) {
   res.render('line_view_field', {id : req.params.fieldid})
 })
@@ -42,6 +47,10 @@ publicRouter.get('/viewcurrent', function (req, res) {
 
 privateRouter.get('/judge/:roundid', function (req, res) {
   res.render('line_judge', {id : req.params.roundid})
+})
+
+privateRouter.get('/sign/:roundid', function (req, res) {
+  res.render('line_sign', {id : req.params.roundid})
 })
 
 adminRouter.get('/editor', function (req, res) {

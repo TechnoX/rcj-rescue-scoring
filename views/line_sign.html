@@ -1,0 +1,169 @@
+<!--[if lt IE 9]>
+<script type="text/javascript" src="/components/jSignature/flashcanvas.js"></script>
+<![endif]-->
+<script src="/components/jSignature/jSignature.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("#cap_sig").jSignature()
+        $("#ref_sig").jSignature()
+        $("#refas_sig").jSignature()
+    })
+</script>
+<nav  class="navbar" style="background-color: #e67e22; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%">
+  <!-- Navbar content -->
+    <div class="row">
+        <div class="col-md-6 col-sm4 col-12">
+            <li class="navbar-brand" href="#"><i class="fa fa-spinner fa-pulse fa-fw"></i> {{team.name}}</li>
+        </div>
+        <div class="col-md-3 col-sm4 col-7">
+            <i class="fa fa-calculator fa-2x" aria-hidden="true"></i>
+            <li class="navbar-brand" href="#"> {{score}} points</li>
+        </div>
+        <div class="col-md-3 col-sm4 col-5">
+            <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
+            <li class="navbar-brand" href="#">  {{minutes*60*1000+seconds*1000 | date:'mm:ss'}}</li>
+        </div>
+    </div>
+    
+
+</nav>
+<div class="container">
+    <div class="row">
+        <div class="col-md12">
+            <button class="btn btn-secondary" style="margin:0 10px 10px 0;" type="button" ng-click="go('/line/judge/' + runid)"><i class="fa fa-arrow-left" aria-hidden="true"> 審判に戻る</i></button>
+        </div>
+    </div>
+    <br>
+    <div class="row" ng-show="minutes==8 && seconds==1">
+        <div class="col-md-12">
+            <div class="alert alert-info" role="alert">
+              リタイヤは，システム・順位処理上では8:01として扱われます．
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-6">
+            <div id="card_area" class="scrool" style="overflow: scroll;">
+              <!--<div class="card">
+                  <h3 class="card-header"><i class="fa fa-play-circle" aria-hidden="true"></i> Start Scoring Run</h3>
+                  <div class="card-block">
+                      <p class="card-text">Please check a box at the start of scoring run.</p>
+                      <input type="checkbox" ng-model="showedUp" ng-change="changeShowedUp()" id="scoredrun"><label class="checkbox" for="scoredrun" style="background-color: #ffe6e8;">Start Scoring Run</label><br>
+                  </div>   
+              </div>-->
+              <div id="lops" class="card">
+                  <h3 class="card-header"><i class="fa fa-undo" aria-hidden="true"></i> 進行停止</h3>
+                  <div class="card-block">
+
+                      <div  ng-repeat="dropTile in range(actualUsedDropTiles+1) track by $index">
+                         <p class="card-text">
+                         <b>{{$index==0?'スタート':('チェックポイント ' + ($index))}}</b> と <b>{{!$last?('チェックポイント ' + ($index+1)):'避難ゾーン'}}</b>の間:<br>
+                        <img src="/images/minus.png" alt="-" class="plusminus" style="opacity:0.5;">
+                        <span class="count">{{LoPs[$index]?LoPs[$index]:0}}</span>
+                        <img src="/images/plus.png" alt="+"  class="plusminus" style="opacity:0.5;">
+                        </p>
+                        <hr ng-show="!$last" /> 
+                      </div>
+
+                  </div>   
+              </div>
+              <div id="resc" class="card">
+                  <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> 被災者救助</h3>
+                  <div class="card-block">
+                      <p class="card-text">救助成功数： </p>
+                      <img src="/images/minus.png" alt="-" class="plusminus" style="opacity:0.5;">
+                      <span class="count">{{rescuedVictims}}</span>
+                      <img src="/images/plus.png" alt="+"  class="plusminus" style="opacity:0.5;">
+                      </div>   
+              </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 tilearea" style="height=600px">
+            <form>
+                <input type="radio" ng-model="visType" value="stacked" id="stacked"><label class="radio" for="stacked">Stacked</label>
+                <input type="radio" ng-model="visType" value="slider" checked id="slider"><label class="radio" for="slider">Slider</label>
+                <input type="radio" ng-model="visType" value="side" id="slide-by-slide"><label class="radio" for="slide-by-slide">Slide-by-Slide</label>
+            </form>
+            <div ng-repeat="r in range(length)" class="row"  ng-show="visType=='stacked'">
+                <div ng-repeat="c in range(width)" class="slot">
+                  <tile tile="tiles[c+','+r+','+z]" ng-repeat="z in range(height)"  ng-click="showElements(c,r,z)" ng-style="{'opacity': getOpacity(c,r)}">
+                  </tile>
+                </div>
+            </div>
+            <div ng-show="visType=='slider'">
+                <rzslider rz-slider-model="z" rz-slider-options="sliderOptions"></rzslider>
+                <div ng-repeat="r in range(length)" class="row">
+                  <div ng-repeat="c in range(width)" class="slot">
+                    <tile tile="tiles[c+','+r+','+z]" ng-click="showElements(c,r,z)"></tile>
+                  </div>
+                </div>
+            </div>
+            <div ng-repeat="z in range(height)" style="float: left; border-left: 3px solid black;" ng-show="visType=='side'">
+                <div ng-repeat="r in range(length)">
+                  <div ng-repeat="c in range(width)" class="slot">
+                    <tile tile="tiles[c+','+r+','+z]" ng-click="showElements(c,r,z)"></tile>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="alert alert-success" style="margin:100 0 0 0;" role="alert">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="hidden-xs-down">
+                    <i class="fa fa-calculator fa-3x" aria-hidden="true"> : {{score}} points</i>
+                </div>
+                <div class="hidden-sm-up">
+                    <i class="fa fa-calculator fa-2x" aria-hidden="true"> : {{score}} points</i>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="hidden-xs-down">
+                    <i class="fa fa-clock-o fa-3x" aria-hidden="true"> : {{minutes}} 分 {{seconds}} 秒</i>           
+                </div>
+                <div class="hidden-sm-up">
+                    <i class="fa fa-clock-o fa-2x" aria-hidden="true"> : {{minutes}} 分 {{seconds}} 秒</i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-show="minutes==8 && seconds==1" style="margin:10 0 0 0;">
+        <div class="col-md-12">
+            <div class="alert alert-info" role="alert">
+              リタイヤは，システム・順位処理上では8:01として扱われます．
+            </div>
+        </div>
+    </div>
+    <br><br>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="sign" class="card">
+                  <h3 class="card-header"><i class="fa fa-key" aria-hidden="true"></i> 署名</h3>
+                  <div class="card-block"><strong>
+                      <p class="card-text  text-warning ">
+                          下にサインを書くことで，あなたは，
+                          [Score：{{score}}]   
+                          [Time：{{minutes}} min {{seconds}} sec] 
+                          が誤りないことを認めます．
+                          これ以降，この競技についてチームはいかなるアピールもしないことを確認します．
+                      </p></strong>
+                      <h2>キャプテンサイン</h2>
+                      <div id="cap_sig" class="confirmation"></div>
+                      <br>
+                      <h2>主審サイン</h2>
+                      <div id="ref_sig" class="confirmation"></div>
+                      <br>
+                      <h2>副審サイン</h2>
+                      <div id="refas_sig" class="confirmation"></div>
+                  </div>   
+              </div>
+        </div>
+    </div>
+    <div class="row" style="margin:100 0 100 0;">
+        <button type="button" class="btn btn-danger btn-lg btn-block" style="padding:30 0 30 0" ng-click="send_sign()"><i class="fa fa-paper-plane fa-2x" aria-hidden="true" > 競技データーの送信</i></button>
+    </div>
+</div>
+
+

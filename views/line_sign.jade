@@ -1,0 +1,26 @@
+html(ng-app="ddApp")
+  head
+    title Rescue Line Sign
+    script.
+      var runId = "#{id}"
+
+    script(src="/components/angular/angular.min.js")
+    script(src="/components/angular/angular-animate.js")
+    script(src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-1.2.5.js")
+    script(src="/components/jquery/dist/jquery.min.js")
+    script(src="/components/angularjs-slider/dist/rzslider.min.js")
+    script(src="/components/socket.io-client/socket.io.js")
+    link(href="/components/bootstrap/dist/css/bootstrap.css" rel="stylesheet")
+    link(href="/components/angularjs-slider/dist/rzslider.min.css" rel="stylesheet")
+    
+    script(src="/components/sweetalert/dist/sweetalert.min.js")
+    link(href="/components/sweetalert/dist/sweetalert.css" rel="stylesheet")
+
+    script(src="/javascripts/line_sign.js")
+    link(href="/stylesheets/fredrik.css" rel="stylesheet")
+    link(href="/stylesheets/style.css" rel="stylesheet")
+    link(href="/components/font-awesome/css/font-awesome.min.css" rel="stylesheet")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0")
+
+  body(ng-controller="ddController")
+    include line_sign.html
