@@ -5,7 +5,16 @@ doctype html
 block vars
 html(style='height:100%; overflow-y:scroll;' ng-app='#{ngAppDef}' ng-init='#{ngInit}')
     include ./head.jade
-    body(style='background-color:#A8D1F3;height:100%' ng-controller='#{ngAppDef}Controller')
-        .container(style='background-color:#FFFFFF;border-left: 1px solid #89B7DD;border-right: 1px solid #89B7DD;padding:0px;min-height: 100%;overflow: hidden;')
-            include ./navbar.jade
+    include ./navbar.jade
+    body(ng-controller='#{ngAppDef}Controller')
+        .container(style='padding:0px;min-height: 100%;overflow: hidden;')
+            .row
+                .col-md-1
+                .col-md-10
+                    nav.breadcrumb
+                        block location
+            br
             block content
+        #footer(style="text-align:center;")
+            i.fa.fa-copyright(aria-hidden='true') &nbsp;2017 ロボカップジュニアジャパン レスキュー技術委員会&nbsp;-&nbsp;
+            i.fa.fa-code-fork(aria-hidden="true") &nbsp;RCJ Scoring System 2016 Edition

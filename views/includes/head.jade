@@ -6,11 +6,46 @@ head
         script(src='/components/jquery/dist/jquery.min.js')
         script(src='/components/bootstrap/dist/js/bootstrap.js')
         script(src='/components/angular/angular.min.js')
+        script(src="/components/angular/angular-animate.js")
         script(src='/components/alertifyjs/dist/js/ngAlertify.js')
         script(src='/components/ex-table/jquery.ex-table-filter.js')
-
+        script(src="/components/sweetalert/dist/sweetalert.min.js")
+        script(src="/components/footerFixed.js")
+        script(src="/components/socket.io-client/socket.io.js")
+        script(src="/components/bootstrap/ui-bootstrap-tpls-2.5.0.min.js")
     block css
         link(rel='stylesheet',href='/components/bootstrap/dist/css/bootstrap.css')
         link(rel='stylesheet',href='/stylesheets/style.css')
-    meta(name='viewport', content='width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no')
+        link(href="/components/sweetalert/dist/sweetalert.css" rel="stylesheet")
+        link(href="/components/font-awesome/css/font-awesome.min.css" rel="stylesheet")
 
+    meta(name='viewport', content='width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no')
+    
+    script.
+      currentWidth = -1;
+      $(window).on('load resize', function(){
+      if (currentWidth == window.innerWidth) {
+      return;
+      }
+      currentWidth = window.innerWidth;
+      var height = $('.navbar').height();
+      $('body').css('padding-top',height+13);
+      });
+      
+      (function(win, doc) {
+      "use strict";
+      var tapFlag = false,
+      timer;
+      doc.body.addEventListener("touchstart", function(evt) {
+      if (tapFlag) {
+      evt.preventDefault();
+      }
+      }, true);
+      doc.body.addEventListener("touchend", function(evt) {
+      tapFlag = true;
+      clearTimeout(timer);
+      timer = setTimeout(function() {
+      tapFlag = false;
+      }, 200);
+      }, true);
+      })(window, document);
