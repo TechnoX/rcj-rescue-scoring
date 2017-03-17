@@ -8,22 +8,46 @@ append scripts
   script(src='/javascripts/home.js')
 
 block location
-  a(href='/home' style="color:#333333") Home
+  span.breadcrumb-item.active Home
 
 block content
   .row
-    .col-md-offset-2.col-md-8
-      p RCJ Scoring System 2016 Edition
-      if typeof(user) != "undefined"
-        p 
-          font(color="red") You are logged in as #{user.username} 
-      button(onclick="location.href='/line'" class='button-s button-green') Rescue Line
-      button(onclick="location.href='/maze'" class='button-s button-green') Rescue Maze
-      if typeof(user) == "undefined"
-        button(onclick="location.href='/login'" class='button-s button-yellow') Login
-      else
-        button(onclick="location.href='/logout'" class='button-s button-red') Logout
+    .col-md-1
+    .col-md-10
+      i.fa.fa-code-fork.fa-2x(aria-hidden="true") &nbsp;RCJ Scoring System 2016 Edition
       br
+      br
+      br
+      
+      if typeof(user) == "undefined"
+        button(onclick="location.href='/login'" class='btn btn-warning btn-lg btn-block')
+            i.fa.fa-sign-in(aria-hidden='true') &nbsp;Login
+      else
+        button(onclick="location.href='/logout'" class='btn btn-outline-danger btn-lg btn-block')
+            i.fa.fa-sign-out(aria-hidden='true') &nbsp;Logout
+      br
+      br
+      
+      .row
+        .col-sm-6
+          .card(style='width: 100%;')
+              a(href='/line')
+                img.card-img-top(src='/images/line.png', alt='Card image cap' style="width:100%; height=auto;")
+              .card-block
+                h4.card-title Rescue Line
+                p.card-text
+                  | 様々な障害を乗り越えながらライントレースを行い，最後に被災者を模した球体を所定の場所に運んで救出する競技．
+                button(onclick="location.href='/line'" class='btn btn-primary btn-lg btn-block') Go Line
+        .col-sm-6
+            .card(style='width: 100%;')
+              a(href='/maze')
+                img.card-img-top(src='/images/maze.png', alt='Card image cap' style="width:100%; height=auto;")
+              .card-block
+                h4.card-title Rescue Maze
+                p.card-text
+                  | 壁で囲まれた空間をロボットが自律走行し，熱を発する被災者を発見，レスキューキットを配布する競技．
+                button(onclick="location.href='/maze'" class='btn btn-primary btn-lg btn-block') Go Maze
+      br 
       br
       br
       if typeof(user) != "undefined"
@@ -31,4 +55,8 @@ block content
             button(onclick="location.href='/admin'" class='button-s button-bb') Competition Management
         else
             button(onclick="location.href='/'" class='button-s button-bb' disabled) Competition Management
-            p ※Your account [#{user.username}] has no authority to access Competition Management.
+            p ※ログイン中のアカウント， [#{user.username}] は，Competition Managementにアクセスする権限がありません.
+      br
+      br
+      br
+      

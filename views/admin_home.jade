@@ -10,29 +10,46 @@ append scripts
   script(src='/javascripts/admin_home.js')
 
 block location
-  a(href='/home' style="color:#333333") Home
-  | >
-  a(href='/admin' style="color:#333333") Admin
+    a.breadcrumb-item(href='/home') Home
+    span.breadcrumb-item.active Admin
+
 
 block content
   .row
-    .col-md-offset-2.col-md-8
-      h1 Maps
-      a(href="/line/editor") Create a new map layout
-      table
-        tr(ng-repeat='map in maps')
-          td
-            a(ng-bind='map.name' ng-href="/line/editor/{{map._id}}")
-          td
-            a(href="" ng-click='removeMap(map)') Delete
-      h1 Competitions
-      table
-        tr(ng-repeat='competition in competitions')
-          td
-            a(ng-bind='competition.name' ng-href="/admin/{{competition._id}}")
-          td
-            a(href="" ng-click='removeCompetition(competition)') Delete
-
-      h1 Add competition
-      input(ng-model='competitionName')
-      button(ng-click='addCompetition()') Add competition
+    .col-md-1
+    .col-md-10
+      .row
+        .col-md-6
+          h1 Line-Maps
+          button(onclick="location.href='/line/editor'" class='btn btn-primary') Create a new map layout
+          br
+          br
+          table
+            thead
+                tr
+                  th Name
+                  th Operation
+            tbody
+                tr(ng-repeat='map in maps')
+                  td
+                    a(ng-bind='map.name' ng-href="/line/editor/{{map._id}}")
+                  td
+                    a(href="" ng-click='removeMap(map)') Delete
+        .col-md-6
+          h1 Competitions
+          input(ng-model='competitionName')
+          button(ng-click='addCompetition()') Add competition
+          br
+          br
+          table
+            thead
+                tr
+                  th Name
+                  th Operation
+            tbody
+                tr(ng-repeat='competition in competitions')
+                  td
+                    a(ng-bind='competition.name' ng-href="/admin/{{competition._id}}")
+                  td
+                    a(href="" ng-click='removeCompetition(competition)') Delete
+      

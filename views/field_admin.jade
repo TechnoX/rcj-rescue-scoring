@@ -10,24 +10,39 @@ append scripts
   script(src='/javascripts/field_admin.js')
 
 block location
-  a(href='/home' style="color:#333333") Home
-  | >
-  a(href='/admin' style="color:#333333") Admin
-  | >
-  a(ng-href='/admin/{{competitionId}}' style="color:#333333") {{competition.name}}
-  | >
-  a(ng-href='/admin/{{competitionId}}/fields' style="color:#333333") Fields
+    a.breadcrumb-item(href='/home') Home
+    a.breadcrumb-item(href='/admin') Admin
+    a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition.name}}
+    span.breadcrumb-item.active Fields
 
 block content
   .row
-    .col-md-offset-2.col-md-8
-      h1 Fields
+    .col-md-1
+    .col-md-10
+      h1 {{competition.name}} - Fields
       table
-        tr(ng-repeat='field in fields')
-          td(ng-bind='field.name')
-          td
-            a(href="" ng-click='removeField(field)') Delete
-
-      h1 Add field
-      input(ng-model='fieldName')
-      button(ng-click='addField()') Add field
+        thead
+            tr
+                th Name
+                th Action
+        tbody
+            tr
+                td
+                    input(ng-model='fieldName')
+                td
+                    button(ng-click='addField()') Add field
+      
+      
+      
+      br
+      br
+      table
+        thead
+            tr
+              th Name
+              th Operation
+        tbody
+            tr(ng-repeat='field in fields')
+              td(ng-bind='field.name')
+              td
+                a(href="" ng-click='removeField(field)') Delete

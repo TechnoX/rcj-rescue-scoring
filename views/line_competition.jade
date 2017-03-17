@@ -11,28 +11,29 @@ append scripts
   
 
 block location
-  a(href='/home' style="color:#333333") Home
-  | >
-  a(href='/line' style="color:#333333") Line
-  | >
-  a(ng-href='/line/{{competitionId}}' style="color:#333333") {{competition.name}}
+    a.breadcrumb-item(href='/home') Home
+    a.breadcrumb-item(href='/line') Line
+    span.breadcrumb-item.active {{competition.name}}
+
 
 block content
   .row
-    .col-md-offset-2.col-md-8
-      button(ng-click="go('/line/' + competition._id + '/score')" class='button-s button-yellow') Score Result
-
-      h1 Runs - {{competition.name}}
+    .col-md-1
+    .col-md-10
+      h1 競技 - {{competition.name}}
+      br
+      button(ng-click="go('/line/' + competition._id + '/score')" class='btn btn-outline-info btn-lg btn-block') 競技結果・速報順位
+      br
       .refine(style="visibility:hidden")
           form
-              label Refine by Round
+              label ラウンドで絞り込む
               .filter-round
-              label Refine by Field
+              label フィールドで絞り込む
               .filter-arena
       br
       center
           .loader
-            img(src="/images/loader.gif")
+            img(src="/images/loader2.gif")
             p Now Loading...
       table(class="comp")
         thead
@@ -44,16 +45,16 @@ block content
               th
         tbody
             tr(ng-repeat='run in runs' runs-read-finished='')
-              td(ng-bind='run.round.name')
-              td(ng-bind='run.team.name')
-              td(ng-bind='run.field.name')
+              td(ng-bind='run.round.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':''}")
+              td(ng-bind='run.team.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':''}")
+              td(ng-bind='run.field.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':''}")
               td
-                button(ng-click="go('/line/view/' + run._id)" class='button-ss button-green-s') View
+                button(ng-click="go('/line/view/' + run._id)" class='btn btn-info') 表示
 
-              td
-                button(ng-click="go('/line/judge/' + run._id)" class='button-ss button-red-s') Judge
+              td(ng-style="{'background-color':run.status>=3?'#ecf0f1':''}")
+                button(ng-click="no_judge()" class='btn btn-danger' ng-if="run.status>=3" ) 審判
+                button(ng-click="go_judge('/line/judge/' + run._id)" class='btn btn-danger' ng-if="run.status<3" ) 審判
+      br
+      p [Status] 0.開始前 1.審判ページ表示    2.タイマー開始    3.得点確認中    4.競技終了
       br
       br
-      br
-
-    

@@ -10,14 +10,12 @@ append scripts
   script(src='/javascripts/line_home.js')
 
 block location
-  a(href='/home' style="color:#333333") Home
-  | >
-  a(href='/line' style="color:#333333") Line
+    a.breadcrumb-item(href='/home') Home
+    span.breadcrumb-item.active Line
 
 block content
   .row
-    .col-md-offset-2.col-md-8
-      h1 RoboCup Junior - Rescue Line
-
-      h1 Competitions
+    .col-md-1
+    .col-md-10
+      h1 大会
       button(ng-click="go('/line/' + competition._id)" class='button-s button-bb' ng-repeat='competition in competitions') {{competition.name}}

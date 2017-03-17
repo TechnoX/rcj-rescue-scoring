@@ -10,16 +10,17 @@ append scripts
   script(src='/javascripts/competition_admin.js')
 
 block location
-  a(href='/home' style="color:#333333") Home
-  | >
-  a(href='/admin' style="color:#333333") Admin
-  | >
-  a(ng-href='/admin/{{competitionId}}' style="color:#333333") {{competition.name}}
+    a.breadcrumb-item(href='/home') Home
+    a.breadcrumb-item(href='/admin') Admin
+    span.breadcrumb-item.active {{competition.name}}
+
 
 block content
   .row
-    .col-md-offset-2.col-md-8
-      a(ng-href='/admin/{{competitionId}}/teams') Teams
-      a(ng-href='/admin/{{competitionId}}/rounds') Rounds
-      a(ng-href='/admin/{{competitionId}}/fields') Fields
-      a(ng-href='/admin/{{competitionId}}/runs') Runs
+    .col-md-1
+    .col-md-10
+      h1 Admin Console - {{competition.name}}
+      button(ng-click="go('/admin/' + competitionId + '/teams')" class='btn btn-outline-info btn-lg btn-block') Teams
+      button(ng-click="go('/admin/' + competitionId + '/rounds')" class='btn btn-outline-info btn-lg btn-block') Rounds
+      button(ng-click="go('/admin/' + competitionId + '/fields')" class='btn btn-outline-info btn-lg btn-block') Fields
+      button(ng-click="go('/admin/' + competitionId + '/runs')" class='btn btn-outline-info btn-lg btn-block') Runs
