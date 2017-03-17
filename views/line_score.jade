@@ -34,74 +34,91 @@ append css
     }
 
 block location
-  a(href='/home' style="color:#333333") Home
-  | >
-  a(href='/line' style="color:#333333") Line
-  | >
-  a(ng-href='/line/{{competitionId}}' style="color:#333333") {{competition.name}}
-  | >
-  a(ng-href='/line/{{competitionId}}/score' style="color:#333333") Score
+    a.breadcrumb-item(href='/home') Home
+    a.breadcrumb-item(href='/line') Line
+    a.breadcrumb-item(ng-href='/line/{{competitionId}}') {{competition.name}}
+    span.breadcrumb-item.active Score
 
 block content
   .row
-    .col-md-offset-1.col-md-10
-      .row
-        .col-md-6
-          h3 NIPPON League - Rank
-          table
-            thead
-              tr
-                th.text-center Rank
-                th.text-center Team
-                th.text-center Score
-                th.text-center Time
-                th.text-center Rescued
-                th.text-center LoPs
-            tbody
-              tr(ng-repeat='run in primaryRunsTop track by $index')
-                td.text-center(ng-bind='$index + 1')
-                td.text-center(ng-bind='run.team.name')
-                td.text-center(ng-bind='run.score')
-                td.text-center {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
-                td.text-center(ng-bind='run.rescuedVictims')
-                td.text-center(ng-bind='run.LoPsNum')
+    .col-lg-6
+      h3 日本リーグ - 順位
+      table(style="overflow: scroll;")
+        thead
+          tr
+            th.text-center 順位
+            th.text-center チーム名
+            th.text-center 得点
+            th.text-center 時間
+            th.text-center 救助数
+            th.text-center 停止数
+        tbody
+          tr(ng-repeat='run in primaryRunsTop track by $index')
+            td.text-center(ng-bind='$index + 1')
+            td.text-center(ng-bind='run.team.name')
+            td.text-center(ng-bind='run.score')
+            td.text-center {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+            td.text-center(ng-bind='run.rescuedVictims')
+            td.text-center(ng-bind='run.LoPsNum')
 
-        .col-md-6
-          h3 WORLD League - Rank
-          table
-            thead
-              tr
-                th.text-center Rank
-                th.text-center Team
-                th.text-center Score
-                th.text-center Time
-                th.text-center Rescued
-                th.text-center LoPs
-            tbody
-              tr(ng-repeat='run in secondaryRunsTop track by $index')
-                td.text-center(ng-bind='$index + 1')
-                td.text-center(ng-bind='run.team.name')
-                td.text-center(ng-bind='run.score')
-                td.text-center {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
-                td.text-center(ng-bind='run.rescuedVictims')
-                td.text-center(ng-bind='run.LoPsNum')
-      .row
-        hr
-      .row
-        .col-md-6
-          h3 NIPPON League - All Runs
-          table
-            thead
-              tr
-                th.text-center Team
-                th.text-center Round
-                th.text-center Field
-                th.text-center Score
-                th.text-center Time
-                th.text-center Rescued
-                th.text-center LoPs
-            tbody
-              tr(ng-repeat='run in primaryRuns')
+    .col-lg-6
+      h3 ワールドリーグ - 順位
+      table(style="overflow: scroll;")
+        thead
+          tr
+            th.text-center 順位
+            th.text-center チーム名
+            th.text-center 得点
+            th.text-center 時間
+            th.text-center 救助数
+            th.text-center 停止数
+        tbody
+          tr(ng-repeat='run in secondaryRunsTop track by $index')
+            td.text-center(ng-bind='$index + 1')
+            td.text-center(ng-bind='run.team.name')
+            td.text-center(ng-bind='run.score')
+            td.text-center {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+            td.text-center(ng-bind='run.rescuedVictims')
+            td.text-center(ng-bind='run.LoPsNum')
+  .row
+    hr
+  .row
+    .col-lg-6
+      h3 日本リーグ - 全競技
+      table(style="overflow: scroll;")
+        thead
+          tr
+            th.text-center チーム名
+            th.text-center ラウンド
+            th.text-center フィールド
+            th.text-center 得点
+            th.text-center 時間
+            th.text-center 救助数
+            th.text-center 停止数
+        tbody
+          tr(ng-repeat='run in primaryRuns')
+            td.text-center(ng-bind='run.team.name')
+            td.text-center(ng-bind='run.round.name')
+            td.text-center(ng-bind='run.field.name')
+            td.text-center(ng-bind='run.score')
+            td.text-center {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+            td.text-center(ng-bind='run.rescuedVictims')
+            td.text-center(ng-bind='run.LoPsNum')
+
+    .col-lg-6
+      h3 ワールドリーグ - 全競技
+      table(style="overflow: scroll; width:100%;")
+        thead
+          tr
+            th.text-center チーム名
+            th.text-center ラウンド
+            th.text-center フィールド
+            th.text-center 得点
+            th.text-center 時間
+            th.text-center 救助数
+            th.text-center 停止数
+        tbody
+          tr(ng-repeat='run in secondaryRuns')
                 td.text-center(ng-bind='run.team.name')
                 td.text-center(ng-bind='run.round.name')
                 td.text-center(ng-bind='run.field.name')
@@ -109,25 +126,3 @@ block content
                 td.text-center {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
                 td.text-center(ng-bind='run.rescuedVictims')
                 td.text-center(ng-bind='run.LoPsNum')
-
-        .col-md-6
-          h3 WORLD League - All Runs
-          table
-            thead
-              tr
-                th.text-center Team
-                th.text-center Round
-                th.text-center Field
-                th.text-center Score
-                th.text-center Time
-                th.text-center Rescued
-                th.text-center LoPs
-            tbody
-              tr(ng-repeat='run in secondaryRuns')
-                    td.text-center(ng-bind='run.team.name')
-                    td.text-center(ng-bind='run.round.name')
-                    td.text-center(ng-bind='run.field.name')
-                    td.text-center(ng-bind='run.score')
-                    td.text-center {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
-                    td.text-center(ng-bind='run.rescuedVictims')
-                    td.text-center(ng-bind='run.LoPsNum')

@@ -1,4 +1,4 @@
-angular.module("LineScore", ['datatables']).controller("LineScoreController", function ($scope, $http) {
+angular.module("LineScore", ['datatables' , 'ui.bootstrap','ngAnimate']).controller("LineScoreController", function ($scope, $http, $sce) {
   $scope.competitionId = competitionId
 
   launchSocketIo()
@@ -44,7 +44,7 @@ angular.module("LineScore", ['datatables']).controller("LineScoreController", fu
             } else {
               primaryTeamRuns[run.team._id].runs.push(run)
             }
-            var sum = sumBest(primaryTeamRuns[run.team._id].runs)
+            var sum = sum_jpop(primaryTeamRuns[run.team._id].runs)
             primaryTeamRuns[run.team._id].sumScore = sum.score
             primaryTeamRuns[run.team._id].sumTime = sum.time
             primaryTeamRuns[run.team._id].sumRescue = sum.rescued
@@ -60,7 +60,7 @@ angular.module("LineScore", ['datatables']).controller("LineScoreController", fu
             } else {
               secondaryTeamRuns[run.team._id].runs.push(run)
             }
-            var sum = sumBest(secondaryTeamRuns[run.team._id].runs)
+            var sum = sum_jpop(secondaryTeamRuns[run.team._id].runs)
             secondaryTeamRuns[run.team._id].sumScore = sum.score
             secondaryTeamRuns[run.team._id].sumTime = sum.time
             secondaryTeamRuns[run.team._id].sumRescue = sum.rescued
@@ -68,8 +68,8 @@ angular.module("LineScore", ['datatables']).controller("LineScoreController", fu
           }
         }
       }
-      $scope.primaryRuns.sort(sortRuns)
-      $scope.secondaryRuns.sort(sortRuns)
+      //$scope.primaryRuns.sort(sortRuns)
+      //$scope.secondaryRuns.sort(sortRuns)
 
       $scope.primaryRunsTop = []
       for (var i in primaryTeamRuns) {
@@ -107,8 +107,54 @@ angular.module("LineScore", ['datatables']).controller("LineScoreController", fu
       updateRunList()
     })
   }
+    
+  function sum_jpop(runs){
+    if (runs.length == 1) {
+      return {
+          score: runs[0].score,
+          time : runs[0].time,
+          rescued : runs[0].rescuedVictims,
+          lops : runs[0].LoPsNum
+      }
+    }
+      var select=[];
+      var not_select=[];
+      var result =[];
+      result.time = {};
+      for(var i=0;i<runs.length;i++){
+          if(runs[i].round.name=="1" || runs[i].round.name=="2"){
+              select.push(runs[i]);
+          }else{
+              not_select.push(runs[i]);
+          }
+          if(select.length >= 2) select.sort(sortRuns);
+      }
+      result.score = 0;
+      result.time.minutes = 0;
+      result.time.seconds = 0;
+      result.rescued = 0;
+      result.lops = 0;
+      for(var i=0;i<not_select.length;i++){
+          result.score += not_select[i].score;
+          result.time.minutes += not_select[i].time.minutes;
+          result.time.seconds += not_select[i].time.seconds;
+          result.time.minutes += (result.time.seconds >= 60 ? 1 : 0);
+          result.time.seconds %= 60;
+          result.rescued += not_select[i].rescuedVictims;
+          result.lops += not_select[i].LoPsNum;
+      }
+      result.score += select[0].score;
+      result.time.minutes += select[0].time.minutes;
+      result.time.seconds += select[0].time.seconds;
+      result.time.minutes += (result.time.seconds >= 60 ? 1 : 0);
+      result.time.seconds %= 60;
+      result.rescued += select[0].rescuedVictims;
+      result.lops += select[0].LoPsNum;
+      return result;    
+  }
 
   function sumBest(runs) {
+    console.log(runs);
     if (runs.length == 1) {
       return {
           score: runs[0].score,
@@ -133,7 +179,7 @@ angular.module("LineScore", ['datatables']).controller("LineScoreController", fu
   }
     
 
-    function BestScore(runs) {
+function BestScore(runs) {
     if (runs.length == 1) {
       return runs[0]
     }
@@ -206,5 +252,9 @@ angular.module("LineScore", ['datatables']).controller("LineScoreController", fu
     } else {
       return b.score - a.score
     }
+  }
+    
+  $scope.detail = function(row){
+      console.log(row);
   }
 })
