@@ -19,14 +19,21 @@ angular.module("RoundAdmin", []).controller("RoundAdminController", function ($s
   }
 
   $scope.removeRound = function (round) {
-    if (confirm("Are you sure you want to remove the round: " + round.name + '?')) {
-      $http.get("/api/rounds/" + round._id + "/delete").then(function (response) {
-        console.log(response)
-        updateRoundList()
-      }, function (error) {
-        console.log(error)
-      })
-    }
+      swal({
+          title: "Remove round?", 
+          text: "Are you sure you want to remove the round: " + round.name + '?', 
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Remove it!",
+          confirmButtonColor: "#ec6c62"
+        }, function() {
+            $http.get("/api/rounds/" + round._id + "/delete").then(function (response) {
+            console.log(response)
+            updateRoundList()
+          }, function (error) {
+            console.log(error)
+          })
+         });
   }
 
   function updateRoundList() {

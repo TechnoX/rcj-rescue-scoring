@@ -10,26 +10,44 @@ append scripts
   script(src='/javascripts/team_admin.js')
 
 block location
-  a(href='/home' style="color:#333333") Home
-  | >
-  a(href='/admin' style="color:#333333") Admin
-  | >
-  a(ng-href='/admin/{{competitionId}}' style="color:#333333") {{competition.name}}
-  | >
-  a(ng-href='/admin/{{competitionId}}/teams' style="color:#333333") Teams
+    a.breadcrumb-item(href='/home') Home
+    a.breadcrumb-item(href='/admin') Admin
+    a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition.name}}
+    span.breadcrumb-item.active Teams
+
 
 block content
   .row
-    .col-md-offset-2.col-md-8
-      h1 Teams
+    .col-md-1
+    .col-md-10
+      h1 {{competition.name}} - Teams
       table
-        tr(ng-repeat='team in teams')
-          td(ng-bind='team.name')
-          td(ng-bind='team.league')
-          td
-            a(href="" ng-click='removeTeam(team)') Delete
-
-      h1 Add team
-      input(ng-model='teamName')
-      select(ng-model='teamLeague' ng-options='league for league in leagues')
-      button(ng-click='addTeam()') Add team
+        thead
+            tr
+                th Name
+                th League
+                th Action
+        tbody
+            tr
+                td
+                    input(ng-model='teamName')
+                td
+                    select(ng-model='teamLeague' ng-options='league for league in leagues')
+                td
+                    button(ng-click='addTeam()') Add team
+      a(ng-href='/admin/{{competitionId}}/teams/bulk') Bulk Regstration
+      br
+      br
+      table
+        thead
+            tr
+              th Name
+              th League
+              th Operation
+        tbody
+            tr(ng-repeat='team in teams')
+              td(ng-bind='team.name')
+              td(ng-bind='team.league')
+              td
+                a(href="" ng-click='removeTeam(team)') Delete
+      

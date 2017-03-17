@@ -24,14 +24,21 @@ angular.module("TeamAdmin", []).controller("TeamAdminController", function ($sco
   }
 
   $scope.removeTeam = function(team) {
-    if (confirm("Are you sure you want to remove the team: " + team.name + '?')) {
-      $http.get("/api/teams/" + team._id + "/delete").then(function (response) {
-        console.log(response)
-        updateTeamList()
-      }, function (error) {
-        console.log(error)
-      })
-    }
+      swal({
+          title: "Remove team?", 
+          text: "Are you sure you want to remove the team: " + team.name + '?', 
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Remove it!",
+          confirmButtonColor: "#ec6c62"
+        }, function() {
+            $http.get("/api/teams/" + team._id + "/delete").then(function (response) {
+                console.log(response)
+                updateTeamList()
+              }, function (error) {
+                console.log(error)
+              })
+         });
   }
 
   function updateTeamList() {

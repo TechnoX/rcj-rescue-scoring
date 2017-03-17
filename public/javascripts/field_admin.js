@@ -19,14 +19,21 @@ angular.module("FieldAdmin", []).controller("FieldAdminController", function ($s
   }
 
   $scope.removeField = function (field) {
-    if (confirm("Are you sure you want to remove the field: " + field.name + '?')) {
-      $http.get("/api/fields/" + field._id + "/delete").then(function (response) {
-        console.log(response)
-        updateFieldList()
-      }, function (error) {
-        console.log(error)
-      })
-    }
+      swal({
+          title: "Remove field?", 
+          text: "Are you sure you want to remove the field: " + field.name + '?', 
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Remove it!",
+          confirmButtonColor: "#ec6c62"
+        }, function() {
+            $http.get("/api/fields/" + field._id + "/delete").then(function (response) {
+            console.log(response)
+            updateFieldList()
+          }, function (error) {
+            console.log(error)
+          })
+         });
   }
 
   function updateFieldList() {

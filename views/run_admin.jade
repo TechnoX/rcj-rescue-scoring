@@ -10,32 +10,77 @@ append scripts
   script(src='/javascripts/run_admin.js')
 
 block location
-  a(href='/home' style="color:#333333") Home
-  | >
-  a(href='/admin' style="color:#333333") Admin
-  | >
-  a(ng-href='/admin/{{competitionId}}' style="color:#333333") {{competition.name}}
-  | >
-  a(ng-href='/admin/{{competitionId}}/runs' style="color:#333333") Runs
+    a.breadcrumb-item(href='/home') Home
+    a.breadcrumb-item(href='/admin') Admin
+    a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition.name}}
+    span.breadcrumb-item.active Runs
 
 block content
   .row
-    .col-md-offset-2.col-md-8
-      h1 Runs
+    .col-md-1
+    .col-md-10
+      h1 {{competition.name}} - Runs
       table
-        tr(ng-repeat='run in runs')
-          td(ng-bind='run.round.name')
-          td(ng-bind='run.team.name')
-          td(ng-bind='run.field.name')
-          td
-            a(href="" ng-click='removeRun(run)') Delete
+        thead
+            tr
+              th Round
+              th Team Name
+              th Map Name
+              th Field Name
+              th Action
+        tbody
+            tr
+              td
+                select(ng-model='run.round' ng-options='round as round.name for round in rounds')
+              td
+                select(ng-model='run.team' ng-options='team as team.name for team in teams')
+              td
+                select(ng-model='run.map' ng-options='map as map.name for map in maps')
+              td
+                select(ng-model='run.field' ng-options='field as field.name for field in fields')
+              td
+                button(ng-click='addRun()') Add Run
+      a(ng-href='/admin/{{competitionId}}/runs/bulk') Bulk Regstration
+      br
+      br
+      a(ng-href='/admin/{{competitionId}}/runs/monitor') Runs Monitor
+      center
+          .loader
+            img(src="/images/loader2.gif")
+            p Now Loading...
+      table(class="comp")
+        thead
+            tr
+              th Round
+              th Team
+              th Field
+              th Score
+              th Time
+              th Status
+              th
+              th
+              th
+              th Operation
+        tbody
+            tr(ng-repeat='run in runs' runs-read-finished='')
+              td(ng-bind='run.round.name' ng-style="{'background-color':run.status==4?'#ffadad':''}")
+              td(ng-bind='run.team.name' ng-style="{'background-color':run.status==4?'#ffadad':''}")
+              td(ng-bind='run.field.name' ng-style="{'background-color':run.status==4?'#ffadad':''}")
+              td(ng-bind='run.score' ng-style="{'background-color':run.status==4?'#ffadad':''}")
+              td(ng-bind="run.time.minutes*60*1000+run.time.seconds*1000 | date:'mm:ss'" ng-style="{'background-color':run.status==4?'#ffadad':''}")
+              td(ng-style="{'background-color':run.status==4?'#ffadad':''}")
+                span(ng-if="run.status==0") 0.競技前
+                span(ng-if="run.status==1") 1.審判ページ表示
+                span(ng-if="run.status==2") 2.タイマースタート
+                span(ng-if="run.status==3") 3.記録確認中
+                span(ng-if="run.status==4") 4.競技終了
+                span(ng-if="run.status==5") 5.承認・公開済み
+              td(ng-style="{'background-color':run.status==4?'#ffadad':''}")
+                button(ng-click="go('/line/view/' + run._id)" class='btn btn-info') View
+              td(ng-style="{'background-color':run.status==4?'#ffadad':''}")
+                button(ng-click="go_sign(run._id)" class='btn btn-warning') Sign
+              td(ng-style="{'background-color':run.status==4?'#ffadad':''}")
+                button(ng-click="go_judge(run._id)" class='btn btn-danger') Judge
+              td(ng-style="{'background-color':run.status==4?'#ffadad':''}")
+                a(href="" ng-click='removeRun(run)') Delete
 
-      h1 Add run
-      select(ng-model='run.round' ng-options='round as round.name for round in rounds')
-      select(ng-model='run.team' ng-options='team as team.name for team in teams')
-      select(ng-model='run.map' ng-options='map as map.name for map in maps')
-      select(ng-model='run.field' ng-options='field as field.name for field in fields')
-      button(ng-click='addRun()') Add Run
-      br
-      br
-      br

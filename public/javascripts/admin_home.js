@@ -16,14 +16,21 @@ angular.module("AdminHome", []).controller("AdminHomeController", function ($sco
   }
 
   $scope.removeCompetition = function (competition) {
-    if (confirm("Are you sure you want to remove the competition: " + competition.name + '?')) {
-      $http.get("/api/competitions/" + competition._id + "/delete").then(function (response) {
-        console.log(response)
-        updateCompetitionList()
-      }, function (error) {
-        console.log(error)
-      })
-    }
+      swal({
+          title: "Remove competition?", 
+          text: "Are you sure you want to remove the competition: " + competition.name + '?', 
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Remove it!",
+          confirmButtonColor: "#ec6c62"
+        }, function() {
+            $http.get("/api/competitions/" + competition._id + "/delete").then(function (response) {
+                console.log(response)
+                updateCompetitionList()
+              }, function (error) {
+                console.log(error)
+              })
+         });
   }
 
   function updateCompetitionList() {
@@ -34,14 +41,21 @@ angular.module("AdminHome", []).controller("AdminHomeController", function ($sco
   }
 
   $scope.removeMap = function (map) {
-    if (confirm("Are you sure you want to remove the map: " + map.name + '?')) {
-      $http.get("/api/maps/" + map._id + "/delete").then(function (response) {
-        console.log(response)
-        updateMapList()
-      }, function (error) {
-        console.log(error)
-      })
-    }
+      swal({
+          title: "Remove map?", 
+          text: "Are you sure you want to remove the map: " + map.name + '?', 
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Remove it!",
+          confirmButtonColor: "#ec6c62"
+        }, function() {
+            $http.get("/api/maps/" + map._id + "/delete").then(function (response) {
+                console.log(response)
+                updateMapList()
+              }, function (error) {
+                console.log(error)
+              })
+         });
   }
 
   function updateMapList() {

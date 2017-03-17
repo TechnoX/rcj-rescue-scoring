@@ -10,24 +10,38 @@ append scripts
   script(src='/javascripts/round_admin.js')
 
 block location
-  a(href='/home' style="color:#333333") Home
-  | >
-  a(href='/admin' style="color:#333333") Admin
-  | >
-  a(ng-href='/admin/{{competitionId}}' style="color:#333333") {{competition.name}}
-  | >
-  a(ng-href='/admin/{{competitionId}}/rounds' style="color:#333333") Rounds
+    a.breadcrumb-item(href='/home') Home
+    a.breadcrumb-item(href='/admin') Admin
+    a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition.name}}
+    span.breadcrumb-item.active Rounds
 
 block content
   .row
-    .col-md-offset-2.col-md-8
-      h1 Rounds
+    .col-md-1
+    .col-md-10
+      h1 {{competition.name}} - Rounds
       table
-        tr(ng-repeat='round in rounds')
-          td(ng-bind='round.name')
-          td
-            a(href="" ng-click='removeRound(round)') Delete
-
-      h1 Add round
-      input(ng-model='roundName')
-      button(ng-click='addRound()') Add round
+        thead
+            tr
+                th Name
+                th Action
+        tbody
+            tr
+                td
+                    input(ng-model='roundName')
+                td
+                    button(ng-click='addRound()') Add round
+      
+      
+      br
+      br
+      table
+        thead
+            tr
+              th Name
+              th Operation
+        tbody
+            tr(ng-repeat='round in rounds')
+              td(ng-bind='round.name')
+              td
+                a(href="" ng-click='removeRound(round)') Delete      
