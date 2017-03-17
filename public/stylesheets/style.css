@@ -283,7 +283,8 @@ input[type=radio], input[type=checkbox] {
   top: 50%;
   left: 20px;
   display: block;
-  margin-top: -5px;
+  margin-top: -7px;
+  margin-left: -2px;
   width: 10px;
   height: 10px;
   border-radius: 50%;
@@ -315,4 +316,46 @@ input[type=radio]:checked + .radio:before {
 }
 input[type=checkbox]:checked + .checkbox:before {
   opacity: 1;
+}
+
+.scrool::-webkit-scrollbar
+{
+        overflow:hidden;
+        width:5px;
+        background:#fafafa;
+         
+        -webkit-border-radius:3px;
+        border-radius:3px;
+}
+        #scrollbar03::-webkit-scrollbar:horizontal
+        {
+                height:5px;
+        }
+.scrool::-webkit-scrollbar-button
+{
+       display:none;
+}
+.scrool::-webkit-scrollbar-piece
+{
+        background:#eee;
+}
+        #scrollbar03::-webkit-scrollbar-piece:start
+        {
+                background:#eee;
+        }
+.scrool::-webkit-scrollbar-thumb
+{
+        overflow:hidden;
+        -webkit-border-radius:3px;
+        border-radius:3px;
+         
+        background:#333;
+}
+.scrool::-webkit-scrollbar-corner
+{
+        overflow:hidden;
+        -webkit-border-radius:3px;
+        border-radius:3px;
+         
+        background:#333;
 }

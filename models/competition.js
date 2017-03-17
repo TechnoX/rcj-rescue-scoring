@@ -136,6 +136,12 @@ var runSchema = new Schema({
   time             : {
     minutes: {type: Number, min: 0},
     seconds: {type: Number, min: 0, max: 59}
+  },
+  status           : {type: Number, min: 0},
+  sign             :{
+    captain: {type: String},
+    referee: {type: String},
+    referee_as: {type: String}
   }
 })
 

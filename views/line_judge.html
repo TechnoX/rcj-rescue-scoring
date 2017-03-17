@@ -1,87 +1,138 @@
-<h1>{{team.name}}</h1>
-<p>Field：{{field.name}}</p>
-<div style="margin-top:50px;">
-  <div class="row">
-    <div class="col-sm-12">
-      <p>
-        <button class="btn btn-primary" type="button" ng-click="toggleTime()">Time!{{ startedTime ? 'Stop' : 'Start' }}</button>
-        <button class="btn btn-primary" type="button" ng-click="toggleScoring()">Scoring!{{ startedScoring ? 'Stop' : 'Start' }}</button>
-      </p>
-      <h2>
-        Score: {{score}}<br>
-        Time: {{time | date:'mm:ss'}}
-      </h2>
-      <p ng-show="!startedScoring">
-        Checkpoints left to be placed: {{numberOfDropTiles - placedDropTiles}}
-      </p>
-      <p ng-show="startedScoring">
-        <input type="checkbox" ng-model="showedUp" ng-change="changeShowedUp()" id="scoredrun"><label class="checkbox" for="scoredrun">Start Scoring Run</label><br>
-        <label>Number of LoPs</label>
-      </p>
-      <p ng-repeat="dropTile in range(actualUsedDropTiles+1) track by $index" ng-show="startedScoring">
-         Between <b>{{$index==0?'start':('checkpoint ' + ($index))}}</b> and <b>{{!$last?('checkpoint ' + ($index+1)):'Evacuation Zone'}}</b>:<br>
-        <img src="/images/minus.png" alt="-" ng-click="decrement($index,$last)" class="plusminus">
-        <span class="count">{{LoPs[$index]?LoPs[$index]:0}}</span>
-        <img src="/images/plus.png" alt="+" ng-click="increment($index,$last)" class="plusminus">
-      </p>
-      <br>
-      <p ng-show="startedScoring">
-        Number of Rescued Victims: <br>
-        <img src="/images/minus.png" alt="-" ng-click="decVictims()" class="plusminus">
-        <span class="count">{{rescuedVictims}}</span>
-        <img src="/images/plus.png" alt="+" ng-click="incVictims()" class="plusminus">
-      </p>
-      
+<nav  class="navbar" style="background-color: #e74c3c; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%">
+  <!-- Navbar content -->
+    <div class="row">
+        <div class="col-md-6 col-sm4 col-12">
+            <li class="navbar-brand" href="#"><i class="fa fa-spinner fa-pulse fa-fw"></i> {{team.name}}</li>
+        </div>
+        <div class="col-md-3 col-sm4 col-7">
+            <i class="fa fa-calculator fa-2x" aria-hidden="true"></i>
+            <li class="navbar-brand" href="#"> {{score}} points</li>
+        </div>
+        <div class="col-md-3 col-sm4 col-5">
+            <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
+            <li class="navbar-brand" href="#">  {{time | date:'mm:ss'}}</li>
+        </div>
     </div>
-  </div>
-  <div class="row" ng-show="height>1">
-    <div class="col-sm-12">
-      <rzslider rz-slider-model="z" rz-slider-options="sliderOptions"></rzslider>
-    </div>
-  </div>
+    
 
-  <div class="row">
-    <div class="col-md-12">
-      <div ng-repeat="r in range(length)" class="row">
-        <div ng-repeat="c in range(width)" class="slot">
-          <tile tile="tiles[c+','+r+','+z]" ng-click="doScoring(c,r,z)"></tile>
+</nav>
+<div class="container">
+    <div style="text-align: center;" ng-hide="checked">
+        <h4><i class="fa fa-check-circle-o" aria-hidden="true"></i>競技記録開始前に，以下の情報が正しいか確認してください．</h4><br>
+        <div id="lops" class="card">
+                  <h3 class="card-header"><i class="fa fa-info-circle" aria-hidden="true"></i> 基本情報</h3>
+                      <pre>
+                        <ul class="list-group list-group-flush scrool" style="margin:0 0 0 0; padding:0;overflow: scroll;"><!--
+                          --><li class="list-group-item">大会名　　　: {{competition.name}}</li><!--
+                          --><li class="list-group-item">ラウンド名　: {{round.name}}</li><!--
+                          --><li class="list-group-item">フィールド名: {{field.name}}</li><!--
+                          --><li class="list-group-item">チーム名　　: {{team.name}}</li><!--
+                          --><li class="list-group-item">リーグ　　　: {{team.league=='primary'?"日本リーグ":"ワールドリーグ"}}</li><!--
+                          --></ul><!--
+                      --></pre>  
+              </div>
+        <br>
+        <br>
+        <button class="btn btn-success" type="button" ng-click="infochecked()"><i class="fa fa-check-circle fa-2x" aria-hidden="true"> 確認しました</i></button>
+    </div>
+    <div ng-show="checked">
+      <div class="row">
+        <div class="col-md-6">
+            <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleScoring()"><i class="fa fa-calculator" aria-hidden="true"> 競技記録 {{ startedScoring ? '停止' : '開始' }}</i></button>
+            <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleTime()"><i class="fa fa-clock-o" aria-hidden="true"> {{ startedTime ? 'Stop' : 'Start' }}</i></button>
+            <button ng-show="!startedTime && time!=0" class="btn btn-warning" style="margin:0 10px 10px 0;" type="button" ng-click="TimeReset()"><i class="fa fa-clock-o" aria-hidden="true"> Reset</i></button>
+          <div class="alert alert-info" role="alert" ng-show="numberOfDropTiles - placedDropTiles == 0 && !startedScoring">
+             競技記録を開始する準備が整いました！<br><strong>競技記録開始ボタンを押してください．</strong>
+          </div>
+          <div class="alert alert-warning" role="alert" ng-show="!startedScoring">
+             チームが選択したチェックポイントタイルを，右のコース図上でタップしてください．<br>
+             残りチェックポイント: <strong>{{numberOfDropTiles - placedDropTiles}}</strong>
+          </div>
+          <div class="alert alert-info" role="alert" ng-show="!startedTime && startedScoring">
+             主審に従って， <strong>タイマーStart</strong> ボタンを押してください．
+          </div>
+        <div id="card_area" class="scrool" style="overflow: scroll;" ng-show="startedScoring">
+          <!--<div class="card">
+              <h3 class="card-header"><i class="fa fa-play-circle" aria-hidden="true"></i> Start Scoring Run</h3>
+              <div class="card-block">
+                  <p class="card-text">Please check a box at the start of scoring run.</p>
+                  <input type="checkbox" ng-model="showedUp" ng-change="changeShowedUp()" id="scoredrun"><label class="checkbox" for="scoredrun" style="background-color: #ffe6e8;">Start Scoring Run</label><br>
+              </div>   
+          </div>-->
+          <div id="lops" class="card">
+              <h3 class="card-header"><i class="fa fa-undo" aria-hidden="true"></i> 進行停止</h3>
+              <div class="card-block">
+                  
+                  <div  ng-repeat="dropTile in range(actualUsedDropTiles+1) track by $index" ng-show="startedScoring">
+                     <p class="card-text">
+                     <b>{{$index==0?'スタート':('チェックポイント ' + ($index))}}</b> と <b>{{!$last?('チェックポイント ' + ($index+1)):'避難ゾーン'}}</b>の間:<br>
+                    <img src="/images/minus.png" alt="-" ng-click="decrement($index,$last)" class="plusminus">
+                    <img src="/images/loader2.gif" width="37px" height="37px" alt="" ng-show="processing[$index] == true">
+                    <span class="count" ng-show="processing[$index] != true">{{LoPs[$index]?LoPs[$index]:0}}</span>
+                    <img src="/images/plus.png" alt="+" ng-click="increment($index,$last)" class="plusminus">
+                    
+                    </p>
+                    <hr ng-show="!$last" /> 
+                  </div>
+                  
+              </div>   
+          </div>
+          <div id="resc" class="card">
+              <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> 被災者救助</h3>
+              <div class="card-block">
+                  <p class="card-text">救助成功数： </p>
+                  <img src="/images/minus.png" alt="-" ng-click="decVictims()" class="plusminus">
+                  <img src="/images/loader2.gif" width="37px" height="37px" alt="" ng-show="rprocessing == true">
+                  <span class="count" ng-show="rprocessing != true">{{rescuedVictims}}</span>
+                  <img src="/images/plus.png" alt="+" ng-click="incVictims()" class="plusminus">
+                  </div>   
+          </div>
+        </div>
+
+        </div>
+        <div class="col-md-6 tilearea">
+            <div ng-show="height>1">
+                <rzslider rz-slider-model="z" rz-slider-options="sliderOptions"></rzslider>
+            </div>
+              <div ng-repeat="r in range(length)" class="row">
+                <div ng-repeat="c in range(width)" class="slot">
+                  <tile tile="tiles[c+','+r+','+z]"  ng-click="doScoring(c,r,z)" ng-if="showtile"></tile>
+                </div>
+              </div>
+        </div>
+      </div>
+
+
+      <div class="row" style="margin:50 0 0 0;">
+          <div class="col-sm-12">
+
+          <p>
+            <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleScoring()"><i class="fa fa-calculator" aria-hidden="true"> 得点記録 {{ startedScoring ? '停止' : '開始' }}</i></button>
+            <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleTime()"><i class="fa fa-clock-o" aria-hidden="true"> タイマー {{ startedTime ? 'Stop' : 'Start' }}</i></button>
+            <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="retire()"><i class="fa fa-window-close" aria-hidden="true"> リタイヤ!</i></button>
+          </p>
+        </div>
+        <div class="col-md-12 confirmation">
+          <strong>記録時間調整: </strong><br>
+          <label><input type="tel" min="0" max="8" ng-model="minutes">min  </label>
+          <label><input type="tel" min="0" max="60" ng-model="seconds">sec</label><br>
+
+          <strong>
+            下のボタンを押して，スコア・タイムの確認画面に移動してください．
+          </strong>
+            <br>
+            <div style="text-align:center; margin: 10 10 10 10;">
+                <button class="btn btn-danger" type="button" ng-click="confirm()"><i class="fa fa-arrow-right fa-2x" aria-hidden="true"> 確認画面へ</i></button>
+            </div>
         </div>
       </div>
     </div>
-  </div>
-
-
-  <div class="row">
-      <div class="col-sm-12">
-        
-      <p>
-          <br>
-          <h4>
-        Score: {{score}}<br>
-        Time: {{time | date:'mm:ss'}}
-      </h4>
-          <br><br>
-        <button class="btn btn-primary" type="button" ng-click="toggleTime()">Time!{{ startedTime ? 'Stop' : 'Start' }}</button>
-        <button class="btn btn-primary" type="button" ng-click="toggleScoring()">Scoring!{{ startedScoring ? 'Stop' : 'Start' }}</button>
-        <button class="btn btn-primary" type="button" ng-click="retire()">Retire!</button>
-      </p>
+    <div class="row" style="margin:20 0 0 0;">
+        <div class="col-md12">
+            <button class="btn btn-secondary" style="margin:0 10px 10px 0;" type="button" ng-click="go('/line/' + competition._id)"><i class="fa fa-undo" aria-hidden="true"> 大会へ戻る</i></button>
+        </div>
     </div>
-    <div class="col-md-12 confirmation">
-      <strong>Time: </strong><br>
-      <label><input type="tel" min="0" max="8" ng-model="minutes">min  </label>
-      <label><input type="tel" min="0" max="60" ng-model="seconds">sec</label><br>
-      
-      <strong>
-        By clicking the "Sign!" button, you accept that the
-          <br>Score：{{score}}<br>Time：{{minutes}}:{{seconds<10?'0':''}}{{seconds}}<br>
-        are correct.<br>
-        Your team also further undertakes to not appeal the score at a later stage.
-      </strong>
-        <button class="button-ss button-red-s" ng-click="sign()">Sign!</button>
-        <br><br>
-    </div>
-      <br><br>
-  </div>
-<br><br>
+</div>
+    
 
 
