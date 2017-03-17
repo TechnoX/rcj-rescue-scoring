@@ -30,6 +30,24 @@ angular.module("LineCompetition", []).controller("LineCompetitionController", fu
   $scope.go = function(path){
       window.location = path
   }
+  
+  $scope.go_judge = function(path){
+      swal({
+          title: "Judge?", 
+          text: "審判ページに移動しますか？", 
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes",
+        }, function() {
+          $scope.go(path);
+      }, function (error) {
+        console.log(error);
+    });
+  }
+  
+  $scope.no_judge = function(){
+      swal("Oops!", "選択した競技は，すでに終了しています．競技を編集する場合は，大会責任者・システム管理者にお問い合わせください．", "error");
+  }
 })
 .directive("runsReadFinished", function($timeout){
     return function(scope, element, attrs){
