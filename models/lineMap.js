@@ -528,6 +528,76 @@ const tileTypes = [
       "bottom": "top"
     },
     "_id"         : "570c27c3f5a9dabe23f3afb4"
+  },
+  {
+    "image"       : "007.png",
+    "gaps"        : 0,
+    "intersection": false,
+    "paths"       : {
+      "right" : "bottom",
+      "bottom": "right"
+    },
+    "_id"         : "58cfd6549792e9313b1610d2"
+  },
+  {
+    "image"       : "009.png",
+    "gaps"        : 0,
+    "intersection": false,
+    "paths"       : {
+      "right" : "bottom",
+      "bottom": "right"
+    },
+    "_id"         : "58cfd6549792e9313b1610d3"
+  },
+  {
+    "image"       : "010.png",
+    "gaps"        : 0,
+    "intersection": false,
+    "paths"       : {
+      "right": "left",
+      "left" : "right"
+    },
+    "_id"         : "58cfd6549792e9313b1610d4"
+  },
+  {
+    "image"       : "011.png",
+    "gaps"        : 0,
+    "intersection": false,
+    "paths"       : {
+      "right": "left",
+      "left" : "right"
+    },
+    "_id"         : "58cfd6549792e9313b1610d5"
+  },
+  {
+    "image"       : "021.png",
+    "gaps"        : 0,
+    "intersection": false,
+    "paths"       : {
+      "right": "left",
+      "left" : "right"
+    },
+    "_id"         : "58cfd6549792e9313b1610d6"
+  },
+  {
+    "image"       : "022.png",
+    "gaps"        : 0,
+    "intersection": false,
+    "paths"       : {
+      "right": "left",
+      "left" : "right"
+    },
+    "_id"         : "58cfd6549792e9313b1610d7"
+  },
+  {
+    "image"       : "025.png",
+    "gaps"        : 0,
+    "intersection": false,
+    "paths"       : {
+      "right": "left",
+      "left" : "right"
+    },
+    "_id"         : "58cfd6549792e9313b1610d8"
   }
 ]
 
