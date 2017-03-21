@@ -22,8 +22,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
 
 
-    $scope.tiles = {};
-
+    // Scoring elements of the tiles
+    $scope.stiles = [];
+    // Map (images etc.) for the tiles
+    $scope.mtiles = [];
+    
     $http.get("/api/runs/line/"+runId+"?populate=true").then(function(response){
 
 	console.log(response.data);	
@@ -45,7 +48,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
 
 	// Scoring elements of the tiles
-        $scope.tiles = response.data.tiles;
+        $scope.stiles = response.data.tiles;
 	
         for(var i = 0; i < response.data.tiles.length; i++){
             if(response.data.tiles[i].isDropTile){
@@ -62,16 +65,19 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.sliderOptions.ceil = $scope.height - 1;
             $scope.width = response.data.width;
             $scope.length = response.data.length;
+	    $scope.startTile = response.data.startTile;
             $scope.numberOfDropTiles = response.data.numberOfDropTiles;;
-	    $scope.map = response.data.tiles;
+
+            for(var i = 0; i < response.data.tiles.length; i++){
+                $scope.mtiles[response.data.tiles[i].x + ',' +
+                              response.data.tiles[i].y + ',' +
+                              response.data.tiles[i].z] = response.data.tiles[i];
+            }
+
 	    
 	}, function(response){
 	    console.log("Error: " + response.statusText);
         });
-
-
-
-
 	
     }, function(response){
         console.log("Error: " + response.statusText);
@@ -183,39 +189,62 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 
     $scope.doScoring = function(x,y,z){
-        var tile = $scope.tiles[x+','+y+','+z];
+        var mtile = $scope.mtiles[x+','+y+','+z];
+	var stile = [];
         // If this is not a created tile
-        if(!tile)
+        if(!mtile || mtile.index.length == 0)
             return;
 
+	for(var i = 0; i < mtile.index.length; i++){
+	    stile.push($scope.stiles[mtile.index[i]]);
+	}
 
-        var total = $scope.totalNumberOf(tile.items);
+	
+	// $scope.totalNumberOf(tile.items);
+        var total = (mtile.items.obstacles > 0 ||
+		     mtile.items.speedbumps > 0 ||
+		     mtile.tileType.gaps > 0 ||
+		     stile.isDropTile > 0 ||
+		     mtile.tileType.intersections > 0) * mtile.index.length;
 
         // If the run is not started, we can place drop pucks on this tile
         if(!$scope.startedScoring){
-            // We can only place drop markers on tiles without scoring elements (rule 3.3.4)
+            // We can only place drop markers on tiles without scoring elements (rule 3.3.5)
             if(total > 0){
-                alert("Place drop markers on tiles without scoring elements (rule 3.3.4)");
-            }else{
-		// If this tile already contains a droptile, we should remove it
-		if(tile.scoredItems.dropTiles.length > 0){
-                    tile.scoredItems.dropTiles = [];
-                    $scope.placedDropTiles--;
-		    $scope.actualUsedDropTiles -= tile.index.length;
-                }// If this tile doesn't contain a droptile, we should add one, IF we have any left to place
-		else if($scope.numberOfDropTiles - $scope.placedDropTiles > 0) {
-                    tile.scoredItems.dropTiles = [];
-                    for(var i = 0; i < tile.index.length; i++){
-                        tile.scoredItems.dropTiles.push(false);
+                alert("Place drop markers on tiles without scoring elements (rule 3.3.5)");
+            }else if(mtile.x == $scope.startTile.x &&
+		     mtile.y == $scope.startTile.y &&
+		     mtile.z == $scope.startTile.z){
+		alert("Not allowed to place drop markers on start tile (rule 3.3.6)");
+	    }else{
+		var placed = false;
+		var removed = false;
+		for(var i = 0; i < stile.length; i++){
+		    // If this tile already contains a droptile, we should remove it
+		    if(stile[i].isDropTile){
+			stile[i].isDropTile = false;
+			$scope.actualUsedDropTiles--;
+			removed = true;
+                    }// If this tile doesn't contain a droptile, we should add one, IF we have any left to place
+		    else if($scope.numberOfDropTiles - $scope.placedDropTiles > 0) {
+			stile[i].isDropTile = true;
+			$scope.actualUsedDropTiles++;
+			placed = true;
                     }
-                    $scope.placedDropTiles++;
-		    $scope.actualUsedDropTiles += tile.index.length;
-                }
-                $http.put("/api/runs/line/"+runId, {tiles:[tile]}).then(function(response){
+		}
+
+		if(placed){
+		    $scope.placedDropTiles++;
+		}else if(removed){
+		    $scope.placedDropTiles--;
+		}
+
+                $http.put("/api/runs/line/"+runId, {tiles: {[stile._id]: stile}}).then(function(response){
                     $scope.score = response.data.score;
                 }, function(response){
                     console.log("Error: " + response.statusText);
                 });
+		
             }
 
         // Match has started!
@@ -277,14 +306,16 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.saveEverything = function(){
         var run = {}
-        run.height = $scope.height;
-        run.width = $scope.width;
-        run.length = $scope.length;
-        run.rescuedVictims = $scope.rescuedVictims;
-        run.tiles = $scope.tiles;
+	run.LoPs = $scope.LoPs;
+	//run.evacuationLevel = ;
+	//run.exitBonus = ;
+	//run.rescuedDeadVictims = ;
+	//run.rescuedLiveVictim = ;
         run.showedUp = $scope.showedUp;
-        run.LoPs = $scope.LoPs;
-
+	//run.started = ;
+	run.tiles = $scope.stiles;
+	//run.time = ;
+	// TODO: Fixa in allting här
         $http.put("/api/runs/line/"+runId, run).then(function(response){
             $scope.score = response.data.score;
         }, function(response){
@@ -334,27 +365,38 @@ app.directive('tile', function() {
         templateUrl: '/templates/tile.html',
         link : function($scope, element, attrs){
 
+
+	    $scope.isDropTile = function(tile){
+		if(!tile)
+		    return;
+		return $scope.$parent.stiles[tile.index[0]].isDropTile;
+	    }
+	    
             $scope.tileStatus = function(tile){
                 // If this is a non-existent tile
                 if(!tile)
                     return;
-                var successfully = 0;
-                var possible = 0;
 
-                var count = function(list){
-                    for(var i = 0; i < list.length; i++){
-                        if(list[i])
-                            successfully++;
-                        possible++;
-                    }
-                }
-                count(tile.scoredItems.gaps);
-                count(tile.scoredItems.speedbumps);
-                count(tile.scoredItems.intersections);
-                count(tile.scoredItems.obstacles);
-                if(tile.scoredItems.dropTiles.length > 0)
-                    count(tile.scoredItems.dropTiles);
+		// If this tile has no scoring elements we should just return empty string
+		if(tile.items.obstacles == 0 &&
+		   tile.items.speedbumps == 0 &&
+		   tile.tileType.gaps == 0 &&
+		   tile.tileType.intersections == 0 &&
+		   !$scope.$parent.stiles[tile.index[0]].isDropTile
+		  ){
+		    return;
+		}
 
+		// Number of successfully passed times
+		var successfully = 0;
+		// Number of times it is possible to pass this tile
+		var possible = tile.index.length;
+		
+		for(var i = 0; i < tile.index.length; i++){
+		    if($scope.$parent.stiles[tile.index[i]].scored){
+			successfully++;
+		    }
+		}
                 if(possible > 0 && successfully == possible)
                     return "done";
                 else if(successfully > 0)
