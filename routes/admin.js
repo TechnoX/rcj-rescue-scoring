@@ -28,7 +28,7 @@ router.get('/:competitionid/teams', function (req, res, next) {
   res.render('team_admin', {id : id})
 })
 
-router.get('/:competitionid/runs', function (req, res, next) {
+router.get('/:competitionid/line/runs', function (req, res, next) {
   const id = req.params.competitionid
 
   if (!ObjectId.isValid(id)) {
