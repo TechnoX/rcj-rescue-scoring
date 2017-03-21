@@ -24,7 +24,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.tiles = {};
 
-    $http.get("/api/runs/"+runId+"?populate=true").then(function(response){
+    $http.get("/api/runs/line/"+runId+"?populate=true").then(function(response){
         $scope.height = response.data.height;
         $scope.sliderOptions.ceil = $scope.height - 1;
         $scope.width = response.data.width;
@@ -85,7 +85,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.LoPs[index] = 0;
         if($scope.LoPs[index] < 0)
             $scope.LoPs[index] = 0;
-        $http.post("/api/runs/"+runId+"/update", {LoPs: $scope.LoPs}).then(function(response){
+        $http.put("/api/runs/line/"+runId, {LoPs: $scope.LoPs}).then(function(response){
             console.log(response);
             $scope.score = response.data.score;
         }, function(response){
@@ -100,7 +100,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.LoPs[index] = 1;
         if($scope.LoPs[index] >= 3)
             $timeout(function(){alert("The team *may* move to next drop tile now.");},20);
-        $http.post("/api/runs/"+runId+"/update", {LoPs: $scope.LoPs}).then(function(response){
+        $http.put("/api/runs/line/"+runId, {LoPs: $scope.LoPs}).then(function(response){
             console.log(response);
             $scope.score = response.data.score;
         }, function(response){
@@ -113,7 +113,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         if($scope.rescuedVictims <= 0)
             $scope.rescuedVictims = 0;
 
-        $http.post("/api/runs/"+runId+"/update", {rescuedVictims: $scope.rescuedVictims}).then(function(response){
+        $http.put("/api/runs/line/"+runId, {rescuedVictims: $scope.rescuedVictims}).then(function(response){
             $scope.score = response.data.score;
         }, function(response){
             console.log("Error: " + response.statusText);
@@ -122,7 +122,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
     $scope.incVictims = function(){
         $scope.rescuedVictims++;
-        $http.post("/api/runs/"+runId+"/update", {rescuedVictims: $scope.rescuedVictims}).then(function(response){
+        $http.put("/api/runs/line/"+runId, {rescuedVictims: $scope.rescuedVictims}).then(function(response){
             $scope.score = response.data.score;
         }, function(response){
             console.log("Error: " + response.statusText);
@@ -154,7 +154,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 
     $scope.changeShowedUp = function(){
-        $http.post("/api/runs/"+runId+"/update", {showedUp: $scope.showedUp}).then(function(response){
+        $http.put("/api/runs/line/"+runId, {showedUp: $scope.showedUp}).then(function(response){
             $scope.score = response.data.score;
         }, function(response){
             console.log("Error: " + response.statusText);
@@ -191,7 +191,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     $scope.placedDropTiles++;
 		    $scope.actualUsedDropTiles += tile.index.length;
                 }
-                $http.post("/api/runs/"+runId+"/update", {tiles:[tile]}).then(function(response){
+                $http.put("/api/runs/line/"+runId, {tiles:[tile]}).then(function(response){
                     $scope.score = response.data.score;
                 }, function(response){
                     console.log("Error: " + response.statusText);
@@ -223,7 +223,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 else if(tile.scoredItems.dropTiles.length > 0)
                     tile.scoredItems.dropTiles[0] = !tile.scoredItems.dropTiles[0];
 
-                $http.post("/api/runs/"+runId+"/update", {tiles:[tile]}).then(function(response){
+                $http.put("/api/runs/line/"+runId, {tiles:[tile]}).then(function(response){
                     $scope.score = response.data.score;
                 }, function(response){
                     console.log("Error: " + response.statusText);
@@ -247,7 +247,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 }
             }
         }).closed.then(function(result){
-            $http.post("/api/runs/"+runId+"/update", {tiles:[$scope.tiles[x+','+y+','+z]]}).then(function(response){
+            $http.put("/api/runs/line/"+runId, {tiles:[$scope.tiles[x+','+y+','+z]]}).then(function(response){
                 $scope.score = response.data.score;
             }, function(response){
                 console.log("Error: " + response.statusText);
@@ -265,7 +265,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         run.showedUp = $scope.showedUp;
         run.LoPs = $scope.LoPs;
 
-        $http.post("/api/runs/"+runId+"/update", run).then(function(response){
+        $http.put("/api/runs/line/"+runId, run).then(function(response){
             $scope.score = response.data.score;
         }, function(response){
             console.log("Error: " + response.statusText);
@@ -283,7 +283,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         run.time.minutes = $scope.minutes;;
         run.time.seconds = $scope.seconds;
 
-        $http.post("/api/runs/"+runId+"/update", run).then(function(response){
+        $http.put("/api/runs/line/"+runId, run).then(function(response){
             $scope.score = response.data.score;
             alert("Run signed");
         }, function(response){
