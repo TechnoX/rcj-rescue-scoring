@@ -6,17 +6,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 
     $scope.tileBox = {};
 
-
-    $http.get("/api/competitions/" + competitionId + "/line/tilesets?populate=true").then(function(response){
-	console.log(response.data[0]);
-	$scope.tileSet = response.data[0];
-        /*for(var i = 0; i < response.data[0].tiles.length; i++){
-            $scope.tileBox[response.data[0].tiles[i]._id] = response.data[0].tiles[i];
-        }*/
+    $scope.tileSets = [];
+    $scope.tileSet = {};
+    $http.get("/api/maps/line/tilesets?populate=true").then(function(response){
+	$scope.tileSets = response.data
+	$scope.tileSet = $scope.tileSets[0]
     }, function(response){
         console.log("Error: " + response.statusText);
     });
-
 
     $scope.sliderOptions = {
         floor: 0,

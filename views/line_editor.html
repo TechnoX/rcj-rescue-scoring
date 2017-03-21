@@ -18,6 +18,8 @@
     </div>
     <div class="col-md-5 tools">
       <h2>Tiles in {{tileSet.name}}</h2>
+      <p><label>Select tileset: <select ng-model="tileSet" ng-options="set as set.name for set in tileSets"></select></label></p>
+
       
       <span ng-repeat="tile in tileSet.tiles track by tile.tileType._id" class="toolbox-tile-container">
 	<img class="toolbox-tile rot0" ng-src="/images/tiles/{{tile.tileType.image}}" x-lvl-draggable="true" x-lvl-drop-target="true" x-on-drop="dropped(dragEl, dropEl)" tile-id="{{tile.tileType._id}}" rotate-on-click rot="0">
