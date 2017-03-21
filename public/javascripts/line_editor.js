@@ -4,15 +4,14 @@ var app = angular.module('ddApp', ['lvl.services', 'ngAnimate', 'ui.bootstrap', 
 // function referenced by the drop target
 app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function($scope, $uibModal, $log, $http){
 
-    $scope.tileBox = {};
-    $http.get("/api/maps/tiletypes").then(function(response){
-        for(var i = 0; i < response.data.length; i++){
-            $scope.tileBox[response.data[i]._id] = response.data[i];
-        }
+    $scope.tileSets = [];
+    $scope.tileSet = {};
+    $http.get("/api/maps/line/tilesets?populate=true").then(function(response){
+	$scope.tileSets = response.data
+	$scope.tileSet = $scope.tileSets[0]
     }, function(response){
         console.log("Error: " + response.statusText);
     });
-
 
     $scope.sliderOptions = {
         floor: 0,
@@ -219,7 +218,6 @@ app.directive('lvlDraggable', ['$rootScope', 'uuid', function ($rootScope, uuid)
             //console.log(id);
             el.bind("dragstart", function (e) {
                 e.dataTransfer.setData('text', id);
-                console.log('drag');
                 $rootScope.$emit("LVL-DRAG-START");
             });
 
@@ -278,10 +276,9 @@ app.directive('lvlDropTarget', ['$rootScope', 'uuid', function ($rootScope, uuid
                     // Remove the element from where we dragged it
                     delete scope.tiles[drag.attr("x")+","+drag.attr("y")+","+drag.attr("z")];
                 }else if(drag[0].tagName == "IMG"){// If we drag out an image, this is a new tile
-                    console.log(drag.attr("id"));
-                    scope.tiles[drop.attr("x")+","+drop.attr("y")+","+drop.attr("z")] = {image: drag.attr("src"),
-                                                                                         rot: +drag.attr("rot"),
-                                                                                         tileType: scope.tileBox[drag.attr("tile-id")],
+		    
+                    scope.tiles[drop.attr("x")+","+drop.attr("y")+","+drop.attr("z")] = {rot: +drag.attr("rot"),
+                                                                                         tileType: scope.tileSet.tiles.find(function(t){return t.tileType._id == drag.attr("tile-id")}).tileType,
                                                                                          items:{obstacles: 0,
                                                                                                 speedbumps: 0}};
                     // We dragged an non-existing tile
