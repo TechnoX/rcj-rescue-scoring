@@ -126,15 +126,6 @@ publicRouter.get('/:competition/line/maps', function (req, res, next) {
 
   return lineMapsApi.getLineMaps(req, res, next)
 })
-publicRouter.get('/:competition/line/tilesets', function (req, res, next) {
-  const id = req.params.competition
-
-  if (!ObjectId.isValid(id)) {
-    return next()
-  }
-
-  return lineMapsApi.getTileSets(req, res, next)
-})
 
 publicRouter.get('/:competition/fields', function (req, res, next) {
   var id = req.params.competition

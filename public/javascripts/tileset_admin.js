@@ -6,8 +6,7 @@ angular.module("TilesetAdmin", []).controller("TilesetAdminController", function
   })
 
   function updateTileSetList(callback) {
-    $http.get("/api/competitions/" + competitionId +
-              "/line/tilesets?populate=true").then((response) => {
+    $http.get("/api/maps/line/tilesets?populate=true").then((response) => {
       $scope.tileSets = response.data
       $scope.tileSet = $scope.tileSets[0]
 
@@ -55,7 +54,6 @@ angular.module("TilesetAdmin", []).controller("TilesetAdminController", function
   $scope.createNewTileSet = function () {
     const newName = $scope.newTileSetName
     $http.post("/api/maps/line/tilesets", {
-      competition: $scope.competition._id,
       name       : newName
     }).then(
       (response) => {
@@ -83,7 +81,8 @@ angular.module("TilesetAdmin", []).controller("TilesetAdminController", function
   }
 
   $scope.delete = function () {
-    if (confirm("Are you sure you want to remove the tileset: " + $scope.tileSet.name + "?")) {
+    if (confirm("Are you sure you want to remove the tileset: " +
+                $scope.tileSet.name + "?")) {
       $http.delete("/api/maps/line/tilesets/" +
                    $scope.tileSet._id).then((response)=> {
         updateTileSetList()

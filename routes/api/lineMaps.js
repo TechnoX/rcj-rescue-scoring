@@ -198,25 +198,16 @@ function getTileTypes(req, res) {
 }
 
 publicRouter.get('/tilesets', getTileSets)
-function getTileSets(req, res) {
-  const competition = req.query.competition || req.params.competition
+function getTileSets(req, res, next) {
 
-  var query
-  if (competition != null && competition.constructor === String) {
-    // String with single id
-    query = tileSet.find({competition: competition})
-  } else if (Array.isArray(competition)) {
-    // Array of ids
-    query = tileSet.find({competition: {$in: competition.filter(ObjectId.isValid)}})
-  } else {
-    // Get all
-    query = tileSet.find({})
-  }
+  // Get all
+  const query = tileSet.find({})
 
-  query.select("competition name")
+  query.select("__id name")
 
   if (req.query['populate'] !== undefined && req.query['populate']) {
     query.select("tiles")
+    query.populate("tiles", "-_id")
     query.populate("tiles.tileType", "-gaps -intersections -paths -__v")
   }
 
@@ -235,7 +226,6 @@ adminRouter.post('/tilesets', function (req, res, next) {
   const tileset = req.body
 
   new tileSet({
-    competition: tileset.competition,
     name       : tileset.name
   }).save(function (err, data) {
     if (err) {
@@ -255,14 +245,19 @@ publicRouter.get('/tilesets/:tileset', function (req, res, next) {
     return next()
   }
 
-  tileSet.findById(id).populate("tiles.tileType", "-paths -__v").lean().exec(function (err, data) {
-    if (err) {
-      logger.error(err)
-      res.status(400).send({msg: "Could not get tile set"})
-    } else {
-      res.status(200).send(data)
-    }
-  })
+  tileSet.findById(id)
+    .select("_id name tiles")
+    .populate("tiles", "-_id")
+    .populate("tiles.tileType", "-paths -__v")
+    .lean()
+    .exec((err, data) => {
+      if (err) {
+        logger.error(err)
+        res.status(400).send({msg: "Could not get tile set"})
+      } else {
+        res.status(200).send(data)
+      }
+    })
 })
 
 adminRouter.put('/tilesets/:tileset', function (req, res, next) {
