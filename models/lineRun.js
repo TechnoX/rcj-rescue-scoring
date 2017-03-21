@@ -20,14 +20,15 @@ const lineRunSchema = new Schema({
   map        : {type: ObjectId, ref: 'LineMap', required: true},
   
   tiles             : [{
-    isDropTile : {type: Boolean, default: false},
-    scoredItems: {
-      obstacles   : {type: Boolean, default: false},
-      speedbumps  : {type: Boolean, default: false},
-      intersection: {type: Boolean, default: false},
-      gaps        : {type: Boolean, default: false},
-      dropTile    : {type: Boolean, default: false}
-    }
+    isDropTile: {type: Boolean, default: false},
+    scored    : {type: Boolean, default: false}
+    /*scoredItems: {
+     obstacles   : {type: Boolean, default: false},
+     speedbumps  : {type: Boolean, default: false},
+     intersection: {type: Boolean, default: false},
+     gaps        : {type: Boolean, default: false},
+     dropTile    : {type: Boolean, default: false}
+     }*/
   }],
   LoPs              : {type: [Number], min: 0},
   evacuationLevel   : {
