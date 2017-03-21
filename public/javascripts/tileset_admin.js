@@ -1,9 +1,4 @@
 angular.module("TilesetAdmin", []).controller("TilesetAdminController", function ($scope, $http) {
-  $scope.competitionId = competitionId
-
-  $http.get("/api/competitions/" + competitionId).then((response) => {
-    $scope.competition = response.data
-  })
 
   function updateTileSetList(callback) {
     $http.get("/api/maps/line/tilesets?populate=true").then((response) => {
@@ -54,7 +49,7 @@ angular.module("TilesetAdmin", []).controller("TilesetAdminController", function
   $scope.createNewTileSet = function () {
     const newName = $scope.newTileSetName
     $http.post("/api/maps/line/tilesets", {
-      name       : newName
+      name: newName
     }).then(
       (response) => {
         $scope.newTileSetName = ""

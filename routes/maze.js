@@ -12,8 +12,14 @@ publicRouter.get('/', function (req, res) {
 adminRouter.get('/editor', function (req, res) {
   res.render('maze_editor')
 })
-adminRouter.get('/editor/:mapid', function (req, res) {
-  res.render('maze_editor', {id : req.params.mapid})
+adminRouter.get('/editor/:mapid', function (req, res, next) {
+  const id = req.params.mapid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  res.render('maze_editor', {id : id})
 })
 
 publicRouter.all('*', function (req, res, next) {

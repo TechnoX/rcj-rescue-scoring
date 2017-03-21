@@ -5,8 +5,6 @@ block vars
   - var ngAppDef = 'TilesetAdmin'
 
 append scripts
-  script.
-    var competitionId = "#{id}"
   script(src='/javascripts/tileset_admin.js')
 
 append css
@@ -29,11 +27,9 @@ block location
   | >
   a(href='/admin' style="color:#333333") Admin
   | >
-  a(ng-href='/admin/{{competitionId}}' style="color:#333333") {{competition.name}}
+  a(ng-href='/admin/line' style="color:#333333") Line
   | >
-  a(ng-href='/admin/{{competitionId}}/line' style="color:#333333") Line
-  | >
-  a(ng-href='/admin/{{competitionId}}/line/tilesets' style="color:#333333") Tilesets
+  a(ng-href='/admin/line/tilesets' style="color:#333333") Tilesets
 
 block content
   .row

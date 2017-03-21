@@ -31,9 +31,14 @@ const competitionSchema = new Schema({
 })
 
 const roundSchema = new Schema({
-  competition: {type: ObjectId, ref: 'Competition', required: true},
+  competition: {
+    type    : ObjectId,
+    ref     : 'Competition',
+    required: true,
+    index   : true
+  },
   name       : {type: String, required: true},
-  league     : {type: String, enum: LEAGUES, required: true}
+  league     : {type: String, enum: LEAGUES, required: true, index: true}
 })
 
 roundSchema.pre('save', function (next) {
@@ -59,9 +64,14 @@ roundSchema.pre('save', function (next) {
 })
 
 const teamSchema = new Schema({
-  competition: {type: ObjectId, ref: 'Competition', required: true},
+  competition: {
+    type    : ObjectId,
+    ref     : 'Competition',
+    required: true,
+    index   : true
+  },
   name       : {type: String, required: true},
-  league     : {type: String, enum: LEAGUES, required: true}
+  league     : {type: String, enum: LEAGUES, required: true, index: true}
 })
 
 teamSchema.pre('save', function (next) {
@@ -87,9 +97,14 @@ teamSchema.pre('save', function (next) {
 })
 
 const fieldSchema = new Schema({
-  competition: {type: ObjectId, ref: 'Competition', required: true},
+  competition: {
+    type    : ObjectId,
+    ref     : 'Competition',
+    required: true,
+    index   : true
+  },
   name       : {type: String, required: true},
-  league     : {type: String, enum: LEAGUES, required: true}
+  league     : {type: String, enum: LEAGUES, required: true, index: true}
 })
 
 fieldSchema.pre('save', function (next) {

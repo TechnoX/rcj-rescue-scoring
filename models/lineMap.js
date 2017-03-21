@@ -21,7 +21,12 @@ const LineRun = require('./lineRun').lineRun
  * @param {Boolean} admin - If the user is admin or not
  */
 const lineMapSchema = new Schema({
-  competition      : {type: ObjectId, ref: 'Competition', required: true},
+  competition      : {
+    type    : ObjectId,
+    ref     : 'Competition',
+    required: true,
+    index   : true
+  },
   name             : {type: String, required: true},
   height           : {type: Number, required: true, min: 1},
   width            : {type: Number, required: true, min: 1},
@@ -612,12 +617,30 @@ const tileTypes = [
 
 for (var i in tileTypes) {
   const tileType = new TileType(tileTypes[i])
-  tileType.save(function (err, data) {
+  tileType.save(function (err) {
     if (err) {
-      console.log(err);
+      if (err.code != 11000) { // Ignore duplicate key error
+        logger.error(err)
+      } else {
+        TileType.findById(tileType._id, function (err, dbTileType) {
+          if (err) {
+            logger.error(err)
+          } else {
+            dbTileType.image = tileType.image
+            dbTileType.gaps = tileType.gaps
+            dbTileType.intersections = tileType.intersections
+            dbTileType.paths = tileType.paths
+            dbTileType.save(function (err) {
+              if (err) {
+                logger.error(err)
+              }
+            })
+          }
+        })
+      }
     }
     else {
-      console.log("saved tiletype");
+      logger.log("saved tiletype")
     }
   })
 }
