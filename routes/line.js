@@ -10,8 +10,8 @@ publicRouter.get('/', function (req, res) {
   res.render('line_home');
 })
 
-publicRouter.get('/:competition', function (req, res, next) {
-  var id = req.params.competition
+publicRouter.get('/:competitionid', function (req, res, next) {
+  const id = req.params.competitionid
 
   if (!ObjectId.isValid(id)) {
     return next()
@@ -20,8 +20,8 @@ publicRouter.get('/:competition', function (req, res, next) {
   res.render('line_competition', {id : id})
 })
 
-publicRouter.get('/:competition/score', function (req, res, next) {
-  var id = req.params.competition
+publicRouter.get('/:competitionid/score', function (req, res, next) {
+  const id = req.params.competitionid
 
   if (!ObjectId.isValid(id)) {
     return next()
@@ -30,25 +30,49 @@ publicRouter.get('/:competition/score', function (req, res, next) {
   res.render('line_score', {id : id})
 })
 
-publicRouter.get('/view/:roundid', function (req, res) {
-  res.render('line_view', {id : req.params.roundid})
+publicRouter.get('/view/:roundid', function (req, res, next) {
+  const id = req.params.roundid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  res.render('line_view', {id : id})
 })
-publicRouter.get('/viewfield/:fieldid', function (req, res) {
-  res.render('line_view_field', {id : req.params.fieldid})
+publicRouter.get('/viewfield/:fieldid', function (req, res, next) {
+  const id = req.params.fieldid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  res.render('line_view_field', {id : id})
 })
 publicRouter.get('/viewcurrent', function (req, res) {
   res.render('line_view_current')
 })
 
-privateRouter.get('/judge/:roundid', function (req, res) {
-  res.render('line_judge', {id : req.params.roundid})
+privateRouter.get('/judge/:roundid', function (req, res, next) {
+  const id = req.params.roundid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  res.render('line_judge', {id : id})
 })
 
 adminRouter.get('/editor', function (req, res) {
   res.render('line_editor')
 })
-adminRouter.get('/editor/:mapid', function (req, res) {
-  res.render('line_editor', {id : req.params.mapid})
+adminRouter.get('/editor/:mapid', function (req, res, next) {
+  const id = req.params.mapid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  res.render('line_editor', {id : id})
 })
 
 publicRouter.all('*', function (req, res, next) {
