@@ -25,10 +25,16 @@
         <img src="/images/plus.png" alt="+" ng-click="increment($index)" class="plusminus">
       </p>
       <p ng-show="startedScoring">
-        Number of Rescued Victims: <br>
-        <img src="/images/minus.png" alt="-" ng-click="decVictims()" class="plusminus">
-        <span class="count">{{rescuedVictims}}</span>
-        <img src="/images/plus.png" alt="+" ng-click="incVictims()" class="plusminus">
+        Number of Rescued Live Victims: <br>
+        <img src="/images/minus.png" alt="-" ng-click="decVictims('live')" class="plusminus">
+        <span class="count">{{rescuedLiveVictims}}</span>
+        <img src="/images/plus.png" alt="+" ng-click="incVictims('live')" class="plusminus">
+      </p>
+      <p ng-show="startedScoring">
+        Number of Rescued Dead Victims: <br>
+        <img src="/images/minus.png" alt="-" ng-click="decVictims('dead')" class="plusminus">
+        <span class="count">{{rescuedDeadVictims}}</span>
+        <img src="/images/plus.png" alt="+" ng-click="incVictims('dead')" class="plusminus">
       </p>
     </div>
   </div>

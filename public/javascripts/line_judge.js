@@ -135,21 +135,32 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         });
     }
 
-    $scope.decVictims = function(){
-        $scope.rescuedVictims--;
-        if($scope.rescuedVictims <= 0)
-            $scope.rescuedVictims = 0;
+    $scope.decVictims = function(counter){
+	if(counter=='live'){
+            $scope.rescuedLiveVictims--;
+            if($scope.rescuedLiveVictims <= 0)
+		$scope.rescuedLiveVictims = 0;
+	}else{
+            $scope.rescuedDeadVictims--;
+            if($scope.rescuedDeadVictims <= 0)
+		$scope.rescuedDeadVictims = 0;
+	}
 
-        $http.put("/api/runs/line/"+runId, {rescuedVictims: $scope.rescuedVictims}).then(function(response){
+        $http.put("/api/runs/line/"+runId, {rescuedLiveVictims: $scope.rescuedLiveVictims, rescuedDeadVictims: $scope.rescuedDeadVictims}).then(function(response){
             $scope.score = response.data.score;
         }, function(response){
             console.log("Error: " + response.statusText);
         });
 
     }
-    $scope.incVictims = function(){
-        $scope.rescuedVictims++;
-        $http.put("/api/runs/line/"+runId, {rescuedVictims: $scope.rescuedVictims}).then(function(response){
+    $scope.incVictims = function(counter){
+	if(counter == 'live'){
+            $scope.rescuedLiveVictims++;
+	}else{
+            $scope.rescuedDeadVictims++;
+	}
+
+        $http.put("/api/runs/line/"+runId, {rescuedLiveVictims: $scope.rescuedLiveVictims, rescuedDeadVictims: $scope.rescuedDeadVictims}).then(function(response){
             $scope.score = response.data.score;
         }, function(response){
             console.log("Error: " + response.statusText);
@@ -337,7 +348,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.sign = function(){
         var run = {}
-        run.rescuedVictims = $scope.rescuedVictims;
+        run.rescuedDeadVictims = $scope.rescuedDeadVictims;
+	run.rescuedLiveVictims = $scope.rescuedLiveVictims;
         run.tiles = $scope.tiles;
         run.showedUp = $scope.showedUp;
         run.LoPs = $scope.LoPs;
