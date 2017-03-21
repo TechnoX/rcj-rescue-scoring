@@ -317,17 +317,19 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.saveEverything = function(){
         var run = {}
 	run.LoPs = $scope.LoPs;
-	//run.evacuationLevel = ;
-	//run.exitBonus = ;
-	//run.rescuedDeadVictims = ;
-	//run.rescuedLiveVictim = ;
+	run.evacuationLevel = $scope.evacuationLevel;
+	run.exitBonus = $scope.exitBonus;
+	run.rescuedDeadVictims = $scope.rescuedDeadVictims;
+	run.rescuedLiveVictim = $scope.rescuedLiveVictims;
         run.showedUp = $scope.showedUp;
-	//run.started = ;
+	run.started = $scope.started;
 	run.tiles = $scope.stiles;
-	//run.time = ;
-	// TODO: Fixa in allting här
+	run.time = {minutes: $scope.minutes, seconds: $scope.seconds};
+
+	console.log("Update run", run);
         $http.put("/api/runs/line/"+runId, run).then(function(response){
             $scope.score = response.data.score;
+	    console.log("Run updated, got score: ", $scope.score);
         }, function(response){
             console.log("Error: " + response.statusText);
         });
