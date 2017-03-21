@@ -21,7 +21,12 @@ const LineRun = require('./lineRun').lineRun
  * @param {Boolean} admin - If the user is admin or not
  */
 const lineMapSchema = new Schema({
-  competition      : {type: ObjectId, ref: 'Competition', required: true, index: true},
+  competition      : {
+    type    : ObjectId,
+    ref     : 'Competition',
+    required: true,
+    index   : true
+  },
   name             : {type: String, required: true},
   height           : {type: Number, required: true, min: 1},
   width            : {type: Number, required: true, min: 1},
