@@ -60,7 +60,7 @@ app.controller('ddController', ['$scope', '$http', '$log', function($scope, $htt
 
 
     function loadNewRun(){
-        $http.get("/api/runs/"+runId+"?populate=true").then(function(response){
+        $http.get("/api/runs/line/"+runId+"?populate=true").then(function(response){
             $scope.height = response.data.height;
             $scope.sliderOptions.ceil = $scope.height - 1;
             $scope.width = response.data.width;
