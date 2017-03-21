@@ -13,11 +13,16 @@ const logger = require('../config/logger').mainLogger
 const LINE_LEAGUES = require("./competition").LINE_LEAGUES
 
 const lineRunSchema = new Schema({
-  competition: {type: ObjectId, ref: 'Competition', required: true},
-  round      : {type: ObjectId, ref: 'Round', required: true},
-  team       : {type: ObjectId, ref: 'Team', required: true},
-  field      : {type: ObjectId, ref: 'Field', required: true},
-  map        : {type: ObjectId, ref: 'LineMap', required: true},
+  competition: {
+    type    : ObjectId,
+    ref     : 'Competition',
+    required: true,
+    index   : true
+  },
+  round      : {type: ObjectId, ref: 'Round', required: true, index: true},
+  team       : {type: ObjectId, ref: 'Team', required: true, index: true},
+  field      : {type: ObjectId, ref: 'Field', required: true, index: true},
+  map        : {type: ObjectId, ref: 'LineMap', required: true, index: true},
   
   tiles             : [{
     isDropTile: {type: Boolean, default: false},
@@ -45,7 +50,7 @@ const lineRunSchema = new Schema({
     minutes: {type: Number, min: 0, max: 8, default: 0},
     seconds: {type: Number, min: 0, max: 59, default: 0}
   },
-  started           : {type: Boolean, default: false}
+  started           : {type: Boolean, default: false, index: true}
 })
 
 lineRunSchema.pre('save', function (next) {

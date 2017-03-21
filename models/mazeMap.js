@@ -17,7 +17,7 @@ const logger = require('../config/logger').mainLogger
  * @param {Boolean} admin - If the user is admin or not
  */
 const mazeMapSchema = new Schema({
-  competition      : {type: ObjectId, ref: 'Competition', required: true},
+  competition      : {type: ObjectId, ref: 'Competition', required: true, index: true},
   name             : {type: String, required: true},
   height           : {type: Number, required: true, min: 1},
   width            : {type: Number, required: true, min: 1},
