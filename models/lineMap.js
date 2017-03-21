@@ -43,8 +43,8 @@ const lineMapSchema = new Schema({
       }
     },
     items    : {
-      obstacles : {type: Number, required: true, min: 0},
-      speedbumps: {type: Number, required: true, min: 0}
+      obstacles : {type: Number, required: true, default: 0, min: 0},
+      speedbumps: {type: Number, required: true, default: 0, min: 0}
     },
     index    : {type: [Number], min: 0},
     levelUp  : {type: String, enum: ["top", "right", "bottom", "left"]},
