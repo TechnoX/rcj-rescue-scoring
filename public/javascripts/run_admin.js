@@ -60,7 +60,7 @@ angular.module("RunAdmin", []).controller("RunAdminController", function ($scope
 
   $scope.removeRun = function (run) {
     if (confirm("Are you sure you want to remove the run: " + '?')) {
-      $http.get("/api/runs/line/" + run._id + "/delete").then(function (response) {
+      $http.delete("/api/runs/line/" + run._id).then(function (response) {
         console.log(response)
         updateRunList()
       }, function (error) {
