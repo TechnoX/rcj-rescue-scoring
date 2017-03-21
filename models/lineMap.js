@@ -614,10 +614,12 @@ for (var i in tileTypes) {
   const tileType = new TileType(tileTypes[i])
   tileType.save(function (err, data) {
     if (err) {
-      console.log(err);
+      if (err.code != 11000) { // Ignore duplicate key error
+        console.log(err)
+      }
     }
     else {
-      console.log("saved tiletype");
+      console.log("saved tiletype")
     }
   })
 }
