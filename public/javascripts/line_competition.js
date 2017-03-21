@@ -2,7 +2,7 @@ angular.module("LineCompetition", []).controller("LineCompetitionController", fu
   $scope.competitionId = competitionId
 
   $http.get("/api/competitions/" + competitionId +
-            "/runs?populate=true").then(function (response) {
+            "/line/runs?populate=true").then(function (response) {
     $scope.runs = response.data
     console.log($scope.teams)
   })
@@ -23,7 +23,8 @@ angular.module("LineCompetition", []).controller("LineCompetitionController", fu
             "/fields").then(function (response) {
     $scope.fields = response.data
   })
-  $http.get("/api/maps").then(function (response) {
+  $http.get("/api/competitions/" + competitionId +
+            "/line/maps").then(function (response) {
     $scope.maps = response.data
   })
 })
