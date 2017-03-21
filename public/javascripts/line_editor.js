@@ -4,6 +4,7 @@ var app = angular.module('ddApp', ['lvl.services', 'ngAnimate', 'ui.bootstrap', 
 // function referenced by the drop target
 app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function($scope, $uibModal, $log, $http){
 
+    
     $scope.tileSets = [];
     $scope.tileSet = {};
     $http.get("/api/maps/line/tilesets?populate=true").then(function(response){
@@ -34,12 +35,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
     $scope.name = "Awesome Testbana";
 
     if(mapId){
-        $http.get("/api/maps/" + mapId + "?populate=true").then(function(response){
+        $http.get("/api/maps/line/" + mapId + "?populate=true").then(function(response){
             for(var i = 0; i < response.data.tiles.length; i++){
                 $scope.tiles[response.data.tiles[i].x + ',' +
                              response.data.tiles[i].y + ',' +
                              response.data.tiles[i].z] = response.data.tiles[i];
             }
+	    competitionId = response.data.competition;
             $scope.startTile = response.data.startTile;
             $scope.numberOfDropTiles = response.data.numberOfDropTiles;
             $scope.height = response.data.height;
@@ -74,7 +76,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
     }
 
     $scope.saveMap = function(){
+
         var map = {
+	    competition: competitionId,
             name: $scope.name,
             length: $scope.length,
             height: $scope.height,
@@ -85,14 +89,29 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
         };
 
         console.log(map);
-        $http.post("/api/maps/createmap/", map).then(function(response){
-            alert("Success!");
-            console.log(response.data);
-            window.location.replace("/line/editor/" + response.data.id)
-        }, function(response){
-            console.log(response);
-            console.log("Error: " + response.statusText);
-        });
+	console.log("Update map", mapId);
+	console.log("Competition ID", competitionId);
+	if(mapId){
+	    $http.put("/api/maps/line/" + mapId, map).then(function(response){
+		alert("Updated map");
+		console.log(response.data);
+            }, function(response){
+		console.log(response);
+		console.log("Error: " + response.statusText);
+		alert(response.data.msg);
+            });
+	}else{
+            $http.post("/api/maps/line", map).then(function(response){
+		alert("Created map!");
+		console.log(response.data);
+		competitionId = response.data.competition;
+		window.location.replace("/line/editor/" + response.data.id)
+            }, function(response){
+		console.log(response);
+		console.log("Error: " + response.statusText);
+		alert(response.data.msg);
+            });
+	}
     }
 
 
