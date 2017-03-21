@@ -5,10 +5,14 @@ var app = angular.module('ddApp', ['lvl.services', 'ngAnimate', 'ui.bootstrap', 
 app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function($scope, $uibModal, $log, $http){
 
     $scope.tileBox = {};
-    $http.get("/api/maps/tiletypes").then(function(response){
-        for(var i = 0; i < response.data.length; i++){
-            $scope.tileBox[response.data[i]._id] = response.data[i];
-        }
+
+
+    $http.get("/api/competitions/" + competitionId + "/line/tilesets?populate=true").then(function(response){
+	console.log(response.data[0]);
+	$scope.tileSet = response.data[0];
+        /*for(var i = 0; i < response.data[0].tiles.length; i++){
+            $scope.tileBox[response.data[0].tiles[i]._id] = response.data[0].tiles[i];
+        }*/
     }, function(response){
         console.log("Error: " + response.statusText);
     });
