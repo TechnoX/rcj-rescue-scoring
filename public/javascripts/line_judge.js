@@ -11,8 +11,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.actualUsedDropTiles = 0; // Count droptiles twice that will be passed two times
     $scope.startedScoring = false;
     $scope.startedTime = false;
+    $scope.startTime = 0;
     $scope.time = 0;
-
+    
     $scope.sliderOptions = {
         floor: 0,
         ceil: 0,
@@ -157,15 +158,24 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 
     var tick = function() {
-        $scope.time += 1000;
+        $scope.time = ((new Date()) - $scope.startTime) ;
         if($scope.startedTime)
             $timeout(tick, 1000);
+    }
+
+    $scope.resetTime = function(){
+	$scope.startedTime = false;
+	$scope.startTime = 0;
+	$scope.time = 0;
     }
 
     $scope.toggleTime = function(){
         // Start/stop timer
         $scope.startedTime = !$scope.startedTime;
         if($scope.startedTime){
+	    if($scope.startTime == 0){
+		$scope.startTime = new Date();
+	    }
             // Start the timer
             $timeout(tick, $scope.tickInterval);
         }else{
