@@ -68,14 +68,8 @@ router.get('/:competitionid/fields', function (req, res, next) {
   res.render('field_admin', {id : id})
 })
 
-router.get('/:competitionid/line/tilesets', function (req, res, next) {
-  const id = req.params.competitionid
-
-  if (!ObjectId.isValid(id)) {
-    return next()
-  }
-
-  res.render('tileset_admin', {id : id})
+router.get('/line/tilesets', function (req, res, next) {
+  res.render('tileset_admin')
 })
 
 module.exports = router
