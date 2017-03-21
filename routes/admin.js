@@ -23,6 +23,10 @@ router.get('/:competitionid/rounds', function (req, res) {
   res.render('round_admin', {id : req.params.competitionid})
 })
 
+router.get('/:competitionid/line/editor', function (req, res) {
+  res.render('line_editor', {id : req.params.competitionid})
+})
+
 router.get('/:competitionid/fields', function (req, res) {
   res.render('field_admin', {id : req.params.competitionid})
 })
