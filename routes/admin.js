@@ -55,7 +55,7 @@ router.get('/:competitionid/line/editor', function (req, res, next) {
     return next()
   }
 
-  res.render('line_editor', {id : id})
+  res.render('line_editor', {compid : id})
 })
 
 router.get('/:competitionid/fields', function (req, res, next) {

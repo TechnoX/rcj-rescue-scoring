@@ -62,9 +62,6 @@ privateRouter.get('/judge/:roundid', function (req, res, next) {
   res.render('line_judge', {id : id})
 })
 
-adminRouter.get('/editor', function (req, res) {
-  res.render('line_editor')
-})
 adminRouter.get('/editor/:mapid', function (req, res, next) {
   const id = req.params.mapid
 
@@ -72,7 +69,7 @@ adminRouter.get('/editor/:mapid', function (req, res, next) {
     return next()
   }
 
-  res.render('line_editor', {id : id})
+  res.render('line_editor', {mapid : id})
 })
 
 publicRouter.all('*', function (req, res, next) {
