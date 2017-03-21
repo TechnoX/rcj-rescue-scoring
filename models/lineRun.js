@@ -56,7 +56,7 @@ const lineRunSchema = new Schema({
 lineRunSchema.pre('save', function (next) {
   const self = this
 
-  self.populate('map', ['name', 'finished'], function (err, populatedRun) {
+  self.populate('map', "name finished", function (err, populatedRun) {
     if (err) {
       return next(err)
     } else if (!populatedRun.map.finished) {
