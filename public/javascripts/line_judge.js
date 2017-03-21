@@ -169,9 +169,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 
     var tick = function() {
-        $scope.time = ((new Date()) - $scope.startTime) ;
-        if($scope.startedTime)
+        if($scope.startedTime){
             $timeout(tick, 1000);
+            $scope.time = ((new Date()) - $scope.startTime) ;
+	}
     }
 
     $scope.resetTime = function(){
