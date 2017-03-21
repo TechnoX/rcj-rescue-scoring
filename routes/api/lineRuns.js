@@ -204,7 +204,7 @@ privateRouter.put('/:runid', function (req, res, next) {
         logger.error(err)
         res.status(400).send({msg: "Could not get run"})
       } else {
-        if (run.tiles.constructor === Object) { // Handle dict as "sparse" array
+        if (run.tiles != null && run.tiles.constructor === Object) { // Handle dict as "sparse" array
           const tiles = run.tiles
           run.tiles = []
           Object.keys(tiles).forEach(function (key) {
@@ -229,7 +229,7 @@ privateRouter.put('/:runid', function (req, res, next) {
             }
           }
         }
-        
+
         err = copyProperties(run, dbRun)
 
         if (err) {
