@@ -25,34 +25,54 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.tiles = {};
 
     $http.get("/api/runs/line/"+runId+"?populate=true").then(function(response){
-        $scope.height = response.data.height;
-        $scope.sliderOptions.ceil = $scope.height - 1;
-        $scope.width = response.data.width;
-        $scope.length = response.data.length;
-        $scope.team = response.data.team;
-        $scope.field = response.data.field;
 
-        $scope.numberOfDropTiles = response.data.numberOfDropTiles;;
-        $scope.rescuedVictims = response.data.rescuedVictims;
+	console.log(response.data);	
 
+	$scope.LoPs = response.data.LoPs;
+	$scope.evacuationLevel = response.data.evacuationLevel;
+	$scope.exitBonus = response.data.exitBonus;
+	$scope.field = response.data.field.name;
+	$scope.rescuedDeadVictims = response.data.rescuedDeadVictims;
+	$scope.rescuedLiveVictims = response.data.rescuedLiveVictims;
+	$scope.score = response.data.score;
+	$scope.showedUp = response.data.showedUp;
+	$scope.started = response.data.started;
+	$scope.round = response.data.round.name;
+	$scope.team = response.data.team.name;
+	// Verified time by timekeeper
+        $scope.minutes = response.data.time.minutes;
+        $scope.seconds = response.data.time.seconds;
+
+
+	// Scoring elements of the tiles
+        $scope.tiles = response.data.tiles;
+	
         for(var i = 0; i < response.data.tiles.length; i++){
-            $scope.tiles[response.data.tiles[i].x + ',' +
-                         response.data.tiles[i].y + ',' +
-                         response.data.tiles[i].z] = response.data.tiles[i];
-            if(response.data.tiles[i].scoredItems.dropTiles.length>0){
+            if(response.data.tiles[i].isDropTile){
                 $scope.placedDropTiles++;
-		$scope.actualUsedDropTiles += response.data.tiles[i].scoredItems.dropTiles.length;
+		$scope.actualUsedDropTiles += 1;//response.data.tiles[i].scoredItems.dropTiles.length;
 	    }
         }
 
-        $scope.score = response.data.score;
-        $scope.showedUp = response.data.showedUp;
-        $scope.LoPs = response.data.LoPs;
-        // Verified time by timekeeper
-        $scope.minutes = response.data.time.minutes;;
-        $scope.seconds = response.data.time.seconds;
+	// Get the map
+        $http.get("/api/maps/line/" + response.data.map + "?populate=true").then(function(response){
+	    console.log(response.data);
 
-        console.log($scope.tiles);
+	    $scope.height = response.data.height;
+            $scope.sliderOptions.ceil = $scope.height - 1;
+            $scope.width = response.data.width;
+            $scope.length = response.data.length;
+            $scope.numberOfDropTiles = response.data.numberOfDropTiles;;
+	    $scope.map = response.data.tiles;
+	    
+	}, function(response){
+	    console.log("Error: " + response.statusText);
+        });
+
+
+
+
+	
     }, function(response){
         console.log("Error: " + response.statusText);
     });
