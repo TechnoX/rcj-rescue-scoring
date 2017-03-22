@@ -5,8 +5,17 @@ const validator = require('validator')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
 const async = require('async')
+const mazeFill = require('../helper/mazeFill')
 
 const logger = require('../config/logger').mainLogger
+
+
+function isOdd(n) {
+  return n & 1 // Bitcheck LSB
+}
+function isEven(n) {
+  return !isOdd(n)
+}
 
 /**
  *
@@ -17,6 +26,22 @@ const logger = require('../config/logger').mainLogger
  * @param {String} salt - The salt used, unique for every user
  * @param {Boolean} admin - If the user is admin or not
  */
+
+const tileSchema = new Schema({
+  checkpoint   : {type: Boolean, default: false},
+  speedbump    : {type: Boolean, default: false},
+  black        : {type: Boolean, default: false},
+  rampBottom   : {type: Boolean, default: false},
+  rampTop      : {type: Boolean, default: false},
+  victims      : {
+    top   : {type: Boolean, default: false},
+    right : {type: Boolean, default: false},
+    bottom: {type: Boolean, default: false},
+    left  : {type: Boolean, default: false}
+  },
+  changeFloorTo: {type: Number, integer: true, min: 0}
+})
+
 const mazeMapSchema = new Schema({
   competition: {
     type    : ObjectId,
@@ -29,38 +54,34 @@ const mazeMapSchema = new Schema({
   width      : {type: Number, integer: true, required: true, min: 1},
   length     : {type: Number, integer: true, required: true, min: 1},
   cells      : [{
-    x         : {type: Number, integer: true, required: true},
-    y         : {type: Number, integer: true, required: true},
-    z         : {type: Number, integer: true, required: true},
-    isTile    : {type: Boolean, default: false},
-    isWall    : {type: Boolean, default: false},
-    isLinear  : {type: Boolean, default: false},
-    checkpoint: {type: Boolean, default: false},
-    speedbump : {type: Boolean, default: false},
-    black     : {type: Boolean, default: false},
-    victims   : {
-      top   : {type: Boolean, default: false},
-      right : {type: Boolean, default: false},
-      bottom: {type: Boolean, default: false},
-      left  : {type: Boolean, default: false}
-    },
+    x       : {type: Number, integer: true, required: true, min: 0},
+    y       : {type: Number, integer: true, required: true, min: 0},
+    z       : {type: Number, integer: true, required: true, min: 0},
+    isTile  : {type: Boolean, default: false},
+    isWall  : {type: Boolean, default: false},
+    isLinear: {type: Boolean, default: false},
 
-    levelUp  : {type: String, enum: ["top", "right", "bottom", "left"]},
-    levelDown: {type: String, enum: ["top", "right", "bottom", "left"]}
+    tile: tileSchema
+
   }],
   startTile  : {
-    x: {type: Number, integer: true, required: true, min: 0},
-    y: {type: Number, integer: true, required: true, min: 0},
+    x: {
+      type    : Number,
+      integer : true,
+      required: true,
+      min     : 1,
+      validate: {validator: isOdd, message: '{VALUE} is not odd (not a tile)!'}
+    },
+    y: {
+      type    : Number,
+      integer : true,
+      required: true,
+      min     : 1,
+      validate: {validator: isOdd, message: '{VALUE} is not odd (not a tile)!'}
+    },
     z: {type: Number, integer: true, required: true, min: 0}
   }
 })
-
-function isOdd(n) {
-  return n & 1 // Bitcheck LSB
-}
-function isEven(n) {
-  return !isOdd(n)
-}
 
 mazeMapSchema.pre('save', function (next) {
   var self = this
@@ -68,27 +89,26 @@ mazeMapSchema.pre('save', function (next) {
   for (let i = 0; i < self.cells.length; i++) {
     let cell = self.cells[i]
 
-    if (isEven(cell.x) && isEven(cell.y)) {
+    if (isOdd(cell.x) && isOdd(cell.y)) {
       cell.isTile = true
       cell.isWall = false
-    } else if (isOdd(cell.x) && isOdd(cell.y)) {
+
+      if (cell.tile == null) {
+        cell.tile = {}
+      }
+
+    } else if (isEven(cell.x) && isEven(cell.y)) {
       const err = new Error("Illegal cell placement at x: " + cell.x + ", y: " +
                             cell.y + "!")
       return next(err)
     } else {
       cell.isWall = true
       cell.isTile = false
-      cell.checkpoint = false
-      cell.speedbump = false
-      cell.black = false
-      cell.victims = {
-        top   : false,
-        right : false,
-        bottom: false,
-        left  : false
-      }
+      delete cell.tile
     }
   }
+
+  mazeFill.floodFill(self)
 
   if (self.isNew) {
     MazeMap.findOne({
@@ -117,3 +137,57 @@ const MazeMap = mongoose.model('MazeMap', mazeMapSchema)
 
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
 module.exports.mazeMap = MazeMap
+
+
+new MazeMap({
+  competition: "58a9c7e48cd7f372358f139b",
+  name       : "testmap5",
+  height     : 2,
+  width      : 2,
+  length     : 2,
+  cells      : [{
+    x     : 1,
+    y     : 0,
+    z     : 0,
+    isWall: true
+  }, {
+    x     : 0,
+    y     : 1,
+    z     : 0,
+    isWall: true
+  }, {
+    x     : 1,
+    y     : 1,
+    z     : 0,
+    isTile: true
+  }, {
+    x     : 1,
+    y     : 3,
+    z     : 0,
+    isTile: true,
+    tile  : {
+      black: true
+    }
+  }, {
+    x     : 3,
+    y     : 1,
+    z     : 0,
+    isTile: true,
+    tile  : {
+      checkpoint: true
+    }
+  }],
+  startTile  : {
+    x: 1,
+    y: 1,
+    z: 0
+  }
+}).save(function (err) {
+    if (err) {
+      logger.error(err)
+    }
+    else {
+      logger.info("saved mazemap")
+    }
+  }
+)
