@@ -209,6 +209,22 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         });
 
     }
+    $scope.changeExitBonus = function(){
+        $http.put("/api/runs/line/"+runId, {exitBonus: $scope.exitBonus}).then(function(response){
+            $scope.score = response.data.score;
+        }, function(response){
+            console.log("Error: " + response.statusText);
+        });
+
+    }
+    $scope.changeLevel = function(){
+        $http.put("/api/runs/line/"+runId, {evacuationLevel: $scope.evacuationLevel}).then(function(response){
+            $scope.score = response.data.score;
+        }, function(response){
+            console.log("Error: " + response.statusText);
+        });
+
+    }
 
     $scope.doScoring = function(x,y,z){
         var mtile = $scope.mtiles[x+','+y+','+z];

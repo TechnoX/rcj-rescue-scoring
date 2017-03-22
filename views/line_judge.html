@@ -12,11 +12,17 @@
         Score: {{score}}<br>
         Time: {{time | date:'mm:ss'}}
       </p>
+      <p>	
+	Evacuation point is:<br>
+	<label><input type="radio" ng-model="evacuationLevel" value="1" ng-change="changeLevel()"> Low</label>
+	<label><input type="radio" ng-model="evacuationLevel" value="2" ng-change="changeLevel()"> High</label>
+      </p>
       <p ng-show="!startedScoring">
         Checkpoints left to be placed: {{numberOfDropTiles - placedDropTiles}}
       </p>
       <p ng-show="startedScoring">
-        <label>Team did show up for start within their time: <input type="checkbox" ng-model="showedUp" ng-change="changeShowedUp()"></label>
+        <label>Team did show up for start within their time: <input type="checkbox" ng-model="showedUp" ng-change="changeShowedUp()"></label><br>
+	<label>Robot exited the evacuation zone after touching at least one victim: <input type="checkbox" ng-model="exitBonus" ng-change="changeExitBonus()"></label>
       </p>
       <p ng-repeat="dropTile in range(actualUsedDropTiles) track by $index" ng-show="startedScoring">
         LoPs between {{$index==0?'start':('checkpoint ' + ($index))}} and checkpoint {{$index+1}}:<br>
