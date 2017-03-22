@@ -13,7 +13,12 @@ app.controller('ddController', ['$scope', '$http', '$log', function($scope, $htt
 
     $scope.visType = "slider";
     $scope.z = 0;
-    $scope.tiles = {};
+
+    // Scoring elements of the tiles
+    $scope.stiles = [];
+    // Map (images etc.) for the tiles
+    $scope.mtiles = [];
+
     if(typeof runId !== 'undefined'){
         loadNewRun();
     }
@@ -27,7 +32,7 @@ app.controller('ddController', ['$scope', '$http', '$log', function($scope, $htt
                 $scope.rescuedVictims = data.rescuedVictims;
 
                 for(var i = 0; i < data.tiles.length; i++){
-                    $scope.tiles[data.tiles[i].x + ',' +
+                    $scope.mtiles[data.tiles[i].x + ',' +
                                  data.tiles[i].y + ',' +
                                  data.tiles[i].z].scoredItems = data.tiles[i].scoredItems;
                 }
@@ -56,35 +61,53 @@ app.controller('ddController', ['$scope', '$http', '$log', function($scope, $htt
 
     })();
 
-
-
+    
 
     function loadNewRun(){
         $http.get("/api/runs/line/"+runId+"?populate=true").then(function(response){
-            $scope.height = response.data.height;
-            $scope.sliderOptions.ceil = $scope.height - 1;
-            $scope.width = response.data.width;
-            $scope.length = response.data.length;
-            $scope.team = response.data.team;
-            $scope.field = response.data.field;
-
-            $scope.numberOfDropTiles = response.data.numberOfDropTiles;;
-            $scope.rescuedVictims = response.data.rescuedVictims;
-
-            for(var i = 0; i < response.data.tiles.length; i++){
-                $scope.tiles[response.data.tiles[i].x + ',' +
-                             response.data.tiles[i].y + ',' +
-                             response.data.tiles[i].z] = response.data.tiles[i];
-            }
-
-            $scope.score = response.data.score;
-            $scope.showedUp = response.data.showedUp;
-            $scope.LoPs = response.data.LoPs;
-            // Verified time by timekeeper
-            $scope.minutes = response.data.time.minutes;;
+	    console.log(response.data);
+	    $scope.LoPs = response.data.LoPs;
+	    $scope.evacuationLevel = response.data.evacuationLevel;
+	    $scope.exitBonus = response.data.exitBonus;
+	    $scope.field = response.data.field.name;
+	    $scope.rescuedDeadVictims = response.data.rescuedDeadVictims;
+	    $scope.rescuedLiveVictims = response.data.rescuedLiveVictims;
+	    $scope.score = response.data.score;
+	    $scope.showedUp = response.data.showedUp;
+	    $scope.started = response.data.started;
+	    $scope.round = response.data.round.name;
+	    $scope.team = response.data.team.name;
+	    // Verified time by timekeeper
+            $scope.minutes = response.data.time.minutes;
             $scope.seconds = response.data.time.seconds;
 
-            console.log($scope.tiles);
+	    // Scoring elements of the tiles
+            $scope.stiles = response.data.tiles;
+
+	    // Get the map
+            $http.get("/api/maps/line/" + response.data.map + "?populate=true").then(function(response){
+		console.log(response.data);
+
+		$scope.height = response.data.height;
+		$scope.sliderOptions.ceil = $scope.height - 1;
+		$scope.width = response.data.width;
+		$scope.length = response.data.length;
+		$scope.startTile = response.data.startTile;
+		$scope.numberOfDropTiles = response.data.numberOfDropTiles;;
+
+		for(var i = 0; i < response.data.tiles.length; i++){
+                    $scope.mtiles[response.data.tiles[i].x + ',' +
+				  response.data.tiles[i].y + ',' +
+				  response.data.tiles[i].z] = response.data.tiles[i];
+		}
+		
+	    }, function(response){
+		console.log("Error: " + response.statusText);
+            });
+
+	    
+
+
         }, function(response){
             console.log("Error: " + response.statusText);
         });
@@ -102,7 +125,7 @@ app.controller('ddController', ['$scope', '$http', '$log', function($scope, $htt
     $scope.getOpacity = function(x,y){
         var stackedTiles = 0;
         for(var z = 0; z < $scope.height; z++){
-            if($scope.tiles[x+','+y+','+z])
+            if($scope.mtiles[x+','+y+','+z])
                 stackedTiles++;
         }
         return 1.0/stackedTiles;
@@ -123,27 +146,37 @@ app.directive('tile', function() {
         templateUrl: '/templates/tile.html',
         link : function($scope, element, attrs){
 
+	    $scope.isDropTile = function(tile){
+		if(!tile || tile.index.length == 0)
+		    return;
+		return $scope.$parent.stiles[tile.index[0]].isDropTile;
+	    }
+	    
             $scope.tileStatus = function(tile){
                 // If this is a non-existent tile
-                if(!tile)
+                if(!tile || tile.index.length == 0)
                     return;
-                var successfully = 0;
-                var possible = 0;
 
-                var count = function(list){
-                    for(var i = 0; i < list.length; i++){
-                        if(list[i])
-                            successfully++;
-                        possible++;
-                    }
-                }
-                count(tile.scoredItems.gaps);
-                count(tile.scoredItems.speedbumps);
-                count(tile.scoredItems.intersections);
-                count(tile.scoredItems.obstacles);
-                if(tile.scoredItems.dropTiles.length > 0)
-                    count(tile.scoredItems.dropTiles);
+		// If this tile has no scoring elements we should just return empty string
+		if(tile.items.obstacles == 0 &&
+		   tile.items.speedbumps == 0 &&
+		   tile.tileType.gaps == 0 &&
+		   tile.tileType.intersections == 0 &&
+		   !$scope.$parent.stiles[tile.index[0]].isDropTile
+		  ){
+		    return;
+		}
 
+		// Number of successfully passed times
+		var successfully = 0;
+		// Number of times it is possible to pass this tile
+		var possible = tile.index.length;
+		
+		for(var i = 0; i < tile.index.length; i++){
+		    if($scope.$parent.stiles[tile.index[i]].scored){
+			successfully++;
+		    }
+		}
                 if(possible > 0 && successfully == possible)
                     return "done";
                 else if(successfully > 0)
@@ -153,6 +186,7 @@ app.directive('tile', function() {
                 else
                     return "";
             }
+            
 
             $scope.rotateRamp = function(direction){
                 switch(direction){

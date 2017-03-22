@@ -1,4 +1,4 @@
-<h1>{{team.name}}</h1>
+<h1>{{team}}</h1>
 <h2>{{score}} points</h2>
 <div style="margin-top:30px;">
   <div class="row">
@@ -13,7 +13,7 @@
     <div class="col-md-12">
       <div ng-repeat="r in range(length)" class="row">
         <div ng-repeat="c in range(width)" class="slot">
-          <tile tile="tiles[c+','+r+','+z]" ng-repeat="z in range(height)" ng-style="{'opacity': getOpacity(c,r)}">
+          <tile tile="mtiles[c+','+r+','+z]" ng-repeat="z in range(height)" ng-style="{'opacity': getOpacity(c,r)}">
           </tile>
         </div>
       </div>
@@ -26,7 +26,7 @@
         <rzslider rz-slider-model="z" rz-slider-options="sliderOptions"></rzslider>
         <div ng-repeat="r in range(length)" class="row">
           <div ng-repeat="c in range(width)" class="slot">
-            <tile tile="tiles[c+','+r+','+z]"></tile>
+            <tile tile="mtiles[c+','+r+','+z]"></tile>
           </div>
         </div>
       </div>
@@ -38,7 +38,7 @@
       <div ng-repeat="z in range(height)" style="float: left; border-left: 3px solid black;">
         <div ng-repeat="r in range(length)">
           <div ng-repeat="c in range(width)" class="slot">
-            <tile tile="tiles[c+','+r+','+z]"></tile>
+            <tile tile="mtiles[c+','+r+','+z]"></tile>
           </div>
         </div>
       </div>
