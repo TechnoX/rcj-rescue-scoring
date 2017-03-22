@@ -90,7 +90,8 @@ adminRouter.post('/', function (req, res) {
       y: map.startTile.y,
       z: map.startTile.z
     },
-    numberOfDropTiles: map.numberOfDropTiles
+    numberOfDropTiles: map.numberOfDropTiles,
+    finished         : map.finished
   })
 
   //logger.debug(newMap)
@@ -226,7 +227,7 @@ adminRouter.post('/tilesets', function (req, res, next) {
   const tileset = req.body
 
   new tileSet({
-    name       : tileset.name
+    name: tileset.name
   }).save(function (err, data) {
     if (err) {
       logger.error(err)
