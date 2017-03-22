@@ -415,14 +415,14 @@ app.directive('tile', function() {
 
 
 	    $scope.isDropTile = function(tile){
-		if(!tile)
+		if(!tile || tile.index.length == 0)
 		    return;
 		return $scope.$parent.stiles[tile.index[0]].isDropTile;
 	    }
 	    
             $scope.tileStatus = function(tile){
                 // If this is a non-existent tile
-                if(!tile)
+                if(!tile || tile.index.length == 0)
                     return;
 
 		// If this tile has no scoring elements we should just return empty string
