@@ -1,5 +1,6 @@
 "use strict"
 const mongoose = require('mongoose')
+const mongooseInteger = require('mongoose-integer')
 const validator = require('validator')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
@@ -28,14 +29,14 @@ const lineMapSchema = new Schema({
     index   : true
   },
   name             : {type: String, required: true},
-  height           : {type: Number, required: true, min: 1},
-  width            : {type: Number, required: true, min: 1},
-  length           : {type: Number, required: true, min: 1},
-  indexCount       : {type: Number, min: 1},
+  height           : {type: Number, integer: true, required: true, min: 1},
+  width            : {type: Number, integer: true, required: true, min: 1},
+  length           : {type: Number, integer: true, required: true, min: 1},
+  indexCount       : {type: Number, integer: true, min: 1},
   tiles            : [{
-    x        : {type: Number, required: true},
-    y        : {type: Number, required: true},
-    z        : {type: Number, required: true},
+    x        : {type: Number, integer: true, required: true},
+    y        : {type: Number, integer: true, required: true},
+    z        : {type: Number, integer: true, required: true},
     tileType : {type: ObjectId, ref: 'TileType', required: true},
     rot      : {
       type: Number, required: true, validate: function (a) {
@@ -43,17 +44,17 @@ const lineMapSchema = new Schema({
       }
     },
     items    : {
-      obstacles : {type: Number, required: true, default: 0, min: 0},
-      speedbumps: {type: Number, required: true, default: 0, min: 0}
+      obstacles : {type: Number, integer: true, required: true, default: 0, min: 0},
+      speedbumps: {type: Number, integer: true, required: true, default: 0, min: 0}
     },
     index    : {type: [Number], min: 0},
     levelUp  : {type: String, enum: ["top", "right", "bottom", "left"]},
     levelDown: {type: String, enum: ["top", "right", "bottom", "left"]}
   }],
   startTile        : {
-    x: {type: Number, required: true, min: 0},
-    y: {type: Number, required: true, min: 0},
-    z: {type: Number, required: true, min: 0}
+    x: {type: Number, integer: true, required: true, min: 0},
+    y: {type: Number, integer: true, required: true, min: 0},
+    z: {type: Number, integer: true, required: true, min: 0}
   },
   numberOfDropTiles: {type: Number, required: true, min: 0},
   finished         : {type: Boolean, default: false}
@@ -116,14 +117,14 @@ const tileSetSchema = new Schema({
   name : {type: String, required: true, unique: true},
   tiles: [{
     tileType: {type: ObjectId, ref: 'TileType', required: true},
-    count   : {type: Number, default: 1}
+    count   : {type: Number, integer: true, default: 1}
   }]
 })
 
 const tileTypeSchema = new Schema({
   image        : {type: String, required: true, unique: true},
-  gaps         : {type: Number, required: true, default: 0, min: 0},
-  intersections: {type: Number, required: true, default: 0, min: 0},
+  gaps         : {type: Number, integer: true, required: true, default: 0, min: 0},
+  intersections: {type: Number, integer: true, required: true, default: 0, min: 0},
   paths        : {
     "top"   : {type: String, enum: ["top", "right", "bottom", "left"]},
     "right" : {type: String, enum: ["top", "right", "bottom", "left"]},
@@ -131,6 +132,10 @@ const tileTypeSchema = new Schema({
     "left"  : {type: String, enum: ["top", "right", "bottom", "left"]}
   }
 })
+
+lineMapSchema.plugin(mongooseInteger)
+tileSetSchema.plugin(mongooseInteger)
+tileTypeSchema.plugin(mongooseInteger)
 
 const LineMap = mongoose.model('LineMap', lineMapSchema)
 const TileSet = mongoose.model('TileSet', tileSetSchema)
