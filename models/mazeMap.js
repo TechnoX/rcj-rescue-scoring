@@ -9,6 +9,8 @@ const mazeFill = require('../helper/mazeFill')
 
 const logger = require('../config/logger').mainLogger
 
+const VICTIMS = ['H', 'S', 'U', "Heated", "None"]
+module.exports.VICTIMS = VICTIMS
 
 function isOdd(n) {
   return n & 1 // Bitcheck LSB
@@ -34,10 +36,26 @@ const tileSchema = new Schema({
   rampBottom   : {type: Boolean, default: false},
   rampTop      : {type: Boolean, default: false},
   victims      : {
-    top   : {type: Boolean, default: false},
-    right : {type: Boolean, default: false},
-    bottom: {type: Boolean, default: false},
-    left  : {type: Boolean, default: false}
+    top   : {
+      type   : String,
+      enum   : VICTIMS,
+      default: "None"
+    },
+    right : {
+      type   : String,
+      enum   : VICTIMS,
+      default: "None"
+    },
+    bottom: {
+      type   : String,
+      enum   : VICTIMS,
+      default: "None"
+    },
+    left  : {
+      type   : String,
+      enum   : VICTIMS,
+      default: "None"
+    },
   },
   changeFloorTo: {type: Number, integer: true, min: 0}
 })
@@ -80,7 +98,8 @@ const mazeMapSchema = new Schema({
       validate: {validator: isOdd, message: '{VALUE} is not odd (not a tile)!'}
     },
     z: {type: Number, integer: true, required: true, min: 0}
-  }
+  },
+  finished   : {type: Boolean, default: 0}
 })
 
 mazeMapSchema.pre('save', function (next) {
@@ -102,10 +121,31 @@ mazeMapSchema.pre('save', function (next) {
         cell.tile.checkpoint = true
       }
 
-      if (cell.tile.black && cell.tile.checkpoint) {
-        const err = new Error("Tile can't be both black and checkpoint at x: " +
-                              cell.x + ", y: " +
-                              cell.y + ", z: " + cell.z + "!")
+      if (cell.tile.black) {
+        if (cell.tile.checkpoint) {
+          const err = new Error("Tile can't be both black and checkpoint at x: " +
+                                cell.x + ", y: " +
+                                cell.y + ", z: " + cell.z + "!")
+          return next(err)
+        }
+
+        if ((cell.tile.victims.top != null &&
+             cell.tile.victims.top != "None") ||
+
+            (cell.tile.victims.right != null &&
+             cell.tile.victims.right != "None") ||
+
+            (cell.tile.victims.bottom != null &&
+             cell.tile.victims.bottom != "None") ||
+
+            (cell.tile.victims.left != null &&
+             cell.tile.victims.left != "None")) {
+
+          const err = new Error("Can't have victims on black tile at x: " +
+                                cell.x + ", y: " +
+                                cell.y + ", z: " + cell.z + "!")
+          return next(err)
+        }
       }
 
     } else if (isEven(cell.x) && isEven(cell.y)) {
