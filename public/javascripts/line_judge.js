@@ -214,6 +214,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         var mtile = $scope.mtiles[x+','+y+','+z];
 	var stile = [];
 	var isDropTile = false;
+	var httpdata = {tiles: {}};
+	
         // If this is not a created tile
         if(!mtile || mtile.index.length == 0)
             return;
@@ -245,6 +247,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 	    }else{
 		var placed = false;
 		var removed = false;
+
+		
 		for(var i = 0; i < stile.length; i++){
 		    // If this tile already contains a droptile, we should remove it
 		    if(stile[i].isDropTile){
@@ -257,6 +261,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 			$scope.actualUsedDropTiles++;
 			placed = true;
                     }
+		    httpdata.tiles[stile[i]._id] = stile[i];
 		}
 
 		if(placed){
@@ -264,8 +269,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 		}else if(removed){
 		    $scope.placedDropTiles--;
 		}
-
-                $http.put("/api/runs/line/"+runId, {tiles: {[stile._id]: stile}}).then(function(response){
+		console.log(httpdata);
+                $http.put("/api/runs/line/"+runId, httpdata).then(function(response){
+		    console.log("got reply", response.data.score);
                     $scope.score = response.data.score;
                 }, function(response){
                     console.log("Error: " + response.statusText);
@@ -289,9 +295,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             }else if(total==1){
 		for(var i = 0; i < stile.length; i++){
 		    stile[i].scored = !stile[i].scored;
+		    httpdata.tiles[stile[i]._id] = stile[i];
 		}
-
-                $http.put("/api/runs/line/"+runId, {tiles: {[stile._id]: stile}}).then(function(response){
+		console.log(httpdata);
+                $http.put("/api/runs/line/"+runId, httpdata).then(function(response){
                     $scope.score = response.data.score;
                 }, function(response){
                     console.log("Error: " + response.statusText);
