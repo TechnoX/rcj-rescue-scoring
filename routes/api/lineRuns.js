@@ -191,6 +191,8 @@ privateRouter.put('/:runid', function (req, res, next) {
   delete run.field
   delete run.score
 
+  //logger.debug(run)
+
   lineRun.findById(id)
     //.select("-_id -__v -competition -round -team -field -score")
     .populate({
@@ -226,7 +228,7 @@ privateRouter.put('/:runid', function (req, res, next) {
                   dbObj.markModified(prop)
                 }
               } else if (obj[prop] !== undefined) {
-                logger.debug("copy " + prop)
+                //logger.debug("copy " + prop)
                 dbObj[prop] = obj[prop]
               }
             } else {

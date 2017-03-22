@@ -151,6 +151,9 @@ module.exports.linearFill = function (map) {
     cells[cell.x + ',' + cell.y + ',' + cell.z] = cell
   }
 
+  cells[map.startTile.x + ',' + map.startTile.y + ',' +
+        map.startTile.z].isLinear = true
+
   setAllSurroundingLinear(cells[(map.startTile.x - 1) + ',' +
                                 map.startTile.y +
                                 ',' + map.startTile.z], cells)
@@ -166,5 +169,37 @@ module.exports.linearFill = function (map) {
 }
 
 function setAllSurroundingLinear(wall, cells) {
+  if (wall == null) {
+    return
+  }
+  if (wall.isLinear) {
+    return
+  }
 
+  wall.isLinear = true
+
+  for (let i = -1; i <= 1; i++) {
+    for (let j = -1; j <= 1; j++) {
+      let cell = cells[(wall.x + i) + ',' + (wall.y + 1) + ',' + wall.z]
+
+      if (cell != null) {
+        if (cell.isWall) {
+          setAllSurroundingLinear(cell, cells)
+        } else if (cell.isTile) {
+          cell.isLinear = true
+
+          if (cell.tile.changeFloorTo != cell.z) {
+            setAllSurroundingLinear(cells[(cell.x - 1) + ',' + cell.y + ',' +
+                                          cell.tile.changeFloorTo], cells)
+            setAllSurroundingLinear(cells[(cell.x + 1) + ',' + cell.y + ',' +
+                                          cell.tile.changeFloorTo], cells)
+            setAllSurroundingLinear(cells[cell.x + ',' + (cell.y - 1) + ',' +
+                                          cell.tile.changeFloorTo], cells)
+            setAllSurroundingLinear(cells[cell.x + ',' + (cell.y + 1) + ',' +
+                                          cell.tile.changeFloorTo], cells)
+          }
+        }
+      }
+    }
+  }
 }
