@@ -287,7 +287,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 		}
 		console.log(httpdata);
                 $http.put("/api/runs/line/"+runId, httpdata).then(function(response){
-		    console.log("got reply", response.data.score);
                     $scope.score = response.data.score;
                 }, function(response){
                     console.log("Error: " + response.statusText);
