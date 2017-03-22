@@ -213,12 +213,18 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.doScoring = function(x,y,z){
         var mtile = $scope.mtiles[x+','+y+','+z];
 	var stile = [];
+	var isDropTile = false;
+	var httpdata = {tiles: {}};
+	
         // If this is not a created tile
         if(!mtile || mtile.index.length == 0)
             return;
 
 	for(var i = 0; i < mtile.index.length; i++){
 	    stile.push($scope.stiles[mtile.index[i]]);
+	    if($scope.stiles[mtile.index[i]].isDropTile){
+		isDropTile = true;
+	    }
 	}
 
 	
@@ -226,7 +232,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         var total = (mtile.items.obstacles > 0 ||
 		     mtile.items.speedbumps > 0 ||
 		     mtile.tileType.gaps > 0 ||
-		     stile.isDropTile > 0 ||
+		     isDropTile > 0 ||
 		     mtile.tileType.intersections > 0) * mtile.index.length;
 
         // If the run is not started, we can place drop pucks on this tile
@@ -241,6 +247,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 	    }else{
 		var placed = false;
 		var removed = false;
+
+		
 		for(var i = 0; i < stile.length; i++){
 		    // If this tile already contains a droptile, we should remove it
 		    if(stile[i].isDropTile){
@@ -253,6 +261,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 			$scope.actualUsedDropTiles++;
 			placed = true;
                     }
+		    httpdata.tiles[stile[i]._id] = stile[i];
 		}
 
 		if(placed){
@@ -260,8 +269,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 		}else if(removed){
 		    $scope.placedDropTiles--;
 		}
-
-                $http.put("/api/runs/line/"+runId, {tiles: {[stile._id]: stile}}).then(function(response){
+		console.log(httpdata);
+                $http.put("/api/runs/line/"+runId, httpdata).then(function(response){
+		    console.log("got reply", response.data.score);
                     $scope.score = response.data.score;
                 }, function(response){
                     console.log("Error: " + response.statusText);
@@ -272,9 +282,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         // Match has started!
         }else{
             // Add the number of possible passes for drop tiles
-            if(tile.scoredItems.dropTiles.length > 0) {
-                total += tile.scoredItems.dropTiles.length;
-            }
+            /*if(isDropTile) {
+                total += stile.length;
+            }*/
 
             if(total == 0){
                 return;
@@ -283,25 +293,17 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.open(x,y,z);
                 // Save data from modal when closing it
             }else if(total==1){
-                if(tile.items.gaps>0)
-                    tile.scoredItems.gaps[0] = !tile.scoredItems.gaps[0];
-                else if(tile.items.speedbumps)
-                    tile.scoredItems.speedbumps[0] = !tile.scoredItems.speedbumps[0];
-                else if(tile.items.obstacles)
-                    tile.scoredItems.obstacles[0] = !tile.scoredItems.obstacles[0];
-                else if(tile.items.intersections)
-                    tile.scoredItems.intersections[0] = !tile.scoredItems.intersections[0];
-                else if(tile.scoredItems.dropTiles.length > 0)
-                    tile.scoredItems.dropTiles[0] = !tile.scoredItems.dropTiles[0];
-
-                $http.put("/api/runs/line/"+runId, {tiles:[tile]}).then(function(response){
+		for(var i = 0; i < stile.length; i++){
+		    stile[i].scored = !stile[i].scored;
+		    httpdata.tiles[stile[i]._id] = stile[i];
+		}
+		console.log(httpdata);
+                $http.put("/api/runs/line/"+runId, httpdata).then(function(response){
                     $scope.score = response.data.score;
                 }, function(response){
                     console.log("Error: " + response.statusText);
                 });
-
-            }
-
+	    }
         }
     }
 
