@@ -1,5 +1,6 @@
 "use strict"
 const mongoose = require('mongoose')
+const mongooseInteger = require('mongoose-integer')
 const validator = require('validator')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
@@ -17,28 +18,77 @@ const logger = require('../config/logger').mainLogger
  * @param {Boolean} admin - If the user is admin or not
  */
 const mazeMapSchema = new Schema({
-  competition      : {type: ObjectId, ref: 'Competition', required: true, index: true},
-  name             : {type: String, required: true},
-  height           : {type: Number, required: true, min: 1},
-  width            : {type: Number, required: true, min: 1},
-  length           : {type: Number, required: true, min: 1},
-  tiles            : [{
-    x        : {type: Number, required: true},
-    y        : {type: Number, required: true},
-    z        : {type: Number, required: true},
+  competition: {
+    type    : ObjectId,
+    ref     : 'Competition',
+    required: true,
+    index   : true
+  },
+  name       : {type: String, required: true},
+  height     : {type: Number, integer: true, required: true, min: 1},
+  width      : {type: Number, integer: true, required: true, min: 1},
+  length     : {type: Number, integer: true, required: true, min: 1},
+  cells      : [{
+    x         : {type: Number, integer: true, required: true},
+    y         : {type: Number, integer: true, required: true},
+    z         : {type: Number, integer: true, required: true},
+    isTile    : {type: Boolean, default: false},
+    isWall    : {type: Boolean, default: false},
+    isLinear  : {type: Boolean, default: false},
+    checkpoint: {type: Boolean, default: false},
+    speedbump : {type: Boolean, default: false},
+    black     : {type: Boolean, default: false},
+    victims   : {
+      top   : {type: Boolean, default: false},
+      right : {type: Boolean, default: false},
+      bottom: {type: Boolean, default: false},
+      left  : {type: Boolean, default: false}
+    },
 
     levelUp  : {type: String, enum: ["top", "right", "bottom", "left"]},
     levelDown: {type: String, enum: ["top", "right", "bottom", "left"]}
   }],
-  startTile        : {
-    x: {type: Number, required: true, min: 0},
-    y: {type: Number, required: true, min: 0},
-    z: {type: Number, required: true, min: 0}
+  startTile  : {
+    x: {type: Number, integer: true, required: true, min: 0},
+    y: {type: Number, integer: true, required: true, min: 0},
+    z: {type: Number, integer: true, required: true, min: 0}
   }
 })
 
+function isOdd(n) {
+  return n & 1 // Bitcheck LSB
+}
+function isEven(n) {
+  return !isOdd(n)
+}
+
 mazeMapSchema.pre('save', function (next) {
   var self = this
+
+  for (let i = 0; i < self.cells.length; i++) {
+    let cell = self.cells[i]
+
+    if (isEven(cell.x) && isEven(cell.y)) {
+      cell.isTile = true
+      cell.isWall = false
+    } else if (isOdd(cell.x) && isOdd(cell.y)) {
+      const err = new Error("Illegal cell placement at x: " + cell.x + ", y: " +
+                            cell.y + "!")
+      return next(err)
+    } else {
+      cell.isWall = true
+      cell.isTile = false
+      cell.checkpoint = false
+      cell.speedbump = false
+      cell.black = false
+      cell.victims = {
+        top   : false,
+        right : false,
+        bottom: false,
+        left  : false
+      }
+    }
+  }
 
   if (self.isNew) {
     MazeMap.findOne({
@@ -60,6 +110,8 @@ mazeMapSchema.pre('save', function (next) {
     return next()
   }
 })
+
+mazeMapSchema.plugin(mongooseInteger)
 
 const MazeMap = mongoose.model('MazeMap', mazeMapSchema)
 
