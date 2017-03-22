@@ -12,6 +12,13 @@ const logger = require('../config/logger').mainLogger
 
 const MAZE_LEAGUES = require("./competition").MAZE_LEAGUES
 
+function isOdd(n) {
+  return n & 1 // Bitcheck LSB
+}
+function isEven(n) {
+  return !isOdd(n)
+}
+
 const mazeRunSchema = new Schema({
   competition: {
     type    : ObjectId,
@@ -24,41 +31,42 @@ const mazeRunSchema = new Schema({
   field      : {type: ObjectId, ref: 'Field', required: true, index: true},
   map        : {type: ObjectId, ref: 'MazeMap', required: true, index: true},
   
-  tiles             : [{
-    x         : {type: Number, integer: true, required: true},
-    y         : {type: Number, integer: true, required: true},
-    z         : {type: Number, integer: true, required: true},
-    isDropTile: {type: Boolean, default: false},
-    scored    : {type: Boolean, default: false}
-    /*scoredItems: {
-     obstacles   : {type: Boolean, default: false},
-     speedbumps  : {type: Boolean, default: false},
-     intersection: {type: Boolean, default: false},
-     gaps        : {type: Boolean, default: false},
-     dropTile    : {type: Boolean, default: false}
-     }*/
-  }],
-  LoPs              : {type: [Number], min: 0},
-  evacuationLevel   : {
-    type: Number, default: 1, validate: function (l) {
-      return l == 1 || l == 2
+  tiles    : [{
+    x          : {type: Number, integer: true, required: true},
+    y          : {type: Number, integer: true, required: true},
+    z          : {type: Number, integer: true, required: true},
+    scoredItems: {
+      speedbump : {type: Boolean, default: false},
+      checkpoint: {type: Boolean, default: false},
+      rampBottom: {type: Boolean, default: false},
+      rampTop   : {type: Boolean, default: false},
+      victims   : {
+        top   : {type: Boolean, default: false},
+        right : {type: Boolean, default: false},
+        bottom: {type: Boolean, default: false},
+        left  : {type: Boolean, default: false}
+      },
+      rescueKits: {
+        top   : {type: Number, integer: true, min: 0, default: 0},
+        right : {type: Number, integer: true, min: 0, default: 0},
+        bottom: {type: Number, integer: true, min: 0, default: 0},
+        left  : {type: Number, integer: true, min: 0, default: 0}
+      }
     }
-  },
-  exitBonus         : {type: Boolean, default: false},
-  rescuedLiveVictims: {type: Number, min: 0, default: 0},
-  rescuedDeadVictims: {type: Number, min: 0, default: 0},
-  score             : {type: Number, min: 0, default: 0},
-  showedUp          : {type: Boolean, default: false},
-  time              : {
+  }],
+  LoPs     : {type: Number, min: 0},
+  exitBonus: {type: Boolean, default: false},
+  score    : {type: Number, min: 0, default: 0},
+  time     : {
     minutes: {type: Number, min: 0, max: 8, default: 0},
     seconds: {type: Number, min: 0, max: 59, default: 0}
   },
-  started           : {type: Boolean, default: false, index: true}
+  started  : {type: Boolean, default: false, index: true}
 })
 
-lineRunSchema.pre('save', function (next) {
+mazeRunSchema.pre('save', function (next) {
   const self = this
-
+  
   self.populate('map', "name finished", function (err, populatedRun) {
     if (err) {
       return next(err)
@@ -66,9 +74,9 @@ lineRunSchema.pre('save', function (next) {
       err = new Error('Map "' + populatedRun.map.name + '" is not finished!')
       return next(err)
     } else {
-
+      
       if (self.isNew) {
-        LineRun.findOne({
+        MazeRun.findOne({
           round: self.round,
           team : self.team
         }).populate("round team").exec(function (err, dbRun) {
@@ -128,7 +136,7 @@ lineRunSchema.pre('save', function (next) {
                   })
                 },
                 map        : function (callback) {
-                  lineMapdb.lineMap.findById(self.map, function (err, dbMap) {
+                  mazeMapdb.mazeMap.findById(self.map, function (err, dbMap) {
                     if (err) {
                       return callback(err)
                     } else if (!dbMap) {
@@ -144,34 +152,32 @@ lineRunSchema.pre('save', function (next) {
                   return next(err)
                 } else {
                   const competitionId = results.competition.id
-
+                  
                   if (results.round.competition != competitionId) {
                     return next(new Error("Round does not match competition!"))
                   }
-                  if (LINE_LEAGUES.indexOf(results.round.league) == -1) {
+                  if (MAZE_LEAGUES.indexOf(results.round.league) == -1) {
                     return next(new Error("Round does not match league!"))
                   }
-
+                  
                   if (results.team.competition != competitionId) {
                     return next(new Error("Team does not match competition!"))
                   }
-                  if (LINE_LEAGUES.indexOf(results.team.league) == -1) {
+                  if (MAZE_LEAGUES.indexOf(results.team.league) == -1) {
                     return next(new Error("Team does not match league!"))
                   }
-
+                  
                   if (results.field.competition != competitionId) {
                     return next(new Error("Field does not match competition!"))
                   }
-                  if (LINE_LEAGUES.indexOf(results.field.league) == -1) {
+                  if (MAZE_LEAGUES.indexOf(results.field.league) == -1) {
                     return next(new Error("Field does not match league!"))
                   }
-
+                  
                   if (results.map.competition != competitionId) {
                     return next(new Error("Map does not match competition!"))
                   }
-
-                  self.LoPs = new Array(results.map.numberOfDropTiles).fill(0)
-                  self.tiles = new Array(results.map.indexCount).fill({})
+                  
                   return next()
                 }
               })
@@ -184,7 +190,7 @@ lineRunSchema.pre('save', function (next) {
   })
 })
 
-const LineRun = mongoose.model('LineRun', lineRunSchema)
+const MazeRun = mongoose.model('MazeRun', mazeRunSchema)
 
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
-module.exports.lineRun = LineRun
+module.exports.mazeRun = MazeRun

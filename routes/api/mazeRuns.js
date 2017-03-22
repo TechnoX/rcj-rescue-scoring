@@ -3,13 +3,12 @@ const express = require('express')
 const publicRouter = express.Router()
 const privateRouter = express.Router()
 const adminRouter = express.Router()
-const lineRun = require('../../models/lineRun').lineRun
+const mazeRun = require('../../models/mazeRun').mazeRun
 const validator = require('validator')
 const async = require('async')
 const ObjectId = require('mongoose').Types.ObjectId
 const logger = require('../../config/logger').mainLogger
 const fs = require('fs')
-const pathFinder = require('../../helper/pathFinder')
 const scoreCalculator = require('../../helper/scoreCalculator')
 
 var socketIo
@@ -19,7 +18,7 @@ module.exports.connectSocketIo = function (io) {
 }
 
 /**
- * @api {get} /runs/line Get runs
+ * @api {get} /runs/maze Get runs
  * @apiName GetRun
  * @apiGroup Run
  * @apiVersion 1.0.0
@@ -40,17 +39,17 @@ module.exports.connectSocketIo = function (io) {
  *
  * @apiError (400) {String} msg The error message
  */
-publicRouter.get('/', getLineRuns)
-function getLineRuns(req, res) {
+publicRouter.get('/', getMazeRuns)
+function getMazeRuns(req, res) {
   const competition = req.query.competition || req.params.competition
 
   var query
   if (competition != null && competition.constructor === String) {
-    query = lineRun.find({competition: competition})
+    query = mazeRun.find({competition: competition})
   } else if (Array.isArray(competition)) {
-    query = lineRun.find({competition: {$in: competition.filter(ObjectId.isValid)}})
+    query = mazeRun.find({competition: {$in: competition.filter(ObjectId.isValid)}})
   } else {
-    query = lineRun.find({})
+    query = mazeRun.find({})
   }
 
   query.select("competition round team field map score time")
@@ -74,10 +73,10 @@ function getLineRuns(req, res) {
     }
   })
 }
-module.exports.getLineRuns = getLineRuns
+module.exports.getMazeRuns = getMazeRuns
 
 /**
- * @api {get} /runs/line/:runid Get run
+ * @api {get} /runs/maze/:runid Get run
  * @apiName GetRun
  * @apiGroup Run
  * @apiVersion 1.0.0
@@ -122,13 +121,10 @@ publicRouter.get('/:runid', function (req, res, next) {
     return next()
   }
 
-  const query = lineRun.findById(id, "-__v")
+  const query = mazeRun.findById(id, "-__v")
 
   if (req.query['populate'] !== undefined && req.query['populate']) {
-    query.populate(["round", "team", "field", "competition", {
-      path    : 'tiles',
-      populate: {path: 'tileType'}
-    }])
+    query.populate(["round", "team", "field", "competition"])
   }
 
   query.lean().exec(function (err, data) {
@@ -142,7 +138,7 @@ publicRouter.get('/:runid', function (req, res, next) {
 })
 
 /**
- * @api {put} /runs/line/:runid Update run
+ * @api {put} /runs/maze/:runid Update run
  * @apiName PutRun
  * @apiGroup Run
  * @apiVersion 1.0.0
@@ -193,34 +189,21 @@ privateRouter.put('/:runid', function (req, res, next) {
 
   //logger.debug(run)
 
-  lineRun.findById(id)
-    //.select("-_id -__v -competition -round -team -field -score")
-    .populate({
-      path    : 'map',
-      populate: {
-        path : 'tiles.tileType'
-      }
-    })
+  mazeRun.findById(id)
+  //.select("-_id -__v -competition -round -team -field -score")
+    .populate("map")
     .exec(function (err, dbRun) {
       if (err) {
         logger.error(err)
         res.status(400).send({msg: "Could not get run"})
       } else {
-        if (run.tiles != null && run.tiles.constructor === Object) { // Handle dict as "sparse" array
-          const tiles = run.tiles
-          run.tiles = []
-          Object.keys(tiles).forEach(function (key) {
-            if (!isNaN(key)) {
-              run.tiles[key] = tiles[key]
-            }
-          })
-        }
+
 
         // Recursively updates properties in "dbObj" from "obj"
         const copyProperties = function (obj, dbObj) {
           for (let prop in obj) {
             if (obj.hasOwnProperty(prop) && (dbObj.hasOwnProperty(prop) ||
-                dbObj.get(prop) !== undefined)) { // Mongoose objects don't have hasOwnProperty
+                                             dbObj.get(prop) !== undefined)) { // Mongoose objects don't have hasOwnProperty
               if (typeof obj[prop] == 'object' && dbObj[prop] != null) { // Catches object and array
                 copyProperties(obj[prop], dbObj[prop])
 
@@ -237,8 +220,27 @@ privateRouter.put('/:runid', function (req, res, next) {
           }
         }
 
-        err = copyProperties(run, dbRun)
+        for (let i in run.tiles) {
+          if (run.tiles.hasOwnProperty(i)) {
+            let tile = run.tiles[i]
+            for (let j = 0; j < dbRun.tiles; j++) {
+              let dbRun = dbRun.tiles[j]
+              if (tile.x == dbRun.x && tile.y == dbRun.y && tile.z == dbRun.z) {
+                err = copyProperties(tile, dbTile)
+                if (err) {
+                  logger.error(err)
+                  return res.status(400).send({
+                    err: err.message,
+                    msg: "Could not save run"
+                  })
+                }
+              }
+            }
+          }
+        }
 
+        delete run.tiles
+        err = copyProperties(run, dbRun)
         if (err) {
           logger.error(err)
           return res.status(400).send({
@@ -247,7 +249,7 @@ privateRouter.put('/:runid', function (req, res, next) {
           })
         }
 
-        dbRun.score = scoreCalculator.calculateLineScore(dbRun)
+        dbRun.score = scoreCalculator.calculateMazeScore(dbRun)
 
         dbRun.save(function (err) {
           if (err) {
@@ -271,7 +273,7 @@ privateRouter.put('/:runid', function (req, res, next) {
 })
 
 /**
- * @api {delete} /runs/line/:runid Delete run
+ * @api {delete} /runs/maze/:runid Delete run
  * @apiName DeleteRun
  * @apiGroup Run
  * @apiVersion 1.0.0
@@ -289,7 +291,7 @@ adminRouter.delete('/:runid', function (req, res, next) {
     return next()
   }
   
-  lineRun.remove({_id: id}, function (err) {
+  mazeRun.remove({_id: id}, function (err) {
     if (err) {
       logger.error(err)
       res.status(400).send({err: "Could not remove run"})
@@ -300,7 +302,7 @@ adminRouter.delete('/:runid', function (req, res, next) {
 })
 
 /**
- * @api {post} /runs/line Create new run
+ * @api {post} /runs/maze Create new run
  * @apiName PostRun
  * @apiGroup Run
  * @apiVersion 1.0.0
@@ -319,7 +321,7 @@ adminRouter.delete('/:runid', function (req, res, next) {
 adminRouter.post('/', function (req, res) {
   const run = req.body
   
-  new lineRun({
+  new mazeRun({
     competition: run.competition,
     round      : run.round,
     team       : run.team,

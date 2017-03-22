@@ -163,7 +163,7 @@ app.use(function (err, req, res, next) {
    */
   else {
 
-      logger.error(err)
+    logger.error(err)
 
     // since we are running api and static website on same we need to hack the different custom routes
     var stringSplit = req.originalUrl.split("/")
