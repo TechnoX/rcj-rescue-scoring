@@ -35,7 +35,17 @@ router.get('/:competitionid/line/runs', function (req, res, next) {
     return next()
   }
 
-  res.render('run_admin', {id : id})
+  res.render('line_run_admin', {id : id})
+})
+
+router.get('/:competitionid/line/maps', function (req, res, next) {
+  const id = req.params.competitionid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  res.render('line_map_admin', {id : id})
 })
 
 router.get('/:competitionid/rounds', function (req, res, next) {
