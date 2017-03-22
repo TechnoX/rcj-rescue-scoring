@@ -49,6 +49,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
             $scope.width = response.data.width;
             $scope.length = response.data.length;
             $scope.name = response.data.name;
+            $scope.finished = response.data.finished;
 
         }, function(response){
             console.log("Error: " + response.statusText);
@@ -75,6 +76,34 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
             $scope.tiles[x+','+y+','+$scope.z].rot = 0;
     }
 
+    $scope.saveMapAs = function(){
+	if($scope.saveasname == $scope.name){
+	    alert("You must have a new name when saving as!");
+	    return;
+	}
+        var map = {
+	    competition: competitionId,
+            name: $scope.saveasname,
+            length: $scope.length,
+            height: $scope.height,
+            width: $scope.width,
+	    finished: $scope.finished,
+            numberOfDropTiles: $scope.numberOfDropTiles,
+            startTile: $scope.startTile,
+            tiles: $scope.tiles
+        };
+	
+	$http.post("/api/maps/line", map).then(function(response){
+	    alert("Created map!");
+	    console.log(response.data);
+	    competitionId = response.data.competition;
+	    window.location.replace("/line/editor/" + response.data.id)
+        }, function(response){
+	    console.log(response);
+	    console.log("Error: " + response.statusText);
+	    alert(response.data.msg);
+        });
+    }
     $scope.saveMap = function(){
 
         var map = {
@@ -83,6 +112,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
             length: $scope.length,
             height: $scope.height,
             width: $scope.width,
+	    finished: $scope.finished,
             numberOfDropTiles: $scope.numberOfDropTiles,
             startTile: $scope.startTile,
             tiles: $scope.tiles
