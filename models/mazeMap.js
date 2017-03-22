@@ -97,9 +97,20 @@ mazeMapSchema.pre('save', function (next) {
         cell.tile = {}
       }
 
+      if (cell.x == self.startTile.x && cell.y == self.startTile.y &&
+          cell.z == self.startTile.z) {
+        cell.tile.checkpoint = true
+      }
+
+      if (cell.tile.black && cell.tile.checkpoint) {
+        const err = new Error("Tile can't be both black and checkpoint at x: " +
+                              cell.x + ", y: " +
+                              cell.y + ", z: " + cell.z + "!")
+      }
+
     } else if (isEven(cell.x) && isEven(cell.y)) {
       const err = new Error("Illegal cell placement at x: " + cell.x + ", y: " +
-                            cell.y + "!")
+                            cell.y + ", z: " + cell.z + "!")
       return next(err)
     } else {
       cell.isWall = true
@@ -109,6 +120,7 @@ mazeMapSchema.pre('save', function (next) {
   }
 
   mazeFill.floodFill(self)
+  mazeFill.linearFill(self)
 
   if (self.isNew) {
     MazeMap.findOne({
@@ -141,7 +153,7 @@ module.exports.mazeMap = MazeMap
 
 new MazeMap({
   competition: "58a9c7e48cd7f372358f139b",
-  name       : "testmap5",
+  name       : "testmap7",
   height     : 2,
   width      : 2,
   length     : 2,
