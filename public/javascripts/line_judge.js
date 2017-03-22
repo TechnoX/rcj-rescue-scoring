@@ -331,12 +331,15 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             controller: 'ModalInstanceCtrl',
             size: 'sm',
             resolve: {
-                tile: function () {
-                    return $scope.tiles[x+','+y+','+z];
+                mtile: function() {
+                    return $scope.mtiles[x+','+y+','+z];
+                },
+		stiles: function() {
+                    return $scope.stiles;
                 }
             }
         }).closed.then(function(result){
-            $http.put("/api/runs/line/"+runId, {tiles:[$scope.tiles[x+','+y+','+z]]}).then(function(response){
+            $http.put("/api/runs/line/"+runId, {tiles: $scope.stiles}).then(function(response){
                 $scope.score = response.data.score;
             }, function(response){
                 console.log("Error: " + response.statusText);
@@ -391,8 +394,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 // Please note that $uibModalInstance represents a modal window (instance) dependency.
 // It is not the same as the $uibModal service used above.
 
-app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, tile) {
-    $scope.tile = tile;
+app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, stiles) {
+    $scope.mtile = mtile;
+    $scope.stiles = stiles;
+    $scope.words = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth"];
     $scope.ok = function () {
         $uibModalInstance.close();
     };

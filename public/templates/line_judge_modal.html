@@ -2,50 +2,14 @@
   <h3 class="modal-title">Score items</h3>
 </div>
 <div class="modal-body">
+  <label>Passed (note this is not attempts!):</label>
   <ul>
-    <li ng-show="tile.scoredItems.dropTiles.length > 0">
-      <label>Reach checkpoint (note this is not attempts!):</label>
-      <ul>
-        <li ng-repeat="dropTile in tile.scoredItems.dropTiles track by $index">
-          <label><input type="checkbox" ng-model="tile.scoredItems.dropTiles[$index]"> Reach {{$index+1}}</label>
-        </li>
-      </ul>
+    <li ng-repeat="pass in mtile.index track by $index">
+      <label><input type="checkbox" ng-model="stiles[pass].scored"> Passed {{words[$index]}} time</label>
     </li>
-    <li ng-show="tile.scoredItems.speedbumps.length > 0">
-      <label>Speedbumps:</label>
-      <ul>
-        <li ng-repeat="speedbump in tile.scoredItems.speedbumps track by $index">
-          <label><input type="checkbox" ng-model="tile.scoredItems.speedbumps[$index]"> Speedbump {{$index+1}}</label>
-        </li>
-      </ul>
-    </li>
-    <li ng-show="tile.scoredItems.gaps.length > 0">
-      <label>Gaps:</label>
-      <ul>
-        <li ng-repeat="gap in tile.scoredItems.gaps track by $index">
-          <label><input type="checkbox" ng-model="tile.scoredItems.gaps[$index]"> Gap {{$index+1}}</label>
-        </li>
-      </ul>
-    </li>
-    <li ng-show="tile.scoredItems.obstacles.length > 0">
-      <label>Obstacles:</label>
-      <ul>
-        <li ng-repeat="obstacle in tile.scoredItems.obstacles track by $index">
-          <label><input type="checkbox" ng-model="tile.scoredItems.obstacles[$index]"> Obstacle {{$index+1}}</label>
-        </li>
-      </ul>
-    </li>
-    <li ng-show="tile.scoredItems.intersections.length > 0">
-      <label>Intersections:</label>
-      <ul>
-        <li ng-repeat="intersection in tile.scoredItems.intersections track by $index">
-          <label><input type="checkbox" ng-model="tile.scoredItems.intersections[$index]"> Intersection {{$index+1}}</label>
-        </li>
-      </ul>
   </ul>
 </div>
 
 <div class="modal-footer">
   <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
-<!--  <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>-->
 </div>
