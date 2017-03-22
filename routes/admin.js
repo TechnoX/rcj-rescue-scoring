@@ -48,6 +48,26 @@ router.get('/:competitionid/line/maps', function (req, res, next) {
   res.render('line_map_admin', {id : id})
 })
 
+router.get('/:competitionid/maze/runs', function (req, res, next) {
+  const id = req.params.competitionid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  res.render('maze_run_admin', {id : id})
+})
+
+router.get('/:competitionid/maze/maps', function (req, res, next) {
+  const id = req.params.competitionid
+  
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  res.render('maze_map_admin', {id : id})
+})
+
 router.get('/:competitionid/rounds', function (req, res, next) {
   const id = req.params.competitionid
 

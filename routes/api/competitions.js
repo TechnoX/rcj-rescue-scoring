@@ -9,6 +9,8 @@ const adminRouter = express.Router()
 const competitiondb = require('../../models/competition')
 const lineMapsApi = require('./lineMaps')
 const lineRunsApi = require('./lineRuns')
+const mazeMapsApi = require('./mazeMaps')
+const mazeRunsApi = require('./mazeRuns')
 const query = require('../../helper/query-helper')
 const validator = require('validator')
 const async = require('async')
@@ -99,6 +101,15 @@ publicRouter.get('/:competition/line/runs', function (req, res, next) {
   return lineRunsApi.getLineRuns(req, res, next)
 })
 
+publicRouter.get('/:competition/maze/runs', function (req, res, next) {
+  var id = req.params.competition
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+  return mazeRunsApi.getMazeRuns(req, res, next)
+})
+
 publicRouter.get('/:competition/:league/maps', function (req, res, next) {
   const id = req.params.competition
   const league = req.params.league
@@ -112,7 +123,7 @@ publicRouter.get('/:competition/:league/maps', function (req, res, next) {
   }
 
   if (MAZE_LEAGUES.indexOf(league) != -1) {
-    //return lineMapsApi.getLineMaps(req, res, next)
+    return mazeMapsApi.getMazeMaps(req, res, next)
   }
 
   return next()
@@ -125,6 +136,16 @@ publicRouter.get('/:competition/line/maps', function (req, res, next) {
   }
 
   return lineMapsApi.getLineMaps(req, res, next)
+})
+
+publicRouter.get('/:competition/maze/maps', function (req, res, next) {
+  const id = req.params.competition
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  return mazeMapsApi.getMazeMaps(req, res, next)
 })
 
 publicRouter.get('/:competition/fields', function (req, res, next) {

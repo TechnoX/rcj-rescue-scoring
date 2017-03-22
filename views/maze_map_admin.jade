@@ -1,0 +1,31 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'MapAdmin'
+
+append scripts
+  script.
+    var competitionId = "#{id}"
+  script(src='/javascripts/maze_map_admin.js')
+
+block location
+  a(href='/home' style="color:#333333") Home
+  | >
+  a(href='/admin' style="color:#333333") Admin
+  | >
+  a(ng-href='/admin/{{competitionId}}' style="color:#333333") {{competition.name}}
+  | >
+  a(ng-href='/admin/{{competitionId}}/maze/maps' style="color:#333333") Maps
+
+block content
+  .row
+    .col-md-offset-2.col-md-8
+      a(href="/admin/{{competitionId}}/maze/editor") Create a new map layout
+      h1 Maps
+      table
+        tr(ng-repeat='map in maps')
+          td
+            a(ng-bind='map.name' ng-href="/maze/editor/{{map._id}}")
+          td
+            a(href="" ng-click='removeMap(map)') Delete
