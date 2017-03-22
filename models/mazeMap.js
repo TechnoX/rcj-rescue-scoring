@@ -151,7 +151,7 @@ const MazeMap = mongoose.model('MazeMap', mazeMapSchema)
 module.exports.mazeMap = MazeMap
 
 
-new MazeMap({
+/*new MazeMap({
   competition: "58a9c7e48cd7f372358f139b",
   name       : "testmap7",
   height     : 2,
@@ -202,4 +202,4 @@ new MazeMap({
       logger.info("saved mazemap")
     }
   }
-)
+)*/
