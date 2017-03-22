@@ -90,17 +90,18 @@ adminRouter.post('/', function (req, res) {
   //logger.debug(tiles)
 
   const newMap = new mazeMap({
-    competition      : map.competition,
-    name             : map.name,
-    height           : map.height,
-    width            : map.width,
-    length           : map.length,
-    cells            : cells,
-    startTile        : {
+    competition: map.competition,
+    name       : map.name,
+    height     : map.height,
+    width      : map.width,
+    length     : map.length,
+    cells      : cells,
+    startTile  : {
       x: map.startTile.x,
       y: map.startTile.y,
       z: map.startTile.z
-    }
+    },
+    finished   : map.finished
   })
 
   //logger.debug(newMap)
