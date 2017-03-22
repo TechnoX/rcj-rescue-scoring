@@ -352,7 +352,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 	run.evacuationLevel = $scope.evacuationLevel;
 	run.exitBonus = $scope.exitBonus;
 	run.rescuedDeadVictims = $scope.rescuedDeadVictims;
-	run.rescuedLiveVictim = $scope.rescuedLiveVictims;
+	run.rescuedLiveVictims = $scope.rescuedLiveVictims;
         run.showedUp = $scope.showedUp;
 	run.started = $scope.started;
 	run.tiles = $scope.stiles;
