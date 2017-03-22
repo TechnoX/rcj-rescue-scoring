@@ -277,7 +277,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 			$scope.actualUsedDropTiles++;
 			placed = true;
                     }
-		    httpdata.tiles[stile[i]._id] = stile[i];
+		    httpdata.tiles[mtile.index[i]] = stile[i];
 		}
 
 		if(placed){
@@ -311,7 +311,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             }else if(total==1){
 		for(var i = 0; i < stile.length; i++){
 		    stile[i].scored = !stile[i].scored;
-		    httpdata.tiles[stile[i]._id] = stile[i];
+		    httpdata.tiles[mtile.index[i]] = stile[i];
 		}
 		console.log(httpdata);
                 $http.put("/api/runs/line/"+runId, httpdata).then(function(response){
