@@ -217,11 +217,16 @@ privateRouter.put('/:runid', function (req, res, next) {
         // Recursively updates properties in "dbObj" from "obj"
         const copyProperties = function (obj, dbObj) {
           for (let prop in obj) {
-            if (obj.hasOwnProperty(prop) && dbObj.hasOwnProperty(prop) ||
-                dbObj.get(prop) !== undefined) { // Mongoose objects don't have hasOwnProperty
+            if (obj.hasOwnProperty(prop) && (dbObj.hasOwnProperty(prop) ||
+                dbObj.get(prop) !== undefined)) { // Mongoose objects don't have hasOwnProperty
               if (typeof obj[prop] == 'object' && dbObj[prop] != null) { // Catches object and array
-                return copyProperties(obj[prop], dbObj[prop])
+                copyProperties(obj[prop], dbObj[prop])
+
+                if (dbObj.markModified !== undefined) {
+                  dbObj.markModified(prop)
+                }
               } else if (obj[prop] !== undefined) {
+                logger.debug("copy " + prop)
                 dbObj[prop] = obj[prop]
               }
             } else {
