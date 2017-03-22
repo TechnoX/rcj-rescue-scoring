@@ -248,7 +248,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         var total = (mtile.items.obstacles > 0 ||
 		     mtile.items.speedbumps > 0 ||
 		     mtile.tileType.gaps > 0 ||
-		     isDropTile > 0 ||
 		     mtile.tileType.intersections > 0) * mtile.index.length;
 
         // If the run is not started, we can place drop pucks on this tile
@@ -298,9 +297,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         // Match has started!
         }else{
             // Add the number of possible passes for drop tiles
-            /*if(isDropTile) {
+            if(isDropTile) {
                 total += stile.length;
-            }*/
+            }
 
             if(total == 0){
                 return;
