@@ -268,6 +268,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 		    // If this tile already contains a droptile, we should remove it
 		    if(stile[i].isDropTile){
 			stile[i].isDropTile = false;
+			stile[i].scored = false;
 			$scope.actualUsedDropTiles--;
 			removed = true;
                     }// If this tile doesn't contain a droptile, we should add one, IF we have any left to place
