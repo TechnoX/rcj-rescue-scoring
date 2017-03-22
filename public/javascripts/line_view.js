@@ -30,12 +30,7 @@ app.controller('ddController', ['$scope', '$http', '$log', function($scope, $htt
             socket.emit('subscribe', 'runs/' + runId);
             socket.on('data', function(data) {
                 $scope.rescuedVictims = data.rescuedVictims;
-
-                for(var i = 0; i < data.tiles.length; i++){
-                    $scope.mtiles[data.tiles[i].x + ',' +
-                                 data.tiles[i].y + ',' +
-                                 data.tiles[i].z].scoredItems = data.tiles[i].scoredItems;
-                }
+		$scope.stiles = data.tiles;
                 $scope.score = data.score;
                 $scope.showedUp = data.showedUp;
                 $scope.LoPs = data.LoPs;
