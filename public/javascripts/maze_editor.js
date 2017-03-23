@@ -26,12 +26,22 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 
     if(mapId){
         $http.get("/api/maps/maze/" + mapId + "?populate=true").then(function(response){
+	    console.log(response.data);
             $scope.startTile = response.data.startTile;
             $scope.height = response.data.height;
             $scope.sliderOptions.ceil = $scope.height - 1;
             $scope.width = response.data.width;
             $scope.length = response.data.length;
             $scope.name = response.data.name;
+	    competitionId = response.data.competition;
+	    
+	    for(var i = 0; i < response.data.cells.length; i++){
+                $scope.cells[response.data.cells[i].x + ',' +
+                             response.data.cells[i].y + ',' +
+                             response.data.cells[i].z] = response.data.cells[i];
+            }
+
+	    
         }, function(response){
             console.log("Error: " + response.statusText);
         });
