@@ -26,7 +26,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 	$scope.field = response.data.field.name;
 	$scope.round = response.data.round.name;
 	$scope.score = response.data.score;
-	$scope.started = response.data.score;
+	$scope.started = response.data.started;
 	$scope.team = response.data.team.name;
 	$scope.LoPs = response.data.LoPs;
 		
