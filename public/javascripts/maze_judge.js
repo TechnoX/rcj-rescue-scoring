@@ -18,6 +18,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
     };
 
     $scope.cells = {};
+    $scope.tiles = {};
 
     $http.get("/api/runs/maze/"+runId+"?populate=true").then(function(response){
 
@@ -26,7 +27,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 	$scope.field = response.data.field.name;
 	$scope.round = response.data.round.name;
 	$scope.score = response.data.score;
-	$scope.started = response.data.score;
+	$scope.started = response.data.started;
 	$scope.team = response.data.team.name;
 	$scope.LoPs = response.data.LoPs;
 		
@@ -135,7 +136,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
     }
     
     $scope.changeExitBonus = function(){
-        $http.put("/api/runs/line/"+runId, {exitBonus: $scope.exitBonus}).then(function(response){
+        $http.put("/api/runs/maze/"+runId, {exitBonus: $scope.exitBonus}).then(function(response){
             $scope.score = response.data.score;
         }, function(response){
             console.log("Error: " + response.statusText);
@@ -164,18 +165,17 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 
     $scope.saveEverything = function(){
         var run = {}
-	run.LoPs = $scope.LoPs;
-	run.evacuationLevel = $scope.evacuationLevel;
 	run.exitBonus = $scope.exitBonus;
-	run.rescuedDeadVictims = $scope.rescuedDeadVictims;
-	run.rescuedLiveVictims = $scope.rescuedLiveVictims;
-        run.showedUp = $scope.showedUp;
 	run.started = $scope.started;
-	run.tiles = $scope.stiles;
+	run.LoPs = $scope.LoPs;
+	
+	// Scoring elements of the tiles
+        run.tiles = $scope.tiles;
+
 	run.time = {minutes: $scope.minutes, seconds: $scope.seconds};
 
 	console.log("Update run", run);
-        $http.put("/api/runs/line/"+runId, run).then(function(response){
+        $http.put("/api/runs/maze/"+runId, run).then(function(response){
             $scope.score = response.data.score;
 	    console.log("Run updated, got score: ", $scope.score);
         }, function(response){
@@ -185,17 +185,19 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 
     $scope.sign = function(){
         var run = {}
-        run.rescuedDeadVictims = $scope.rescuedDeadVictims;
-	run.rescuedLiveVictims = $scope.rescuedLiveVictims;
+	run.exitBonus = $scope.exitBonus;
+	run.started = $scope.started;
+	run.LoPs = $scope.LoPs;
+	
+	// Scoring elements of the tiles
         run.tiles = $scope.tiles;
-        run.showedUp = $scope.showedUp;
-        run.LoPs = $scope.LoPs;
+
         // Verified time by timekeeper
         run.time = {};
         run.time.minutes = $scope.minutes;;
         run.time.seconds = $scope.seconds;
-
-        $http.put("/api/runs/line/"+runId, run).then(function(response){
+	console.log(run);
+        $http.put("/api/runs/maze/"+runId, run).then(function(response){
             $scope.score = response.data.score;
             alert("Run signed");
         }, function(response){
