@@ -1,0 +1,81 @@
+<h1>{{team}}</h1>
+<p>{{field}}</p>
+
+<div style="margin-top:50px;">
+  <div class="row">
+    <div class="col-md-12">
+      <p>
+        <button class="btn btn-primary" type="button" ng-click="toggleTime()">{{ startedTime ? 'Stop' : 'Start' }} time!</button>
+	<button class="btn btn-primary" type="button" ng-click="resetTime()">Reset time!</button>
+        <button class="btn btn-primary" type="button" ng-click="toggleScoring()">{{ startedScoring ? 'Stop' : 'Start' }} scoring!</button>
+      </p>
+      <p>
+        Score: {{score}}<br>
+        Time: {{time | date:'mm:ss'}}
+      </p>
+      <p ng-show="startedScoring">
+      	<label>Robot exited the evacuation zone after touching at least one victim: <input type="checkbox" ng-model="exitBonus" ng-change="changeExitBonus()"></label>
+      </p>
+    </div>
+  </div>
+  <div class="row" ng-show="height>1">
+    <div class="col-sm-12">
+      <rzslider rz-slider-model="z" rz-slider-options="sliderOptions"></rzslider>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <table>
+	<tr ng-repeat="r in range(2*length + 1)">
+	  <td ng-repeat="c in range(2*width + 1)" ng-class="{'wallspot': $odd != $parent.$odd, 'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall, 'checkpoint': cells[c+','+r+','+z].tile.checkpoint, 'black': cells[c+','+r+','+z].tile.black, 'linear': cells[c+','+r+','+z].isLinear}"
+	      ng-click="cellClick(c, r, z, $odd != $parent.$odd, $odd && $parent.$odd)">
+	    <div class="tile-image-container" ng-show="cells[c+','+r+','+z].isTile">
+	      <img ng-src="/images/log.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.speedbump">
+	      <img ng-src="/images/elevator.png" class="tile-image" ng-show="!isUndefined(cells[c+','+r+','+z].tile.changeFloorTo) && cells[c+','+r+','+z].tile.changeFloorTo != z">
+	      <img ng-src="/images/start.png" class="tile-image" ng-show="startTile.x == c && startTile.y == r && startTile.z == z">
+	      <img ng-src="/images/ramp_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.rampTop">
+	      <img ng-src="/images/ramp_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.rampBottom">
+	      <img ng-src="/images/heated_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'Heated'">
+	      <img ng-src="/images/heated_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'Heated'">
+	      <img ng-src="/images/heated_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'Heated'">
+	      <img ng-src="/images/heated_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'Heated'">
+	      <img ng-src="/images/h_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'H'">
+	      <img ng-src="/images/h_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'H'">
+	      <img ng-src="/images/h_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'H'">
+	      <img ng-src="/images/h_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'H'">
+	      <img ng-src="/images/s_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'S'">
+	      <img ng-src="/images/s_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'S'">
+	      <img ng-src="/images/s_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'S'">
+	      <img ng-src="/images/s_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'S'">
+	      <img ng-src="/images/u_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'U'">
+	      <img ng-src="/images/u_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'U'">
+	      <img ng-src="/images/u_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'U'">
+	      <img ng-src="/images/u_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'U'">
+	    </div>
+	  </td>
+	</tr>
+      </table>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-md-12 confirmation">
+      <strong>Verified time: </strong><br>
+      <label>Minutes: <input type="number" min="0" max="8" ng-model="minutes"></label><br>
+      <label>Seconds: <input type="number" min="0" max="60" ng-model="seconds"></label><br>
+      <button type="button" ng-click="sign()">Sign!</button><br>
+      <strong>
+        By clicking the "Sign!" button, you accept that the score {{score}}
+        and time {{minutes}}:{{seconds<10?'0':''}}{{seconds}} are correct.<br>
+	Your team also further undertakes to not appeal the score at a later stage.
+      </strong>
+    </div>
+  </div>
+
+
+  
+</div>
+
+

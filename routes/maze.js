@@ -10,6 +10,16 @@ publicRouter.get('/', function (req, res) {
   res.render('maze_home');
 })
 
+privateRouter.get('/judge/:roundid', function (req, res, next) {
+  const id = req.params.roundid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  res.render('maze_judge', {id : id})
+})
+ 
 publicRouter.get('/:competitionid', function (req, res, next) {
   const id = req.params.competitionid
   
