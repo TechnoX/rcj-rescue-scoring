@@ -183,31 +183,39 @@ mazeMapSchema.pre('save', function (next) {
     }
   }
 
-  if (self.finished) {
-    mazeFill.floodFill(self)
-    mazeFill.linearFill(self)
-    //logger.debug(JSON.stringify(self))
-  }
+  self.populate("map", function (err, populatedWithMap) {
+    if (err) {
+      return next(err)
+    } else {
+      self = populatedWithMap
 
-  if (self.isNew || self.isModified("name")) {
-    MazeMap.findOne({
-      competition: self.competition,
-      name       : self.name
-    }).populate("competition", "name").exec(function (err, dbMap) {
-      if (err) {
-        return next(err)
-      } else if (dbMap) {
-        err = new Error('Map "' + dbMap.name +
-                        '" already exists in competition "' +
-                        dbMap.competition.name + '"!')
-        return next(err)
+      if (self.finished) {
+        mazeFill.floodFill(self)
+        mazeFill.linearFill(self)
+        //logger.debug(JSON.stringify(self))
+      }
+
+      if (self.isNew || self.isModified("name")) {
+        MazeMap.findOne({
+          competition: self.competition,
+          name       : self.name
+        }).populate("competition", "name").exec(function (err, dbMap) {
+          if (err) {
+            return next(err)
+          } else if (dbMap) {
+            err = new Error('Map "' + dbMap.name +
+                            '" already exists in competition "' +
+                            dbMap.competition.name + '"!')
+            return next(err)
+          } else {
+            return next()
+          }
+        })
       } else {
         return next()
       }
-    })
-  } else {
-    return next()
-  }
+    }
+  })
 })
 
 mazeMapSchema.plugin(mongooseInteger)
