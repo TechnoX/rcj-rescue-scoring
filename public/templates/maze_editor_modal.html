@@ -4,25 +4,25 @@
 <div class="modal-body">
   <ul>
     <li>
-      <label>Has speedbumps: <input type="checkbox" ng-model="tile.speedbump"></label>
+      <label>Has speedbumps: <input type="checkbox" ng-model="cell.tile.speedbump"></label>
     </li>
     <li>
-      <label>Checkpoint: <input type="checkbox" ng-model="tile.checkpoint"></label>
+      <label>Checkpoint: <input type="checkbox" ng-model="cell.tile.checkpoint"></label>
     </li>
     <li>
-      <label>Black: <input type="checkbox" ng-model="tile.black"></label>
+      <label>Black: <input type="checkbox" ng-model="cell.tile.black"></label>
     </li>
     <li>
-      <label>Top horizontal tile at ramp: <input type="checkbox" ng-model="tile.rampTop"></label>
+      <label>Top horizontal tile at ramp: <input type="checkbox" ng-model="cell.tile.rampTop"></label>
     </li>
     <li>
-      <label>Bottom horizontal tile at ramp: <input type="checkbox" ng-model="tile.rampBottom"></label>
+      <label>Bottom horizontal tile at ramp: <input type="checkbox" ng-model="cell.tile.rampBottom"></label>
     </li>
     <li ng-show="height > 1">
       <label>Change floor to: </label><br>
       <ul>
 	<li ng-repeat="h in range(height)">
-	  <label><input type="radio" ng-model="tile.changeFloorTo" ng-value="h" ng-change="elevatorChanged(tile.changeFloorTo)"> {{h}}<span ng-show="h == z"> (No elevator)</span></label>
+	  <label><input type="radio" ng-model="cell.tile.changeFloorTo" ng-value="h" ng-change="elevatorChanged(cell.tile.changeFloorTo)"> {{h}}<span ng-show="h == z"> (No elevator)</span></label>
 	</li>
       </ul>
     </li>
@@ -31,10 +31,10 @@
   <label><input type="checkbox" ng-model="isStart" ng-disabled="isStart" ng-change="startChanged()"> Is start</label>
 
   <h5>Placement of victims:</h5>
-  <label><input type="checkbox" ng-model="tile.victim.top" value="top"> Top</label> <br>
-  <label><input type="checkbox" ng-model="tile.victim.bottom" value="bottom"> Bottom</label> <br>
-  <label><input type="checkbox" ng-model="tile.victim.left" value="left"> Left</label> <br>
-  <label><input type="checkbox" ng-model="tile.victim.right" value="right"> Right</label> <br>
+  <label><input type="checkbox" ng-model="cell.tile.victims.top"    ng-true-value="'Heated'" ng-false-value="'None'"> Top</label> <br>
+  <label><input type="checkbox" ng-model="cell.tile.victims.bottom" ng-true-value="'Heated'" ng-false-value="'None'"> Bottom</label> <br>
+  <label><input type="checkbox" ng-model="cell.tile.victims.left"   ng-true-value="'Heated'" ng-false-value="'None'"> Left</label> <br>
+  <label><input type="checkbox" ng-model="cell.tile.victims.right"  ng-true-value="'Heated'" ng-false-value="'None'"> Right</label> <br>
 
 </div>
 <div class="modal-footer">

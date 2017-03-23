@@ -61,8 +61,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 	if(newValue === oldValue)
 	    return;
 	if($scope.cells[oldValue.x+','+oldValue.y+','+oldValue.z])
-	    $scope.cells[oldValue.x+','+oldValue.y+','+oldValue.z].checkpoint = false;
-	$scope.cells[newValue.x+','+newValue.y+','+newValue.z].checkpoint = true;
+	    $scope.cells[oldValue.x+','+oldValue.y+','+oldValue.z].tile.checkpoint = false;
+	$scope.cells[newValue.x+','+newValue.y+','+newValue.z].tile.checkpoint = true;
 	$scope.recalculateLinear();
     });
 
@@ -154,7 +154,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 	if(cell){
 	    cell.isLinear = true;
 	}else{
-	    $scope.cells[x+','+y+','+z] = {isTile: true, isLinear: true, changeFloorTo: z};
+	    $scope.cells[x+','+y+','+z] = {isTile: true, isLinear: true, tile: {changeFloorTo: z}};
 	}
     }
 
@@ -202,7 +202,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 	}
 	else if(isTile){
 	    if(!cell){
-		$scope.cells[x+','+y+','+z] = {isTile: true, changeFloorTo: z};
+		$scope.cells[x+','+y+','+z] = {isTile: true, tile: {changeFloorTo: z}};
 	    }
 	    $scope.open(x,y,z);
 	}
@@ -229,27 +229,27 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 // It is not the same as the $uibModal service used above.
 
 app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, x, y, z) {
-    $scope.tile = $scope.$parent.cells[x+','+y+','+z];;
+    $scope.cell = $scope.$parent.cells[x+','+y+','+z];
     $scope.isStart = $scope.$parent.startTile.x == x && $scope.$parent.startTile.y == y && $scope.$parent.startTile.z == z;
     $scope.height = $scope.$parent.height;
     $scope.z = z;
-    $scope.oldFloorDestination = $scope.tile.changeFloorTo;
+    $scope.oldFloorDestination = $scope.cell.tile.changeFloorTo;
     $scope.elevatorChanged = function(newValue){
 	console.log("old", $scope.oldFloorDestination);
 	console.log("new", newValue);
 	// Remove the old one
 	if($scope.oldFloorDestination != z && $scope.$parent.cells[x+','+y+','+$scope.oldFloorDestination]){
 	    console.log("Remove old elevator on " + x+','+y+','+$scope.oldFloorDestination);
-	    $scope.$parent.cells[x+','+y+','+$scope.oldFloorDestination].changeFloorTo = $scope.oldFloorDestination;
+	    $scope.$parent.cells[x+','+y+','+$scope.oldFloorDestination].tile.changeFloorTo = $scope.oldFloorDestination;
 	}
 
 	// Set the new one
 	if($scope.$parent.cells[x+','+y+','+newValue]){
 	    console.log("Create new elevator on " +x+','+y+','+newValue + " (1) to floor "+ z);
-	    $scope.$parent.cells[x+','+y+','+newValue].changeFloorTo = z;
+	    $scope.$parent.cells[x+','+y+','+newValue].tile.changeFloorTo = z;
 	}else{
 	    console.log("Create new elevator on " +x+','+y+','+newValue + " (2) to floor "+ z);
-	    $scope.$parent.cells[x+','+y+','+newValue] = {isTile: true, changeFloorTo: z};
+	    $scope.$parent.cells[x+','+y+','+newValue] = {isTile: true, tile: {changeFloorTo: z}};
 	}
 	$scope.oldFloorDestination = newValue;
     }
