@@ -221,7 +221,8 @@ privateRouter.put('/:runid', function (req, res, next) {
           for (let prop in obj) {
             if (obj.constructor == Array ||
                 (obj.hasOwnProperty(prop) &&
-                 (dbObj.hasOwnProperty(prop) || dbObj.get(prop) !== undefined))) { // Mongoose objects don't have hasOwnProperty
+                 (dbObj.hasOwnProperty(prop) ||
+                  (dbObj.get !== undefined && dbObj.get(prop) !== undefined)))) { // Mongoose objects don't have hasOwnProperty
               if (typeof obj[prop] == 'object' && dbObj[prop] != null) { // Catches object and array
                 copyProperties(obj[prop], dbObj[prop])
 

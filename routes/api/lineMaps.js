@@ -131,14 +131,113 @@ publicRouter.get('/:map', function (req, res, next) {
   })
 })
 
+// Recursively updates properties in "dbObj" from "obj"
+const copyProperties = function (obj, dbObj) {
+  for (let prop in obj) {
+    if (obj.constructor == Array ||
+        (obj.hasOwnProperty(prop) &&
+         (dbObj.hasOwnProperty(prop) ||
+          (dbObj.get !== undefined && dbObj.get(prop) !== undefined)))) { // Mongoose objects don't have hasOwnProperty
+      if (typeof obj[prop] == 'object' && dbObj[prop] != null) { // Catches object and array
+        copyProperties(obj[prop], dbObj[prop])
+        
+        if (dbObj.markModified !== undefined) {
+          dbObj.markModified(prop)
+        }
+      } else if (obj[prop] !== undefined) {
+        //logger.debug("copy " + prop)
+        dbObj[prop] = obj[prop]
+      }
+    } else {
+      return new Error("Illegal key: " + prop)
+    }
+  }
+}
+
 adminRouter.put('/:map', function (req, res, next) {
   const id = req.params.map
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
-
+  
+  const map = req.body
+  
+  // Exclude fields that are not allowed to be publicly changed
+  delete map._id
+  delete map.__v
+  delete map.competition
+  delete map.indexCount
+  
+  lineMap.findById(id, function (err, dbMap) {
+    if (err) {
+      logger.error(err)
+      return res.status(400).send({
+        msg: "Could not get map",
+        err: err.message
+      })
+    } else {
+      
+      let tiles = []
+      for (let i in map.tiles) {
+        if (map.tiles.hasOwnProperty(i)) {
+          let tile = map.tiles[i]
+          if (isNaN(i)) {
+            const coords = i.split(',')
+            tile.x = coords[0]
+            tile.y = coords[1]
+            tile.z = coords[2]
+          }
+          tiles.push(tile)
+        }
+      }
+      map.tiles = tiles
+      
+      //logger.debug(map)
+      dbMap.tiles = []
+      err = copyProperties(map, dbMap)
+      
+      if (err) {
+        logger.error(err)
+        return res.status(400).send({
+          err: err.message,
+          msg: "Could not save map"
+        })
+      }
+      
+      lineRun.findOne({
+        map    : id,
+        started: true
+      }).lean().exec(function (err, dbRun) {
+        if (err) {
+          logger.error(err)
+          return res.status(400).send({
+            msg: "Could not get run",
+            err: err.message
+          })
+        } else if (dbRun) {
+          err = new Error("Run " + dbRun._id + " already started on map")
+          logger.error(err)
+          return res.status(400).send({
+            msg: "Run already started on map!",
+            err: err.message
+          })
+        } else {
+          dbMap.save(function (err) {
+            if (err) {
+              logger.error(err)
+              return res.status(400).send({
+                msg: "Could not save map",
+                err: err.message
+              })
+            } else {
+              return res.status(200).send({msg: "Saved!"})
+            }
+          })
+        }
+      })
+    }
+  })
 })
 
 adminRouter.delete('/:map', function (req, res, next) {
