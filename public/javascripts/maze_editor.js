@@ -145,6 +145,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 	}
     }
     function setTileLinear(x,y,z){
+	if(x < 0 || y < 0 || z < 0){
+	    return;
+	}
+	
 	// Check that this is an actual tile, not a wall
 	var cell = $scope.cells[x+','+y+','+z];
 	if(cell){
