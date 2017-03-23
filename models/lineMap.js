@@ -69,15 +69,17 @@ lineMapSchema.pre('save', function (next) {
     } else {
       self = populatedMap
       logger.debug(self)
-      
-      try {
-        pathFinder.findPath(self)
-      } catch (err) {
-        logger.error(err)
-        self.finished = false
+
+      if (self.finished) {
+        try {
+          pathFinder.findPath(self)
+        } catch (err) {
+          logger.error(err)
+          self.finished = false
+        }
       }
       
-      if (self.isNew) {
+      if (self.isNew || self.isModified("name")) {
         LineMap.findOne({
           competition: self.competition,
           name       : self.name
