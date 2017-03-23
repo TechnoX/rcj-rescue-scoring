@@ -18,6 +18,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
     };
 
     $scope.cells = {};
+    $scope.tiles = {};
 
     $http.get("/api/runs/maze/"+runId+"?populate=true").then(function(response){
 
@@ -164,14 +165,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 
     $scope.saveEverything = function(){
         var run = {}
-	run.LoPs = $scope.LoPs;
-	run.evacuationLevel = $scope.evacuationLevel;
 	run.exitBonus = $scope.exitBonus;
-	run.rescuedDeadVictims = $scope.rescuedDeadVictims;
-	run.rescuedLiveVictims = $scope.rescuedLiveVictims;
-        run.showedUp = $scope.showedUp;
 	run.started = $scope.started;
-	run.tiles = $scope.stiles;
+	run.LoPs = $scope.LoPs;
+	
+	// Scoring elements of the tiles
+        run.tiles = $scope.tiles;
+
 	run.time = {minutes: $scope.minutes, seconds: $scope.seconds};
 
 	console.log("Update run", run);
@@ -185,11 +185,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 
     $scope.sign = function(){
         var run = {}
-        run.rescuedDeadVictims = $scope.rescuedDeadVictims;
-	run.rescuedLiveVictims = $scope.rescuedLiveVictims;
+	run.exitBonus = $scope.exitBonus;
+	run.started = $scope.started;
+	run.LoPs = $scope.LoPs;
+	
+	// Scoring elements of the tiles
         run.tiles = $scope.tiles;
-        run.showedUp = $scope.showedUp;
-        run.LoPs = $scope.LoPs;
+
         // Verified time by timekeeper
         run.time = {};
         run.time.minutes = $scope.minutes;;
