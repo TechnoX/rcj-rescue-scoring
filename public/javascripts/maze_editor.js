@@ -164,8 +164,42 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 
 
 
-    
+    $scope.saveMapAs = function(){
+	if($scope.startNotSet()){
+	    alert("You must define a starting tile");
+	    return;
+	}
+
+	if($scope.saveasname == $scope.name){
+	    alert("You must have a new name when saving as!");
+	    return;
+	}
+	var map = {
+	    competition: competitionId,
+            name: $scope.saveasname,
+            length: $scope.length,
+            height: $scope.height,
+            width: $scope.width,
+	    finished: $scope.finished,
+            startTile: $scope.startTile,
+	    cells: $scope.cells
+        };
+	console.log(map);
+        $http.post("/api/maps/maze", map).then(function(response){
+            alert("Created map!");
+            console.log(response.data);
+            window.location.replace("/maze/editor/" + response.data.id)
+        }, function(response){
+            console.log(response);
+            console.log("Error: " + response.statusText);
+	    alert(response.data.msg);
+        });
+    }
     $scope.saveMap = function(){
+	if($scope.startNotSet()){
+	    alert("You must define a starting tile");
+	    return;
+	}
         var map = {
 	    competition: competitionId,
             name: $scope.name,
@@ -176,17 +210,31 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
             startTile: $scope.startTile,
 	    cells: $scope.cells
         };
-	console.log(map);
-        $http.post("/api/maps/maze", map).then(function(response){
-            alert("Success!");
-            console.log(response.data);
-            window.location.replace("/maze/editor/" + response.data.id)
-        }, function(response){
-            console.log(response);
-            console.log("Error: " + response.statusText);
-        });
+        console.log(map);
+	console.log("Update map", mapId);
+	console.log("Competition ID", competitionId);
+	if(mapId){
+	    $http.put("/api/maps/maze/" + mapId, map).then(function(response){
+		alert("Updated map");
+		console.log(response.data);
+            }, function(response){
+		console.log(response);
+		console.log("Error: " + response.statusText);
+		alert(response.data.msg);
+            });
+	}else{
+            $http.post("/api/maps/maze", map).then(function(response){
+		alert("Created map!");
+		console.log(response.data);
+		window.location.replace("/maze/editor/" + response.data.id)
+            }, function(response){
+		console.log(response);
+		console.log("Error: " + response.statusText);
+		alert(response.data.msg);
+            });
+	}
     }
-
+    
     $scope.cellClick = function(x,y,z,isWall,isTile){
 
 	var cell = $scope.cells[x+','+y+','+z];
