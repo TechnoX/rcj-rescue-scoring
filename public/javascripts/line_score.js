@@ -10,8 +10,11 @@ angular.module("LineScore", ['datatables']).controller("LineScoreController", fu
 
   function updateRunList() {
     $http.get("/api/competitions/" + competitionId +
-              "/runs?populate=true").then(function (response) {
+              "/line/runs?populate=true").then(function (response) {
       var runs = response.data
+
+      console.log(runs)
+
       $scope.primaryRuns = []
       var primaryTeamRuns = {}
       $scope.secondaryRuns = []
@@ -21,7 +24,7 @@ angular.module("LineScore", ['datatables']).controller("LineScoreController", fu
         var run = runs[i]
 
         if (run.score != 0 || run.time.minutes != 0 || run.time.seconds != 0) {
-          if (run.team.league == "primary") {
+          if (run.team.league == "Primary") {
             $scope.primaryRuns.push(run)
             if (primaryTeamRuns[run.team._id] === undefined) {
               primaryTeamRuns[run.team._id] = {
@@ -35,7 +38,7 @@ angular.module("LineScore", ['datatables']).controller("LineScoreController", fu
             primaryTeamRuns[run.team._id].sumScore = sum.score
             primaryTeamRuns[run.team._id].sumTime = sum.time
 
-          } else if (run.team.league == "secondary") {
+          } else if (run.team.league == "Secondary") {
             $scope.secondaryRuns.push(run)
             if (secondaryTeamRuns[run.team._id] === undefined) {
               secondaryTeamRuns[run.team._id] = {
