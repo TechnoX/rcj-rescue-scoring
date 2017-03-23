@@ -75,7 +75,12 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
     }
     function isOdd(num) { return num % 2;}
     function recurs(x,y,z){
+	if(x < 0 || y < 0 || z < 0){
+	    return;
+	}
+	
 	var cell = $scope.cells[x+','+y+','+z];
+	
 	// If this is a wall that doesn't exists
 	if(!cell)
 	    return;
