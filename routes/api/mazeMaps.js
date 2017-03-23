@@ -4,6 +4,7 @@ const publicRouter = express.Router()
 const privateRouter = express.Router()
 const adminRouter = express.Router()
 const mazeMap = require('../../models/mazeMap').mazeMap
+const mazeRun = require('../../models/mazeMap').mazeRun
 const validator = require('validator')
 const async = require('async')
 const ObjectId = require('mongoose').Types.ObjectId
@@ -152,6 +153,66 @@ adminRouter.put('/:map', function (req, res, next) {
   delete map._id
   delete map.__v
   delete map.competition
+
+  mazeMap.findById(id, function (err, dbMap) {
+
+    // Recursively updates properties in "dbObj" from "obj"
+    const copyProperties = function (obj, dbObj) {
+      for (let prop in obj) {
+        if (obj.Constructor == Array ||
+            (obj.hasOwnProperty(prop) &&
+             (dbObj.hasOwnProperty(prop) || dbObj.get(prop) !== undefined))) { // Mongoose objects don't have hasOwnProperty
+          if (typeof obj[prop] == 'object' && dbObj[prop] != null) { // Catches object and array
+            copyProperties(obj[prop], dbObj[prop])
+
+            if (dbObj.markModified !== undefined) {
+              dbObj.markModified(prop)
+            }
+          } else if (obj[prop] !== undefined) {
+            //logger.debug("copy " + prop)
+            dbObj[prop] = obj[prop]
+          }
+        } else {
+          return new Error("Illegal key: " + prop)
+        }
+      }
+    }
+
+    dbMap.cells = []
+    err = copyProperties(map, dbMap)
+
+    if (err) {
+      logger.error(err)
+      return res.status(400).send({
+        err: err.message,
+        msg: "Could not save map"
+      })
+    }
+
+    mazeRun.findOne({
+      map    : id,
+      started: true
+    }).lean().exec(function (err, dbRun) {
+      if (err) {
+        if (err) {
+          logger.error(err)
+          return res.status(400).send({
+            msg: "Could not get run",
+            err: err.message
+          })
+        } else if (dbRun) {
+          err = new Error("Run " + dbRun._id + " already started on map")
+          logger.error(err)
+          return res.status(400).send({
+            msg: "Run already started on map!",
+            err: err.message
+          })
+        } else {
+          return dbMap.save()
+        }
+      }
+    })
+  })
 
 })
 
