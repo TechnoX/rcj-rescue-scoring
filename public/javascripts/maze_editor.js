@@ -25,7 +25,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 
 
     if(mapId){
-        $http.get("/api/maps/" + mapId + "?populate=true").then(function(response){
+        $http.get("/api/maps/maze/" + mapId + "?populate=true").then(function(response){
             $scope.startTile = response.data.startTile;
             $scope.height = response.data.height;
             $scope.sliderOptions.ceil = $scope.height - 1;
@@ -150,8 +150,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
             width: $scope.width,
             startTile: $scope.startTile
         };
-
-        $http.post("/api/maps/createmap/", map).then(function(response){
+	console.log(map);
+        $http.post("/api/maps/maze", map).then(function(response){
             alert("Success!");
             console.log(response.data);
             window.location.replace("/maze/editor/" + response.data.id)
