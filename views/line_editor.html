@@ -4,7 +4,7 @@
 <div ng-controller="ddController" style="margin-top:50px;">
   <div class="row">
     <div class="col-md-12">
-      <button class="btn btn-primary" type="button" ng-click="saveMap()">Save map</button> <button class="btn btn-primary" type="button" ng-click="saveMapAs()">Save map as: </button> <input type="text" ng-model="saveasname"></label><br>
+      <button class="btn btn-primary" type="button" ng-click="saveMap()">Save map</button> <button class="btn btn-primary" type="button" ng-click="saveMapAs()">Save map as: </button> <input type="text" ng-model="saveasname"><br>
       <label>Name of design: <input type="text" ng-model="name"></label><br>
       <label>Max height: <input type="number" ng-model="height" ng-change="sliderOptions.ceil = height - 1" min="1"></label><br>
       <label>Max width: <input type="number" ng-model="width" min="1" ></label><br>
