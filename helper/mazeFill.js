@@ -25,19 +25,16 @@ module.exports.floodFill = function (map) {
   for (let i in cells) {
     if (cells.hasOwnProperty(i)) {
       let cell = cells[i]
-      if (cell.isWall || cell.visited) {
-        delete cell.visited
-        map.cells.push(cell)
-      }
+      map.cells.push(cell)
     }
   }
 }
 
 function floodFill(tile, cells, dim) {
-  if (tile.visited != null && tile.visited) {
+  if (tile.reachable != null && tile.reachable) {
     return
   } else {
-    tile.visited = true
+    tile.reachable = true
   }
 
   if (cells[tile.x + ',' + (tile.y - 1) + ',' + tile.z] == null &&
