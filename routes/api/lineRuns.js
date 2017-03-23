@@ -204,7 +204,7 @@ privateRouter.put('/:runid', function (req, res, next) {
     .exec(function (err, dbRun) {
       if (err) {
         logger.error(err)
-        res.status(400).send({msg: "Could not get run"})
+        res.status(400).send({msg: "Could not get run", err: err.message})
       } else {
         if (run.tiles != null && run.tiles.constructor === Object) { // Handle dict as "sparse" array
           const tiles = run.tiles
@@ -292,7 +292,7 @@ adminRouter.delete('/:runid', function (req, res, next) {
   lineRun.remove({_id: id}, function (err) {
     if (err) {
       logger.error(err)
-      res.status(400).send({err: "Could not remove run"})
+      res.status(400).send({msg: "Could not remove run", err: err.message})
     } else {
       res.status(200).send({msg: "Run has been removed!"})
     }
@@ -328,7 +328,7 @@ adminRouter.post('/', function (req, res) {
   }).save(function (err, data) {
     if (err) {
       logger.error(err)
-      return res.status(400).send({msg: "Error saving run in db"})
+      return res.status(400).send({msg: "Error saving run in db", err: err.message})
     } else {
       res.location("/api/runs/" + data._id)
       return res.status(201).send({

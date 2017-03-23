@@ -67,7 +67,7 @@ function getMazeRuns(req, res) {
   query.lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not get runs"})
+      res.status(400).send({msg: "Could not get runs", err: err.message})
     } else {
       res.status(200).send(data)
     }
@@ -130,7 +130,7 @@ publicRouter.get('/:runid', function (req, res, next) {
   query.lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
-      return res.status(400).send({err: err.message, msg: "Could not get run"})
+      return res.status(400).send({msg: "Could not get run", err: err.message})
     } else {
       return res.status(200).send(data)
     }
@@ -195,7 +195,7 @@ privateRouter.put('/:runid', function (req, res, next) {
     .exec(function (err, dbRun) {
       if (err) {
         logger.error(err)
-        res.status(400).send({msg: "Could not get run"})
+        res.status(400).send({msg: "Could not get run", err: err.message})
       } else {
 
 
@@ -294,7 +294,7 @@ adminRouter.delete('/:runid', function (req, res, next) {
   mazeRun.remove({_id: id}, function (err) {
     if (err) {
       logger.error(err)
-      res.status(400).send({err: "Could not remove run"})
+      res.status(400).send({msg: "Could not remove run", err: err.message})
     } else {
       res.status(200).send({msg: "Run has been removed!"})
     }
@@ -330,11 +330,11 @@ adminRouter.post('/', function (req, res) {
   }).save(function (err, data) {
     if (err) {
       logger.error(err)
-      return res.status(400).send({msg: "Error saving run in db"})
+      return res.status(400).send({msg: "Error saving run in db", err: err.message})
     } else {
       res.location("/api/runs/" + data._id)
       return res.status(201).send({
-        err: "New run has been saved",
+        msg: "New run has been saved",
         id : data._id
       })
     }
