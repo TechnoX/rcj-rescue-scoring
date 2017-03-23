@@ -143,9 +143,9 @@ module.exports.calculateMazeScore = function (run) {
     }
   }
 
-  score += rescueKits * 10
+  score += min(rescueKits, 12) * 10
 
-  score += max((victims + rescueKits - run.LoPs) * 10, 0)
+  score += max((victims + min(rescueKits, 12) - run.LoPs) * 10, 0)
 
   if (run.exitBonus) {
     score += victims * 10
