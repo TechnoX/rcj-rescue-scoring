@@ -20,9 +20,6 @@ privateRouter.get('/judge/:roundid', function (req, res, next) {
   res.render('maze_judge', {id : id})
 })
  
-adminRouter.get('/editor/:mapid', function (req, res, next) {
-  const id = req.params.mapid
-
 publicRouter.get('/:competitionid', function (req, res, next) {
   const id = req.params.competitionid
   
