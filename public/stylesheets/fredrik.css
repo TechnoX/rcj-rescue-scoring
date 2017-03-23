@@ -77,7 +77,10 @@ tile{
     border-color: black;
     margin-right: 2px;
 }
-
+.error{
+    color: red;
+    font-weight: bold;
+}
 rzslider{
     width: 200px;
 /*    width: 80%;*/

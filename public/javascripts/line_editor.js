@@ -26,7 +26,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
     };
     $scope.z = 0;
     $scope.tiles = {};
-    $scope.startTile = {x: 0, y: 0, z: 0};
+    $scope.startTile = {x: -1, y: -1, z: -1};
     $scope.numberOfDropTiles = 0;
     $scope.height = 1;
     $scope.sliderOptions.ceil = $scope.height - 1;
@@ -76,7 +76,18 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
             $scope.tiles[x+','+y+','+$scope.z].rot = 0;
     }
 
+
+    $scope.startNotSet = function(){
+	return $scope.startTile.x == -1 && $scope.startTile.y == -1 && $scope.startTile.z == -1;
+    }
+
+    
     $scope.saveMapAs = function(){
+	if($scope.startNotSet()){
+	    alert("You must define a starting tile");
+	    return;
+	}
+	
 	if($scope.saveasname == $scope.name){
 	    alert("You must have a new name when saving as!");
 	    return;
@@ -105,7 +116,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
         });
     }
     $scope.saveMap = function(){
-
+	if($scope.startNotSet()){
+	    alert("You must define a starting tile");
+	    return;
+	}
         var map = {
 	    competition: competitionId,
             name: $scope.name,
