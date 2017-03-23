@@ -26,7 +26,7 @@ publicRouter.get('/', function (req, res) {
   competitiondb.competition.find({}).lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not get competitions"})
+      res.status(400).send({msg: "Could not get competitions", err: err.message})
     } else {
       res.status(200).send(data)
     }
@@ -43,7 +43,7 @@ publicRouter.get('/:competition', function (req, res, next) {
   competitiondb.competition.findById(id).lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not get competition"})
+      res.status(400).send({msg: "Could not get competition", err: err.message})
     } else {
       res.status(200).send(data)
     }
@@ -60,7 +60,7 @@ publicRouter.get('/:competition/teams', function (req, res, next) {
   competitiondb.team.find({competition: id}).lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not get teams"})
+      res.status(400).send({msg: "Could not get teams", err: err.message})
     } else {
       res.status(200).send(data)
     }
@@ -85,7 +85,7 @@ publicRouter.get('/:competition/:league/teams', function (req, res, next) {
   }).lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not get teams"})
+      res.status(400).send({msg: "Could not get teams", err: err.message})
     } else {
       res.status(200).send(data)
     }
@@ -158,7 +158,7 @@ publicRouter.get('/:competition/fields', function (req, res, next) {
   competitiondb.field.find({competition: id}).lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not get fields"})
+      res.status(400).send({msg: "Could not get fields", err: err.message})
     } else {
       res.status(200).send(data)
     }
@@ -183,7 +183,7 @@ publicRouter.get('/:competition/:league/fields', function (req, res, next) {
   }).lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not get fields"})
+      res.status(400).send({msg: "Could not get fields", err: err.message})
     } else {
       res.status(200).send(data)
     }
@@ -200,7 +200,7 @@ publicRouter.get('/:competition/rounds', function (req, res, next) {
   competitiondb.round.find({competition: id}).lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not get rounds"})
+      res.status(400).send({msg: "Could not get rounds", err: err.message})
     } else {
       res.status(200).send(data)
     }
@@ -225,7 +225,7 @@ publicRouter.get('/:competition/:league/rounds', function (req, res, next) {
   }).lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not get rounds"})
+      res.status(400).send({msg: "Could not get rounds", err: err.message})
     } else {
       res.status(200).send(data)
     }
@@ -240,7 +240,7 @@ adminRouter.post('/', function (req, res) {
   }).save(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Error saving competition"})
+      res.status(400).send({msg: "Error saving competition", err: err.message})
     } else {
       res.location("/api/competitions/" + data._id)
       res.status(201).send({

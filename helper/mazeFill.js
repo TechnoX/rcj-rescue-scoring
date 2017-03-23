@@ -31,10 +31,10 @@ module.exports.floodFill = function (map) {
 }
 
 function floodFill(tile, cells, dim) {
-  if (tile.reachable != null && tile.reachable) {
+  if (tile.tile.reachable) {
     return
   } else {
-    tile.reachable = true
+    tile.tile.reachable = true
   }
 
   if (cells[tile.x + ',' + (tile.y - 1) + ',' + tile.z] == null &&
@@ -168,6 +168,20 @@ module.exports.linearFill = function (map) {
                                 ',' + map.startTile.z], cells)
 }
 
+function isOdd(n) {
+  return n & 1 // Bitcheck LSB
+}
+function isEven(n) {
+  return !isOdd(n)
+}
+
+function isHorizontal(wall) {
+  return isOdd(wall.x) && isEven(wall.y)
+}
+function isVertical(wall) {
+  return isEven(wall.x) && isOdd(wall.y)
+}
+
 function setAllSurroundingLinear(wall, cells) {
   if (wall == null) {
     return
@@ -177,16 +191,21 @@ function setAllSurroundingLinear(wall, cells) {
   }
 
   wall.isLinear = true
+  //logger.debug("Linear at (" + wall.x + "," + wall.y + "," + wall.z + ")")
 
-  for (let i = -1; i <= 1; i++) {
-    for (let j = -1; j <= 1; j++) {
-      let cell = cells[(wall.x + i) + ',' + (wall.y + 1) + ',' + wall.z]
+
+  for (let i = -(isHorizontal(wall) ? 2 : 1); i <=
+                                              (isHorizontal(wall) ? 2 : 1); i++) {
+    for (let j = -(isVertical(wall) ? 2 : 1); j <=
+                                              (isVertical(wall) ? 2 : 1); j++) {
+      let cell = cells[(wall.x + i) + ',' + (wall.y + j) + ',' + wall.z]
 
       if (cell != null) {
         if (cell.isWall) {
           setAllSurroundingLinear(cell, cells)
         } else if (cell.isTile) {
           cell.isLinear = true
+          //logger.debug("Linear at (" + cell.x + "," + cell.y + "," + cell.z +")")
 
           if (cell.tile.changeFloorTo != cell.z) {
             setAllSurroundingLinear(cells[(cell.x - 1) + ',' + cell.y + ',' +

@@ -29,7 +29,7 @@ function getMazeMaps(req, res) {
   query.lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
-      return res.status(400).send({msg: "Could not get maps"})
+      return res.status(400).send({msg: "Could not get maps", err: err.message})
     } else {
       return res.status(200).send(data)
     }
@@ -109,7 +109,7 @@ adminRouter.post('/', function (req, res) {
   newMap.save(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Error saving map"})
+      res.status(400).send({msg: "Error saving map", err: err.message})
     } else {
       res.location("/api/maps/maze/" + data._id)
       res.status(201).send({msg: "New map has been saved", id: data._id})
@@ -132,7 +132,7 @@ publicRouter.get('/:map', function (req, res, next) {
   query.lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not get map"})
+      res.status(400).send({msg: "Could not get map", err: err.message})
     } else {
       res.status(200).send(data)
     }
@@ -146,6 +146,12 @@ adminRouter.put('/:map', function (req, res, next) {
     return next()
   }
 
+  const map = req.body
+
+  // Exclude fields that are not allowed to be publicly changed
+  delete map._id
+  delete map.__v
+  delete map.competition
 
 })
 
@@ -159,7 +165,7 @@ adminRouter.delete('/:map', function (req, res, next) {
   mazeMap.remove({_id: id}, function (err) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not remove map"})
+      res.status(400).send({msg: "Could not remove map", err: err.message})
     } else {
       res.status(200).send({msg: "Map has been removed!"})
     }

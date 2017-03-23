@@ -99,7 +99,7 @@ adminRouter.post('/', function (req, res) {
   newMap.save(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Error saving map"})
+      res.status(400).send({msg: "Error saving map", err: err.message})
     } else {
       res.location("/api/maps/line/" + data._id)
       res.status(201).send({msg: "New map has been saved", id: data._id})
@@ -124,7 +124,7 @@ publicRouter.get('/:map', function (req, res, next) {
   query.lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not get map"})
+      res.status(400).send({msg: "Could not get map", err: err.message})
     } else {
       res.status(200).send(data)
     }
@@ -151,7 +151,7 @@ adminRouter.delete('/:map', function (req, res, next) {
   lineMap.remove({_id: id}, function (err) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not remove map"})
+      res.status(400).send({msg: "Could not remove map", err: err.message})
     } else {
       res.status(200).send({msg: "Map has been removed!"})
     }
@@ -191,7 +191,7 @@ function getTileTypes(req, res) {
   query.lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not get tiletypes"})
+      res.status(400).send({msg: "Could not get tiletypes", err: err.message})
     } else {
       res.status(200).send(data)
     }
@@ -215,7 +215,7 @@ function getTileSets(req, res, next) {
   query.lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
-      return res.status(400).send({msg: "Could not get tile sets"})
+      return res.status(400).send({msg: "Could not get tile sets", err: err.message})
     } else {
       return res.status(200).send(data)
     }
@@ -231,7 +231,7 @@ adminRouter.post('/tilesets', function (req, res, next) {
   }).save(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Error saving tileset"})
+      res.status(400).send({msg: "Error saving tileset", err: err.message})
     } else {
       res.location("/api/maps/line/tilesets" + data._id)
       res.status(201).send({msg: "New tileset has been saved", id: data._id})
@@ -254,7 +254,7 @@ publicRouter.get('/tilesets/:tileset', function (req, res, next) {
     .exec((err, data) => {
       if (err) {
         logger.error(err)
-        res.status(400).send({msg: "Could not get tile set"})
+        res.status(400).send({msg: "Could not get tile set", err: err.message})
       } else {
         res.status(200).send(data)
       }
@@ -273,13 +273,13 @@ adminRouter.put('/tilesets/:tileset', function (req, res, next) {
   tileSet.findById(id, (err, dbTileSet) => {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not get tile set"})
+      res.status(400).send({msg: "Could not get tile set", err: err.message})
     } else {
       dbTileSet.tiles = _tileSet.tiles
       dbTileSet.save((err, data)=> {
         if (err) {
           logger.error(err)
-          res.status(400).send({msg: "Could not get tile set"})
+          res.status(400).send({msg: "Could not get tile set", err: err.message})
         } else {
           res.status(200).send({msg: "TileSet updated!"})
         }
@@ -299,7 +299,7 @@ adminRouter.delete('/tilesets/:tileset', function (req, res, next) {
   tileSet.remove({_id: id}, (err) => {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not remove tileset"})
+      res.status(400).send({msg: "Could not remove tileset", err: err.message})
     } else {
       res.status(200).send({msg: "Tileset has been removed!"})
     }
