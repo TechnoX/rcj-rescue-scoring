@@ -54,7 +54,7 @@ const mazeRunSchema = new Schema({
       }
     }
   }],
-  LoPs     : {type: Number, min: 0},
+  LoPs     : {type: Number, min: 0, default: 0},
   exitBonus: {type: Boolean, default: false},
   score    : {type: Number, min: 0, default: 0},
   time     : {

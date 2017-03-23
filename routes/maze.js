@@ -19,14 +19,69 @@ privateRouter.get('/judge/:roundid', function (req, res, next) {
 
   res.render('maze_judge', {id : id})
 })
-
+ 
 adminRouter.get('/editor/:mapid', function (req, res, next) {
   const id = req.params.mapid
 
+publicRouter.get('/:competitionid', function (req, res, next) {
+  const id = req.params.competitionid
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
+  
+  res.render('maze_competition', {id : id})
+})
 
+publicRouter.get('/:competitionid/score', function (req, res, next) {
+  const id = req.params.competitionid
+  
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+  
+  res.render('maze_score', {id : id})
+})
+
+publicRouter.get('/view/:roundid', function (req, res, next) {
+  const id = req.params.roundid
+  
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+  
+  res.render('maze_view', {id : id})
+})
+publicRouter.get('/viewfield/:fieldid', function (req, res, next) {
+  const id = req.params.fieldid
+  
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+  
+  res.render('maze_view_field', {id : id})
+})
+publicRouter.get('/viewcurrent', function (req, res) {
+  res.render('maze_view_current')
+})
+
+privateRouter.get('/judge/:roundid', function (req, res, next) {
+  const id = req.params.roundid
+  
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+  
+  res.render('maze_judge', {id : id})
+})
+
+adminRouter.get('/editor/:mapid', function (req, res, next) {
+  const id = req.params.mapid
+  
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+  
   res.render('maze_editor', {mapid : id})
 })
 
