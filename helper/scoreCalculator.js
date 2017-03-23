@@ -88,58 +88,60 @@ module.exports.calculateMazeScore = function (run) {
     const tile = run.tiles[i]
     const coord = tile.x + ',' + tile.y + ',' + tile.z
 
-    if (tile.scoredItems.speedbump && mapTiles[coord].tile.speedbump) {
-      score += 5
-    }
+    if (mapTiles[coord].tile.reachable) {
 
-    if (tile.scoredItems.checkpoint && mapTiles[coord].tile.checkpoint) {
-      score += 10
-    }
-    if (tile.scoredItems.rampBottom && mapTiles[coord].tile.rampBottom) {
-      score += 10
-    }
-    if (tile.scoredItems.rampTop && mapTiles[coord].tile.rampTop) {
-      score += 20
-    }
+      if (tile.scoredItems.speedbump && mapTiles[coord].tile.speedbump) {
+        score += 5
+      }
+      if (tile.scoredItems.checkpoint && mapTiles[coord].tile.checkpoint) {
+        score += 10
+      }
+      if (tile.scoredItems.rampBottom && mapTiles[coord].tile.rampBottom) {
+        score += 10
+      }
+      if (tile.scoredItems.rampTop && mapTiles[coord].tile.rampTop) {
+        score += 20
+      }
 
-    const maxKits = {
-      "H"     : 2,
-      "S"     : 1,
-      "U"     : 0,
-      "Heated": 1
-    }
+      const maxKits = {
+        "H"     : 2,
+        "S"     : 1,
+        "U"     : 0,
+        "Heated": 1
+      }
 
-    if (mapTiles[coord].tile.victims.top != "None") {
-      if (tile.victims.top) {
-        victims++
-        score += mapTiles[coord].isLinear ? 10 : 25
-        rescueKits += min(tile.rescueKits.top, maxKits[mapTiles[coord].tile.victims.top])
+      if (mapTiles[coord].tile.victims.top != "None") {
+        if (tile.victims.top) {
+          victims++
+          score += mapTiles[coord].isLinear ? 10 : 25
+          rescueKits += min(tile.rescueKits.top, maxKits[mapTiles[coord].tile.victims.top])
+        }
       }
-    }
-    if (mapTiles[coord].tile.victims.right != "None") {
-      if (tile.victims.right) {
-        victims++
-        score += mapTiles[coord].isLinear ? 10 : 25
-        rescueKits += min(tile.rescueKits.right, maxKits[mapTiles[coord].tile.victims.right])
+      if (mapTiles[coord].tile.victims.right != "None") {
+        if (tile.victims.right) {
+          victims++
+          score += mapTiles[coord].isLinear ? 10 : 25
+          rescueKits += min(tile.rescueKits.right, maxKits[mapTiles[coord].tile.victims.right])
+        }
       }
-    }
-    if (mapTiles[coord].tile.victims.bottom != "None") {
-      if (tile.victims.bottom) {
-        victims++
-        score += mapTiles[coord].isLinear ? 10 : 25
-        rescueKits += min(tile.rescueKits.bottom, maxKits[mapTiles[coord].tile.victims.bottom])
+      if (mapTiles[coord].tile.victims.bottom != "None") {
+        if (tile.victims.bottom) {
+          victims++
+          score += mapTiles[coord].isLinear ? 10 : 25
+          rescueKits += min(tile.rescueKits.bottom, maxKits[mapTiles[coord].tile.victims.bottom])
+        }
       }
-    }
-    if (mapTiles[coord].tile.victims.left != "None") {
-      if (tile.victims.left) {
-        victims++
-        score += mapTiles[coord].isLinear ? 10 : 25
-        rescueKits += min(tile.rescueKits.left, maxKits[mapTiles[coord].tile.victims.left])
+      if (mapTiles[coord].tile.victims.left != "None") {
+        if (tile.victims.left) {
+          victims++
+          score += mapTiles[coord].isLinear ? 10 : 25
+          rescueKits += min(tile.rescueKits.left, maxKits[mapTiles[coord].tile.victims.left])
+        }
       }
-    }
 
-    if (tile.scoredItems.checkpoint && mapTiles[coord].tile.checkpoint) {
-      score += 10
+      if (tile.scoredItems.checkpoint && mapTiles[coord].tile.checkpoint) {
+        score += 10
+      }
     }
   }
 
