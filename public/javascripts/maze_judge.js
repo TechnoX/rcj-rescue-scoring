@@ -72,10 +72,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
     }
 
     $scope.toggleScoring = function(){
-        if($scope.numberOfDropTiles - $scope.placedDropTiles > 0) {
-            alert("All checkpoints are not yet placed.");
-            return;
-        }
         // Start/stop scoring
         $scope.startedScoring = !$scope.startedScoring;
         if(!$scope.startedScoring)
