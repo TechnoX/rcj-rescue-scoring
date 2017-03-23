@@ -59,7 +59,7 @@ function getLineRuns(req, res) {
     query.populate([
       {path: "competition", select: "name"},
       {path: "round", select: "name"},
-      {path: "team", select: "name"},
+      {path: "team", select: "name league"},
       {path: "field", select: "name"},
       {path: "map", select: "name"}
     ])
