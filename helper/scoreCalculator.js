@@ -75,10 +75,11 @@ module.exports.calculateMazeScore = function (run) {
   var score = 0
 
   var mapTiles = []
-  for (let i = 0; i < run.map.tiles.length; i++) {
-    let tile = run.map.tiles[i]
-
-    mapTiles[tile.x + ',' + tile.y + ',' + tile.z] = tile
+  for (let i = 0; i < run.map.cells.length; i++) {
+    let cell = run.map.cells[i]
+    if (cell.isTile) {
+      mapTiles[tile.x + ',' + tile.y + ',' + tile.z] = tile
+    }
   }
 
   var victims = 0
