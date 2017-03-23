@@ -78,7 +78,7 @@ module.exports.calculateMazeScore = function (run) {
   for (let i = 0; i < run.map.cells.length; i++) {
     let cell = run.map.cells[i]
     if (cell.isTile) {
-      mapTiles[tile.x + ',' + tile.y + ',' + tile.z] = tile
+      mapTiles[cell.x + ',' + cell.y + ',' + cell.z] = cell
     }
   }
 
