@@ -107,7 +107,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 	$http.post("/api/maps/line", map).then(function(response){
 	    alert("Created map!");
 	    console.log(response.data);
-	    competitionId = response.data.competition;
 	    window.location.replace("/line/editor/" + response.data.id)
         }, function(response){
 	    console.log(response);
@@ -148,7 +147,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
             $http.post("/api/maps/line", map).then(function(response){
 		alert("Created map!");
 		console.log(response.data);
-		competitionId = response.data.competition;
 		window.location.replace("/line/editor/" + response.data.id)
             }, function(response){
 		console.log(response);
