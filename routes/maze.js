@@ -9,9 +9,17 @@ var ObjectId = require('mongoose').Types.ObjectId
 publicRouter.get('/', function (req, res) {
   res.render('maze_home');
 })
-adminRouter.get('/editor', function (req, res) {
-  res.render('maze_editor')
+
+privateRouter.get('/judge/:roundid', function (req, res, next) {
+  const id = req.params.roundid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  res.render('maze_judge', {id : id})
 })
+
 adminRouter.get('/editor/:mapid', function (req, res, next) {
   const id = req.params.mapid
 
