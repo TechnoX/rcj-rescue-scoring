@@ -14,7 +14,7 @@
         Time: {{time | date:'mm:ss'}}
       </p>
       <p ng-show="startedScoring">
-      	<label>Robot exited the evacuation zone after touching at least one victim: <input type="checkbox" ng-model="exitBonus" ng-change="changeExitBonus()"></label>
+      	<label>Robot returned to starting tile for more than 10s: <input type="checkbox" ng-model="exitBonus" ng-change="changeExitBonus()"></label>
       </p>
     </div>
   </div>
