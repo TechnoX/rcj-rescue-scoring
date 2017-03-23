@@ -68,6 +68,16 @@ router.get('/:competitionid/maze/maps', function (req, res, next) {
   res.render('maze_map_admin', {id : id})
 })
 
+router.get('/:competitionid/maze/editor', function (req, res, next) {
+  const id = req.params.competitionid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  res.render('maze_editor', {compid : id})
+})
+
 router.get('/:competitionid/rounds', function (req, res, next) {
   const id = req.params.competitionid
 

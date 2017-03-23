@@ -19,7 +19,7 @@ adminRouter.get('/editor/:mapid', function (req, res, next) {
     return next()
   }
 
-  res.render('maze_editor', {id : id})
+  res.render('maze_editor', {mapid : id})
 })
 
 publicRouter.all('*', function (req, res, next) {
