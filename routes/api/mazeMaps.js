@@ -4,7 +4,7 @@ const publicRouter = express.Router()
 const privateRouter = express.Router()
 const adminRouter = express.Router()
 const mazeMap = require('../../models/mazeMap').mazeMap
-const mazeRun = require('../../models/mazeMap').mazeRun
+const mazeRun = require('../../models/mazeRun').mazeRun
 const validator = require('validator')
 const async = require('async')
 const ObjectId = require('mongoose').Types.ObjectId
@@ -140,6 +140,29 @@ publicRouter.get('/:map', function (req, res, next) {
   })
 })
 
+// Recursively updates properties in "dbObj" from "obj"
+const copyProperties = function (obj, dbObj) {
+  for (let prop in obj) {
+    if (obj.constructor == Array ||
+        (obj.hasOwnProperty(prop) &&
+         (dbObj.hasOwnProperty(prop) ||
+          (dbObj.get !== undefined && dbObj.get(prop) !== undefined)))) { // Mongoose objects don't have hasOwnProperty
+      if (typeof obj[prop] == 'object' && dbObj[prop] != null) { // Catches object and array
+        copyProperties(obj[prop], dbObj[prop])
+
+        if (dbObj.markModified !== undefined) {
+          dbObj.markModified(prop)
+        }
+      } else if (obj[prop] !== undefined) {
+        //logger.debug("copy " + prop)
+        dbObj[prop] = obj[prop]
+      }
+    } else {
+      return new Error("Illegal key: " + prop)
+    }
+  }
+}
+
 adminRouter.put('/:map', function (req, res, next) {
   const id = req.params.map
 
@@ -155,45 +178,38 @@ adminRouter.put('/:map', function (req, res, next) {
   delete map.competition
 
   mazeMap.findById(id, function (err, dbMap) {
-
-    // Recursively updates properties in "dbObj" from "obj"
-    const copyProperties = function (obj, dbObj) {
-      for (let prop in obj) {
-        if (obj.Constructor == Array ||
-            (obj.hasOwnProperty(prop) &&
-             (dbObj.hasOwnProperty(prop) || dbObj.get(prop) !== undefined))) { // Mongoose objects don't have hasOwnProperty
-          if (typeof obj[prop] == 'object' && dbObj[prop] != null) { // Catches object and array
-            copyProperties(obj[prop], dbObj[prop])
-
-            if (dbObj.markModified !== undefined) {
-              dbObj.markModified(prop)
-            }
-          } else if (obj[prop] !== undefined) {
-            //logger.debug("copy " + prop)
-            dbObj[prop] = obj[prop]
-          }
-        } else {
-          return new Error("Illegal key: " + prop)
-        }
-      }
-    }
-
-    dbMap.cells = []
-    err = copyProperties(map, dbMap)
-
     if (err) {
       logger.error(err)
       return res.status(400).send({
-        err: err.message,
-        msg: "Could not save map"
+        msg: "Could not get map",
+        err: err.message
       })
-    }
+    } else {
 
-    mazeRun.findOne({
-      map    : id,
-      started: true
-    }).lean().exec(function (err, dbRun) {
+      let cells = []
+      for (let i in map.cells) {
+        if (map.cells.hasOwnProperty(i)) {
+          cells.push(map.cells[i])
+        }
+      }
+      map.cells = cells
+
+      //logger.debug(map)
+      dbMap.cells = []
+      err = copyProperties(map, dbMap)
+
       if (err) {
+        logger.error(err)
+        return res.status(400).send({
+          err: err.message,
+          msg: "Could not save map"
+        })
+      }
+
+      mazeRun.findOne({
+        map    : id,
+        started: true
+      }).lean().exec(function (err, dbRun) {
         if (err) {
           logger.error(err)
           return res.status(400).send({
@@ -208,12 +224,21 @@ adminRouter.put('/:map', function (req, res, next) {
             err: err.message
           })
         } else {
-          return dbMap.save()
+          dbMap.save(function (err) {
+            if (err) {
+              logger.error(err)
+              return res.status(400).send({
+                msg: "Could not save map",
+                err: err.message
+              })
+            } else {
+              return res.status(200).send({msg: "Saved!"})
+            }
+          })
         }
-      }
-    })
+      })
+    }
   })
-
 })
 
 adminRouter.delete('/:map', function (req, res, next) {
