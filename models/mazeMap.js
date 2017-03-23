@@ -30,6 +30,7 @@ function isEven(n) {
  */
 
 const tileSchema = new Schema({
+  reachable    : {type: Boolean, default: false},
   checkpoint   : {type: Boolean, default: false},
   speedbump    : {type: Boolean, default: false},
   black        : {type: Boolean, default: false},
@@ -108,6 +109,12 @@ mazeMapSchema.pre('save', function (next) {
   for (let i = 0; i < self.cells.length; i++) {
     let cell = self.cells[i]
 
+    if (cell.x > self.width * 2 || cell.y > self.length * 2 ||
+        cell.z >= self.height) {
+      delete self.cells[i]
+      continue
+    }
+
     if (isOdd(cell.x) && isOdd(cell.y)) {
       cell.isTile = true
       cell.isWall = false
@@ -176,10 +183,12 @@ mazeMapSchema.pre('save', function (next) {
     }
   }
 
-  mazeFill.floodFill(self)
-  mazeFill.linearFill(self)
+  if (self.finished) {
+    mazeFill.floodFill(self)
+    mazeFill.linearFill(self)
+  }
 
-  if (self.isNew) {
+  if (self.isNew || self.isModified("name")) {
     MazeMap.findOne({
       competition: self.competition,
       name       : self.name
