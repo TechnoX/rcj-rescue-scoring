@@ -248,7 +248,7 @@ privateRouter.put('/:runid', function (req, res, next) {
             msg: "Could not save run"
           })
         }
-
+        
         dbRun.score = scoreCalculator.calculateMazeScore(dbRun)
 
         dbRun.save(function (err) {
