@@ -135,7 +135,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
     }
     
     $scope.changeExitBonus = function(){
-        $http.put("/api/runs/line/"+runId, {exitBonus: $scope.exitBonus}).then(function(response){
+        $http.put("/api/runs/maze/"+runId, {exitBonus: $scope.exitBonus}).then(function(response){
             $scope.score = response.data.score;
         }, function(response){
             console.log("Error: " + response.statusText);
@@ -175,7 +175,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 	run.time = {minutes: $scope.minutes, seconds: $scope.seconds};
 
 	console.log("Update run", run);
-        $http.put("/api/runs/line/"+runId, run).then(function(response){
+        $http.put("/api/runs/maze/"+runId, run).then(function(response){
             $scope.score = response.data.score;
 	    console.log("Run updated, got score: ", $scope.score);
         }, function(response){
@@ -194,8 +194,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
         run.time = {};
         run.time.minutes = $scope.minutes;;
         run.time.seconds = $scope.seconds;
-
-        $http.put("/api/runs/line/"+runId, run).then(function(response){
+	console.log(run);
+        $http.put("/api/runs/maze/"+runId, run).then(function(response){
             $scope.score = response.data.score;
             alert("Run signed");
         }, function(response){
