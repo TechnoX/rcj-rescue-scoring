@@ -33,6 +33,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
             $scope.width = response.data.width;
             $scope.length = response.data.length;
             $scope.name = response.data.name;
+	    $scope.finished = response.data.finished;
 	    competitionId = response.data.competition;
 	    
 	    for(var i = 0; i < response.data.cells.length; i++){
