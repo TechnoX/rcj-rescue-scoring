@@ -142,13 +142,19 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 	return $scope.startTile.x == 0 && $scope.startTile.y == 0 && $scope.startTile.z == 0;
     }
 
+
+
+    
     $scope.saveMap = function(){
         var map = {
+	    competition: competitionId,
             name: $scope.name,
             length: $scope.length,
             height: $scope.height,
             width: $scope.width,
-            startTile: $scope.startTile
+	    finished: $scope.finished,
+            startTile: $scope.startTile,
+	    cells: $scope.cells
         };
 	console.log(map);
         $http.post("/api/maps/maze", map).then(function(response){
