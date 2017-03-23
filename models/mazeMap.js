@@ -56,7 +56,7 @@ const tileSchema = new Schema({
       type   : String,
       enum   : VICTIMS,
       default: "None"
-    },
+    }
   },
   changeFloorTo: {type: Number, integer: true, min: 0}
 })
@@ -111,7 +111,7 @@ mazeMapSchema.pre('save', function (next) {
 
     if (cell.x > self.width * 2 || cell.y > self.length * 2 ||
         cell.z >= self.height) {
-      delete self.cells[i]
+      self.cells.splice(i, 1)
       continue
     }
 
@@ -175,7 +175,7 @@ mazeMapSchema.pre('save', function (next) {
       return next(err)
     } else {
       if (!cell.isWall) {
-        delete self.cells[i]
+        self.cells.splice(i, 1)
       } else {
         cell.isTile = false
         delete cell.tile
@@ -186,6 +186,7 @@ mazeMapSchema.pre('save', function (next) {
   if (self.finished) {
     mazeFill.floodFill(self)
     mazeFill.linearFill(self)
+    //logger.debug(JSON.stringify(self))
   }
 
   if (self.isNew || self.isModified("name")) {

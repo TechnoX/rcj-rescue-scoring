@@ -146,6 +146,12 @@ adminRouter.put('/:map', function (req, res, next) {
     return next()
   }
 
+  const map = req.body
+
+  // Exclude fields that are not allowed to be publicly changed
+  delete map._id
+  delete map.__v
+  delete map.competition
 
 })
 
