@@ -189,7 +189,14 @@ adminRouter.put('/:map', function (req, res, next) {
       let cells = []
       for (let i in map.cells) {
         if (map.cells.hasOwnProperty(i)) {
-          cells.push(map.cells[i])
+          let cell = map.cells[i]
+          if (isNaN(i)) {
+            const coords = i.split(',')
+            cell.x = coords[0]
+            cell.y = coords[1]
+            cell.z = coords[2]
+          }
+          cells.push(cell)
         }
       }
       map.cells = cells
