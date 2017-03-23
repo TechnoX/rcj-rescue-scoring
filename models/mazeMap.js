@@ -129,6 +129,20 @@ mazeMapSchema.pre('save', function (next) {
           return next(err)
         }
 
+        if (cell.tile.rampBottom) {
+          const err = new Error("Tile can't be both black and ramp bottom at x: " +
+                                cell.x + ", y: " +
+                                cell.y + ", z: " + cell.z + "!")
+          return next(err)
+        }
+
+        if (cell.tile.rampTop) {
+          const err = new Error("Tile can't be both black and ramp top at x: " +
+                                cell.x + ", y: " +
+                                cell.y + ", z: " + cell.z + "!")
+          return next(err)
+        }
+
         if ((cell.tile.victims.top != null &&
              cell.tile.victims.top != "None") ||
 
@@ -153,9 +167,12 @@ mazeMapSchema.pre('save', function (next) {
                             cell.y + ", z: " + cell.z + "!")
       return next(err)
     } else {
-      cell.isWall = true
-      cell.isTile = false
-      delete cell.tile
+      if (!cell.isWall) {
+        delete self.cells[i]
+      } else {
+        cell.isTile = false
+        delete cell.tile
+      }
     }
   }
 
@@ -192,54 +209,54 @@ module.exports.mazeMap = MazeMap
 
 
 /*new MazeMap({
-  competition: "58a9c7e48cd7f372358f139b",
-  name       : "testmap7",
-  height     : 2,
-  width      : 2,
-  length     : 2,
-  cells      : [{
-    x     : 1,
-    y     : 0,
-    z     : 0,
-    isWall: true
-  }, {
-    x     : 0,
-    y     : 1,
-    z     : 0,
-    isWall: true
-  }, {
-    x     : 1,
-    y     : 1,
-    z     : 0,
-    isTile: true
-  }, {
-    x     : 1,
-    y     : 3,
-    z     : 0,
-    isTile: true,
-    tile  : {
-      black: true
-    }
-  }, {
-    x     : 3,
-    y     : 1,
-    z     : 0,
-    isTile: true,
-    tile  : {
-      checkpoint: true
-    }
-  }],
-  startTile  : {
-    x: 1,
-    y: 1,
-    z: 0
-  }
-}).save(function (err) {
-    if (err) {
-      logger.error(err)
-    }
-    else {
-      logger.info("saved mazemap")
-    }
-  }
-)*/
+ competition: "58a9c7e48cd7f372358f139b",
+ name       : "testmap7",
+ height     : 2,
+ width      : 2,
+ length     : 2,
+ cells      : [{
+ x     : 1,
+ y     : 0,
+ z     : 0,
+ isWall: true
+ }, {
+ x     : 0,
+ y     : 1,
+ z     : 0,
+ isWall: true
+ }, {
+ x     : 1,
+ y     : 1,
+ z     : 0,
+ isTile: true
+ }, {
+ x     : 1,
+ y     : 3,
+ z     : 0,
+ isTile: true,
+ tile  : {
+ black: true
+ }
+ }, {
+ x     : 3,
+ y     : 1,
+ z     : 0,
+ isTile: true,
+ tile  : {
+ checkpoint: true
+ }
+ }],
+ startTile  : {
+ x: 1,
+ y: 1,
+ z: 0
+ }
+ }).save(function (err) {
+ if (err) {
+ logger.error(err)
+ }
+ else {
+ logger.info("saved mazemap")
+ }
+ }
+ )*/
