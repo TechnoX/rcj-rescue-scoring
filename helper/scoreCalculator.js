@@ -111,34 +111,44 @@ module.exports.calculateMazeScore = function (run) {
         "Heated": 1
       }
 
-      if (tile.victims != undefined) {
-        if (mapTiles[coord].tile.victims.top != "None") {
-          if (tile.victims.top) {
-            victims++
-            score += mapTiles[coord].isLinear ? 10 : 25
-            rescueKits += Math.min(tile.rescueKits.top, maxKits[mapTiles[coord].tile.victims.top])
-          }
+      if (mapTiles[coord].tile.victims.top != "None") {
+        if (tile.scoredItems.rescueKits.top > 0) {
+          tile.scoredItems.victims.top = true
         }
-        if (mapTiles[coord].tile.victims.right != "None") {
-          if (tile.victims.right) {
-            victims++
-            score += mapTiles[coord].isLinear ? 10 : 25
-            rescueKits += Math.min(tile.rescueKits.right, maxKits[mapTiles[coord].tile.victims.right])
-          }
+        if (tile.scoredItems.victims.top) {
+          victims++
+          score += mapTiles[coord].isLinear ? 10 : 25
+          rescueKits += Math.min(tile.scoredItems.rescueKits.top, maxKits[mapTiles[coord].tile.victims.top])
         }
-        if (mapTiles[coord].tile.victims.bottom != "None") {
-          if (tile.victims.bottom) {
-            victims++
-            score += mapTiles[coord].isLinear ? 10 : 25
-            rescueKits += Math.min(tile.rescueKits.bottom, maxKits[mapTiles[coord].tile.victims.bottom])
-          }
+      }
+      if (mapTiles[coord].tile.victims.right != "None") {
+        if (tile.scoredItems.rescueKits.right > 0) {
+          tile.scoredItems.victims.right = true
         }
-        if (mapTiles[coord].tile.victims.left != "None") {
-          if (tile.victims.left) {
-            victims++
-            score += mapTiles[coord].isLinear ? 10 : 25
-            rescueKits += Math.min(tile.rescueKits.left, maxKits[mapTiles[coord].tile.victims.left])
-          }
+        if (tile.scoredItems.victims.right) {
+          victims++
+          score += mapTiles[coord].isLinear ? 10 : 25
+          rescueKits += Math.min(tile.scoredItems.rescueKits.right, maxKits[mapTiles[coord].tile.victims.right])
+        }
+      }
+      if (mapTiles[coord].tile.victims.bottom != "None") {
+        if (tile.scoredItems.rescueKits.bottom > 0) {
+          tile.scoredItems.victims.bottom = true
+        }
+        if (tile.scoredItems.victims.bottom) {
+          victims++
+          score += mapTiles[coord].isLinear ? 10 : 25
+          rescueKits += Math.min(tile.scoredItems.rescueKits.bottom, maxKits[mapTiles[coord].tile.victims.bottom])
+        }
+      }
+      if (mapTiles[coord].tile.victims.left != "None") {
+        if (tile.scoredItems.rescueKits.left > 0) {
+          tile.scoredItems.victims.left = true
+        }
+        if (tile.scoredItems.victims.left) {
+          victims++
+          score += mapTiles[coord].isLinear ? 10 : 25
+          rescueKits += Math.min(tile.scoredItems.rescueKits.left, maxKits[mapTiles[coord].tile.victims.left])
         }
       }
 
