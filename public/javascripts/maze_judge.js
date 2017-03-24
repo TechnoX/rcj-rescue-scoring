@@ -274,15 +274,44 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 	var cell = $scope.cells[x+','+y+','+z];
 	if(!cell)
 	    return;
-	
-	// If wall 
-	if(isWall){
-	    // TODO: Do something
-	    console.log("Clicked wall");
+	if(!isTile)
+	    return;
+
+
+	if(!$scope.tiles[x+','+y+','+z]){
+	    $scope.tiles[x+','+y+','+z] = {scoredItems: {speedbump: false, checkpoint: false, rampBottom: false, rampTop: false, victims: {top: false, right: false, left: false, bottom: false}, rescueKits: {top: 0, right: 0, bottom: 0, left: 0}}};
 	}
-	else if(isTile){
-	    // TODO: Do something
-	    console.log("Clicked tile");
+	var tile = $scope.tiles[x+','+y+','+z];
+
+	var hasVictims = (cell.tile.victims.top != "None") ||
+	    (cell.tile.victims.right != "None") ||
+	    (cell.tile.victims.bottom != "None") ||
+	    (cell.tile.victims.left != "None");
+
+	// Total number of scorable things on this tile
+	var total = cell.tile.speedbump +
+	    cell.tile.checkpoint +
+	    cell.tile.rampBottom +
+	    cell.tile.rampTop +
+	    hasVictims;
+	console.log("totalt antal saker", total);
+	console.log("Has victims", hasVictims);
+
+	if(total == 1 && !hasVictims){
+	    if(cell.tile.speedbump){
+		tile.scoredItems.speedbump = !tile.scoredItems.speedbump;
+	    }
+	    if(cell.tile.checkpoint){
+		tile.scoredItems.checkpoint = !tile.scoredItems.checkpoint;
+	    }
+	    if(cell.tile.rampBottom){
+		tile.scoredItems.rampBottom = !tile.scoredItems.rampBottom;
+	    }
+	    if(cell.tile.rampTop){
+		tile.scoredItems.rampTop = !tile.scoredItems.rampTop;
+	    }
+	}else if(total > 1 || hasVictims){
+	    // Open modal for multi-select
 	}
     }
 
