@@ -15,6 +15,12 @@
       <p>
       	<label>Robot returned to starting tile for more than 10s: <input type="checkbox" ng-model="exitBonus" ng-change="changeExitBonus()"></label>
       </p>
+      <p>
+        Total #LoPs:<br>
+        <img src="/images/minus.png" alt="-" ng-click="decrement()" class="plusminus">
+        <span class="count">{{ LoPs }}</span>
+        <img src="/images/plus.png" alt="+" ng-click="increment()" class="plusminus">
+      </p>
     </div>
   </div>
   <div class="row" ng-show="height>1">
