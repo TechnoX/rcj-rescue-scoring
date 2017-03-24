@@ -1,12 +1,6 @@
 <h1>{{team}}</h1>
 <p>{{score}} points</p>
 <div style="margin-top:30px;">
-  <div class="row">
-    <div class="col-sm-12">
-      <label> <input type="radio" ng-model="visType" value="slider"> Slider</label><br>
-      <label> <input type="radio" ng-model="visType" value="side"> Side-by-Side</label><br>
-    </div>
-  </div>
 
   <div class="row" ng-show="visType=='slider'">
     <div class="col-md-12">
@@ -91,8 +85,12 @@
   </div>
 
 
-
-
+  <div class="row">
+    <div class="col-sm-12">
+      <label> <input type="radio" ng-model="visType" value="slider"> Slider</label><br>
+      <label> <input type="radio" ng-model="visType" value="side"> Side-by-Side</label><br>
+    </div>
+  </div>
   
 </div>
 
