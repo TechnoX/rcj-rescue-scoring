@@ -5,7 +5,6 @@ var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'rzModule']);
 app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http', function($scope, $uibModal, $log, $timeout, $http){
 
     $scope.z = 0;
-    $scope.startedScoring = false;
     $scope.startedTime = false;
     $scope.startTime = 0;
     $scope.time = 0;
@@ -73,13 +72,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
             arr.push(i);
         }
         return arr;
-    }
-
-    $scope.toggleScoring = function(){
-        // Start/stop scoring
-        $scope.startedScoring = !$scope.startedScoring;
-        if(!$scope.startedScoring)
-            $scope.saveEverything();
     }
 
 
