@@ -226,17 +226,20 @@ privateRouter.put('/:runid', function (req, res, next) {
 
             if (isNaN(i)) {
               const coords = i.split(',')
-              tile.x = coords[0]
-              tile.y = coords[1]
-              tile.z = coords[2]
+              tile.x = Number(coords[0])
+              tile.y = Number(coords[1])
+              tile.z = Number(coords[2])
             }
 
             let existing = false
             for (let j = 0; j < dbRun.tiles.length; j++) {
               let dbTile = dbRun.tiles[j]
+              //logger.debug(tile)
+              //logger.debug(dbTile)
               if (tile.x == dbTile.x && tile.y == dbTile.y && tile.z == dbTile.z) {
                 existing = true
                 err = copyProperties(tile, dbTile)
+                dbRun.markModified("tiles")
                 if (err) {
                   logger.error(err)
                   return res.status(400).send({
@@ -263,7 +266,7 @@ privateRouter.put('/:runid', function (req, res, next) {
             msg: "Could not save run"
           })
         }
-        logger.debug(JSON.stringify(dbRun))
+
         dbRun.score = scoreCalculator.calculateMazeScore(dbRun)
 
         dbRun.save(function (err) {
