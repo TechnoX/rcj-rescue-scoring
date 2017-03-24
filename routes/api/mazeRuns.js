@@ -231,9 +231,11 @@ privateRouter.put('/:runid', function (req, res, next) {
               tile.z = coords[2]
             }
 
+            let existing = false
             for (let j = 0; j < dbRun.tiles; j++) {
               let dbRun = dbRun.tiles[j]
               if (tile.x == dbRun.x && tile.y == dbRun.y && tile.z == dbRun.z) {
+                existing = true
                 err = copyProperties(tile, dbTile)
                 if (err) {
                   logger.error(err)
@@ -243,6 +245,9 @@ privateRouter.put('/:runid', function (req, res, next) {
                   })
                 }
               }
+            }
+            if (!existing) {
+              dbRun.tiles.push(tile)
             }
           }
         }
