@@ -36,7 +36,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
         $scope.seconds = response.data.time.seconds;
 
 	// Scoring elements of the tiles
-        $scope.tiles = response.data.tiles;
+	for(var i = 0; i < response.data.tiles.length; i++){
+            $scope.tiles[response.data.tiles[i].x + ',' +
+                         response.data.tiles[i].y + ',' +
+                         response.data.tiles[i].z] = response.data.tiles[i];
+        }
 	
 	// Get the map
 	$http.get("/api/maps/maze/" + response.data.map + "?populate=true").then(function(response){
