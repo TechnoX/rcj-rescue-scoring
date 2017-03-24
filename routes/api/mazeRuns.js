@@ -233,7 +233,7 @@ privateRouter.put('/:runid', function (req, res, next) {
 
             let existing = false
             for (let j = 0; j < dbRun.tiles.length; j++) {
-              let dbRun = dbRun.tiles[j]
+              let tile = dbRun.tiles[j]
               if (tile.x == dbRun.x && tile.y == dbRun.y && tile.z == dbRun.z) {
                 existing = true
                 err = copyProperties(tile, dbTile)
