@@ -45,14 +45,14 @@
 	    </td>
 	  </tr>
 	</table>
+      </div>
     </div>
   </div>
-    right here ---> {{visType}}
+
+  
   <div class="row" ng-show="visType=='side'">
     <div class="col-md-12">
-      asdf
-      <div ng-repeat="z in range(height)" style="float: left; border-left: 3px solid black;">
-	asdf
+      <div ng-repeat="z in range(height)">
 	<table>
 	  <tr ng-repeat="r in range(2*length + 1)">
 	    <td ng-repeat="c in range(2*width + 1)" ng-class="{'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall, 'checkpoint': cells[c+','+r+','+z].tile.checkpoint, 'black': cells[c+','+r+','+z].tile.black, 'linear': cells[c+','+r+','+z].isLinear}">
