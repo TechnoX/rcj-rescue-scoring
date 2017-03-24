@@ -213,7 +213,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 	    break;
 	case 'U':
 	    possible++;
-	    current += tile.scoredItems.victims.top;
+	    current += tile.scoredItems.victims.top || tile.scoredItems.rescueKits.top>0;
 	    break;
 	}
 	switch(cell.tile.victims.right){
@@ -237,7 +237,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 	    break;
 	case 'U':
 	    possible++;
-	    current += tile.scoredItems.victims.right;
+	    current += tile.scoredItems.victims.right || tile.scoredItems.rescueKits.right>0;
 	    break;
 	}
 	switch(cell.tile.victims.bottom){
@@ -261,7 +261,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 	    break;
 	case 'U':
 	    possible++;
-	    current += tile.scoredItems.victims.bottom;
+	    current += tile.scoredItems.victims.bottom || tile.scoredItems.rescueKits.bottom>0;
 	    break;
 	}
 	switch(cell.tile.victims.left){
@@ -285,7 +285,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 	    break;
 	case 'U':
 	    possible++;
-	    current += tile.scoredItems.victims.left;
+	    current += tile.scoredItems.victims.left || tile.scoredItems.rescueKits.left>0;
 	    break;
 	}
 
