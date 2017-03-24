@@ -223,6 +223,14 @@ privateRouter.put('/:runid', function (req, res, next) {
         for (let i in run.tiles) {
           if (run.tiles.hasOwnProperty(i)) {
             let tile = run.tiles[i]
+
+            if (isNaN(i)) {
+              const coords = i.split(',')
+              tile.x = coords[0]
+              tile.y = coords[1]
+              tile.z = coords[2]
+            }
+
             for (let j = 0; j < dbRun.tiles; j++) {
               let dbRun = dbRun.tiles[j]
               if (tile.x == dbRun.x && tile.y == dbRun.y && tile.z == dbRun.z) {
