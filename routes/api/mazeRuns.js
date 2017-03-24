@@ -232,7 +232,7 @@ privateRouter.put('/:runid', function (req, res, next) {
             }
 
             let existing = false
-            for (let j = 0; j < dbRun.tiles; j++) {
+            for (let j = 0; j < dbRun.tiles.length; j++) {
               let dbRun = dbRun.tiles[j]
               if (tile.x == dbRun.x && tile.y == dbRun.y && tile.z == dbRun.z) {
                 existing = true
@@ -244,10 +244,12 @@ privateRouter.put('/:runid', function (req, res, next) {
                     msg: "Could not save run"
                   })
                 }
+                break
               }
             }
             if (!existing) {
               dbRun.tiles.push(tile)
+              dbRun.markModified("tiles")
             }
           }
         }
@@ -261,7 +263,7 @@ privateRouter.put('/:runid', function (req, res, next) {
             msg: "Could not save run"
           })
         }
-
+        logger.debug(JSON.stringify(dbRun))
         dbRun.score = scoreCalculator.calculateMazeScore(dbRun)
 
         dbRun.save(function (err) {
