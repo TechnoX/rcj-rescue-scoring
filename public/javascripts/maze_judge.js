@@ -188,72 +188,100 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 		current++;
 	    }
 	}
-	if(cell.tile.victims.top != 'None'){
-	    possible++;
-	}
-	if(cell.tile.victims.right != 'None'){
-	    possible++;
-	}
-	if(cell.tile.victims.bottom != 'None'){
-	    possible++;
-	}
-	if(cell.tile.victims.left != 'None'){
-	    possible++;
-	}
 	switch(cell.tile.victims.top){
 	case 'Heated':
-	    current += (tile.scoredItems.victims.top >= 1);
+	    possible++;
+	    current += tile.scoredItems.victims.top || tile.scoredItems.rescueKits.top>0;
+	    possible++;
+	    current += (tile.scoredItems.rescueKits.top >= 1);
 	    break;
 	case 'H':
-	    current += (tile.scoredItems.victims.top >= 2);
+	    possible++;
+	    current += tile.scoredItems.victims.top || tile.scoredItems.rescueKits.top>0;
+	    possible++;
+	    current += (tile.scoredItems.rescueKits.top >= 2);
 	    break;
 	case 'S':
-	    current += (tile.scoredItems.victims.top >= 1);
+	    possible++;
+	    current += tile.scoredItems.victims.top || tile.scoredItems.rescueKits.top>0;
+	    possible++;
+	    current += (tile.scoredItems.rescueKits.top >= 1);
 	    break;
 	case 'U':
-	    current += (tile.scoredItems.victims.top >= 0);
+	    possible++;
+	    current += tile.scoredItems.victims.top;
 	    break;
 	}
 	switch(cell.tile.victims.right){
 	case 'Heated':
-	    current += (tile.scoredItems.victims.right >= 1);
+	    possible++;
+	    current += tile.scoredItems.victims.right || tile.scoredItems.rescueKits.right>0;
+	    possible++;
+	    current += (tile.scoredItems.rescueKits.right >= 1);
 	    break;
 	case 'H':
-	    current += (tile.scoredItems.victims.right >= 2);
+	    possible++;
+	    current += tile.scoredItems.victims.right || tile.scoredItems.rescueKits.right>0;
+	    possible++;
+	    current += (tile.scoredItems.rescueKits.right >= 2);
 	    break;
 	case 'S':
-	    current += (tile.scoredItems.victims.right >= 1);
+	    possible++;
+	    current += tile.scoredItems.victims.right || tile.scoredItems.rescueKits.right>0;
+	    possible++;
+	    current += (tile.scoredItems.rescueKits.right >= 1);
 	    break;
 	case 'U':
-	    current += (tile.scoredItems.victims.right >= 0);
+	    possible++;
+	    current += tile.scoredItems.victims.right;
 	    break;
 	}
 	switch(cell.tile.victims.bottom){
 	case 'Heated':
-	    current += (tile.scoredItems.victims.bottom >= 1);
+	    possible++;
+	    current += tile.scoredItems.victims.bottom || tile.scoredItems.rescueKits.bottom>0;
+	    possible++;
+	    current += (tile.scoredItems.rescueKits.bottom >= 1);
 	    break;
 	case 'H':
-	    current += (tile.scoredItems.victims.bottom >= 2);
+	    possible++;
+	    current += tile.scoredItems.victims.bottom || tile.scoredItems.rescueKits.bottom>0;
+	    possible++;
+	    current += (tile.scoredItems.rescueKits.bottom >= 2);
 	    break;
 	case 'S':
-	    current += (tile.scoredItems.victims.bottom >= 1);
+	    possible++;
+	    current += tile.scoredItems.victims.bottom || tile.scoredItems.rescueKits.bottom>0;
+	    possible++;
+	    current += (tile.scoredItems.rescueKits.bottom >= 1);
 	    break;
 	case 'U':
-	    current += (tile.scoredItems.victims.bottom >= 0);
+	    possible++;
+	    current += tile.scoredItems.victims.bottom;
 	    break;
 	}
 	switch(cell.tile.victims.left){
 	case 'Heated':
-	    current += (tile.scoredItems.victims.left >= 1);
+	    possible++;
+	    current += tile.scoredItems.victims.left || tile.scoredItems.rescueKits.left>0;
+	    possible++;
+	    current += (tile.scoredItems.rescueKits.left >= 1);
 	    break;
 	case 'H':
-	    current += (tile.scoredItems.victims.left >= 2);
+	    possible++;
+	    current += tile.scoredItems.victims.left || tile.scoredItems.rescueKits.left>0;
+	    possible++;
+	    current += (tile.scoredItems.rescueKits.left >= 2);
 	    break;
 	case 'S':
-	    current += (tile.scoredItems.victims.left >= 1);
+	    possible++;
+	    current += tile.scoredItems.victims.left || tile.scoredItems.rescueKits.left>0;
+	    possible++;
+	    current += (tile.scoredItems.rescueKits.left >= 1);
 	    break;
 	case 'U':
-	    current += (tile.scoredItems.victims.left >= 0);
+	    possible++;
+	    current += tile.scoredItems.victims.left;
 	    break;
 	}
 
@@ -312,6 +340,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 	    }
 	}else if(total > 1 || hasVictims){
 	    // Open modal for multi-select
+	    $scope.open(x,y,z);
 	}
 	var httpdata = {tiles: {[x+','+y+','+z]: tile}};
 	console.log(httpdata);
@@ -321,6 +350,31 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
             console.log("Error: " + response.statusText);
         });
     }
+
+    $scope.open = function(x,y,z) {
+        var modalInstance = $uibModal.open({
+            animation: true,
+            templateUrl: '/templates/maze_judge_modal.html',
+            controller: 'ModalInstanceCtrl',
+            size: 'sm',
+            resolve: {
+                cell: function() {
+                    return $scope.cells[x+','+y+','+z];
+                },
+		tile: function() {
+                    return $scope.tiles[x+','+y+','+z];
+                }
+            }
+        }).closed.then(function(result){
+	    var httpdata = {tiles: {[x+','+y+','+z]: $scope.tiles[x+','+y+','+z]}};
+	    console.log(httpdata);
+            $http.put("/api/runs/maze/"+runId, httpdata).then(function(response){
+                $scope.score = response.data.score;
+            }, function(response){
+                console.log("Error: " + response.statusText);
+            });
+        });
+    };
 
     $scope.saveEverything = function(){
         var run = {}
@@ -366,3 +420,19 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 
 }]);
 
+
+// Please note that $uibModalInstance represents a modal window (instance) dependency.
+// It is not the same as the $uibModal service used above.
+
+app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, cell, tile) {
+    $scope.cell = cell;
+    $scope.tile = tile;
+    $scope.hasVictims = (cell.tile.victims.top != "None") ||
+	(cell.tile.victims.right != "None") ||
+	(cell.tile.victims.bottom != "None") ||
+	(cell.tile.victims.left != "None");
+
+    $scope.ok = function () {
+        $uibModalInstance.close();
+    };
+});
