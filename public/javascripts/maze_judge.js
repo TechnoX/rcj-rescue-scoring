@@ -26,7 +26,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 	$scope.field = response.data.field.name;
 	$scope.round = response.data.round.name;
 	$scope.score = response.data.score;
-	$scope.started = response.data.started;
 	$scope.team = response.data.team.name;
 	$scope.LoPs = response.data.LoPs;
 		
@@ -375,7 +374,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
     $scope.saveEverything = function(){
         var run = {}
 	run.exitBonus = $scope.exitBonus;
-	run.started = $scope.started;
 	run.LoPs = $scope.LoPs;
 	
 	// Scoring elements of the tiles
@@ -395,7 +393,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
     $scope.sign = function(){
         var run = {}
 	run.exitBonus = $scope.exitBonus;
-	run.started = $scope.started;
 	run.LoPs = $scope.LoPs;
 	
 	// Scoring elements of the tiles
