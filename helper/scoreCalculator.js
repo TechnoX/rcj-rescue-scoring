@@ -115,28 +115,28 @@ module.exports.calculateMazeScore = function (run) {
         if (tile.victims.top) {
           victims++
           score += mapTiles[coord].isLinear ? 10 : 25
-          rescueKits += min(tile.rescueKits.top, maxKits[mapTiles[coord].tile.victims.top])
+          rescueKits += Math.min(tile.rescueKits.top, maxKits[mapTiles[coord].tile.victims.top])
         }
       }
       if (mapTiles[coord].tile.victims.right != "None") {
         if (tile.victims.right) {
           victims++
           score += mapTiles[coord].isLinear ? 10 : 25
-          rescueKits += min(tile.rescueKits.right, maxKits[mapTiles[coord].tile.victims.right])
+          rescueKits += Math.min(tile.rescueKits.right, maxKits[mapTiles[coord].tile.victims.right])
         }
       }
       if (mapTiles[coord].tile.victims.bottom != "None") {
         if (tile.victims.bottom) {
           victims++
           score += mapTiles[coord].isLinear ? 10 : 25
-          rescueKits += min(tile.rescueKits.bottom, maxKits[mapTiles[coord].tile.victims.bottom])
+          rescueKits += Math.min(tile.rescueKits.bottom, maxKits[mapTiles[coord].tile.victims.bottom])
         }
       }
       if (mapTiles[coord].tile.victims.left != "None") {
         if (tile.victims.left) {
           victims++
           score += mapTiles[coord].isLinear ? 10 : 25
-          rescueKits += min(tile.rescueKits.left, maxKits[mapTiles[coord].tile.victims.left])
+          rescueKits += Math.min(tile.rescueKits.left, maxKits[mapTiles[coord].tile.victims.left])
         }
       }
 
@@ -146,9 +146,9 @@ module.exports.calculateMazeScore = function (run) {
     }
   }
 
-  score += min(rescueKits, 12) * 10
+  score += Math.min(rescueKits, 12) * 10
 
-  score += max((victims + min(rescueKits, 12) - run.LoPs) * 10, 0)
+  score += Math.max((victims + Math.min(rescueKits, 12) - run.LoPs) * 10, 0)
 
   if (run.exitBonus) {
     score += victims * 10

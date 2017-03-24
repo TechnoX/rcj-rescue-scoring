@@ -58,7 +58,7 @@ function getMazeRuns(req, res) {
     query.populate([
       {path: "competition", select: "name"},
       {path: "round", select: "name"},
-      {path: "team", select: "name"},
+      {path: "team", select: "name league"},
       {path: "field", select: "name"},
       {path: "map", select: "name"}
     ])
@@ -248,7 +248,7 @@ privateRouter.put('/:runid', function (req, res, next) {
             msg: "Could not save run"
           })
         }
-        
+
         dbRun.score = scoreCalculator.calculateMazeScore(dbRun)
 
         dbRun.save(function (err) {

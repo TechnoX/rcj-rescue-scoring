@@ -59,7 +59,7 @@ function getLineRuns(req, res) {
     query.populate([
       {path: "competition", select: "name"},
       {path: "round", select: "name"},
-      {path: "team", select: "name"},
+      {path: "team", select: "name league"},
       {path: "field", select: "name"},
       {path: "map", select: "name"}
     ])
@@ -221,7 +221,8 @@ privateRouter.put('/:runid', function (req, res, next) {
           for (let prop in obj) {
             if (obj.constructor == Array ||
                 (obj.hasOwnProperty(prop) &&
-                 (dbObj.hasOwnProperty(prop) || dbObj.get(prop) !== undefined))) { // Mongoose objects don't have hasOwnProperty
+                 (dbObj.hasOwnProperty(prop) ||
+                  (dbObj.get !== undefined && dbObj.get(prop) !== undefined)))) { // Mongoose objects don't have hasOwnProperty
               if (typeof obj[prop] == 'object' && dbObj[prop] != null) { // Catches object and array
                 copyProperties(obj[prop], dbObj[prop])
 
