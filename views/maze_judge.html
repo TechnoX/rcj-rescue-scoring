@@ -52,6 +52,11 @@
 	      <img ng-src="/images/u_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'U'">
 	      <img ng-src="/images/u_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'U'">
 	      <img ng-src="/images/u_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'U'">
+
+	      <img src="/images/done.png" class="tile-image" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'done'">
+	      <img src="/images/halfdone.png" class="tile-image" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'halfdone'">
+	      <img src="/images/undone.png" class="tile-image" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'undone'">
+	      
 	    </div>
 	  </td>
 	</tr>

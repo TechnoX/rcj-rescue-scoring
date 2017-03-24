@@ -142,6 +142,133 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
     $scope.isUndefined = function (thing) {
 	return (typeof thing === "undefined");
     }
+
+
+    $scope.tileStatus = function(x,y,z,isTile){
+        // If this is a non-existent tile
+	var cell = $scope.cells[x+','+y+','+z];
+	if(!cell)
+	    return;
+	if(!isTile)
+	    return;
+
+	if(!$scope.tiles[x+','+y+','+z]){
+	    $scope.tiles[x+','+y+','+z] = {scoredItems: {speedbump: false, checkpoint: false, rampBottom: false, rampTop: false, victims: {top: false, right: false, left: false, bottom: false}, rescueKits: {top: 0, right: 0, bottom: 0, left: 0}}};
+	}
+	var tile = $scope.tiles[x+','+y+','+z];
+
+	// Current "score" for this tile
+	var current = 0;
+	// Max "score" for this tile. Score is added 1 for every passed mission
+	var possible = 0;
+	
+
+
+	if(cell.tile.speedbump){
+	    possible++;
+	    if(tile.scoredItems.speedbump){
+		current++;
+	    }
+	}
+	if(cell.tile.checkpoint){
+	    possible++;
+	    if(tile.scoredItems.checkpoint){
+		current++;
+	    }
+	}
+	if(cell.tile.rampBottom){
+	    possible++;
+	    if(tile.scoredItems.rampBottom){
+		current++;
+	    }
+	}
+	if(cell.tile.rampTop){
+	    possible++;
+	    if(tile.scoredItems.rampTop){
+		current++;
+	    }
+	}
+	if(cell.tile.victims.top != 'None'){
+	    possible++;
+	}
+	if(cell.tile.victims.right != 'None'){
+	    possible++;
+	}
+	if(cell.tile.victims.bottom != 'None'){
+	    possible++;
+	}
+	if(cell.tile.victims.left != 'None'){
+	    possible++;
+	}
+	switch(cell.tile.victims.top){
+	case 'Heated':
+	    current += (tile.scoredItems.victims.top >= 1);
+	    break;
+	case 'H':
+	    current += (tile.scoredItems.victims.top >= 2);
+	    break;
+	case 'S':
+	    current += (tile.scoredItems.victims.top >= 1);
+	    break;
+	case 'U':
+	    current += (tile.scoredItems.victims.top >= 0);
+	    break;
+	}
+	switch(cell.tile.victims.right){
+	case 'Heated':
+	    current += (tile.scoredItems.victims.right >= 1);
+	    break;
+	case 'H':
+	    current += (tile.scoredItems.victims.right >= 2);
+	    break;
+	case 'S':
+	    current += (tile.scoredItems.victims.right >= 1);
+	    break;
+	case 'U':
+	    current += (tile.scoredItems.victims.right >= 0);
+	    break;
+	}
+	switch(cell.tile.victims.bottom){
+	case 'Heated':
+	    current += (tile.scoredItems.victims.bottom >= 1);
+	    break;
+	case 'H':
+	    current += (tile.scoredItems.victims.bottom >= 2);
+	    break;
+	case 'S':
+	    current += (tile.scoredItems.victims.bottom >= 1);
+	    break;
+	case 'U':
+	    current += (tile.scoredItems.victims.bottom >= 0);
+	    break;
+	}
+	switch(cell.tile.victims.left){
+	case 'Heated':
+	    current += (tile.scoredItems.victims.left >= 1);
+	    break;
+	case 'H':
+	    current += (tile.scoredItems.victims.left >= 2);
+	    break;
+	case 'S':
+	    current += (tile.scoredItems.victims.left >= 1);
+	    break;
+	case 'U':
+	    current += (tile.scoredItems.victims.left >= 0);
+	    break;
+	}
+
+	
+	if(current > 0 && current == possible)
+            return "done";
+        else if(current > 0)
+            return "halfdone";
+        else if(possible > 0)
+            return "undone";
+        else
+            return "";
+    }
+
+
     
     $scope.cellClick = function(x,y,z,isWall,isTile){
 	var cell = $scope.cells[x+','+y+','+z];
