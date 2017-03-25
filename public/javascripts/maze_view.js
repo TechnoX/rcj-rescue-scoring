@@ -6,7 +6,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 
     $scope.z = 0;
 
-    $scope.visType = "slider";
+    $scope.visType = "side";
+    $scope.countWords = ["Bottom", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Ninth"];
     $scope.sliderOptions = {
         floor: 0,
         ceil: 0,
@@ -16,7 +17,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 
     $scope.cells = {};
     $scope.tiles = {};
-
+    
     $http.get("/api/runs/maze/"+runId+"?populate=true").then(function(response){
 
 	console.log(response.data);
