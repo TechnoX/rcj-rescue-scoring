@@ -23,7 +23,7 @@ block content
 
       h1 Runs
       table
-        tr(ng-repeat="run in runs | orderBy:['run.round.name','run.field.name']")
+        tr(ng-repeat="run in runs | orderBy:['round.name','field.name']")
           td(ng-bind='run.round.name')
           td(ng-bind='run.team.name')
           td(ng-bind='run.field.name')
