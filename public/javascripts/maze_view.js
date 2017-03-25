@@ -37,14 +37,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 		$scope.LoPs = data.LoPs;
 		
 		// Verified time by timekeeper
-		$scope.minutes = response.data.time.minutes;
-		$scope.seconds = response.data.time.seconds;
+		$scope.minutes = data.time.minutes;
+		$scope.seconds = data.time.seconds;
 
 		// Scoring elements of the tiles
-		for(var i = 0; i < response.data.tiles.length; i++){
-		    $scope.tiles[response.data.tiles[i].x + ',' +
-				 response.data.tiles[i].y + ',' +
-				 response.data.tiles[i].z] = response.data.tiles[i];
+		for(var i = 0; i < data.tiles.length; i++){
+		    $scope.tiles[data.tiles[i].x + ',' +
+				 data.tiles[i].y + ',' +
+				 data.tiles[i].z] = data.tiles[i];
 		}
 	        $scope.$apply();
                 console.log("Updated view from socket.io");
