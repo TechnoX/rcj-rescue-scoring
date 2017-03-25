@@ -19,6 +19,8 @@ app.controller('ddController', ['$scope', '$http', '$log', function($scope, $htt
     // Map (images etc.) for the tiles
     $scope.mtiles = [];
 
+
+    
     if(typeof runId !== 'undefined'){
         loadNewRun();
     }
@@ -28,6 +30,7 @@ app.controller('ddController', ['$scope', '$http', '$log', function($scope, $htt
         var socket = io.connect(window.location.origin);
         if(typeof runId !== 'undefined'){
             socket.emit('subscribe', 'runs/' + runId);
+	    
             socket.on('data', function(data) {
                 $scope.rescuedVictims = data.rescuedVictims;
 		$scope.stiles = data.tiles;
@@ -41,8 +44,12 @@ app.controller('ddController', ['$scope', '$http', '$log', function($scope, $htt
             });
         }
 
-        if(typeof fieldId !== 'undefined'){
-            socket.emit('subscribe', 'fields/' + fieldId);
+        if(typeof fieldIds !== 'undefined'){
+	    console.log(fieldIds);
+	    var fields = fieldIds.split(',');
+	    for(var i = 0; i < fields.length; i++){
+		socket.emit('subscribe', 'fields/' + fields[i]);
+	    }
             socket.on('data', function(data) {
 //                if(typeof runId === 'undefined') || runId != data.newRun){ // TODO: FIX!
                     console.log("Judge changed to a new run");
