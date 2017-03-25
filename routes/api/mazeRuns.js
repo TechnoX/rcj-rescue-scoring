@@ -76,15 +76,14 @@ function getMazeRuns(req, res) {
 module.exports.getMazeRuns = getMazeRuns
 
 
-
 publicRouter.get('/latest', getLatestMazeRun)
 function getLatestMazeRun(req, res) {
   const competition = req.query.competition || req.params.competition
   const field = req.query.field || req.params.field
 
   var selection = {
-    competition : competition,
-    field : field
+    competition: competition,
+    field      : field
   }
   if (selection.competition == undefined) {
     delete selection.competition
@@ -272,7 +271,8 @@ privateRouter.put('/:runid', function (req, res, next) {
               let dbTile = dbRun.tiles[j]
               //logger.debug(tile)
               //logger.debug(dbTile)
-              if (tile.x == dbTile.x && tile.y == dbTile.y && tile.z == dbTile.z) {
+              if (tile.x == dbTile.x && tile.y == dbTile.y &&
+                  tile.z == dbTile.z) {
                 existing = true
                 err = copyProperties(tile, dbTile)
                 dbRun.markModified("tiles")
@@ -305,8 +305,6 @@ privateRouter.put('/:runid', function (req, res, next) {
 
         dbRun.score = scoreCalculator.calculateMazeScore(dbRun)
 
-
-        dbRun.markModified("scoredItems")
         dbRun.save(function (err) {
           if (err) {
             logger.error(err)
@@ -386,7 +384,10 @@ adminRouter.post('/', function (req, res) {
   }).save(function (err, data) {
     if (err) {
       logger.error(err)
-      return res.status(400).send({msg: "Error saving run in db", err: err.message})
+      return res.status(400).send({
+        msg: "Error saving run in db",
+        err: err.message
+      })
     } else {
       res.location("/api/runs/" + data._id)
       return res.status(201).send({
