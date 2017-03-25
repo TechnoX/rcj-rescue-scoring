@@ -1,5 +1,6 @@
 "use strict"
 const mongoose = require('mongoose')
+const timestamps = require('mongoose-timestamp')
 const validator = require('validator')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
@@ -180,6 +181,8 @@ lineRunSchema.pre('save', function (next) {
     }
   })
 })
+
+lineRunSchema.plugin(timestamps)
 
 const LineRun = mongoose.model('LineRun', lineRunSchema)
 

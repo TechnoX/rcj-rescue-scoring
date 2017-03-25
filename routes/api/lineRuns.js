@@ -76,6 +76,42 @@ function getLineRuns(req, res) {
 }
 module.exports.getLineRuns = getLineRuns
 
+publicRouter.get('/latest', getLatestLineRun)
+function getLatestLineRun(req, res) {
+  const competition = req.query.competition || req.params.competition
+  const field = req.query.field || req.params.field
+
+  var selection = {
+    competition : competition,
+    field : field
+  }
+  if (selection.competition == undefined) {
+    delete selection.competition
+  }
+  if (selection.field == undefined) {
+    delete selection.field
+  }
+
+  var query = lineRun.findOne(selection).sort("-updatedAt")
+
+  if (req.query['populate'] !== undefined && req.query['populate']) {
+    query.populate(["round", "team", "field", "competition", {
+      path    : 'tiles',
+      populate: {path: 'tileType'}
+    }])
+  }
+
+  query.lean().exec(function (err, data) {
+    if (err) {
+      logger.error(err)
+      res.status(400).send({msg: "Could not get run"})
+    } else {
+      res.status(200).send(data)
+    }
+  })
+}
+module.exports.getLatestLineRun = getLatestLineRun
+
 /**
  * @api {get} /runs/line/:runid Get run
  * @apiName GetRun
