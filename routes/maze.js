@@ -52,7 +52,7 @@ publicRouter.get('/view/:roundid', function (req, res, next) {
 publicRouter.get('/viewfield', function (req, res, next) {
   const ids = req.query.fields
 
-  res.render('line_view_field', {ids: ids})
+  res.render('maze_view_field', {ids: ids})
 })
 publicRouter.get('/viewfield/:fieldid', function (req, res, next) {
   const id = req.params.fieldid
@@ -61,7 +61,7 @@ publicRouter.get('/viewfield/:fieldid', function (req, res, next) {
     return next()
   }
 
-  res.render('line_view_field', {id: id})
+  res.render('maze_view_field', {id: id})
 })
 publicRouter.get('/viewcurrent', function (req, res) {
   res.render('maze_view_current')
