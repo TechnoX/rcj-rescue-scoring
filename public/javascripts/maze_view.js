@@ -47,7 +47,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
                 console.log("Updated view from socket.io");
             });
         }
-
+	console.log(fieldId);
         if(typeof fieldId !== 'undefined'){
             socket.emit('subscribe', 'fields/' + fieldId);
             socket.on('data', function(data) {
