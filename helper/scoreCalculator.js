@@ -151,10 +151,6 @@ module.exports.calculateMazeScore = function (run) {
           rescueKits += Math.min(tile.scoredItems.rescueKits.left, maxKits[mapTiles[coord].tile.victims.left])
         }
       }
-
-      if (tile.scoredItems.checkpoint && mapTiles[coord].tile.checkpoint) {
-        score += 10
-      }
     }
   }
 
