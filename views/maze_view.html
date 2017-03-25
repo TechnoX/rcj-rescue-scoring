@@ -46,7 +46,7 @@
   
   <div class="row" ng-show="visType=='side'">
     <div class="col-md-12">
-      <div ng-repeat="z in range(height) track by $index">
+      <div ng-repeat="z in range(height) track by $index" class="float: left;">
 	<h3>{{countWords[$index]}} floor</h3>
 	<table>
 	  <tr ng-repeat="r in range(2*length + 1)">
