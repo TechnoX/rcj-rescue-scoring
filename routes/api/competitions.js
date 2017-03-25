@@ -101,6 +101,15 @@ publicRouter.get('/:competition/line/runs', function (req, res, next) {
   return lineRunsApi.getLineRuns(req, res, next)
 })
 
+publicRouter.get('/:competition/line/latestrun', function (req, res, next) {
+  var id = req.params.competition
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+  return lineRunsApi.getLatestLineRun(req, res, next)
+})
+
 publicRouter.get('/:competition/maze/runs', function (req, res, next) {
   var id = req.params.competition
 
@@ -108,6 +117,15 @@ publicRouter.get('/:competition/maze/runs', function (req, res, next) {
     return next()
   }
   return mazeRunsApi.getMazeRuns(req, res, next)
+})
+
+publicRouter.get('/:competition/maze/latestrun', function (req, res, next) {
+  var id = req.params.competition
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+  return mazeRunsApi.getLatestMineRun(req, res, next)
 })
 
 publicRouter.get('/:competition/:league/maps', function (req, res, next) {
@@ -119,7 +137,7 @@ publicRouter.get('/:competition/:league/maps', function (req, res, next) {
   }
 
   if (LINE_LEAGUES.indexOf(league) != -1) {
-    return lineMapsApi.getLineMaps(req, res, next)
+    return mazeMapsApi.getLineMaps(req, res, next)
   }
 
   if (MAZE_LEAGUES.indexOf(league) != -1) {

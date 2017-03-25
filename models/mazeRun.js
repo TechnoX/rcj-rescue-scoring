@@ -1,5 +1,6 @@
 "use strict"
 const mongoose = require('mongoose')
+const timestamps = require('mongoose-timestamp')
 const validator = require('validator')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
@@ -189,6 +190,8 @@ mazeRunSchema.pre('save', function (next) {
     }
   })
 })
+
+mazeRunSchema.plugin(timestamps)
 
 const MazeRun = mongoose.model('MazeRun', mazeRunSchema)
 
