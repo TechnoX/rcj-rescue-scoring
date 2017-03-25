@@ -125,7 +125,7 @@ publicRouter.get('/:competition/maze/latestrun', function (req, res, next) {
   if (!ObjectId.isValid(id)) {
     return next()
   }
-  return mazeRunsApi.getLatestMineRun(req, res, next)
+  return mazeRunsApi.getLatestMazeRun(req, res, next)
 })
 
 publicRouter.get('/:competition/:league/maps', function (req, res, next) {
