@@ -68,7 +68,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.length = response.data.length;
 	    $scope.startTile = response.data.startTile;
             $scope.numberOfDropTiles = response.data.numberOfDropTiles;;
-
+	    $scope.mtiles = {};
             for(var i = 0; i < response.data.tiles.length; i++){
                 $scope.mtiles[response.data.tiles[i].x + ',' +
                               response.data.tiles[i].y + ',' +
