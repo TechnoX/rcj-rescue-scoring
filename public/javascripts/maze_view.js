@@ -30,10 +30,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
             socket.on('data', function(data) {
 		console.log(data);
 		$scope.exitBonus = data.exitBonus;
-		$scope.field = data.field.name;
-		$scope.round = data.round.name;
 		$scope.score = data.score;
-		$scope.team = data.team.name;
 		$scope.LoPs = data.LoPs;
 		
 		// Verified time by timekeeper
