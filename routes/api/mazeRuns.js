@@ -314,7 +314,7 @@ privateRouter.put('/:runid', function (req, res, next) {
             })
           } else {
             if (socketIo !== undefined) {
-              socketIo.sockets.in('runs/').emit('changed')
+              socketIo.sockets.in('runs/maze').emit('changed')
               socketIo.sockets.in('runs/' + dbRun._id).emit('data', dbRun)
               socketIo.sockets.in('fields/' +
                                   dbRun.field).emit('data', {newRun: dbRun._id})
