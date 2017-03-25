@@ -17,7 +17,7 @@ publicRouter.get('/:competitionid', function (req, res, next) {
     return next()
   }
 
-  res.render('line_competition', {id : id})
+  res.render('line_competition', {id: id})
 })
 
 publicRouter.get('/:competitionid/score', function (req, res, next) {
@@ -27,7 +27,7 @@ publicRouter.get('/:competitionid/score', function (req, res, next) {
     return next()
   }
 
-  res.render('line_score', {id : id})
+  res.render('line_score', {id: id})
 })
 
 publicRouter.get('/view/:roundid', function (req, res, next) {
@@ -37,7 +37,12 @@ publicRouter.get('/view/:roundid', function (req, res, next) {
     return next()
   }
 
-  res.render('line_view', {id : id})
+  res.render('line_view', {id: id})
+})
+publicRouter.get('/viewfield', function (req, res, next) {
+  const ids = req.query.fields
+
+  res.render('line_view_field', {ids: ids})
 })
 publicRouter.get('/viewfield/:fieldid', function (req, res, next) {
   const id = req.params.fieldid
@@ -46,7 +51,7 @@ publicRouter.get('/viewfield/:fieldid', function (req, res, next) {
     return next()
   }
 
-  res.render('line_view_field', {id : id})
+  res.render('line_view_field', {id: id})
 })
 publicRouter.get('/viewcurrent', function (req, res) {
   res.render('line_view_current')
@@ -59,7 +64,7 @@ privateRouter.get('/judge/:roundid', function (req, res, next) {
     return next()
   }
 
-  res.render('line_judge', {id : id})
+  res.render('line_judge', {id: id})
 })
 
 adminRouter.get('/editor/:mapid', function (req, res, next) {
@@ -69,7 +74,7 @@ adminRouter.get('/editor/:mapid', function (req, res, next) {
     return next()
   }
 
-  res.render('line_editor', {mapid : id})
+  res.render('line_editor', {mapid: id})
 })
 
 publicRouter.all('*', function (req, res, next) {

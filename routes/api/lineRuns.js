@@ -80,16 +80,21 @@ publicRouter.get('/latest', getLatestLineRun)
 function getLatestLineRun(req, res) {
   const competition = req.query.competition || req.params.competition
   const field = req.query.field || req.params.field
+  const fields = req.query.fields
 
   var selection = {
-    competition : competition,
-    field : field
+    competition: competition,
+    field      : field
   }
   if (selection.competition == undefined) {
     delete selection.competition
   }
   if (selection.field == undefined) {
     delete selection.field
+  }
+
+  if (fields != null) {
+    selection.field = {$in : fields}
   }
 
   var query = lineRun.findOne(selection).sort("-updatedAt")

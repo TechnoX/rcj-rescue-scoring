@@ -80,6 +80,7 @@ publicRouter.get('/latest', getLatestMazeRun)
 function getLatestMazeRun(req, res) {
   const competition = req.query.competition || req.params.competition
   const field = req.query.field || req.params.field
+  const fields = req.query.fields
 
   var selection = {
     competition: competition,
@@ -90,6 +91,10 @@ function getLatestMazeRun(req, res) {
   }
   if (selection.field == undefined) {
     delete selection.field
+  }
+
+  if (fields != null) {
+    selection.field = {$in : fields}
   }
 
   var query = mazeRun.findOne(selection).sort("-updatedAt")
