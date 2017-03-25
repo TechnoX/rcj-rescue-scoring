@@ -305,6 +305,8 @@ privateRouter.put('/:runid', function (req, res, next) {
 
         dbRun.score = scoreCalculator.calculateMazeScore(dbRun)
 
+
+        dbRun.markModified("scoredItems")
         dbRun.save(function (err) {
           if (err) {
             logger.error(err)
