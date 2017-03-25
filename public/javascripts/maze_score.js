@@ -54,7 +54,7 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
   function launchSocketIo() {
     // launch socket.io
     var socket = io.connect(window.location.origin)
-    socket.emit('subscribe', 'runs/')
+    socket.emit('subscribe', 'runs/maze')
     socket.on('changed', function () {
       updateRunList()
     })

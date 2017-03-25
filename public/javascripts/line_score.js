@@ -84,7 +84,7 @@ angular.module("LineScore", ['datatables']).controller("LineScoreController", fu
   function launchSocketIo() {
     // launch socket.io
     var socket = io.connect(window.location.origin)
-    socket.emit('subscribe', 'runs/')
+    socket.emit('subscribe', 'runs/line')
     socket.on('changed', function () {
       updateRunList()
     })
