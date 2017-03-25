@@ -17,52 +17,103 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 
     $scope.cells = {};
     $scope.tiles = {};
-    
-    $http.get("/api/runs/maze/"+runId+"?populate=true").then(function(response){
 
-	console.log(response.data);
-	$scope.exitBonus = response.data.exitBonus;
-	$scope.field = response.data.field.name;
-	$scope.round = response.data.round.name;
-	$scope.score = response.data.score;
-	$scope.team = response.data.team.name;
-	$scope.LoPs = response.data.LoPs;
+    if(typeof runId !== 'undefined'){
+        loadNewRun();
+    }
+
+    (function launchSocketIo() {
+        // launch socket.io
+        var socket = io.connect(window.location.origin);
+        if(typeof runId !== 'undefined'){
+            socket.emit('subscribe', 'runs/' + runId);
+            socket.on('data', function(data) {
+		console.log(data);
+		$scope.exitBonus = data.exitBonus;
+		$scope.field = data.field.name;
+		$scope.round = data.round.name;
+		$scope.score = data.score;
+		$scope.team = data.team.name;
+		$scope.LoPs = data.LoPs;
 		
-	// Verified time by timekeeper
-        $scope.minutes = response.data.time.minutes;
-        $scope.seconds = response.data.time.seconds;
+		// Verified time by timekeeper
+		$scope.minutes = response.data.time.minutes;
+		$scope.seconds = response.data.time.seconds;
 
-	// Scoring elements of the tiles
-	for(var i = 0; i < response.data.tiles.length; i++){
-            $scope.tiles[response.data.tiles[i].x + ',' +
-                         response.data.tiles[i].y + ',' +
-                         response.data.tiles[i].z] = response.data.tiles[i];
+		// Scoring elements of the tiles
+		for(var i = 0; i < response.data.tiles.length; i++){
+		    $scope.tiles[response.data.tiles[i].x + ',' +
+				 response.data.tiles[i].y + ',' +
+				 response.data.tiles[i].z] = response.data.tiles[i];
+		}
+	        $scope.$apply();
+                console.log("Updated view from socket.io");
+            });
         }
-	
-	// Get the map
-	$http.get("/api/maps/maze/" + response.data.map + "?populate=true").then(function(response){
+
+        if(typeof fieldId !== 'undefined'){
+            socket.emit('subscribe', 'fields/' + fieldId);
+            socket.on('data', function(data) {
+//                if(typeof runId === 'undefined') || runId != data.newRun){ // TODO: FIX!
+                    console.log("Judge changed to a new run");
+                    runId = data.newRun;
+                    loadNewRun();
+//                }
+            });
+
+
+        }
+
+    })();
+
+
+
+    function loadNewRun(){    
+	$http.get("/api/runs/maze/"+runId+"?populate=true").then(function(response){
+
 	    console.log(response.data);
-            $scope.startTile = response.data.startTile;
-            $scope.height = response.data.height;
-            $scope.sliderOptions.ceil = $scope.height - 1;
-            $scope.width = response.data.width;
-            $scope.length = response.data.length;
+	    $scope.exitBonus = response.data.exitBonus;
+	    $scope.field = response.data.field.name;
+	    $scope.round = response.data.round.name;
+	    $scope.score = response.data.score;
+	    $scope.team = response.data.team.name;
+	    $scope.LoPs = response.data.LoPs;
 	    
-	    for(var i = 0; i < response.data.cells.length; i++){
-                $scope.cells[response.data.cells[i].x + ',' +
-                             response.data.cells[i].y + ',' +
-                             response.data.cells[i].z] = response.data.cells[i];
+	    // Verified time by timekeeper
+            $scope.minutes = response.data.time.minutes;
+            $scope.seconds = response.data.time.seconds;
+
+	    // Scoring elements of the tiles
+	    for(var i = 0; i < response.data.tiles.length; i++){
+		$scope.tiles[response.data.tiles[i].x + ',' +
+                             response.data.tiles[i].y + ',' +
+                             response.data.tiles[i].z] = response.data.tiles[i];
             }
-
 	    
-        }, function(response){
+	    // Get the map
+	    $http.get("/api/maps/maze/" + response.data.map + "?populate=true").then(function(response){
+		console.log(response.data);
+		$scope.startTile = response.data.startTile;
+		$scope.height = response.data.height;
+		$scope.sliderOptions.ceil = $scope.height - 1;
+		$scope.width = response.data.width;
+		$scope.length = response.data.length;
+		
+		for(var i = 0; i < response.data.cells.length; i++){
+                    $scope.cells[response.data.cells[i].x + ',' +
+				 response.data.cells[i].y + ',' +
+				 response.data.cells[i].z] = response.data.cells[i];
+		}
+
+		
+            }, function(response){
+		console.log("Error: " + response.statusText);
+            });
+
+	}, function(response){
             console.log("Error: " + response.statusText);
-        });
-
-    }, function(response){
-        console.log("Error: " + response.statusText);
-    });
-
+	});
+    }
 
     $scope.range = function(n){
         arr = [];
