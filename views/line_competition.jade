@@ -20,15 +20,15 @@ block content
   .row
     .col-md-1
     .col-md-10
-      h1 競技 - {{competition.name}}
+      h1 Runs - {{competition.name}}
       br
-      button(ng-click="go('/line/' + competition._id + '/score')" class='btn btn-outline-info btn-lg btn-block') 競技結果・速報順位
+      button(ng-click="go('/line/' + competition._id + '/score')" class='btn btn-outline-info btn-lg btn-block') Result (preliminary report ranking)
       br
       .refine(style="visibility:hidden")
           form
-              label ラウンドで絞り込む
+              label Refine by round
               .filter-round
-              label フィールドで絞り込む
+              label Refine by field
               .filter-arena
       br
       center
@@ -49,11 +49,11 @@ block content
               td(ng-bind='run.team.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':''}")
               td(ng-bind='run.field.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':''}")
               td
-                button(ng-click="go('/line/view/' + run._id)" class='btn btn-info') 表示
+                button(ng-click="go('/line/view/' + run._id)" class='btn btn-info') View
 
               td(ng-style="{'background-color':run.status>=3?'#ecf0f1':''}")
-                button(ng-click="no_judge()" class='btn btn-danger' ng-if="run.status>=3" ) 審判
-                button(ng-click="go_judge('/line/judge/' + run._id)" class='btn btn-danger' ng-if="run.status<3" ) 審判
+                button(ng-click="no_judge()" class='btn btn-danger' ng-if="run.status>=3" ) Judge
+                button(ng-click="go_judge('/line/judge/' + run._id)" class='btn btn-danger' ng-if="run.status<3" ) Judge
       br
       br
       br

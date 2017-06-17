@@ -36,7 +36,7 @@ block content
               .card-block
                 h4.card-title Rescue Line
                 p.card-text
-                  | 様々な障害を乗り越えながらライントレースを行い，最後に被災者を模した球体を所定の場所に運んで救出する競技．
+                  | Put in a description of Rescue Line
                 button(onclick="location.href='/line'" class='btn btn-primary btn-lg btn-block') Go Line
         .col-sm-6
             .card(style='width: 100%;')
@@ -45,7 +45,7 @@ block content
               .card-block
                 h4.card-title Rescue Maze
                 p.card-text
-                  | 壁で囲まれた空間をロボットが自律走行し，熱を発する被災者を発見，レスキューキットを配布する競技．
+                  | Put in a description of Rescue Maze
                 button(onclick="location.href='/maze'" class='btn btn-primary btn-lg btn-block') Go Maze
       br 
       br
@@ -55,7 +55,7 @@ block content
             button(onclick="location.href='/admin'" class='button-s button-bb') Competition Management
         else
             button(onclick="location.href='/'" class='button-s button-bb' disabled) Competition Management
-            p ※ログイン中のアカウント， [#{user.username}] は，Competition Managementにアクセスする権限がありません.
+            p ※ The you logged in account, [#{user.username}], does not have permission to access Competition Management.
       br
       br
       br
