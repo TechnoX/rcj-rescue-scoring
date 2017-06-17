@@ -1,6 +1,7 @@
 // register the directive with your app module
 var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'rzModule']);
 var marker={};
+var socket;
 // function referenced by the drop target
 app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', function($scope, $uibModal, $log, $timeout, $http){
     $scope.sliderOptions = {
@@ -19,7 +20,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     (function launchSocketIo() {
         // launch socket.io
-        var socket = io.connect(window.location.origin);
+        socket = io(window.location.origin,{ transports: [ 'websocket' ] });
         if(typeof runId !== 'undefined'){
             $scope.actualUsedDropTiles = 0; 
             socket.emit('subscribe', 'runs/' + runId);
@@ -33,12 +34,16 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.tiles[data.startTile.x + ',' +
                          data.startTile.y + ',' +
                          data.startTile.z].start = data.showedUp;
-                $scope.rescuedVictims = data.rescuedVictims;
+                $scope.rescuedLiveVictims = data.rescuedLiveVictims;
+                $scope.rescuedDeadVictims = data.rescuedDeadVictims;
+                $scope.rescueLevel = data.rescueLevel;
+                $scope.escapeEvacuationZone = data.escapeEvacuationZone;
                 $scope.score = data.score;
                 $scope.showedUp = data.showedUp;
                 $scope.LoPs = data.LoPs;
-                $scope.minutes = data.time.minutes;;
+                $scope.minutes = data.time.minutes;
                 $scope.seconds = data.time.seconds;
+                $scope.retired = data.retired;
                 $scope.$apply();
                 console.log("Updated view from socket.io");
             });
@@ -74,9 +79,12 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.field = response.data.field;
             $scope.competition = response.data.competition;
             $scope.round = response.data.round;
-
+            $scope.retired = response.data.retired;
             $scope.numberOfDropTiles = response.data.numberOfDropTiles;;
-            $scope.rescuedVictims = response.data.rescuedVictims;
+            $scope.rescuedLiveVictims = response.data.rescuedLiveVictims;
+            $scope.rescuedDeadVictims = response.data.rescuedDeadVictims;
+            $scope.escapeEvacuationZone = response.data.escapeEvacuationZone;
+            $scope.rescueLevel = response.data.rescueLevel;
 
             for(var i = 0; i < response.data.tiles.length; i++){
                 $scope.tiles[response.data.tiles[i].x + ',' +
@@ -128,6 +136,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
     
     $scope.go = function(path){
+      socket.emit('unsubscribe', 'runs/' + runId);
       window.location = path
   }
     
@@ -181,7 +190,21 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
 
 
-}]);
+}]).directive("tileLoadFinished", function($timeout){
+    return function(scope, element, attrs){
+      if (scope.$last){
+           $timeout(function(){
+            tile_size();
+          },0);
+          $timeout(function(){
+            tile_size();
+          },500);
+          $timeout(function(){
+            tile_size();
+          },1000);
+      }
+    }
+});
 
 
 app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, tile) {
@@ -311,3 +334,16 @@ $(window).on('load resize', function(){
     tile_size();
     
     });
+$(window).on('beforeunload', function(){
+     socket.emit('unsubscribe', 'runs/' + runId);
+    });
+
+
+let lastTouch = 0;
+document.addEventListener('touchend', event => {
+  const now = window.performance.now();
+  if (now - lastTouch <= 500) {
+    event.preventDefault();
+  }
+  lastTouch = now;
+}, true);

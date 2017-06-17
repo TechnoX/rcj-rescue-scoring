@@ -16,7 +16,7 @@
             <div class="tilearea" style="height=600px">
                 <div ng-repeat="r in range(length)" class="row">
                     <div ng-repeat="c in range(width)" class="slot">
-                      <tile tile="tiles[c+','+r+','+z]" ng-repeat="z in range(height)" ng-click="showElements(c,r,z)" ng-style="{'opacity': getOpacity(c,r)}">
+                      <tile tile="tiles[c+','+r+','+z]" ng-repeat="z in range(height)" ng-click="showElements(c,r,z)" ng-style="{'opacity': getOpacity(c,r)}" >
                       </tile>
                     </div>
                 </div>
@@ -29,10 +29,16 @@
                 <i class="fa fa-undo" aria-hidden="true"> : {{LoPs_total}} 回</i>
         </div>
         <div class="col-6">
-                <i class="fa fa-ambulance" aria-hidden="true"> : {{rescuedVictims}}体</i>
+                <i class="fa fa-ambulance" aria-hidden="true"> : L: {{rescuedLiveVictims}}体 　D: {{rescuedDeadVictims}}体</i>
         </div>
     </div>
+    
 </div>
+<div class="row">
+        <div class="col-12">
+        <h3><span class="badge badge-danger">救助レベル{{rescueLevel + 1}}が選択されています</span></h3>
+        </div>
+    </div>
 <div style="text-align:center; margin: 10 10 10 10;" >
     <button class="btn btn-danger" type="button" ng-show="status == 2"><i aria-hidden="true" > 競技中</i></button>
     <button class="btn btn-warning" type="button" ng-show="status == 3"><i aria-hidden="true" > 得点確認中</i></button>

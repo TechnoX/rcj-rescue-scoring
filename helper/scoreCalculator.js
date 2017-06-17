@@ -72,7 +72,14 @@ module.exports.calculateScore = function (run) {
       }
     }
   }
-
-  score += run.rescuedVictims * 40
+  if(run.rescueLevel !== undefined  && !run.rescueLevel){
+      score += run.rescuedLiveVictims * 30
+      score += run.rescuedDeadVictims * 15
+  }else{
+      score += run.rescuedLiveVictims * 40
+      score += run.rescuedDeadVictims * 20
+  }
+  if(run.escapeEvacuationZone !== undefined && run.escapeEvacuationZone)score += 20;
+  
   return score
 }

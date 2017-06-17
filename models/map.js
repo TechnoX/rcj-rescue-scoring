@@ -29,7 +29,7 @@ var mapSchema = new Schema({
     rot      : {type: Number, min: 0, max: 270, required: true},
     items    : {
       obstacles : {type: Number, required: true, min: 0},
-      speedbumps: {type: Number, required: true, min: 0, max: 1}
+      speedbumps: {type: Number, required: true, min: 0}
     },
     levelUp  : {type: String, enum: ["top", "right", "bottom", "left"]},
     levelDown: {type: String, enum: ["top", "right", "bottom", "left"]}
@@ -343,7 +343,7 @@ var tileTypes = [
   {
     "image": "tile-27.png",
     "gaps": 0,
-    "intersections": 1,
+    "intersections": 2,
     "paths": {
       "bottom": "right",
       "right": "bottom"
@@ -353,7 +353,7 @@ var tileTypes = [
   {
     "image": "tile-28.png",
     "gaps": 0,
-    "intersections": 1,
+    "intersections": 2,
     "paths": {
       "left": "right",
       "right": "left"
@@ -363,7 +363,7 @@ var tileTypes = [
   {
     "image": "tile-29.png",
     "gaps": 0,
-    "intersections": 1,
+    "intersections": 2,
     "paths": {
       "left": "bottom",
       "bottom": "left"
@@ -489,7 +489,7 @@ var tileTypes = [
   {
     "image": "tile-44.png",
     "gaps": 0,
-    "intersections": 1,
+    "intersections": 2,
     "paths": {
       "top": "right",
       "right": "top"
@@ -499,7 +499,7 @@ var tileTypes = [
   {
     "image": "tile-45.png",
     "gaps": 0,
-    "intersections": 1,
+    "intersections": 2,
     "paths": {
       "left": "bottom",
       "top": "right",
@@ -539,6 +539,67 @@ var tileTypes = [
       "bottom": "right"
     },
     "_id": "570c27c3f5a9dabe23f3afc8"
+  },
+  {
+    "image": "tile-49.png",
+    "gaps": 1,
+    "intersections": 0,
+    "paths": {
+      "left": "right",
+      "right": "left"
+    },
+    "_id": "570c27c3f5a9dabe23f3afc9"
+  },
+  {
+    "image": "tile-50.png",
+    "gaps": 0,
+    "intersections": 0,
+    "paths": {
+      "left": "right",
+      "right": "left"
+    },
+    "_id": "570c27c3f5a9dabe23f3afca"
+  },
+  {
+    "image": "tile-51.png",
+    "gaps": 0,
+    "intersections": 0,
+    "paths": {
+      "bottom": "right",
+      "right": "bottom"
+    },
+    "_id": "570c27c3f5a9dabe23f3afcb"
+  },
+  {
+    "image": "tile-52.png",
+    "gaps": 0,
+    "intersections": 0,
+    "paths": {
+      "bottom": "right",
+      "right": "bottom"
+    },
+    "_id": "570c27c3f5a9dabe23f3afcc"
+  },
+  {
+    "image": "tile-53.png",
+    "gaps": 0,
+    "intersections": 0,
+    "paths": {
+      "left": "right",
+      "right": "left"
+    },
+    "_id": "570c27c3f5a9dabe23f3afcd"
+  },
+  {
+    "image"        : "tile-54.png",
+    "gaps"         : 0,
+    "intersections": 1,
+    "paths"        : {
+      "left" : "top",
+      "right": "top",
+      "top"  : "top"
+    },
+    "_id"          : "570c27c3f5a9dabe23f3afce"
   }
 ]
 

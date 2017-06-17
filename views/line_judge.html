@@ -10,7 +10,8 @@
         </div>
         <div class="col-md-3 col-sm4 col-5">
             <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
-            <li class="navbar-brand" href="#">  {{time | date:'mm:ss'}}</li>
+            <li class="navbar-brand" href="#"  ng-if="!retired">  {{time | date:'mm:ss'}}</li>
+            <li class="navbar-brand" href="#" ng-if="retired">  リタイヤ</li>
         </div>
     </div>
     
@@ -41,6 +42,17 @@
             <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleScoring()"><i class="fa fa-calculator" aria-hidden="true"> 競技記録 {{ startedScoring ? '停止' : '開始' }}</i></button>
             <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleTime()"><i class="fa fa-clock-o" aria-hidden="true"> {{ startedTime ? 'Stop' : 'Start' }}</i></button>
             <button ng-show="!startedTime && time!=0" class="btn btn-warning" style="margin:0 10px 10px 0;" type="button" ng-click="TimeReset()"><i class="fa fa-clock-o" aria-hidden="true"> Reset</i></button>
+            <p ng-show="!startedScoring">被災者救助レベルを下から選んでください．</p>
+            <label class="switch-light" onclick="" ng-show="!startedScoring">
+              <input type="checkbox" ng-model="rescueLevel" ng-change="changeRescueLevel()" ng-show="!startedScoring">
+
+              <span class="well" ng-show="!startedScoring">
+                <span style="border: solid 1px #000000;">レベル1</span>
+                <span style="border: solid 1px #000000;">レベル2</span>
+                <a class="btn btn-info"></a>
+              </span>
+            </label>
+            
           <div class="alert alert-info" role="alert" ng-show="numberOfDropTiles - placedDropTiles == 0 && !startedScoring">
              競技記録を開始する準備が整いました！<br><strong>競技記録開始ボタンを押してください．</strong>
           </div>
@@ -52,13 +64,6 @@
              主審に従って， <strong>タイマーStart</strong> ボタンを押してください．
           </div>
         <div id="card_area" class="scrool" style="overflow: scroll;" ng-show="startedScoring">
-          <!--<div class="card">
-              <h3 class="card-header"><i class="fa fa-play-circle" aria-hidden="true"></i> Start Scoring Run</h3>
-              <div class="card-block">
-                  <p class="card-text">Please check a box at the start of scoring run.</p>
-                  <input type="checkbox" ng-model="showedUp" ng-change="changeShowedUp()" id="scoredrun"><label class="checkbox" for="scoredrun" style="background-color: #ffe6e8;">Start Scoring Run</label><br>
-              </div>   
-          </div>-->
           <div id="lops" class="card">
               <h3 class="card-header"><i class="fa fa-undo" aria-hidden="true"></i> 進行停止</h3>
               <div class="card-block">
@@ -78,14 +83,27 @@
               </div>   
           </div>
           <div id="resc" class="card">
-              <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> 被災者救助</h3>
+              <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> 被災者救助　<span class="badge badge-danger">救助レベル{{rescueLevel + 1}}が選択されています</span></h3>
               <div class="card-block">
-                  <p class="card-text">救助成功数： </p>
-                  <img src="/images/minus.png" alt="-" ng-click="decVictims()" class="plusminus">
+                  <p class="card-text">【生きている被災者】救助数：　　 <span class="badge badge-info">{{30 + rescueLevel*10}}　点 /体</span></p>
+                  <img src="/images/minus.png" alt="-" ng-click="decVictims('live')" class="plusminus">
                   <img src="/images/loader2.gif" width="37px" height="37px" alt="" ng-show="rprocessing == true">
-                  <span class="count" ng-show="rprocessing != true">{{rescuedVictims}}</span>
-                  <img src="/images/plus.png" alt="+" ng-click="incVictims()" class="plusminus">
-                  </div>   
+                  <span class="count" ng-show="rlprocessing != true">{{rescuedLiveVictims}}</span>
+                  <img src="/images/plus.png" alt="+" ng-click="incVictims('live')" class="plusminus">
+              </div>
+              <hr>
+              <div class="card-block">
+                  <p class="card-text">【死んだ被災者】救助数： 　　　　<span class="badge badge-info">{{15 + rescueLevel*5}}　点 /体</span></p>
+                  <img src="/images/minus.png" alt="-" ng-click="decVictims('dead')" class="plusminus">
+                  <img src="/images/loader2.gif" width="37px" height="37px" alt="" ng-show="rprocessing == true">
+                  <span class="count" ng-show="rdprocessing != true">{{rescuedDeadVictims}}</span>
+                  <img src="/images/plus.png" alt="+" ng-click="incVictims('dead')" class="plusminus">
+              </div>
+              <hr>
+              <div class="card-block">
+                  <p class="card-text">救助部屋の脱出：   　　　　　　　　<span class="badge badge-info">20　点</span></p>
+                  <input type="checkbox" ng-model="escapeEvacuationZone" ng-change="changeEscapeEvacuationZone()" id="scoredrun"><label class="checkbox" for="scoredrun">脱出成功</label><br>
+              </div> 
           </div>
         </div>
 
@@ -107,15 +125,17 @@
           <div class="col-sm-12">
 
           <p>
-            <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleScoring()"><i class="fa fa-calculator" aria-hidden="true"> 得点記録 {{ startedScoring ? '停止' : '開始' }}</i></button>
-            <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleTime()"><i class="fa fa-clock-o" aria-hidden="true"> タイマー {{ startedTime ? 'Stop' : 'Start' }}</i></button>
+            <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleScoring()"><i class="fa fa-calculator" aria-hidden="true"> 競技記録 {{ startedScoring ? '停止' : '開始' }}</i></button>
+            <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleTime()"><i class="fa fa-clock-o" aria-hidden="true"> {{ startedTime ? 'Stop' : 'Start' }}</i></button>
             <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="retire()"><i class="fa fa-window-close" aria-hidden="true"> リタイヤ!</i></button>
           </p>
         </div>
         <div class="col-md-12 confirmation">
-          <strong>記録時間調整: </strong><br>
-          <label><input type="tel" min="0" max="8" ng-model="minutes">min  </label>
-          <label><input type="tel" min="0" max="60" ng-model="seconds">sec</label><br>
+          <div ng-show="!retired">
+              <strong>記録時間調整: </strong><br>
+              <label><input type="tel" min="0" max="8" ng-model="minutes">min  </label>
+              <label><input type="tel" min="0" max="60" ng-model="seconds">sec</label><br>
+            </div>
 
           <strong>
             下のボタンを押して，スコア・タイムの確認画面に移動してください．

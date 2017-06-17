@@ -11,8 +11,8 @@ append scripts
   
 
 block location
-    a.breadcrumb-item(href='/home') Home
-    a.breadcrumb-item(href='/line') Line
+    a.breadcrumb-item(onclick="location.href='/home'") Home
+    a.breadcrumb-item(onclick="location.href='/line'") Line
     span.breadcrumb-item.active {{competition.name}}
 
 
@@ -55,6 +55,5 @@ block content
                 button(ng-click="no_judge()" class='btn btn-danger' ng-if="run.status>=3" ) 審判
                 button(ng-click="go_judge('/line/judge/' + run._id)" class='btn btn-danger' ng-if="run.status<3" ) 審判
       br
-      p [Status] 0.開始前 1.審判ページ表示    2.タイマー開始    3.得点確認中    4.競技終了
       br
       br

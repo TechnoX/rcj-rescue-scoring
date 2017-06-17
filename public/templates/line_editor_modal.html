@@ -4,7 +4,10 @@
 <div class="modal-body">
   <ul>
     <li>
-      <label>Has speedbumps: <input type="checkbox" ng-model="tile.items.speedbumps"></label>
+      <label>Has speedbumps: </label>
+      <a href="#" ng-click="tile.items.speedbumps>0?tile.items.speedbumps=tile.items.speedbumps-1:0">-</a>
+      {{tile.items.speedbumps}}
+      <a href="#" ng-click="tile.items.speedbumps=tile.items.speedbumps+1">+</a>
       <!--
       <a href="#" ng-click="tile.items.speedbumps>0?tile.items.speedbumps=tile.items.speedbumps-1:0">-</a>
       {{tile.items.speedbumps}}

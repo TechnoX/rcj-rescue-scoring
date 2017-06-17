@@ -1,4 +1,4 @@
-<nav  class="navbar" style="background-color: #3498db; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%">
+<nav  class="navbar" style="background-color: #8e44ad; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%">
   <!-- Navbar content -->
     <div class="row">
         <div class="col-md-6 col-sm4 col-12">
@@ -20,7 +20,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md12">
-            <button class="btn btn-secondary" style="margin:0 10px 10px 0;" type="button" ng-click="go('/line/' + competition._id)"><i class="fa fa-undo" aria-hidden="true"> 大会に戻る</i></button>
+            <button class="btn btn-secondary" style="margin:0 10px 10px 0;" type="button" ng-click="go('/admin/' + competition._id +'/runs/')"><i class="fa fa-undo" aria-hidden="true"> 大会に戻る</i></button>
         </div>
     </div>
     <div class="row">
@@ -64,16 +64,18 @@
                   <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> 被災者救助　<span class="badge badge-danger">救助レベル{{rescueLevel + 1}}が選択されています</span></h3>
                   <div class="card-block">
                       <p class="card-text">【生きている被災者】救助数：　　 <span class="badge badge-info">{{30 + rescueLevel*10}}　点 /体</span></p>
-                      <img src="/images/minus.png" alt="-" style="opacity:0.5;" class="plusminus">
+                      <img src="/images/minus.png" alt="-" ng-click="decVictims('live')" class="plusminus">
+                      <img src="/images/loader2.gif" width="37px" height="37px" alt="" ng-show="rprocessing == true">
                       <span class="count" ng-show="rlprocessing != true">{{rescuedLiveVictims}}</span>
-                      <img src="/images/plus.png" alt="+" style="opacity:0.5;" class="plusminus">
+                      <img src="/images/plus.png" alt="+" ng-click="incVictims('live')" class="plusminus">
                   </div>
                   <hr>
                   <div class="card-block">
                       <p class="card-text">【死んだ被災者】救助数： 　　　　<span class="badge badge-info">{{15 + rescueLevel*5}}　点 /体</span></p>
-                      <img src="/images/minus.png" alt="-" style="opacity:0.5;" class="plusminus">
+                      <img src="/images/minus.png" alt="-" ng-click="decVictims('dead')" class="plusminus">
+                      <img src="/images/loader2.gif" width="37px" height="37px" alt="" ng-show="rprocessing == true">
                       <span class="count" ng-show="rdprocessing != true">{{rescuedDeadVictims}}</span>
-                      <img src="/images/plus.png" alt="+" style="opacity:0.5;" class="plusminus">
+                      <img src="/images/plus.png" alt="+" ng-click="incVictims('dead')" class="plusminus">
                   </div>
                   <hr>
                   <div class="card-block">
@@ -172,7 +174,9 @@
               </div>
         </div>
     </div>
-    <div class="row"></div>
+    <div class="row" style="margin:100 0 100 0;">
+        <button type="button" class="btn btn-danger btn-lg btn-block" style="padding:30 0 30 0" ng-click="send_public()"><i class="fa fa-paper-plane fa-2x" aria-hidden="true" > 競技データーの承認</i></button>
+    </div>
 </div>
 
 

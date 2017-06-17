@@ -1,5 +1,7 @@
 <p class="text-right chnumtxt" style="font-size: 10px; color: #f39c12; z-index:2;position: relative; padding: 2 2 0 0;">{{checkpointNumber(tile)}}</p>
+
 <!--<p class="text-right chnumtxt" style="font-size: 10px; color: #2c3e50; z-index:2;position: relative; padding: 2 2 0 0;" ng-show="tileN">{{tileNumber(tile)}}</p>-->
+
 <img ng-src="/images/tiles/{{tile.tileType.image}}"  class="rot{{tile.rot}} tile-image" ng-class="{'drop-tile': (tile.scoredItems.dropTiles.length > 0 || tile.start != null)}" ng-show="tile.tileType.image">
 <img ng-src="/images/speedbump.png" class="tile-image" ng-show="tile.items.speedbumps>0">
 <img ng-src="/images/obstacle.png" class="tile-image" ng-show="tile.items.obstacles>0">

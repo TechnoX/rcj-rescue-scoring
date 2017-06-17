@@ -20,9 +20,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     (function launchSocketIo() {
         // launch socket.io
-        socket = io.connect(window.location.origin);
+        socket = io(window.location.origin,{ transports: [ 'websocket' ] });
         if(typeof runId !== 'undefined'){
-            var UsedDropTiles = 0; 
+            $scope.actualUsedDropTiles = 0; 
             socket.emit('subscribe', 'runs/' + runId);
             socket.on('data', function(data) {
                 console.log(data);
@@ -41,13 +41,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.score = data.score;
                 $scope.showedUp = data.showedUp;
                 $scope.LoPs = data.LoPs;
-                $scope.minutes = data.time.minutes;;
+                $scope.minutes = data.time.minutes;
                 $scope.seconds = data.time.seconds;
-                $scope.LoPs_total = 0;
-                $scope.status = data.status;
-                for(var i = 0; i< $scope.LoPs.length;i++){
-                    $scope.LoPs_total += $scope.LoPs[i];
-                }
+                $scope.retired = data.retired;
                 $scope.$apply();
                 console.log("Updated view from socket.io");
             });
@@ -83,7 +79,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.field = response.data.field;
             $scope.competition = response.data.competition;
             $scope.round = response.data.round;
-
+            $scope.retired = response.data.retired;
             $scope.numberOfDropTiles = response.data.numberOfDropTiles;;
             $scope.rescuedLiveVictims = response.data.rescuedLiveVictims;
             $scope.rescuedDeadVictims = response.data.rescuedDeadVictims;
@@ -108,17 +104,12 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.score = response.data.score;
             $scope.showedUp = response.data.showedUp;
             $scope.LoPs = response.data.LoPs;
-            $scope.LoPs_total = 0;
-            for(var i = 0; i< $scope.LoPs.length;i++){
-                    $scope.LoPs_total += $scope.LoPs[i];
-                }
             // Verified time by timekeeper
-            $scope.minutes = response.data.time.minutes;;
+            $scope.minutes = response.data.time.minutes;
             $scope.seconds = response.data.time.seconds;
             $scope.cap_sig = response.data.sign.captain;
             $scope.ref_sig = response.data.sign.referee;
             $scope.refas_sig = response.data.sign.referee_as;
-            $scope.status = response.data.status;
 
             console.log($scope.tiles);
         }, function(response){
@@ -196,6 +187,60 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             console.log("Closed modal");
         });
     };
+    
+    $scope.sucess_message = function(){
+        swal({
+                    title: 'Recorded!', 
+                    text: '競技データーは公開サーバーに正常に送信されました．', 
+                    type: 'success'
+                },function(){
+                    $scope.go("/admin/"+$scope.competition._id+"/runs/");
+                });
+                console.log("Sucess!!");
+    }
+    
+    $scope.send_public = function(){
+        swal({
+          title: "Approval?", 
+          text: "'Yes'をクリックすると，競技データーが公開サーバーに送信されます．", 
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes, approval it!",
+          confirmButtonColor: "#ec6c62"
+        }, function() {
+            var run = {}
+            run.height = $scope.height;
+            run.width = $scope.width;
+            run.length = $scope.length;
+            run.rescuedVictims = $scope.rescuedVictims;
+            run.tiles = $scope.tiles;
+            run.showedUp = $scope.showedUp;
+            run.LoPs = $scope.LoPs;
+            run.time = {};
+            run.time.minutes = $scope.minutes;
+            run.time.seconds = $scope.seconds;
+            run.retired = $scope.retired;
+            run.status = 5;
+            $http.post("https://example.com/"+runId+"/update/token", run).then(function(response){
+                var run = {}
+                run.status = 5;
+                $http.post("/api/runs/"+runId+"/update", run).then(function(response){
+                    setTimeout($scope.sucess_message,500);
+                }, function(response){
+                    swal("Oops", "正常に送信できませんでした．システム管理者を呼んでください．", "error");
+                    console.log("Error: " + response.statusText);
+                });
+                
+
+            }, function(response){
+                swal("Oops", "正常に送信できませんでした．システム管理者を呼んでください．", "error");
+                console.log("Error: " + response.statusText);
+            });
+            
+        });
+        
+        
+    }
 
 
 
@@ -302,7 +347,10 @@ app.directive('tile', function() {
 function tile_size(){
         $(function() {
             try{
-                var tilesize_w = (window.innerWidth-100) / width;
+                var b = $('.tilearea');
+                console.log('コンテンツ本体：' + b.height() + '×' + b.width());
+                console.log('window：' + window.innerHeight);
+                var tilesize_w = ($('.tilearea').width()-50) / width;
                 var tilesize_h = (window.innerHeight*0.7) / length;
                 console.log('tilesize_w:' + tilesize_w);
                 console.log('tilesize_h:' + tilesize_h);
@@ -318,8 +366,9 @@ function tile_size(){
                 $('.chnumtxt').css('font-size',tilesize/6); 
                 if(b.height() == 0)setTimeout("tile_size()", 500);
             }
+            
             catch(e){
-                setTimeout("tile_size()", 1000);
+                setTimeout("tile_size()", 500);
             }
           
 
@@ -327,13 +376,28 @@ function tile_size(){
 }
 
 
+var currentWidth = -1;
 
+$(window).on('load resize', function(){
+    if (currentWidth == window.innerWidth) {
+        return;
+    }
+    currentWidth = window.innerWidth;
+    var height = $('.navbar').height();
+    $('body').css('padding-top',height+40); 
+    tile_size();
+    
+    });
 $(window).on('beforeunload', function(){
      socket.emit('unsubscribe', 'runs/' + runId);
     });
 
-$(window).on('load resize', function(){
-    
-    tile_size();
-    
-    });
+
+let lastTouch = 0;
+document.addEventListener('touchend', event => {
+  const now = window.performance.now();
+  if (now - lastTouch <= 500) {
+    event.preventDefault();
+  }
+  lastTouch = now;
+}, true);

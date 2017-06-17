@@ -27,12 +27,14 @@
 var cluster = require('cluster')
 var logger = require('./config/logger').mainLogger
 var env = require('node-env-file')
+var numCPUs = require('os').cpus().length;
 env('process.env')
 
-/**
+/*
 if (cluster.isMaster) {
-
-  cluster.fork()
+    for (var i = 0; i < numCPUs; i++) {
+      cluster.fork()
+    }
 
   cluster.on('exit', function(worker, code, signal) {
     // restart process
@@ -42,8 +44,7 @@ if (cluster.isMaster) {
   })
 }
 
-else {
-*/
+else {*/
   var app = require('./app')
   var http = require('http')
   var fs = require('fs')
@@ -84,6 +85,7 @@ else {
     })
     socket.on('unsubscribe', function (data) {
       socket.leave(data)
+      logger.debug("Client detached room:" + data)
     })
   })
 
@@ -98,7 +100,7 @@ else {
   server.on('error', onError)
   server.on('listening', onListening)
   
-  
+
   /**
    * Event listener for HTTP server "error" event.
    */

@@ -39,4 +39,8 @@ router.get('/:competitionid/fields', function (req, res) {
   res.render('field_admin', {id : req.params.competitionid , user: req.user})
 })
 
+router.get('/approval/:roundid', function (req, res) {
+  res.render('line_approval', {id : req.params.roundid})
+})
+
 module.exports = router

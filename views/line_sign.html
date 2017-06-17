@@ -21,7 +21,8 @@
         </div>
         <div class="col-md-3 col-sm4 col-5">
             <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
-            <li class="navbar-brand" href="#">  {{minutes*60*1000+seconds*1000 | date:'mm:ss'}}</li>
+            <li class="navbar-brand" href="#" ng-if="!retired">  {{minutes*60*1000+seconds*1000 | date:'mm:ss'}}</li>
+            <li class="navbar-brand" href="#" ng-if="retired">  リタイヤ</li>
         </div>
     </div>
     
@@ -34,13 +35,6 @@
         </div>
     </div>
     <br>
-    <div class="row" ng-show="minutes==8 && seconds==1">
-        <div class="col-md-12">
-            <div class="alert alert-info" role="alert">
-              リタイヤは，システム・順位処理上では8:01として扱われます．
-            </div>
-        </div>
-    </div>
     <br>
     <div class="row">
         <div class="col-md-6">
@@ -69,14 +63,26 @@
                   </div>   
               </div>
               <div id="resc" class="card">
-                  <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> 被災者救助</h3>
+                  <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> 被災者救助　<span class="badge badge-danger">救助レベル{{rescueLevel + 1}}が選択されています</span></h3>
                   <div class="card-block">
-                      <p class="card-text">救助成功数： </p>
-                      <img src="/images/minus.png" alt="-" class="plusminus" style="opacity:0.5;">
-                      <span class="count">{{rescuedVictims}}</span>
-                      <img src="/images/plus.png" alt="+"  class="plusminus" style="opacity:0.5;">
-                      </div>   
-              </div>
+                      <p class="card-text">【生きている被災者】救助数：　　 <span class="badge badge-info">{{30 + rescueLevel*10}}　点 /体</span></p>
+                      <img src="/images/minus.png" alt="-" style="opacity:0.5;" class="plusminus">
+                      <span class="count" ng-show="rlprocessing != true">{{rescuedLiveVictims}}</span>
+                      <img src="/images/plus.png" alt="+" style="opacity:0.5;" class="plusminus">
+                  </div>
+                  <hr>
+                  <div class="card-block">
+                      <p class="card-text">【死んだ被災者】救助数： 　　　　<span class="badge badge-info">{{15 + rescueLevel*5}}　点 /体</span></p>
+                      <img src="/images/minus.png" alt="-" style="opacity:0.5;" class="plusminus">
+                      <span class="count" ng-show="rdprocessing != true">{{rescuedDeadVictims}}</span>
+                      <img src="/images/plus.png" alt="+" style="opacity:0.5;" class="plusminus">
+                  </div>
+                  <hr>
+                  <div class="card-block">
+                      <p class="card-text">救助部屋の脱出：   　　　　　　　　<span class="badge badge-info">20　点</span></p>
+                      <input type="checkbox" ng-model="escapeEvacuationZone" id="scoredrun" disabled><label class="checkbox" for="scoredrun">脱出成功</label><br>
+                  </div> 
+                </div>
             </div>
         </div>
         
@@ -86,21 +92,21 @@
                 <input type="radio" ng-model="visType" value="slider" checked id="slider"><label class="radio" for="slider">Slider</label>
                 <input type="radio" ng-model="visType" value="side" id="slide-by-slide"><label class="radio" for="slide-by-slide">Slide-by-Slide</label>
             </form>
-            <div ng-repeat="r in range(length)" class="row"  ng-show="visType=='stacked'">
+            <div ng-repeat="r in range(length)" class="row"  ng-if="visType=='stacked'" tile-load-finished=''>
                 <div ng-repeat="c in range(width)" class="slot">
                   <tile tile="tiles[c+','+r+','+z]" ng-repeat="z in range(height)"  ng-click="showElements(c,r,z)" ng-style="{'opacity': getOpacity(c,r)}">
                   </tile>
                 </div>
             </div>
-            <div ng-show="visType=='slider'">
+            <div ng-if="visType=='slider'">
                 <rzslider rz-slider-model="z" rz-slider-options="sliderOptions"></rzslider>
-                <div ng-repeat="r in range(length)" class="row">
+                <div ng-repeat="r in range(length)" class="row"  tile-load-finished=''>
                   <div ng-repeat="c in range(width)" class="slot">
                     <tile tile="tiles[c+','+r+','+z]" ng-click="showElements(c,r,z)"></tile>
                   </div>
                 </div>
             </div>
-            <div ng-repeat="z in range(height)" style="float: left; border-left: 3px solid black;" ng-show="visType=='side'">
+            <div ng-repeat="z in range(height)" style="float: left; border-left: 3px solid black;" ng-if="visType=='side'" tile-load-finished=''>
                 <div ng-repeat="r in range(length)">
                   <div ng-repeat="c in range(width)" class="slot">
                     <tile tile="tiles[c+','+r+','+z]" ng-click="showElements(c,r,z)"></tile>
@@ -119,7 +125,7 @@
                     <i class="fa fa-calculator fa-2x" aria-hidden="true"> : {{score}} points</i>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6" ng-if='!retired'>
                 <div class="hidden-xs-down">
                     <i class="fa fa-clock-o fa-3x" aria-hidden="true"> : {{minutes}} 分 {{seconds}} 秒</i>           
                 </div>
@@ -127,12 +133,13 @@
                     <i class="fa fa-clock-o fa-2x" aria-hidden="true"> : {{minutes}} 分 {{seconds}} 秒</i>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="row" ng-show="minutes==8 && seconds==1" style="margin:10 0 0 0;">
-        <div class="col-md-12">
-            <div class="alert alert-info" role="alert">
-              リタイヤは，システム・順位処理上では8:01として扱われます．
+            <div class="col-md-6" ng-if='retired'>
+                <div class="hidden-xs-down">
+                    <i class="fa fa-clock-o fa-3x" aria-hidden="true"> : リタイヤ</i>           
+                </div>
+                <div class="hidden-sm-up">
+                    <i class="fa fa-clock-o fa-2x" aria-hidden="true"> : リタイヤ</i>
+                </div>
             </div>
         </div>
     </div>
@@ -142,12 +149,19 @@
             <div id="sign" class="card">
                   <h3 class="card-header"><i class="fa fa-key" aria-hidden="true"></i> 署名</h3>
                   <div class="card-block"><strong>
-                      <p class="card-text  text-warning ">
+                      <p class="card-text  text-warning " ng-if="!retired">
                           下にサインを書くことで，あなたは，
                           [Score：{{score}}]   
-                          [Time：{{minutes}} min {{seconds}} sec] 
+                          [Time：{{minutes}} 分 {{seconds}} 秒] 
                           が誤りないことを認めます．
-                          これ以降，この競技についてチームはいかなるアピールもしないことを確認します．
+                          これ以降，この競技についてチームはいかなる主張もしないことを宣誓します． 
+                      </p>
+                      <p class="card-text  text-warning " ng-if="retired">
+                          下にサインを書くことで，あなたは，
+                          [Score：{{score}}]   
+                          [Time：リタイヤ] 
+                          が誤りないことを認めます．
+                          これ以降，この競技についてチームはいかなる主張もしないことを宣誓します． 
                       </p></strong>
                       <h2>キャプテンサイン</h2>
                       <div id="cap_sig" class="confirmation"></div>

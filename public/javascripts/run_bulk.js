@@ -70,7 +70,7 @@ angular.module("TeamAdmin", []).controller("TeamAdminController", function ($sco
   }
     
   get_map = function(){
-      $http.get("/api/maps/"+ obj[$scope.now][2]).then(function (response) {
+      $http.get("/api/maps/name/"+ obj[$scope.now][2]).then(function (response) {
         $scope.now_map = response.data;
           setTimeout(exe,100);
       }, function (error) {

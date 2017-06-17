@@ -130,7 +130,10 @@ var runSchema = new Schema({
   },
   LoPs             : {type: [Number], min: 0},
   numberOfDropTiles: {type: Number, required: true, min: 0},
-  rescuedVictims   : {type: Number, min: 0},
+  rescueLevel   : {type: Boolean},
+  rescuedLiveVictims   : {type: Number, min: 0},
+  rescuedDeadVictims   : {type: Number, min: 0},
+  escapeEvacuationZone : {type: Boolean},
   score            : {type: Number, min: 0},
   showedUp         : {type: Boolean},
   time             : {
@@ -138,11 +141,12 @@ var runSchema = new Schema({
     seconds: {type: Number, min: 0, max: 59}
   },
   status           : {type: Number, min: 0},
+  retired           : {type: Boolean},
   sign             :{
     captain: {type: String},
     referee: {type: String},
     referee_as: {type: String}
-  }
+  }　
 })
 
 runSchema.pre('save', function (next) {

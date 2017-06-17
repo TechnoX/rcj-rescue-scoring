@@ -1,6 +1,10 @@
+var socket;
+
 angular.module("LineScore", ['datatables' , 'ui.bootstrap','ngAnimate']).controller("LineScoreController", function ($scope, $http, $sce) {
   $scope.competitionId = competitionId
-
+  $scope.go = function(path){
+      window.location = path
+  }
   launchSocketIo()
   updateRunList()
 
@@ -49,6 +53,7 @@ angular.module("LineScore", ['datatables' , 'ui.bootstrap','ngAnimate']).control
             primaryTeamRuns[run.team._id].sumTime = sum.time
             primaryTeamRuns[run.team._id].sumRescue = sum.rescued
             primaryTeamRuns[run.team._id].sumLoPs = sum.lops
+            primaryTeamRuns[run.team._id].retired = sum.retired
 
           } else if (run.team.league == "secondary") {
             $scope.secondaryRuns.push(run)
@@ -65,6 +70,7 @@ angular.module("LineScore", ['datatables' , 'ui.bootstrap','ngAnimate']).control
             secondaryTeamRuns[run.team._id].sumTime = sum.time
             secondaryTeamRuns[run.team._id].sumRescue = sum.rescued
             secondaryTeamRuns[run.team._id].sumLoPs = sum.lops
+            secondaryTeamRuns[run.team._id].retired = sum.retired
           }
         }
       }
@@ -79,7 +85,8 @@ angular.module("LineScore", ['datatables' , 'ui.bootstrap','ngAnimate']).control
           score: teamRun.sumScore,
           time : teamRun.sumTime,
           rescuedVictims : teamRun.sumRescue,
-          LoPsNum : teamRun.sumLoPs
+          LoPsNum : teamRun.sumLoPs,
+          retired : teamRun.retired
         })
       }
       $scope.primaryRunsTop.sort(sortRuns)
@@ -92,7 +99,8 @@ angular.module("LineScore", ['datatables' , 'ui.bootstrap','ngAnimate']).control
           score: teamRun.sumScore,
           time : teamRun.sumTime,
           rescuedVictims : teamRun.sumRescue,
-          LoPsNum : teamRun.sumLoPs
+          LoPsNum : teamRun.sumLoPs,
+          retired : teamRun.retired
         })
       }
       $scope.secondaryRunsTop.sort(sortRuns)
@@ -101,7 +109,7 @@ angular.module("LineScore", ['datatables' , 'ui.bootstrap','ngAnimate']).control
 
   function launchSocketIo() {
     // launch socket.io
-    var socket = io.connect(window.location.origin)
+    socket = io.connect(window.location.origin)
     socket.emit('subscribe', 'runs/')
     socket.on('changed', function () {
       updateRunList()
@@ -113,8 +121,9 @@ angular.module("LineScore", ['datatables' , 'ui.bootstrap','ngAnimate']).control
       return {
           score: runs[0].score,
           time : runs[0].time,
-          rescued : runs[0].rescuedVictims,
-          lops : runs[0].LoPsNum
+          rescued : runs[0].rescuedLiveVictims + runs[0].rescuedDeadVictims,
+          lops : runs[0].LoPsNum,
+          retired : runs[0].retired
       }
     }
       var select=[];
@@ -134,22 +143,25 @@ angular.module("LineScore", ['datatables' , 'ui.bootstrap','ngAnimate']).control
       result.time.seconds = 0;
       result.rescued = 0;
       result.lops = 0;
+      result.retired = false;
       for(var i=0;i<not_select.length;i++){
           result.score += not_select[i].score;
           result.time.minutes += not_select[i].time.minutes;
           result.time.seconds += not_select[i].time.seconds;
           result.time.minutes += (result.time.seconds >= 60 ? 1 : 0);
           result.time.seconds %= 60;
-          result.rescued += not_select[i].rescuedVictims;
+          result.rescued += not_select[i].rescuedLiveVictims + not_select[i].rescuedDeadVictims;
           result.lops += not_select[i].LoPsNum;
+          if(not_select[i].retired)result.retired = true;
       }
       result.score += select[0].score;
       result.time.minutes += select[0].time.minutes;
       result.time.seconds += select[0].time.seconds;
       result.time.minutes += (result.time.seconds >= 60 ? 1 : 0);
       result.time.seconds %= 60;
-      result.rescued += select[0].rescuedVictims;
+      result.rescued += select[0].rescuedLiveVictims + select[0].rescuedDeadVictims;
       result.lops += select[0].LoPsNum;
+      if(select[0].retired)result.retired = true;
       return result;    
   }
 
@@ -159,7 +171,7 @@ angular.module("LineScore", ['datatables' , 'ui.bootstrap','ngAnimate']).control
       return {
           score: runs[0].score,
           time : runs[0].time,
-          rescued : runs[0].rescuedVictims,
+          rescued : runs[0].rescuedLiveVictims + runs[0].rescuedDeadVictims,
           lops : runs[0].LoPsNum
       }
     }
@@ -173,7 +185,7 @@ angular.module("LineScore", ['datatables' , 'ui.bootstrap','ngAnimate']).control
                  (runs[0].time.seconds + runs[1].time.seconds >= 60 ? 1 : 0),
         seconds: (runs[0].time.seconds + runs[1].time.seconds) % 60
       },
-      rescued : runs[0].rescuedVictims + runs[1].rescuedVictims,
+      rescued : runs[0].rescuedLiveVictims + runs[0].rescuedDeadVictims + runs[1].rescuedLiveVictims + runs[1].rescuedDeadVictims,
       lops : runs[0].LoPsNum + runs[1].LoPsNum
     }
   }
@@ -220,34 +232,38 @@ function BestScore(runs) {
   }
 
   function sortRuns(a, b) {
+      console.log(a);
+      console.log(b);
     if (a.score == b.score) {
-      if (a.time.minutes < b.time.minutes) {
+      if(a.retired && !b.retired) return 1
+      else if(!a.retired && b.retired) return -1
+      else if(a.retired && b.retired){}
+      else if (a.time.minutes < b.time.minutes) {
         return -1
-      } else if (a.time.minutes > b.time.minutes) {
+      } 
+      else if (a.time.minutes > b.time.minutes) {
         return 1
-      } else {
-        if (a.time.seconds < b.time.seconds) {
+      }  
+      else if (a.time.seconds < b.time.seconds) {
           return -1
-        } else if (a.time.seconds > b.time.seconds) {
+      } 
+      else if (a.time.seconds > b.time.seconds) {
           return 1
-        /*}else{
-            return 0
-        }*/
-        } else if (a.rescuedVictims > b.rescuedVictims){
-              return -1
-          }
-          else if (a.rescuedVictims < b.rescuedVictims){
-              return 1
-          }
-          else if (a.LoPsNum < b.LoPsNum){
-              return -1
-          }
-          else if (a.LoPsNum > b.LoPsNum){
-              return 1
-          }
-          else {
-              return 0
-        }
+      } 
+      if (a.rescuedVictims > b.rescuedVictims){
+          return -1
+      }
+      else if (a.rescuedVictims < b.rescuedVictims){
+          return 1
+      }
+      if (a.LoPsNum < b.LoPsNum){
+          return -1
+      }
+      else if (a.LoPsNum > b.LoPsNum){
+          return 1
+      }
+      else {
+          return 0
       }
     } else {
       return b.score - a.score
@@ -258,3 +274,7 @@ function BestScore(runs) {
       console.log(row);
   }
 })
+
+$(window).on('beforeunload', function(){
+     socket.emit('unsubscribe', 'runs/');
+    });

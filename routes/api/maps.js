@@ -28,22 +28,13 @@ privateRouter.get('/', function (req, res) {
   }
 })
 
-privateRouter.get('/:name', function (req, res, next) {
-  var name = req.params.name
-  
-  mapdb.map.find({"name": name}, function (err, data) {
-    if (err) {
-      logger.error(err)
-      res.status(400).send({msg: "Could not get teams"})
-    } else {
-      res.status(200).send(data)
-    }
-  })
-})
+
 
 adminRouter.get('/tiletypes', function (req, res) {
   query.doFindResultSortQuery(req, res, null, null, mapdb.tileType)
 })
+
+
 
 privateRouter.get('/:mapid', function (req, res, next) {
   var id = req.params.mapid
@@ -148,6 +139,19 @@ adminRouter.post('/createmap', function (req, res) {
       res.status(400).send({msg: "Error saving map"})
     } else {
       res.status(201).send({msg: "New map has been saved", id: data._id})
+    }
+  })
+})
+
+privateRouter.get('/name/:name', function (req, res, next) {
+  var name = req.params.name
+  
+  mapdb.map.find({"name": name}, function (err, data) {
+    if (err) {
+      logger.error(err)
+      res.status(400).send({msg: "Could not get teams"})
+    } else {
+      res.status(200).send(data)
     }
   })
 })

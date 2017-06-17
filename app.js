@@ -57,7 +57,11 @@ var apiCompetitionsRoute = require('./routes/api/competitions')
 //========================================================================
 
 var app = express()
-
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 /** Setting up the correct view engine - we are using jade */
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'jade')

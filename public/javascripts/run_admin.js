@@ -1,3 +1,4 @@
+var socket;
 angular.module("RunAdmin", ['ngAnimate']).controller('RunAdminController', ['$scope', '$http', '$log','$location', function($scope, $http, $log, $location){
   $scope.competitionId = competitionId
   
@@ -6,7 +7,7 @@ angular.module("RunAdmin", ['ngAnimate']).controller('RunAdminController', ['$sc
 
   (function launchSocketIo() {
         // launch socket.io
-        var socket = io.connect(window.location.origin);
+            socket = io.connect(window.location.origin);
             socket.emit('subscribe', 'competition/' + competitionId);
             socket.on('changed', function(data) {
                 updateRunList();
@@ -112,6 +113,19 @@ angular.module("RunAdmin", ['ngAnimate']).controller('RunAdminController', ['$sc
          });
     }
     
+    $scope.go_approval = function(runid){
+        swal({
+          title: "Go approval page?", 
+          text: "Are you sure you want to go approval page?", 
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "GO!",
+          confirmButtonColor: "#ec6c62"
+        }, function() {
+            $scope.go('/admin/approval/'+runid+'/');
+         });
+    }
+    
     $scope.go = function(path){
       window.location = path
   }
@@ -127,4 +141,9 @@ angular.module("RunAdmin", ['ngAnimate']).controller('RunAdminController', ['$sc
       }
     }
 })
+
+
+$(window).on('beforeunload', function(){
+     socket.emit('unsubscribe', 'competition/' + competitionId);
+});
 

@@ -63,14 +63,26 @@ privateRouter.post('/:runid/update', function (req, res, next) {
       logger.error(err)
       res.status(400).send({msg: "Could not get run"})
     } else {
+      if (run.retired !== undefined) {
+        dbrun.retired = run.retired
+      }
       if (run.showedUp !== undefined) {
         dbrun.showedUp = run.showedUp
       }
       if (run.LoPs !== undefined) {
         dbrun.LoPs = run.LoPs
       }
-      if (run.rescuedVictims !== undefined) {
-        dbrun.rescuedVictims = run.rescuedVictims
+      if (run.rescuedLiveVictims !== undefined) {
+        dbrun.rescuedLiveVictims = run.rescuedLiveVictims
+      }
+      if (run.rescuedDeadVictims !== undefined) {
+        dbrun.rescuedDeadVictims = run.rescuedDeadVictims
+      }
+      if (run.rescueLevel !== undefined) {
+        dbrun.rescueLevel = run.rescueLevel
+      }
+      if (run.escapeEvacuationZone !== undefined) {
+        dbrun.escapeEvacuationZone = run.escapeEvacuationZone
       }
       if (run.time !== undefined && run.time.minutes !== undefined && run.time.seconds !== undefined) {
         dbrun.time.minutes = run.time.minutes
@@ -283,9 +295,13 @@ adminRouter.post('/createrun', function (req, res) {
         startTile        : map.startTile,
         numberOfDropTiles: map.numberOfDropTiles,
         LoPs             : filledArray(map.numberOfDropTiles*4 + 1, 0),
-        rescuedVictims   : 0,
+        rescuedLiveVictims   : 0,
+        rescuedDeadVictims   : 0,
+        rescueLevel   : false,
+        escapeEvacuationZone : false,
         score            : 0,
         showedUp         : false,
+        retired         : false,
         time             : {
           minutes: 0,
           seconds: 0

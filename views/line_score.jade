@@ -34,15 +34,25 @@ append css
     }
 
 block location
-    a.breadcrumb-item(href='/home') Home
-    a.breadcrumb-item(href='/line') Line
-    a.breadcrumb-item(ng-href='/line/{{competitionId}}') {{competition.name}}
+    a.breadcrumb-item(onclick="location.href='/home'") Home
+    a.breadcrumb-item(onclick="location.href='/line'") Line
+    a.breadcrumb-item(ng-click='go("/line/"+ competitionId )') {{competition.name}}
     span.breadcrumb-item.active Score
 
 block content
   .row
+  .col-md12
+    button.btn.btn-secondary(style='margin:0 10px 10px 0;', type='button', ng-click="go('/line/' + competitionId)")
+      i.fa.fa-undo(aria-hidden='true')  大会に戻る
+  .row
+    .col-12
+      .alert.alert-info(role='alert')
+          | デモ競技につき，順位づけプログラムは，RCJJ2017 JPOP中津川と共通となっています．
+  br
+  br
+  .row
     .col-lg-6
-      h3 日本リーグ - 順位
+      h3 日本リーグ - 速報順位
       table(style="overflow: scroll;")
         thead
           tr
@@ -57,12 +67,13 @@ block content
             td.text-center(ng-bind='$index + 1')
             td.text-center(ng-bind='run.team.name')
             td.text-center(ng-bind='run.score')
-            td.text-center {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+            td.text-center(ng-if="!run.retired"){{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+            td.text-center(ng-if="run.retired") R
             td.text-center(ng-bind='run.rescuedVictims')
             td.text-center(ng-bind='run.LoPsNum')
 
     .col-lg-6
-      h3 ワールドリーグ - 順位
+      h3 ワールドリーグ - 速報順位
       table(style="overflow: scroll;")
         thead
           tr
@@ -77,7 +88,8 @@ block content
             td.text-center(ng-bind='$index + 1')
             td.text-center(ng-bind='run.team.name')
             td.text-center(ng-bind='run.score')
-            td.text-center {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+            td.text-center(ng-if="!run.retired"){{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+            td.text-center(ng-if="run.retired") R
             td.text-center(ng-bind='run.rescuedVictims')
             td.text-center(ng-bind='run.LoPsNum')
   .row
@@ -101,8 +113,9 @@ block content
             td.text-center(ng-bind='run.round.name')
             td.text-center(ng-bind='run.field.name')
             td.text-center(ng-bind='run.score')
-            td.text-center {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
-            td.text-center(ng-bind='run.rescuedVictims')
+            td.text-center(ng-if="!run.retired"){{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+            td.text-center(ng-if="run.retired") R
+            td.text-center(ng-bind='run.rescuedLiveVictims + run.rescuedDeadVictims')
             td.text-center(ng-bind='run.LoPsNum')
 
     .col-lg-6
@@ -123,6 +136,7 @@ block content
                 td.text-center(ng-bind='run.round.name')
                 td.text-center(ng-bind='run.field.name')
                 td.text-center(ng-bind='run.score')
-                td.text-center {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
-                td.text-center(ng-bind='run.rescuedVictims')
+                td.text-center(ng-if="!run.retired"){{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+                td.text-center(ng-if="run.retired") R
+                td.text-center(ng-bind='run.rescuedLiveVictims + run.rescuedDeadVictims')
                 td.text-center(ng-bind='run.LoPsNum')

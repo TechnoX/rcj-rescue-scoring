@@ -12,7 +12,7 @@ angular.module("login", []).controller("loginController", function($scope, $http
       }
       window.location.replace(return_path)
     },function(){
-        alert("ログインに失敗しました．IDとパスワードをお確かめください．")
+        swal("Oops!", "ログインに失敗しました．IDとパスワードをお確かめください", "error");
     })
   }
 })

@@ -132,12 +132,12 @@ User.remove({}, function (err) {
 
   var testUser = new User({
     username: "admin",
-    password: "secretadminpassword",
+    password: "adminpass",
     admin   : true
   });
   var testUser2 = new User({
-    username: "kanto",
-    password: "rcj2017judge",
+    username: "judge",
+    password: "judgepass",
     admin   : false
   });
 

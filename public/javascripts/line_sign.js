@@ -1,6 +1,7 @@
 // register the directive with your app module
 var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'rzModule']);
 var marker={};
+var socket;
 
 // function referenced by the drop target
 app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', function($scope, $uibModal, $log, $timeout, $http){
@@ -21,7 +22,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     (function launchSocketIo() {
         // launch socket.io
-        var socket = io.connect(window.location.origin);
+        socket = io.connect(window.location.origin);
         if(typeof runId !== 'undefined'){
             $scope.actualUsedDropTiles = 0; 
             socket.emit('subscribe', 'runs/' + runId);
@@ -35,12 +36,16 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.tiles[data.startTile.x + ',' +
                          data.startTile.y + ',' +
                          data.startTile.z].start = data.showedUp;
-                $scope.rescuedVictims = data.rescuedVictims;
+                $scope.rescuedLiveVictims = data.rescuedLiveVictims;
+                $scope.rescuedDeadVictims = data.rescuedDeadVictims;
+                $scope.rescueLevel = data.rescueLevel;
+                $scope.escapeEvacuationZone = data.escapeEvacuationZone;
                 $scope.score = data.score;
                 $scope.showedUp = data.showedUp;
                 $scope.LoPs = data.LoPs;
                 $scope.minutes = data.time.minutes;;
                 $scope.seconds = data.time.seconds;
+                $scope.retired = data.retired;
                 $scope.$apply();
                 console.log("Updated view from socket.io");
             });
@@ -77,9 +82,12 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.competition = response.data.competition;
             $scope.round = response.data.round;
             $scope.runid = runId;
-
+            $scope.retired = response.data.retired;
             $scope.numberOfDropTiles = response.data.numberOfDropTiles;;
-            $scope.rescuedVictims = response.data.rescuedVictims;
+            $scope.rescuedLiveVictims = response.data.rescuedLiveVictims;
+            $scope.rescuedDeadVictims = response.data.rescuedDeadVictims;
+            $scope.escapeEvacuationZone = response.data.escapeEvacuationZone;
+            $scope.rescueLevel = response.data.rescueLevel;
 
             for(var i = 0; i < response.data.tiles.length; i++){
                 $scope.tiles[response.data.tiles[i].x + ',' +
@@ -128,6 +136,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
     
     $scope.go = function(path){
+      socket.emit('unsubscribe', 'runs/' + runId);
       window.location = path
   }
     $scope.totalNumberOf = function(objects){
@@ -178,6 +187,17 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         });
     };
     
+    $scope.sucess_message = function(){
+        swal({
+                    title: 'Recorded!', 
+                    text: '競技データーは正常に送信されました．レスキュー技術委員会により競技記録の確認/承認されると，web上で結果が一般公開されます．詳しくは，レスキュー技術委員会ブログをご覧ください．', 
+                    type: 'success'
+                },function(){
+                    $scope.go("/line/"+$scope.competition._id);
+                });
+                console.log("Sucess!!");
+    }
+    
     $scope.send_sign = function(){
         swal({
           title: "Finish Run?", 
@@ -187,28 +207,19 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
           confirmButtonText: "Yes, finish it!",
           confirmButtonColor: "#ec6c62"
         }, function() {
-            $http.post("/api/runs/"+runId+"/update", {status: 4}).then(function(response){
-                
-                }, function(response){
-                    console.log("Error: " + response.statusText);
-            });
+            console.log("STATUS UPDATED(4)")
             var run = {}
             run.sign = {}
+            run.status = 4;
             var datapair = $("#cap_sig").jSignature("getData", "svgbase64") 
             run.sign.captain = "data:" + datapair[0] + "," + datapair[1] 
             var datapair = $("#ref_sig").jSignature("getData", "svgbase64") 
             run.sign.referee = "data:" + datapair[0] + "," + datapair[1] 
             var datapair = $("#refas_sig").jSignature("getData", "svgbase64") 
             run.sign.referee_as = "data:" + datapair[0] + "," + datapair[1] 
-
+            console.log("SIGNATURE REGISTERD")
             $http.post("/api/runs/"+runId+"/update", run).then(function(response){
-                swal({
-                    title: "Recorded!", 
-                    text: "競技データーは正常に送信されました．競技管理者による競技データの確認，承認が降りると，web上で結果が一般公開されます．詳しくは，レスキュー技術委員会ブログをご覧ください．", 
-                    type: "success"
-                },function(){
-                    $scope.go('/line/'+$scope.competition._id);
-                });
+                setTimeout($scope.sucess_message,500);
 
             }, function(response){
                 swal("Oops", "正常に送信できませんでした．システム管理者を呼んでください．", "error");
@@ -222,7 +233,21 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
 
 
-}]);
+}]).directive("tileLoadFinished", function($timeout){
+    return function(scope, element, attrs){
+      if (scope.$last){
+           $timeout(function(){
+            tile_size();
+          },0);
+          $timeout(function(){
+            tile_size();
+          },500);
+          $timeout(function(){
+            tile_size();
+          },1000);
+      }
+    }
+});
 
 
 
@@ -341,6 +366,10 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, tile) {
 
 var currentWidth = -1;
 
+$(window).on('beforeunload', function(){
+     socket.emit('unsubscribe', 'runs/' + runId);
+    });
+
 $(window).on('load resize', function(){
     if (currentWidth == window.innerWidth) {
         return;
@@ -351,3 +380,12 @@ $(window).on('load resize', function(){
     tile_size();
     
     });
+
+let lastTouch = 0;
+document.addEventListener('touchend', event => {
+  const now = window.performance.now();
+  if (now - lastTouch <= 500) {
+    event.preventDefault();
+  }
+  lastTouch = now;
+}, true);

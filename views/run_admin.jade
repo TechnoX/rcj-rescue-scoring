@@ -60,14 +60,15 @@ block content
               th
               th
               th
+              th
               th Operation
         tbody
             tr(ng-repeat='run in runs' runs-read-finished='')
-              td(ng-bind='run.round.name' ng-style="{'background-color':run.status==4?'#ffadad':''}")
-              td(ng-bind='run.team.name' ng-style="{'background-color':run.status==4?'#ffadad':''}")
-              td(ng-bind='run.field.name' ng-style="{'background-color':run.status==4?'#ffadad':''}")
-              td(ng-bind='run.score' ng-style="{'background-color':run.status==4?'#ffadad':''}")
-              td(ng-bind="run.time.minutes*60*1000+run.time.seconds*1000 | date:'mm:ss'" ng-style="{'background-color':run.status==4?'#ffadad':''}")
+              td(ng-bind='run.round.name' ng-style="{'background-color':run.status==5?'#bdafdb':''}" )
+              td(ng-bind='run.team.name' ng-style="{'background-color':run.status==5?'#bdafdb':''}")
+              td(ng-bind='run.field.name' ng-style="{'background-color':run.status==5?'#bdafdb':''}")
+              td(ng-bind='run.score' ng-style="{'background-color':run.status==5?'#bdafdb':''}")
+              td(ng-bind="run.time.minutes*60*1000+run.time.seconds*1000 | date:'mm:ss'" ng-style="{'background-color':run.status==5?'#bdafdb':''}")
               td(ng-style="{'background-color':run.status==4?'#ffadad':''}")
                 span(ng-if="run.status==0") 0.競技前
                 span(ng-if="run.status==1") 1.審判ページ表示
@@ -75,12 +76,14 @@ block content
                 span(ng-if="run.status==3") 3.記録確認中
                 span(ng-if="run.status==4") 4.競技終了
                 span(ng-if="run.status==5") 5.承認・公開済み
-              td(ng-style="{'background-color':run.status==4?'#ffadad':''}")
+              td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
                 button(ng-click="go('/line/view/' + run._id)" class='btn btn-info') View
-              td(ng-style="{'background-color':run.status==4?'#ffadad':''}")
+              td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
                 button(ng-click="go_sign(run._id)" class='btn btn-warning') Sign
-              td(ng-style="{'background-color':run.status==4?'#ffadad':''}")
+              td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
                 button(ng-click="go_judge(run._id)" class='btn btn-danger') Judge
-              td(ng-style="{'background-color':run.status==4?'#ffadad':''}")
+              td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
+                button(ng-click="go_approval(run._id)" class='btn btn-secondary') Approval
+              td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
                 a(href="" ng-click='removeRun(run)') Delete
 

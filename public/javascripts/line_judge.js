@@ -38,8 +38,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.round = response.data.round;
         $scope.competition = response.data.competition;
 
-        $scope.numberOfDropTiles = response.data.numberOfDropTiles;;
-        $scope.rescuedVictims = response.data.rescuedVictims;
+        $scope.numberOfDropTiles = response.data.numberOfDropTiles;
+        $scope.rescuedLiveVictims = response.data.rescuedLiveVictims;
+        $scope.rescuedDeadVictims = response.data.rescuedDeadVictims;
+        $scope.escapeEvacuationZone = response.data.escapeEvacuationZone;
+        $scope.rescueLevel = response.data.rescueLevel;
         for(var i = 0; i < response.data.tiles.length; i++){
             $scope.tiles[response.data.tiles[i].x + ',' +
                          response.data.tiles[i].y + ',' +
@@ -57,7 +60,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                          response.data.startTile.z].start = response.data.showedUp;
         $scope.score = response.data.score;
         $scope.showedUp = response.data.showedUp;
+        
         $scope.LoPs = response.data.LoPs;
+        $scope.retired = response.data.retired;
         console.log($scope.LoPs)
         // Verified time by timekeeper
         $scope.minutes = response.data.time.minutes;
@@ -73,6 +78,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }, function(response){
         console.log("Error: " + response.statusText);
     });
+    
+    
 
 
     $scope.range = function(n){
@@ -87,7 +94,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.time = 0;
         $scope.minutes = 0;
         $scope.seconds = 0;
-        
+        $scope.retired = false;
+        $scope.saveEverything();
     }
 
     $scope.toggleScoring = function(){
@@ -142,29 +150,54 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     
 
 
-    $scope.decVictims = function(){
-        $scope.rprocessing = true;
-        $scope.rescuedVictims--;
-        if($scope.rescuedVictims <= 0)
-            $scope.rescuedVictims = 0;
+    $scope.decVictims = function(type){
+        if(type == 'live'){
+            $scope.rlprocessing = true;
+            $scope.rescuedLiveVictims--;
+            if($scope.rescuedLiveVictims <= 0)
+                $scope.rescuedLiveVictims = 0;
 
-        $http.post("/api/runs/"+runId+"/update", {rescuedVictims: $scope.rescuedVictims}).then(function(response){
-            $scope.score = response.data.score;
-            $scope.rprocessing = false;
-        }, function(response){
-            console.log("Error: " + response.statusText);
-        });
+            $http.post("/api/runs/"+runId+"/update", {rescuedLiveVictims: $scope.rescuedLiveVictims}).then(function(response){
+                $scope.score = response.data.score;
+                $scope.rlprocessing = false;
+            }, function(response){
+                console.log("Error: " + response.statusText);
+            });
+        }else if(type == 'dead'){
+            $scope.rdprocessing = true;
+            $scope.rescuedDeadVictims--;
+            if($scope.rescuedDeadVictims <= 0)
+                $scope.rescuedDeadVictims = 0;
+
+            $http.post("/api/runs/"+runId+"/update", {rescuedDeadVictims: $scope.rescuedDeadVictims}).then(function(response){
+                $scope.score = response.data.score;
+                $scope.rdprocessing = false;
+            }, function(response){
+                console.log("Error: " + response.statusText);
+            });
+        }
 
     }
-    $scope.incVictims = function(){
-        $scope.rprocessing = true;
-        $scope.rescuedVictims++;
-        $http.post("/api/runs/"+runId+"/update", {rescuedVictims: $scope.rescuedVictims}).then(function(response){
-            $scope.score = response.data.score;
-            $scope.rprocessing = false;
-        }, function(response){
-            console.log("Error: " + response.statusText);
-        });
+    $scope.incVictims = function(type){
+        if(type == 'live'){
+            $scope.rlprocessing = true;
+            $scope.rescuedLiveVictims++;
+            $http.post("/api/runs/"+runId+"/update", {rescuedLiveVictims: $scope.rescuedLiveVictims}).then(function(response){
+                $scope.score = response.data.score;
+                $scope.rlprocessing = false;
+            }, function(response){
+                console.log("Error: " + response.statusText);
+            });
+        }else if(type == 'dead'){
+            $scope.rdprocessing = true;
+            $scope.rescuedDeadVictims++;
+            $http.post("/api/runs/"+runId+"/update", {rescuedDeadVictims: $scope.rescuedDeadVictims}).then(function(response){
+                $scope.score = response.data.score;
+                $scope.rdprocessing = false;
+            }, function(response){
+                console.log("Error: " + response.statusText);
+            });
+        }
 
     }
 
@@ -210,6 +243,24 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.changeShowedUp = function(){
         $http.post("/api/runs/"+runId+"/update", {showedUp: $scope.showedUp}).then(function(response){
+            $scope.score = response.data.score;
+        }, function(response){
+            console.log("Error: " + response.statusText);
+        });
+    }
+    
+    $scope.changeRescueLevel = function(){
+        console.log('Change Rescue');
+        $http.post("/api/runs/"+runId+"/update", {rescueLevel: $scope.rescueLevel}).then(function(response){
+            console.log($scope.rescueLevel);
+            $scope.score = response.data.score;
+        }, function(response){
+            console.log("Error: " + response.statusText);
+        });
+    }
+    
+    $scope.changeEscapeEvacuationZone = function(){
+        $http.post("/api/runs/"+runId+"/update", {escapeEvacuationZone: $scope.escapeEvacuationZone}).then(function(response){
             $scope.score = response.data.score;
         }, function(response){
             console.log("Error: " + response.statusText);
@@ -353,13 +404,17 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         run.height = $scope.height;
         run.width = $scope.width;
         run.length = $scope.length;
-        run.rescuedVictims = $scope.rescuedVictims;
+        run.rescuedLiveVictims = $scope.rescuedLiveVictims;
+        run.rescuedDeadVictims = $scope.rescuedDeadVictims;
+        run.rescueLevel = $scope.rescueLevel;
+        run.escapeEvacuationZone = $scope.escapeEvacuationZone;
         run.tiles = $scope.tiles;
         run.showedUp = $scope.showedUp;
         run.LoPs = $scope.LoPs;
         run.time = {};
         run.time.minutes = $scope.minutes;
         run.time.seconds = $scope.seconds;
+        run.retired = $scope.retired;
 
         $http.post("/api/runs/"+runId+"/update", run).then(function(response){
             $scope.score = response.data.score;
@@ -371,7 +426,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.retire = function(){
         swal({
           title: "Retire?", 
-          text: "'YES'をクリックすると，タイム[8:01]として記録されます．（システム・順位処理上では，リタイヤを8:01として取り扱います．）", 
+          text: "'YES'をクリックすると，タイム[8:01]として記録されます．（システム上では，リタイヤを8:01として取り扱います．）", 
           type: "warning",
           showCancelButton: true,
           confirmButtonText: "Yes"
@@ -379,6 +434,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.startedTime = 0;
             $scope.minutes = 8
             $scope.seconds = 1
+            $scope.retired = true;
             $scope.saveEverything();
         });
         
@@ -386,23 +442,27 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 
     $scope.confirm = function(){
-        var run = {}
-        run.rescuedVictims = $scope.rescuedVictims;
-        run.tiles = $scope.tiles;
-        run.showedUp = $scope.showedUp;
-        run.LoPs = $scope.LoPs;
-        // Verified time by timekeeper
-        run.time = {};
-        run.time.minutes = $scope.minutes;
-        run.time.seconds = $scope.seconds;
-        run.status = 3;
+        if((!$scope.showedUp || $scope.showedUp == null) && $scope.score >0 ){
+            swal("Oops!", "獲得得点が1点以上なのに，暗黙のチェックポイントをクリアしていません．", "error");
+        }else{
+            var run = {}
+            run.rescuedLiveVictims = $scope.rescuedLiveVictims;
+            run.tiles = $scope.tiles;
+            run.showedUp = $scope.showedUp;
+            run.LoPs = $scope.LoPs;
+            // Verified time by timekeeper
+            run.time = {};
+            run.time.minutes = $scope.minutes;
+            run.time.seconds = $scope.seconds;
+            run.status = 3;
 
-        $http.post("/api/runs/"+runId+"/update", run).then(function(response){
-            $scope.score = response.data.score;
-            $scope.go('/line/sign/'+runId)
-        }, function(response){
-            console.log("Error: " + response.statusText);
-        });
+            $http.post("/api/runs/"+runId+"/update", run).then(function(response){
+                $scope.score = response.data.score;
+                $scope.go('/line/sign/'+runId)
+            }, function(response){
+                console.log("Error: " + response.statusText);
+            });
+        }
     };
     
     
@@ -567,6 +627,7 @@ function tile_size(){
 
 var currentWidth = -1;
 
+
              
 $(window).on('load resize', function(){
     if (currentWidth == window.innerWidth) {
@@ -579,25 +640,11 @@ $(window).on('load resize', function(){
     
     });
 
-(function(win, doc) {
-    
-    "use strict";
-    
-    var tapFlag = false,
-        timer;
-    
-    doc.body.addEventListener("touchstart", function(evt) {
-        if (tapFlag) {
-            evt.preventDefault();
-        }
-    }, true);
-
-    doc.body.addEventListener("touchend", function(evt) {
-        tapFlag = true;
-        clearTimeout(timer);
-        timer = setTimeout(function() {
-            tapFlag = false;
-        }, 200); // 100だと短い、150だとやや短い
-    }, true);
-    
-})(window, document);
+let lastTouch = 0;
+document.addEventListener('touchend', event => {
+  const now = window.performance.now();
+  if (now - lastTouch <= 500) {
+    event.preventDefault();
+  }
+  lastTouch = now;
+}, true);
