@@ -100,7 +100,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.toggleScoring = function(){
         if($scope.numberOfDropTiles - $scope.placedDropTiles > 0) {
-            swal("Oops!", "まだ，全てのチェックポイントタイルが設定されていません．チェックポイントタイルを設定してください．", "error");
+            swal("Oops!", "All checkpoints are not yet placed.", "error");
             return;
         }
         // Start/stop scoring
@@ -145,7 +145,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         }, function(response){
             console.log("Error: " + response.statusText);
         });
-        if($scope.LoPs[index] >= 3 && !last)swal("進行停止回数 > 3", "チームキャプテンは，次のチェックポイントに移動することを選択できます．", "info");
+        if($scope.LoPs[index] >= 3 && !last)swal("LoPs Count > 3", "The team *may* move to next checkpoint tile now.", "info");
     }
     
 
@@ -209,7 +209,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.seconds = (Math.floor($scope.time%60000))/1000
             $scope.saveEverything();
             
-            swal("Time Up!", "リタイヤボタンを押さないでください．", "info");
+            swal("Time Up!", "Do NOT push the Retire button.", "info");
             
         }
         if($scope.startedTime)
@@ -279,9 +279,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         // If the run is not started, we can place drop pucks on this tile
         if(!$scope.startedScoring){
             // We can only place drop markers on tiles without scoring elements (rule 3.3.4)
-            if($scope.numberOfDropTiles - $scope.placedDropTiles != 0 && tile.index.length == 0 )swal("Oops!", "システム実装上，通過しないタイルをチェックポイントに指定できません．", "error");
+            if($scope.numberOfDropTiles - $scope.placedDropTiles != 0 && tile.index.length == 0 )swal("Oops!", "Cannot place checkpoint markers on tile taht do not pass (System specification)", "error");
             else if($scope.numberOfDropTiles - $scope.placedDropTiles != 0 &&(total > 0 || tile.start != null)){
-                swal("Oops!", "得点項目のあるタイルをチェックポイントに指定できません． (ルール 3.3.4　参照)", "error");
+                swal("Oops!", "Place checkpoint markers on tiles without scoring elements (rule 3.3.4)", "error");
             }else{
                 
 		// If this tile already contains a droptile, we should remove it
@@ -426,14 +426,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.retire = function(){
         swal({
           title: "Retire?", 
-          text: "'YES'をクリックすると，タイム[8:01]として記録されます．（システム上では，リタイヤを8:01として取り扱います．）", 
+          text: "Are you sure to Retire?", 
           type: "warning",
           showCancelButton: true,
           confirmButtonText: "Yes"
         }, function() {
             $scope.startedTime = 0;
             $scope.minutes = 8
-            $scope.seconds = 1
+            $scope.seconds = 0 //1 (<-- FOR JAPANOPEN)
             $scope.retired = true;
             $scope.saveEverything();
         });
@@ -443,7 +443,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.confirm = function(){
         if((!$scope.showedUp || $scope.showedUp == null) && $scope.score >0 ){
-            swal("Oops!", "獲得得点が1点以上なのに，暗黙のチェックポイントをクリアしていません．", "error");
+            swal("Oops!", "You may have forgot to clear implicit checkpoint", "error");
         }else{
             var run = {}
             run.rescuedLiveVictims = $scope.rescuedLiveVictims;
