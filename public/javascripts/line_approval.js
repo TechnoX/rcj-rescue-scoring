@@ -191,7 +191,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.sucess_message = function(){
         swal({
                     title: 'Recorded!', 
-                    text: '競技データーは公開サーバーに正常に送信されました．', 
+                    text: 'Recording to public server succeeded', 
                     type: 'success'
                 },function(){
                     $scope.go("/admin/"+$scope.competition._id+"/runs/");
@@ -202,7 +202,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.send_public = function(){
         swal({
           title: "Approval?", 
-          text: "'Yes'をクリックすると，競技データーが公開サーバーに送信されます．", 
+          text: "Click 'Yes' to send the run data to the public server.", 
           type: "warning",
           showCancelButton: true,
           confirmButtonText: "Yes, approval it!",
@@ -227,13 +227,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $http.post("/api/runs/"+runId+"/update", run).then(function(response){
                     setTimeout($scope.sucess_message,500);
                 }, function(response){
-                    swal("Oops", "正常に送信できませんでした．システム管理者を呼んでください．", "error");
+                    swal("Oops", "It could not be sent normally. Please call the system manager.", "error");
                     console.log("Error: " + response.statusText);
                 });
                 
 
             }, function(response){
-                swal("Oops", "正常に送信できませんでした．システム管理者を呼んでください．", "error");
+                swal("Oops", "It could not be sent normally. Please call the system manager.", "error");
                 console.log("Error: " + response.statusText);
             });
             
