@@ -43,25 +43,25 @@ block content
   .row
   .col-md12
     button.btn.btn-secondary(style='margin:0 10px 10px 0;', type='button', ng-click="go('/line/' + competitionId)")
-      i.fa.fa-undo(aria-hidden='true')  大会に戻る
-  .row
+      i.fa.fa-undo(aria-hidden='true')  Back
+  //.row
     .col-12
       .alert.alert-info(role='alert')
-          | デモ競技につき，順位づけプログラムは，RCJJ2017 JPOP中津川と共通となっています．
+          | Information
   br
   br
   .row
     .col-lg-6
-      h3 日本リーグ - 速報順位
+      h3 Primary - Rank
       table(style="overflow: scroll;")
         thead
           tr
-            th.text-center 順位
-            th.text-center チーム名
-            th.text-center 得点
-            th.text-center 時間
-            th.text-center 救助数
-            th.text-center 停止数
+            th.text-center Rank
+            th.text-center Team Name
+            th.text-center Score
+            th.text-center Time
+            th.text-center Rescued
+            th.text-center LoPs
         tbody
           tr(ng-repeat='run in primaryRunsTop track by $index')
             td.text-center(ng-bind='$index + 1')
@@ -73,16 +73,16 @@ block content
             td.text-center(ng-bind='run.LoPsNum')
 
     .col-lg-6
-      h3 ワールドリーグ - 速報順位
+      h3 Secondary - Rank
       table(style="overflow: scroll;")
         thead
           tr
-            th.text-center 順位
-            th.text-center チーム名
-            th.text-center 得点
-            th.text-center 時間
-            th.text-center 救助数
-            th.text-center 停止数
+            th.text-center Rank
+            th.text-center Team Name
+            th.text-center Score
+            th.text-center Time
+            th.text-center Rescued
+            th.text-center LoPs
         tbody
           tr(ng-repeat='run in secondaryRunsTop track by $index')
             td.text-center(ng-bind='$index + 1')
@@ -96,17 +96,17 @@ block content
     hr
   .row
     .col-lg-6
-      h3 日本リーグ - 全競技
+      h3 Primary - All
       table(style="overflow: scroll;")
         thead
           tr
-            th.text-center チーム名
-            th.text-center ラウンド
-            th.text-center フィールド
-            th.text-center 得点
-            th.text-center 時間
-            th.text-center 救助数
-            th.text-center 停止数
+            th.text-center Team Name
+            th.text-center Round
+            th.text-center Field
+            th.text-center Score
+            th.text-center Time
+            th.text-center Rescued
+            th.text-center LoPs
         tbody
           tr(ng-repeat='run in primaryRuns')
             td.text-center(ng-bind='run.team.name')
@@ -119,17 +119,17 @@ block content
             td.text-center(ng-bind='run.LoPsNum')
 
     .col-lg-6
-      h3 ワールドリーグ - 全競技
+      h3 Secondary - All
       table(style="overflow: scroll; width:100%;")
         thead
           tr
-            th.text-center チーム名
-            th.text-center ラウンド
-            th.text-center フィールド
-            th.text-center 得点
-            th.text-center 時間
-            th.text-center 救助数
-            th.text-center 停止数
+            th.text-center Team Name
+            th.text-center Round
+            th.text-center Field
+            th.text-center Score
+            th.text-center Time
+            th.text-center Rescued
+            th.text-center LoPs
         tbody
           tr(ng-repeat='run in secondaryRuns')
                 td.text-center(ng-bind='run.team.name')
