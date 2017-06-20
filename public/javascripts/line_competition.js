@@ -34,7 +34,7 @@ angular.module("LineCompetition", []).controller("LineCompetitionController", fu
   $scope.go_judge = function(path){
       swal({
           title: "Judge?", 
-          text: "審判ページに移動しますか？", 
+          text: "Are you sure to move Judge Page?", 
           type: "warning",
           showCancelButton: true,
           confirmButtonText: "Yes",
@@ -46,7 +46,7 @@ angular.module("LineCompetition", []).controller("LineCompetitionController", fu
   }
   
   $scope.no_judge = function(){
-      swal("Oops!", "選択した競技は，すでに終了しています．競技を編集する場合は，大会責任者・システム管理者にお問い合わせください．", "error");
+      swal("Oops!", "The run you selected was already ended!  If you edit, please contact competition manager.", "error");
   }
 })
 .directive("runsReadFinished", function($timeout){
