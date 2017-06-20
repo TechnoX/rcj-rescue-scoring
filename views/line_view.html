@@ -11,7 +11,7 @@
         <div class="col-md-3 col-sm4 col-5">
             <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
             <li class="navbar-brand" href="#" ng-if="!retired">  {{minutes*60*1000+seconds*1000 | date:'mm:ss'}}</li>
-            <li class="navbar-brand" href="#" ng-if="retired">  リタイヤ</li>
+            <li class="navbar-brand" href="#" ng-if="retired">  Retire</li>
         </div>
     </div>
     
@@ -63,7 +63,7 @@
               <div id="resc" class="card">
                   <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> Rescuing victims　<span class="badge badge-danger">Rescue Level{{rescueLevel + 1}} is selecting.</span></h3>
                   <div class="card-block">
-                      <p class="card-text">【【LIVE Victims】Number：　　 <span class="badge badge-info">{{30 + rescueLevel*10}}　points /victim</span></p>
+                      <p class="card-text">【LIVE Victims】Number：　　 <span class="badge badge-info">{{30 + rescueLevel*10}}　points /victim</span></p>
                       <img src="/images/minus.png" alt="-" style="opacity:0.5;" class="plusminus">
                       <span class="count" ng-show="rlprocessing != true">{{rescuedLiveVictims}}</span>
                       <img src="/images/plus.png" alt="+" style="opacity:0.5;" class="plusminus">

@@ -18,54 +18,54 @@
 
     <div class="row" style="height:100%;">
         <div class="col-md-4 col-sm4" style="border-right: solid 1px #000;">
-            <label>表示フィールド:</label>
+            <label>Display field:</label>
             <select ng-model='selectfield[0]' ng-options='field as field.name for field in fields'></select>
             <div style="width:100%; height:100%;">
                 <iframe ng-src="{{getIframeSrc(field_run[0].id)}}" style="width:100%; height:100%; border:none;" ng-if="field_run[0].id != '-1' && field_run[0].id != '-2' && field_run[0].id != null"></iframe>
                 <div class="alert alert-warning" role="alert" ng-if="field_run[0].id == '-1' || field_run[0].id == '-2' || field_run[0].id == null">
                     <div class="row">
                         <div class="col-12">
-                                <p>現在，{{selectfield[0].name}}で行なっている競技はありません．</p>
+                                <p>Currently, there is no run in {{selectfield[0].name}}</p>
                         </div>
                         
                     </div>
                 </div>
                 <div style="text-align:center; margin: 10 10 10 10;" ng-if="field_run[0].id != '-1' && field_run[0].id != '-2' && field_run[0].id != null">
-                    <button class="btn btn-info" type="button" ng-click="go('/line/view/'+field_run[0].id)"><i class="fa fa-arrow-right" aria-hidden="true" > 競技詳細閲覧</i></button>
+                    <button class="btn btn-info" type="button" ng-click="go('/line/view/'+field_run[0].id)"><i class="fa fa-arrow-right" aria-hidden="true" > Run detail infomation</i></button>
                 </div>
             </div>
         </div>
         <div class="col-md-4 col-sm4" style="border-right: solid 1px #000;">
-            <label>表示フィールド:</label>
+            <label>Display field:</label>
             <select ng-model='selectfield[1]' ng-options='field as field.name for field in fields'></select>
             <div style="width:100%; height:100%;">
                 <iframe ng-src="{{getIframeSrc(field_run[1].id)}}" style="width:100%; height:100%; border:none;" ng-if="field_run[1].id != '-1' && field_run[1].id != '-2' && field_run[1].id != null"></iframe>
                 <div class="alert alert-warning" role="alert" ng-if="field_run[1].id == '-1' || field_run[1].id == '-2' || field_run[1].id == null">
                     <div class="row">
                         <div class="col-12">
-                                <p>現在，{{selectfield[1].name}}で行なっている競技はありません．</p>
+                                <p>Currently, there is no run in {{selectfield[1].name}}</p>
                         </div>
                     </div>
                 </div>
                 <div style="text-align:center; margin: 10 10 10 10;" ng-if="field_run[1].id != '-1' && field_run[1].id != '-2' && field_run[1].id != null">
-                    <button class="btn btn-info" type="button" ng-click="go('/line/view/'+field_run[1].id)"><i class="fa fa-arrow-right" aria-hidden="true" > 競技詳細閲覧</i></button>
+                    <button class="btn btn-info" type="button" ng-click="go('/line/view/'+field_run[1].id)"><i class="fa fa-arrow-right" aria-hidden="true" >Run detail infomation</i></button>
                 </div>
             </div>
         </div>
         <div class="col-md-4 col-sm4" >
-            <label>表示フィールド:</label>
+            <label>Display field:</label>
             <select ng-model='selectfield[2]' ng-options='field as field.name for field in fields'></select>
             <div style="width:100%; height:100%;">
                 <iframe ng-src="{{getIframeSrc(field_run[2].id)}}" style="width:100%; height:100%; border:none;" ng-if="field_run[2].id != '-1' && field_run[2].id != '-2' && field_run[2].id != null"></iframe>
                 <div class="alert alert-warning" role="alert" ng-if="field_run[2].id == '-1' || field_run[2].id == '-2' || field_run[2].id == null">
                     <div class="row">
                         <div class="col-12">
-                                <p>現在，{{selectfield[2].name}}で行なっている競技はありません．</p>
+                                <p>Currently, there is no run in {{selectfield[2].name}}．</p>
                         </div>
                     </div>
                 </div>
                 <div style="text-align:center; margin: 10 10 10 10;" ng-if="field_run[2].id != '-1' && field_run[2].id != '-2' && field_run[2].id != null">
-                    <button class="btn btn-info" type="button" ng-click="go('/line/view/'+field_run[2].id)"><i class="fa fa-arrow-right" aria-hidden="true" > 競技詳細閲覧</i></button>
+                    <button class="btn btn-info" type="button" ng-click="go('/line/view/'+field_run[2].id)"><i class="fa fa-arrow-right" aria-hidden="true" > Run detail infomation</i></button>
                 </div>
             </div>
         </div>

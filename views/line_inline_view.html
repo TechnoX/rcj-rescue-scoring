@@ -26,22 +26,22 @@
 <div class="alert alert-info" role="alert">
     <div class="row">
         <div class="col-6">
-                <i class="fa fa-undo" aria-hidden="true"> : {{LoPs_total}} 回</i>
+                <i class="fa fa-undo" aria-hidden="true"> : {{LoPs_total}} times</i>
         </div>
         <div class="col-6">
-                <i class="fa fa-ambulance" aria-hidden="true"> : L: {{rescuedLiveVictims}}体 　D: {{rescuedDeadVictims}}体</i>
+                <i class="fa fa-ambulance" aria-hidden="true"> : L: {{rescuedLiveVictims}} 　D: {{rescuedDeadVictims}}</i>
         </div>
     </div>
     
 </div>
 <div class="row">
         <div class="col-12">
-        <h3><span class="badge badge-danger">救助レベル{{rescueLevel + 1}}が選択されています</span></h3>
+        <h3><span class="badge badge-danger">Rescue Level{{rescueLevel + 1}} is selecting</span></h3>
         </div>
     </div>
 <div style="text-align:center; margin: 10 10 10 10;" >
-    <button class="btn btn-danger" type="button" ng-show="status == 2"><i aria-hidden="true" > 競技中</i></button>
-    <button class="btn btn-warning" type="button" ng-show="status == 3"><i aria-hidden="true" > 得点確認中</i></button>
+    <button class="btn btn-danger" type="button" ng-show="status == 2"><i aria-hidden="true" > Running</i></button>
+    <button class="btn btn-warning" type="button" ng-show="status == 3"><i aria-hidden="true" > Checking</i></button>
 </div>
         
         

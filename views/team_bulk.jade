@@ -24,32 +24,32 @@ block content
       h1 {{competition.name}} - Teams Bulk Registration
       br
       br
-      h3 STEP1 テンプレートファイルをダウンロード
-      p 下のリンクから，テンプレートファイルをダウンロードします．
+      h3 STEP1 Download the template file
+      p Download the template file from the link below.
       a(href="/tmp/team_bulk.csv") Download!
       br
       br
-      h3 STEP2 ファイルを編集
-      p Excel等のcsv形式を編集可能なソフトウェアで開き，情報を埋めます.
-      | leagueには，{{leagues}}の内から１つ選んで入力します．
-      | 保存は，Shift-JISで，コンマ区切りで行なってください．
-      |　チーム名の最後を，スペースで終わると，run登録の際にエラーになります．
+      h3 STEP2 Edit the file
+      p Open the csv format of Excel etc. with editable software and fill the information.
+      | For league, choose one of {{leagues}} and enter.
+      | Please save with comma separated by Shift-JIS.
+      |　When the end of the team name ends with a space, an error will occur during run registration.
       br
       br
-      h3 STEP3 ファイルをアップロード
+      h3 STEP3 Upload the file
       input#select(type="file" name="select")
-      p ファイル選択後，下に表示される内容を確認してください．
-      #result ここに表が表示されます．
+      p After selecting the file, please check the contents displayed below.
+      #result The table will display here.
       br
       br
       center(ng-if="processing")
         img(src="/images/loader2.gif")
-        p {{now}} / {{total}} 登録処理中...
+        p {{now}} / {{total}} Registration in progress ...
       center(ng-if="completed" style="color:#2ecc71;")
         i.fa.fa-check-circle-o.fa-5x(aria-hidden="true")
-        p {{total}}件 登録完了しました
+        p {{total}} Registration completed
       br
       br
-      button(ng-click="addTeam()" class='btn btn-primary') 処理実行
+      button(ng-click="addTeam()" class='btn btn-primary') Execution
       
       
