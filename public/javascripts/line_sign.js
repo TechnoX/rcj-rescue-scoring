@@ -190,7 +190,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.sucess_message = function(){
         swal({
                     title: 'Recorded!', 
-                    text: '競技データーは正常に送信されました．レスキュー技術委員会により競技記録の確認/承認されると，web上で結果が一般公開されます．詳しくは，レスキュー技術委員会ブログをご覧ください．', 
+                    text: 'Recording succeeded', 
                     type: 'success'
                 },function(){
                     $scope.go("/line/"+$scope.competition._id);
@@ -201,7 +201,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.send_sign = function(){
         swal({
           title: "Finish Run?", 
-          text: "'Yes'をクリックすると，競技データーが送信されます．これ以降，競技を編集することはできません．", 
+          text: "If you click 'YES', the run data will record.  After that you cannot change the run.", 
           type: "warning",
           showCancelButton: true,
           confirmButtonText: "Yes, finish it!",
@@ -222,7 +222,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 setTimeout($scope.sucess_message,500);
 
             }, function(response){
-                swal("Oops", "正常に送信できませんでした．システム管理者を呼んでください．", "error");
+                swal("Oops", "We couldn't connect to the server! Please notice to system manager.", "error");
                 console.log("Error: " + response.statusText);
             });
             
