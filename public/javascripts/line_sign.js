@@ -199,6 +199,36 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
     
     $scope.send_sign = function(){
+        var sign_empty="PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj48c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMCIgaGVpZ2h0PSIwIj48L3N2Zz4="
+        var run = {}
+            run.sign = {}
+        var err_mes=""
+        var datapair = $("#cap_sig").jSignature("getData", "svgbase64") 
+        if(datapair[1] == sign_empty){
+            err_mes+=" [Captain Sign]"
+        }else{
+            run.sign.captain = "data:" + datapair[0] + "," + datapair[1] 
+        }
+            
+        var datapair = $("#ref_sig").jSignature("getData", "svgbase64")
+        if(datapair[1] == sign_empty){
+            err_mes+=" [Referee Sign]"
+        }else{
+            run.sign.referee = "data:" + datapair[0] + "," + datapair[1] 
+        }
+        
+        var datapair = $("#refas_sig").jSignature("getData", "svgbase64") 
+        if(datapair[1] == sign_empty){
+            err_mes+=" [Co-Referee Sign]"
+        }else{
+            run.sign.referee_as = "data:" + datapair[0] + "," + datapair[1] 
+        }
+        
+
+        if(err_mes != ""){
+            swal("Oops!", "There is no" + err_mes + ".  Please write it before submit run data.", "error");
+            return;
+        }
         swal({
           title: "Finish Run?", 
           text: "If you click 'YES', the run data will record.  After that you cannot change the run.", 
@@ -208,16 +238,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
           confirmButtonColor: "#ec6c62"
         }, function() {
             console.log("STATUS UPDATED(4)")
-            var run = {}
-            run.sign = {}
             run.status = 4;
-            var datapair = $("#cap_sig").jSignature("getData", "svgbase64") 
-            run.sign.captain = "data:" + datapair[0] + "," + datapair[1] 
-            var datapair = $("#ref_sig").jSignature("getData", "svgbase64") 
-            run.sign.referee = "data:" + datapair[0] + "," + datapair[1] 
-            var datapair = $("#refas_sig").jSignature("getData", "svgbase64") 
-            run.sign.referee_as = "data:" + datapair[0] + "," + datapair[1] 
-            console.log("SIGNATURE REGISTERD")
             $http.post("/api/runs/"+runId+"/update", run).then(function(response){
                 setTimeout($scope.sucess_message,500);
 
