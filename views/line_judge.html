@@ -11,7 +11,7 @@
         <div class="col-md-3 col-sm4 col-5">
             <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
             <li class="navbar-brand" href="#"  ng-if="!retired">  {{time | date:'mm:ss'}}</li>
-            <li class="navbar-brand" href="#" ng-if="retired">  Retire!</li>
+            <li class="navbar-brand" href="#" ng-if="retired">  Retire</li>
         </div>
     </div>
     
@@ -127,7 +127,7 @@
           <p>
             <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleScoring()"><i class="fa fa-calculator" aria-hidden="true"> Run Record {{ startedScoring ? 'End' : 'Start' }}</i></button>
             <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleTime()"><i class="fa fa-clock-o" aria-hidden="true"> {{ startedTime ? 'Stop' : 'Start' }}</i></button>
-            <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="retire()"><i class="fa fa-window-close" aria-hidden="true"> Retire!</i></button>
+            <!--<button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="retire()"><i class="fa fa-window-close" aria-hidden="true"> Retire!</i></button>-->
           </p>
         </div>
         <div class="col-md-12 confirmation">
