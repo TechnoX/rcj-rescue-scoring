@@ -14,8 +14,11 @@ angular.module("LineScore", ['datatables' , 'ui.bootstrap','ngAnimate']).control
 
   function updateRunList() {
     $http.get("/api/competitions/" + competitionId +
-              "/runs?populate=true").then(function (response) {
+              "/line/runs?populate=true").then(function (response) {
       var runs = response.data
+
+      console.log(runs)
+
       $scope.primaryRuns = []
       var primaryTeamRuns = {}
       $scope.secondaryRuns = []
@@ -37,7 +40,7 @@ angular.module("LineScore", ['datatables' , 'ui.bootstrap','ngAnimate']).control
         }
 
         if (run.score != 0 || run.time.minutes != 0 || run.time.seconds != 0) {
-          if (run.team.league == "primary") {
+          if (run.team.league == "Primary") {
             $scope.primaryRuns.push(run)
             console.log(run)
             if (primaryTeamRuns[run.team._id] === undefined) {
@@ -55,7 +58,7 @@ angular.module("LineScore", ['datatables' , 'ui.bootstrap','ngAnimate']).control
             primaryTeamRuns[run.team._id].sumLoPs = sum.lops
             primaryTeamRuns[run.team._id].retired = sum.retired
 
-          } else if (run.team.league == "secondary") {
+          } else if (run.team.league == "Secondary") {
             $scope.secondaryRuns.push(run)
             if (secondaryTeamRuns[run.team._id] === undefined) {
               secondaryTeamRuns[run.team._id] = {
@@ -110,7 +113,9 @@ angular.module("LineScore", ['datatables' , 'ui.bootstrap','ngAnimate']).control
   function launchSocketIo() {
     // launch socket.io
     socket = io.connect(window.location.origin)
-    socket.emit('subscribe', 'runs/')
+    socket.on('connect', function () {
+      socket.emit('subscribe', 'runs/line')
+    })
     socket.on('changed', function () {
       updateRunList()
     })
@@ -276,5 +281,5 @@ function BestScore(runs) {
 })
 
 $(window).on('beforeunload', function(){
-     socket.emit('unsubscribe', 'runs/');
+     socket.emit('unsubscribe', 'runs/line');
     });

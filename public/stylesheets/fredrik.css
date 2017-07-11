@@ -64,12 +64,23 @@ tile{
     vertical-align: bottom;
 }
 
-.tools-image{
-    width: 40px;
-    height: 40px;
+.toolbox-tile-container{
+    display: inline-block;
     margin: 5px;
 }
 
+.toolbox-tile{
+    width: 40px;
+    height: 40px;
+    border: solid;
+    border-width: 1px;
+    border-color: black;
+    margin-right: 2px;
+}
+.error{
+    color: red;
+    font-weight: bold;
+}
 rzslider{
     width: 200px;
 /*    width: 80%;*/

@@ -4,25 +4,25 @@
 <div class="modal-body">
   <ul>
     <li>
-      <label>Has speedbumps: <input type="checkbox" ng-model="tile.speedbump"></label>
+      <label>Has speedbumps: <input type="checkbox" ng-model="cell.tile.speedbump"></label>
     </li>
     <li>
-      <label>Checkpoint: <input type="checkbox" ng-model="tile.checkpoint"></label>
+      <label>Checkpoint: <input type="checkbox" ng-model="cell.tile.checkpoint"></label>
     </li>
     <li>
-      <label>Black: <input type="checkbox" ng-model="tile.black"></label>
+      <label>Black: <input type="checkbox" ng-model="cell.tile.black"></label>
     </li>
     <li>
-      <label>Top horizontal tile at ramp: <input type="checkbox" ng-model="tile.rampTop"></label>
+      <label>Top horizontal tile at ramp: <input type="checkbox" ng-model="cell.tile.rampTop"></label>
     </li>
     <li>
-      <label>Bottom horizontal tile at ramp: <input type="checkbox" ng-model="tile.rampBottom"></label>
+      <label>Bottom horizontal tile at ramp: <input type="checkbox" ng-model="cell.tile.rampBottom"></label>
     </li>
     <li ng-show="height > 1">
       <label>Change floor to: </label><br>
       <ul>
 	<li ng-repeat="h in range(height)">
-	  <label><input type="radio" ng-model="tile.changeFloorTo" ng-value="h" ng-change="elevatorChanged(tile.changeFloorTo)"> {{h}}<span ng-show="h == z"> (No elevator)</span></label>
+	  <label><input type="radio" ng-model="cell.tile.changeFloorTo" ng-value="h" ng-change="elevatorChanged(cell.tile.changeFloorTo)"> {{h}}<span ng-show="h == z"> (No elevator)</span></label>
 	</li>
       </ul>
     </li>
@@ -31,11 +31,49 @@
   <label><input type="checkbox" ng-model="isStart" ng-disabled="isStart" ng-change="startChanged()"> Is start</label>
 
   <h5>Placement of victims:</h5>
-  <label><input type="checkbox" ng-model="tile.victim.top" value="top"> Top</label> <br>
-  <label><input type="checkbox" ng-model="tile.victim.bottom" value="bottom"> Bottom</label> <br>
-  <label><input type="checkbox" ng-model="tile.victim.left" value="left"> Left</label> <br>
-  <label><input type="checkbox" ng-model="tile.victim.right" value="right"> Right</label> <br>
-
+  <table>
+    <tr>
+      <th width="20%">&nbsp;</th>
+      <th width="12%"><img src="/images/no_victims.png" alt="None" height="20"></th>
+      <th width="12%"><img src="/images/thermometer.png" alt="Heat" height="20"></th>
+      <th width="12%">H</th>
+      <th width="12%">S</th>
+      <th width="12%">U</th>
+    </tr>
+    <tr>
+      <th class="col">Top</th>
+      <td><input type="radio" ng-model="cell.tile.victims.top" value="None"></td>
+      <td><input type="radio" ng-model="cell.tile.victims.top" value="Heated"></td>
+      <td><input type="radio" ng-model="cell.tile.victims.top" value="H"></td>
+      <td><input type="radio" ng-model="cell.tile.victims.top" value="S"></td>
+      <td><input type="radio" ng-model="cell.tile.victims.top" value="U"></td>
+    </tr>
+    <tr>
+      <th class="col">Bottom</th>
+      <td><input type="radio" ng-model="cell.tile.victims.bottom" value="None"></td>
+      <td><input type="radio" ng-model="cell.tile.victims.bottom" value="Heated"></td>
+      <td><input type="radio" ng-model="cell.tile.victims.bottom" value="H"></td>
+      <td><input type="radio" ng-model="cell.tile.victims.bottom" value="S"></td>
+      <td><input type="radio" ng-model="cell.tile.victims.bottom" value="U"></td>
+    </tr>
+    <tr>
+      <th class="col">Left</th>
+      <td><input type="radio" ng-model="cell.tile.victims.left" value="None"></td>
+      <td><input type="radio" ng-model="cell.tile.victims.left" value="Heated"></td>
+      <td><input type="radio" ng-model="cell.tile.victims.left" value="H"></td>
+      <td><input type="radio" ng-model="cell.tile.victims.left" value="S"></td>
+      <td><input type="radio" ng-model="cell.tile.victims.left" value="U"></td>
+    </tr>
+    <tr>
+      <th class="col">Right</th>
+      <td><input type="radio" ng-model="cell.tile.victims.right" value="None"></td>
+      <td><input type="radio" ng-model="cell.tile.victims.right" value="Heated"></td>
+      <td><input type="radio" ng-model="cell.tile.victims.right" value="H"></td>
+      <td><input type="radio" ng-model="cell.tile.victims.right" value="S"></td>
+      <td><input type="radio" ng-model="cell.tile.victims.right" value="U"></td>
+    </tr>
+  </table>
+  
 </div>
 <div class="modal-footer">
   <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>

@@ -11,42 +11,70 @@ publicRouter.get('/', function (req, res) {
 })
 
 publicRouter.get('/:competitionid', function (req, res, next) {
-  var id = req.params.competitionid
+  const id = req.params.competitionid
 
   if (!ObjectId.isValid(id)) {
     return next()
   }
 
-  res.render('line_competition', {id : id , user: req.user})
+  res.render('line_competition', {id: id, user: req.user})
 })
 
 publicRouter.get('/:competitionid/score', function (req, res, next) {
-  var id = req.params.competitionid
+  const id = req.params.competitionid
 
   if (!ObjectId.isValid(id)) {
     return next()
   }
 
-  res.render('line_score', {id : id ,user: req.user})
+  res.render('line_score', {id: id, user: req.user})
 })
 
-publicRouter.get('/view/:runid', function (req, res) {
-  res.render('line_view', {id : req.params.runid})
+
+publicRouter.get('/view/:roundid', function (req, res, next) {
+  const id = req.params.roundid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  res.render('line_view', {id: id})
+})
+publicRouter.get('/viewfield', function (req, res, next) {
+  const ids = req.query.fields
+
+  res.render('line_view_field', {ids: ids})
 })
 
 publicRouter.get('/view/inline/:runid', function (req, res) {
-  res.render('line_inline_view', {id : req.params.runid})
+  const id = req.params.runid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+  res.render('line_inline_view', {id : id})
 })
 
-publicRouter.get('/viewfield/:fieldid', function (req, res) {
-  res.render('line_view_field', {id : req.params.fieldid})
+publicRouter.get('/viewfield/:fieldid', function (req, res, next) {
+  const id = req.params.fieldid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  res.render('line_view_field', {id: id})
 })
+
 publicRouter.get('/viewcurrent', function (req, res) {
   res.render('line_view_current')
 })
 
-privateRouter.get('/judge/:roundid', function (req, res) {
-  res.render('line_judge', {id : req.params.roundid})
+privateRouter.get('/judge/:roundid', function (req, res, next) {
+  const id = req.params.roundid
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+  res.render('line_judge', {id: id})
 })
 
 privateRouter.get('/sign/:roundid', function (req, res) {
@@ -56,8 +84,15 @@ privateRouter.get('/sign/:roundid', function (req, res) {
 adminRouter.get('/editor', function (req, res) {
   res.render('line_editor')
 })
-adminRouter.get('/editor/:mapid', function (req, res) {
-  res.render('line_editor', {id : req.params.mapid})
+
+adminRouter.get('/editor/:mapid', function (req, res, next) {
+  const id = req.params.mapid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  res.render('line_editor', {mapid: id})
 })
 
 publicRouter.all('*', function (req, res, next) {

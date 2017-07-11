@@ -2,62 +2,91 @@
 //                          Libraries
 //========================================================================
 
-var express = require('express')
-var publicRouter = express.Router()
-var privateRouter = express.Router()
-var adminRouter = express.Router()
-var competitiondb = require('../../models/competition')
-var query = require('../../helper/query-helper')
-var validator = require('validator')
-var async = require('async')
-var ObjectId = require('mongoose').Types.ObjectId
-var logger = require('../../config/logger').mainLogger
-var fs = require('fs')
+const express = require('express')
+const publicRouter = express.Router()
+const privateRouter = express.Router()
+const adminRouter = express.Router()
+const competitiondb = require('../../models/competition')
+const lineMapsApi = require('./lineMaps')
+const lineRunsApi = require('./lineRuns')
+const mazeMapsApi = require('./mazeMaps')
+const mazeRunsApi = require('./mazeRuns')
+const query = require('../../helper/query-helper')
+const validator = require('validator')
+const async = require('async')
+const ObjectId = require('mongoose').Types.ObjectId
+const logger = require('../../config/logger').mainLogger
+const fs = require('fs')
 
+const LINE_LEAGUES = competitiondb.LINE_LEAGUES
+const MAZE_LEAGUES = competitiondb.MAZE_LEAGUES
+const LEAGUES = competitiondb.LEAGUES
 
 
 publicRouter.get('/', function (req, res) {
-  query.doFindResultSortQuery(req, res, null, null, competitiondb.competition)
-})
-
-publicRouter.get('/:competitionid', function (req, res, next) {
-  var id = req.params.competitionid
-
-  if (!ObjectId.isValid(id)) {
-    return next()
-  }
-
-  query.doIdQuery(req, res, id, "", competitiondb.competition)
-})
-
-publicRouter.get('/:competitionid/delete', function (req, res, next) {
-  var id = req.params.competitionid
-
-  if (!ObjectId.isValid(id)) {
-    return next()
-  }
-
-  competitiondb.competition.remove({_id: id}, function (err) {
+  competitiondb.competition.find({}).lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not remove competition"})
+      res.status(400).send({msg: "Could not get competitions", err: err.message})
     } else {
-      res.status(200).send({msg: "Competition has been removed!"})
+      res.status(200).send(data)
     }
   })
 })
 
-publicRouter.get('/:competitionid/teams', function (req, res, next) {
-  var id = req.params.competitionid
+publicRouter.get('/:competition', function (req, res, next) {
+  const id = req.params.competition
 
   if (!ObjectId.isValid(id)) {
     return next()
   }
 
-  competitiondb.team.find({competition: id}, function (err, data) {
+  competitiondb.competition.findById(id).lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not get teams"})
+      res.status(400).send({msg: "Could not get competition", err: err.message})
+    } else {
+      res.status(200).send(data)
+    }
+  })
+})
+
+publicRouter.get('/:competition/teams', function (req, res, next) {
+  const id = req.params.competition
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  competitiondb.team.find({competition: id}).lean().exec(function (err, data) {
+    if (err) {
+      logger.error(err)
+      res.status(400).send({msg: "Could not get teams", err: err.message})
+    } else {
+      res.status(200).send(data)
+    }
+  })
+})
+
+publicRouter.get('/:competition/:league/teams', function (req, res, next) {
+  const id = req.params.competition
+  const league = req.params.league
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  if (LEAGUES.indexOf(league) == -1) {
+    return next()
+  }
+
+  competitiondb.team.find({
+    competition: id,
+    league     : league
+  }).lean().exec(function (err, data) {
+    if (err) {
+      logger.error(err)
+      res.status(400).send({msg: "Could not get teams", err: err.message})
     } else {
       res.status(200).send(data)
     }
@@ -65,44 +94,114 @@ publicRouter.get('/:competitionid/teams', function (req, res, next) {
 })
 
 publicRouter.get('/:competitionid/teams/:name', function (req, res, next) {
-  var id = req.params.competitionid
-  var name = req.params.name
+    var id = req.params.competitionid
+    var name = req.params.name
+
+    if (!ObjectId.isValid(id)) {
+	return next()
+    }
+
+    competitiondb.team.find({"competition": id , "name": name}, function (err, data) {
+	if (err) {
+	    logger.error(err)
+	    res.status(400).send({msg: "Could not get teams"})
+	} else {
+	    res.status(200).send(data)
+	}
+    })
+})
+
+publicRouter.get('/:competition/line/runs', function (req, res, next) {
+    var id = req.params.competition
+
+    if (!ObjectId.isValid(id)) {
+	return next()
+    }
+    return lineRunsApi.getLineRuns(req, res, next)
+})
+
+publicRouter.get('/:competition/line/latestrun', function (req, res, next) {
+  var id = req.params.competition
 
   if (!ObjectId.isValid(id)) {
     return next()
   }
-  
-  competitiondb.team.find({"competition": id , "name": name}, function (err, data) {
-    if (err) {
-      logger.error(err)
-      res.status(400).send({msg: "Could not get teams"})
-    } else {
-      res.status(200).send(data)
-    }
-  })
+  return lineRunsApi.getLatestLineRun(req, res, next)
+})
+
+publicRouter.get('/:competition/maze/runs', function (req, res, next) {
+  var id = req.params.competition
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+  return mazeRunsApi.getMazeRuns(req, res, next)
+})
+
+publicRouter.get('/:competition/maze/latestrun', function (req, res, next) {
+  var id = req.params.competition
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+  return mazeRunsApi.getLatestMazeRun(req, res, next)
+})
+
+publicRouter.get('/:competition/:league/maps', function (req, res, next) {
+  const id = req.params.competition
+  const league = req.params.league
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  if (LINE_LEAGUES.indexOf(league) != -1) {
+    return mazeMapsApi.getLineMaps(req, res, next)
+  }
+
+  if (MAZE_LEAGUES.indexOf(league) != -1) {
+    return mazeMapsApi.getMazeMaps(req, res, next)
+  }
+
+  return next()
 })
 
 
-publicRouter.get('/:competitionid/runs', function (req, res, next) {
-  var id = req.params.competitionid
+
+
+
+		 
+publicRouter.get('/:competition/line/maps', function (req, res, next) {
+  const id = req.params.competition
 
   if (!ObjectId.isValid(id)) {
     return next()
   }
 
-  var populate
-  if (req.query['populate'] !== undefined && req.query['populate']) {
-    populate = ["round", "team", "field", "competition", {path: 'tiles', populate: {path: 'tileType'}}]
+  return lineMapsApi.getLineMaps(req, res, next)
+})
+
+publicRouter.get('/:competition/maze/maps', function (req, res, next) {
+  const id = req.params.competition
+
+  if (!ObjectId.isValid(id)) {
+    return next()
   }
 
-  var query = competitiondb.run.find({competition: id}, "round team field competition score time rescuedLiveVictims rescuedDeadVictims LoPs status retired")
-  if (populate !== undefined) {
-    query.populate(populate)
+  return mazeMapsApi.getMazeMaps(req, res, next)
+})
+
+publicRouter.get('/:competition/fields', function (req, res, next) {
+  var id = req.params.competition
+
+  if (!ObjectId.isValid(id)) {
+    return next()
   }
-  query.exec(function (err, data) {
+
+  competitiondb.field.find({competition: id}).lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not get runs"})
+      res.status(400).send({msg: "Could not get fields", err: err.message})
     } else {
       res.status(200).send(data)
     }
@@ -132,17 +231,25 @@ publicRouter.get('/:competitionid/runs/:field/:status', function (req, res, next
   })
 })
 
-publicRouter.get('/:competitionid/fields', function (req, res, next) {
-  var id = req.params.competitionid
+publicRouter.get('/:competition/:league/fields', function (req, res, next) {
+  const id = req.params.competition
+  const league = req.params.league
 
   if (!ObjectId.isValid(id)) {
     return next()
   }
 
-  competitiondb.field.find({competition: id}, function (err, data) {
+  if (LEAGUES.indexOf(league) == -1) {
+    return next()
+  }
+
+  competitiondb.field.find({
+    competition: id,
+    league     : league
+  }).lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not get fields"})
+      res.status(400).send({msg: "Could not get fields", err: err.message})
     } else {
       res.status(200).send(data)
     }
@@ -167,17 +274,17 @@ publicRouter.get('/:competitionid/fields/:name', function (req, res, next) {
   })
 })
 
-publicRouter.get('/:competitionid/rounds', function (req, res, next) {
-  var id = req.params.competitionid
+publicRouter.get('/:competition/rounds', function (req, res, next) {
+  var id = req.params.competition
 
   if (!ObjectId.isValid(id)) {
     return next()
   }
 
-  competitiondb.round.find({competition: id}, function (err, data) {
+  competitiondb.round.find({competition: id}).lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not get rounds"})
+      res.status(400).send({msg: "Could not get rounds", err: err.message})
     } else {
       res.status(200).send(data)
     }
@@ -202,18 +309,62 @@ publicRouter.get('/:competitionid/rounds/:name', function (req, res, next) {
   })
 })
 
-adminRouter.post('/createcompetition', function (req, res) {
-  var competition = req.body
+publicRouter.get('/:competition/:league/rounds', function (req, res, next) {
+  var id = req.params.competition
+  const league = req.params.league
 
-  var newCompetition = new competitiondb.competition({
-    name: competition.name
-  })
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
 
-  newCompetition.save(function (err, data) {
+  if (LEAGUES.indexOf(league) == -1) {
+    return next()
+  }
+
+  competitiondb.round.find({
+    competition: id,
+    league     : league
+  }).lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Error saving competition"})
+      res.status(400).send({msg: "Could not get rounds", err: err.message})
     } else {
+      res.status(200).send(data)
+    }
+  })
+})
+
+adminRouter.post('/createcompetition', function (req, res) {
+    var competition = req.body
+
+    var newCompetition = new competitiondb.competition({
+	name: competition.name
+    })
+
+    newCompetition.save(function (err, data) {
+	if (err) {
+	    logger.error(err)
+	    res.status(400).send({msg: "Error saving competition"})
+	} else {
+	    res.status(201).send({
+		msg: "New competition has been saved",
+		id : data._id
+	    })
+	}
+    })
+})
+
+adminRouter.post('/', function (req, res) {
+  const competition = req.body
+
+  new competitiondb.competition({
+    name: competition.name
+  }).save(function (err, data) {
+    if (err) {
+      logger.error(err)
+      res.status(400).send({msg: "Error saving competition", err: err.message})
+    } else {
+      res.location("/api/competitions/" + data._id)
       res.status(201).send({
         msg: "New competition has been saved",
         id : data._id

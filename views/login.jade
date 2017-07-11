@@ -12,7 +12,7 @@ html(ng-app="login" )
     .login
       .login-triangle
       h2(class="login-header") Staff Login
-      form(class="login-container")
+      form(class="login-container" ng-submit="login()")
         input(type="text" placeholder="Username" ng-model="username" autocapitalize="off" autocorrect="off")
         input(type="password" placeholder="Password" ng-model="password")
-        input(type="submit" ng-click="login()" value="Login")
+        input(type="submit" value="Login")

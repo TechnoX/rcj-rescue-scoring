@@ -12,6 +12,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.actualUsedDropTiles = 0; // Count droptiles twice that will be passed two times
     $scope.startedScoring = false;
     $scope.startedTime = false;
+    $scope.startTime = 0;
     $scope.time = 0;
     $scope.processing= new Array();
     $scope.rprocessing = false;
@@ -22,59 +23,77 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         showTicksValues: true
     };
 
+    // Scoring elements of the tiles
+    $scope.stiles = [];
+    // Map (images etc.) for the tiles
+    $scope.mtiles = [];
+    
+    $http.get("/api/runs/line/"+runId+"?populate=true").then(function(response){
 
-    $scope.tiles = {};
-    $scope.marker_place = {};
+	console.log(response.data);	
 
-    $http.get("/api/runs/"+runId+"?populate=true").then(function(response){
-        $scope.height = response.data.height;
-        $scope.sliderOptions.ceil = $scope.height - 1;
-        $scope.width = response.data.width;
-        $scope.length = response.data.length;
-        width = response.data.width;
-        length = response.data.length;
-        $scope.team = response.data.team;
-        $scope.field = response.data.field;
-        $scope.round = response.data.round;
-        $scope.competition = response.data.competition;
-
-        $scope.numberOfDropTiles = response.data.numberOfDropTiles;
-        $scope.rescuedLiveVictims = response.data.rescuedLiveVictims;
-        $scope.rescuedDeadVictims = response.data.rescuedDeadVictims;
-        $scope.escapeEvacuationZone = response.data.escapeEvacuationZone;
-        $scope.rescueLevel = response.data.rescueLevel;
-        for(var i = 0; i < response.data.tiles.length; i++){
-            $scope.tiles[response.data.tiles[i].x + ',' +
-                         response.data.tiles[i].y + ',' +
-                         response.data.tiles[i].z] = response.data.tiles[i];
-            if(response.data.tiles[i].scoredItems.dropTiles.length>0){
-                $scope.placedDropTiles++;
-		        $scope.actualUsedDropTiles += response.data.tiles[i].scoredItems.dropTiles.length;
-                for(var j = 0; j < response.data.tiles[i].index.length ; j++){
-                    marker[response.data.tiles[i].index[j]] = true;
-                }    
-	           }
-        }
-        $scope.tiles[response.data.startTile.x + ',' +
-                         response.data.startTile.y + ',' +
-                         response.data.startTile.z].start = response.data.showedUp;
-        $scope.score = response.data.score;
-        $scope.showedUp = response.data.showedUp;
-        
-        $scope.LoPs = response.data.LoPs;
+	$scope.LoPs = response.data.LoPs;
+	$scope.evacuationLevel = response.data.evacuationLevel;
+	$scope.exitBonus = response.data.exitBonus;
+	$scope.field = response.data.field.name;
+	$scope.rescuedDeadVictims = response.data.rescuedDeadVictims;
+	$scope.rescuedLiveVictims = response.data.rescuedLiveVictims;
+	$scope.score = response.data.score;
+	$scope.showedUp = response.data.showedUp;
+	$scope.started = response.data.started;
+	$scope.round = response.data.round.name;
+	$scope.team = response.data.team.name;
         $scope.retired = response.data.retired;
-        console.log($scope.LoPs)
-        // Verified time by timekeeper
+	// Verified time by timekeeper
         $scope.minutes = response.data.time.minutes;
         $scope.seconds = response.data.time.seconds;
-        $scope.time = $scope.minutes * 60 * 1000 + $scope.seconds * 1000;
-        console.log($scope.tiles);
-        $scope.showtile = true;
-        $http.post("/api/runs/"+runId+"/update", {status: 1}).then(function(response){
-                
-                }, function(response){
-                    console.log("Error: " + response.statusText);
-            });
+	$scope.time = $scope.minutes * 60 * 1000 + $scope.seconds * 1000;
+
+	// Scoring elements of the tiles
+        $scope.stiles = response.data.tiles;
+        $scope.showtile = true;	
+        for(var i = 0; i < response.data.tiles.length; i++){
+            if(response.data.tiles[i].isDropTile){
+                $scope.placedDropTiles++;
+                $scope.actualUsedDropTiles += 1;//response.data.tiles[i].scoredItems.dropTiles.length;
+	        for(var j = 0; j < response.data.tiles[i].index.length ; j++){
+                    marker[response.data.tiles[i].index[j]] = true;
+                }
+	    }
+        }
+
+	// Get the map
+        $http.get("/api/maps/line/" + response.data.map + "?populate=true").then(function(response){
+	    console.log(response.data);
+
+	    $scope.height = response.data.height;
+            $scope.sliderOptions.ceil = $scope.height - 1;
+            $scope.width = response.data.width;
+            $scope.length = response.data.length;
+	    // FROM RYO: width = response.data.width;
+            // FROM RYO: length = response.data.length;
+	    $scope.startTile = response.data.startTile;
+            $scope.numberOfDropTiles = response.data.numberOfDropTiles;;
+	    $scope.mtiles = {};
+            for(var i = 0; i < response.data.tiles.length; i++){
+                $scope.mtiles[response.data.tiles[i].x + ',' +
+                              response.data.tiles[i].y + ',' +
+                              response.data.tiles[i].z] = response.data.tiles[i];
+            }
+
+	    
+	}, function(response){
+	    console.log("Error: " + response.statusText);
+        });
+
+
+	// Update map (added by RYO)
+	$http.put("/api/runs/line/"+runId, {status: 1}).then(function(response){
+		    
+        }, function(response){
+            console.log("Error: " + response.statusText);
+        });
+
     }, function(response){
         console.log("Error: " + response.statusText);
     });
@@ -123,7 +142,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.LoPs[index] = 0;
         if($scope.LoPs[index] < 0)
             $scope.LoPs[index] = 0;
-        $http.post("/api/runs/"+runId+"/update", {LoPs: $scope.LoPs}).then(function(response){
+        $http.put("/api/runs/line/"+runId, {LoPs: $scope.LoPs}).then(function(response){
             console.log(response);
             $scope.score = response.data.score;
             $scope.processing[index] = false;
@@ -138,7 +157,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.LoPs[index]++;
         else
             $scope.LoPs[index] = 1;
-        $http.post("/api/runs/"+runId+"/update", {LoPs: $scope.LoPs}).then(function(response){
+        $http.put("/api/runs/line/"+runId, {LoPs: $scope.LoPs}).then(function(response){
             console.log(response);
             $scope.score = response.data.score;
             $scope.processing[index] = false;
@@ -148,8 +167,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         if($scope.LoPs[index] >= 3 && !last)swal("LoPs Count > 3", "The team *may* move to next checkpoint tile now.", "info");
     }
     
-
-
     $scope.decVictims = function(type){
         if(type == 'live'){
             $scope.rlprocessing = true;
@@ -157,7 +174,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             if($scope.rescuedLiveVictims <= 0)
                 $scope.rescuedLiveVictims = 0;
 
-            $http.post("/api/runs/"+runId+"/update", {rescuedLiveVictims: $scope.rescuedLiveVictims}).then(function(response){
+            $http.put("/api/runs/line/"+runId, {rescuedLiveVictims: $scope.rescuedLiveVictims}).then(function(response){
                 $scope.score = response.data.score;
                 $scope.rlprocessing = false;
             }, function(response){
@@ -169,20 +186,20 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             if($scope.rescuedDeadVictims <= 0)
                 $scope.rescuedDeadVictims = 0;
 
-            $http.post("/api/runs/"+runId+"/update", {rescuedDeadVictims: $scope.rescuedDeadVictims}).then(function(response){
+            $http.put("/api/runs/line/"+runId, {rescuedDeadVictims: $scope.rescuedDeadVictims}).then(function(response){
                 $scope.score = response.data.score;
                 $scope.rdprocessing = false;
             }, function(response){
                 console.log("Error: " + response.statusText);
             });
         }
-
     }
+
     $scope.incVictims = function(type){
         if(type == 'live'){
             $scope.rlprocessing = true;
             $scope.rescuedLiveVictims++;
-            $http.post("/api/runs/"+runId+"/update", {rescuedLiveVictims: $scope.rescuedLiveVictims}).then(function(response){
+            $http.put("/api/runs/line/"+runId, {rescuedLiveVictims: $scope.rescuedLiveVictims}).then(function(response){
                 $scope.score = response.data.score;
                 $scope.rlprocessing = false;
             }, function(response){
@@ -191,14 +208,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         }else if(type == 'dead'){
             $scope.rdprocessing = true;
             $scope.rescuedDeadVictims++;
-            $http.post("/api/runs/"+runId+"/update", {rescuedDeadVictims: $scope.rescuedDeadVictims}).then(function(response){
+            $http.post("/api/runs/line/"+runId, {rescuedDeadVictims: $scope.rescuedDeadVictims}).then(function(response){
                 $scope.score = response.data.score;
                 $scope.rdprocessing = false;
             }, function(response){
                 console.log("Error: " + response.statusText);
             });
         }
-
     }
 
     var tick = function() {
@@ -208,18 +224,26 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.minutes = Math.floor($scope.time/60000)
             $scope.seconds = (Math.floor($scope.time%60000))/1000
             $scope.saveEverything();
-            
             swal("Time Up!", "Do NOT push the Retire button.", "info");
-            
         }
-        if($scope.startedTime)
+        if($scope.startedTime){
             $timeout(tick, 1000);
+	}
+    }
+
+    $scope.resetTime = function(){
+	$scope.startedTime = false;
+	$scope.startTime = 0;
+	$scope.time = 0;
     }
 
     $scope.toggleTime = function(){
         // Start/stop timer
         $scope.startedTime = !$scope.startedTime;
         if($scope.startedTime){
+	    if($scope.startTime == 0){
+		$scope.startTime = new Date();
+	    }
             // Start the timer
             $timeout(tick, $scope.tickInterval);
             $http.post("/api/runs/"+runId+"/update", {status: 2}).then(function(response){
@@ -242,7 +266,23 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 
     $scope.changeShowedUp = function(){
-        $http.post("/api/runs/"+runId+"/update", {showedUp: $scope.showedUp}).then(function(response){
+        $http.put("/api/runs/line/"+runId, {showedUp: $scope.showedUp}).then(function(response){
+            $scope.score = response.data.score;
+        }, function(response){
+            console.log("Error: " + response.statusText);
+        });
+
+    }
+    $scope.changeExitBonus = function(){
+        $http.put("/api/runs/line/"+runId, {exitBonus: $scope.exitBonus}).then(function(response){
+            $scope.score = response.data.score;
+        }, function(response){
+            console.log("Error: " + response.statusText);
+        });
+
+    }
+    $scope.changeLevel = function(){
+        $http.put("/api/runs/line/"+runId, {evacuationLevel: $scope.evacuationLevel}).then(function(response){
             $scope.score = response.data.score;
         }, function(response){
             console.log("Error: " + response.statusText);
@@ -251,16 +291,16 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     
     $scope.changeRescueLevel = function(){
         console.log('Change Rescue');
-        $http.post("/api/runs/"+runId+"/update", {rescueLevel: $scope.rescueLevel}).then(function(response){
-            console.log($scope.rescueLevel);
+        $http.post("/api/runs/"+runId+"/update", {evacuationLevel: $scope.evacuationLevel}).then(function(response){ // Updated by Fredrik Merge marking
+            console.log($scope.evacuationLevel);// Updated by ffredrik merges
             $scope.score = response.data.score;
         }, function(response){
             console.log("Error: " + response.statusText);
         });
     }
     
-    $scope.changeEscapeEvacuationZone = function(){
-        $http.post("/api/runs/"+runId+"/update", {escapeEvacuationZone: $scope.escapeEvacuationZone}).then(function(response){
+    $scope.changeEscapeEvacuationZone = function(){// Updated by Fredrik Löfgren in merge!!
+        $http.post("/api/runs/"+runId+"/update", {exitBonus: $scope.exitBonus}).then(function(response){
             $scope.score = response.data.score;
         }, function(response){
             console.log("Error: " + response.statusText);
@@ -268,44 +308,69 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 
     $scope.doScoring = function(x,y,z){
-        var tile = $scope.tiles[x+','+y+','+z];
+        var mtile = $scope.mtiles[x+','+y+','+z];
+	var stile = [];
+	var isDropTile = false;
+	var httpdata = {tiles: {}};
+	
         // If this is not a created tile
-        if(!tile)
+        if(!mtile || mtile.index.length == 0)
             return;
 
+	for(var i = 0; i < mtile.index.length; i++){
+	    stile.push($scope.stiles[mtile.index[i]]);
+	    if($scope.stiles[mtile.index[i]].isDropTile){
+		isDropTile = true;
+	    }
+	}
 
-        var total = $scope.totalNumberOf(tile.items);
+	
+	// $scope.totalNumberOf(tile.items);
+        var total = (mtile.items.obstacles > 0 ||
+		     mtile.items.speedbumps > 0 ||
+		     mtile.tileType.gaps > 0 ||
+		     mtile.tileType.intersections > 0) * mtile.index.length;
 
         // If the run is not started, we can place drop pucks on this tile
         if(!$scope.startedScoring){
-            // We can only place drop markers on tiles without scoring elements (rule 3.3.4)
-            if($scope.numberOfDropTiles - $scope.placedDropTiles != 0 && tile.index.length == 0 )swal("Oops!", "Cannot place checkpoint markers on tile taht do not pass (System specification)", "error");
-            else if($scope.numberOfDropTiles - $scope.placedDropTiles != 0 &&(total > 0 || tile.start != null)){
-                swal("Oops!", "Place checkpoint markers on tiles without scoring elements (rule 3.3.4)", "error");
+            // We can only place drop markers on tiles without scoring elements (rule 3.3.5)
+            if($scope.numberOfDropTiles - $scope.placedDropTiles != 0 && tile.index.length == 0 ){
+		swal("Oops!", "Cannot place checkpoint markers on tile that robot can't visit (System specification)", "error");
+            }else if($scope.numberOfDropTiles - $scope.placedDropTiles != 0 &&(total > 0 || tile.start != null)){
+                swal("Oops!", "Place checkpoint markers on tiles without scoring elements (rule 3.3.5)", "error");
+            }else if(mtile.x == $scope.startTile.x &&
+		     mtile.y == $scope.startTile.y &&
+		     mtile.z == $scope.startTile.z){
+		swal("Oops!", "Not allowed to place drop markers on start tile (rule 3.3.6)", "error");
             }else{
-                
-		// If this tile already contains a droptile, we should remove it
-		if(tile.scoredItems.dropTiles.length > 0){
-                    for(var j = 0; j < tile.index.length ; j++){
-                        marker[tile.index[j]] = false;
+                var placed = false;
+		var removed = false;
+		
+		for(var i = 0; i < stile.length; i++){
+		    // If this tile already contains a droptile, we should remove it
+		    if(stile[i].isDropTile){
+			stile[i].isDropTile = false;
+			stile[i].scored = false;
+			$scope.actualUsedDropTiles--;
+			marker[mtile.index[i]] = false;
+			removed = true;
+                    }// If this tile doesn't contain a droptile, we should add one, IF we have any left to place
+		    else if($scope.numberOfDropTiles - $scope.placedDropTiles > 0) {
+			stile[i].isDropTile = true;
+			$scope.actualUsedDropTiles++;
+			marker[mtile.index[i]] = true;
+			placed = true;
                     }
-                    tile.scoredItems.dropTiles = [];
-                    $scope.placedDropTiles--;
-		            $scope.actualUsedDropTiles -= tile.index.length;
-                    
-                }// If this tile doesn't contain a droptile, we should add one, IF we have any left to place
-		else if($scope.numberOfDropTiles - $scope.placedDropTiles > 0) {
-                    tile.scoredItems.dropTiles = [];
-                    for(var i = 0; i < tile.index.length; i++){
-                        tile.scoredItems.dropTiles.push(false);
-                    }
-                    $scope.placedDropTiles++;
-		            $scope.actualUsedDropTiles += tile.index.length;
-                    for(var j = 0; j < tile.index.length ; j++){
-                        marker[tile.index[j]] = true;
-                    }
-                }
-                $http.post("/api/runs/"+runId+"/update", {tiles:[tile]}).then(function(response){
+		    httpdata.tiles[mtile.index[i]] = stile[i];
+		}
+		
+		if(placed){
+		    $scope.placedDropTiles++;
+		}else if(removed){
+		    $scope.placedDropTiles--;
+		}
+		console.log(httpdata);
+                $http.put("/api/runs/line/"+runId, httpdata).then(function(response){
                     $scope.score = response.data.score;
                     $scope.showtile = false;
                     setTimeout(function(){$scope.showtile = true;},100);
@@ -315,57 +380,41 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 }, function(response){
                     console.log("Error: " + response.statusText);
                 });
+		
             }
 
         // Match has started!
         }else{
             // Add the number of possible passes for drop tiles
-            if(tile.scoredItems.dropTiles.length > 0) {
-                total += tile.scoredItems.dropTiles.length;
+            if(isDropTile) {
+                total += stile.length;
             }
             
-            if(tile.start != null)total ++;
-
+            if(tile.start != null){
+		total++;
+	    }
             if(total == 0){
                 return;
             }else if(total > 1){
                 // Show modal
-                tile.processing = true;
+                mtile.processing = true;
                 $scope.open(x,y,z);
                 // Save data from modal when closing it
             }else if(total==1){
-                tile.processing = true;
-                if(tile.items.gaps>0)
-                    tile.scoredItems.gaps[0] = !tile.scoredItems.gaps[0];
-                else if(tile.items.speedbumps)
-                    tile.scoredItems.speedbumps[0] = !tile.scoredItems.speedbumps[0];
-                else if(tile.items.obstacles)
-                    tile.scoredItems.obstacles[0] = !tile.scoredItems.obstacles[0];
-                else if(tile.items.intersections)
-                    tile.scoredItems.intersections[0] = !tile.scoredItems.intersections[0];
-                else if(tile.scoredItems.dropTiles.length > 0)
-                    tile.scoredItems.dropTiles[0] = !tile.scoredItems.dropTiles[0];
-                else if(tile.start != null){
-                    $scope.showedUp = !$scope.showedUp;
-                    tile.start = $scope.showedUp;
-                }
-                $scope.minutes = Math.floor($scope.time/60000)
-                $scope.seconds = (Math.floor($scope.time%60000))/1000
-                var run = {}
-                run.tiles = $scope.tiles;
-                run.showedUp = $scope.showedUp;
-                run.time = {};
-                run.time.minutes = $scope.minutes;
-                run.time.seconds = $scope.seconds;
-                $http.post("/api/runs/"+runId+"/update", run).then(function(response){
+                mtile.processing = true;
+                
+		for(var i = 0; i < stile.length; i++){
+		    stile[i].scored = !stile[i].scored;
+		    httpdata.tiles[mtile.index[i]] = stile[i];
+		}
+		console.log(httpdata);
+                $http.put("/api/runs/line/"+runId, httpdata).then(function(response){
                     $scope.score = response.data.score;
-                    tile.processing = false;
+                    mtile.processing = false;
                 }, function(response){
                     console.log("Error: " + response.statusText);
                 });
-
-            }
-
+	    }
         }
     }
 
@@ -377,22 +426,18 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             controller: 'ModalInstanceCtrl',
             size: 'sm',
             resolve: {
-                tile: function () {
-                    return $scope.tiles[x+','+y+','+z];
+                mtile: function() {
+                    return $scope.mtiles[x+','+y+','+z];
+                },
+		stiles: function() {
+                    return $scope.stiles;
                 }
             }
         }).closed.then(function(result){
             console.log("Closed modal");
-            $scope.minutes = Math.floor($scope.time/60000)
-            $scope.seconds = (Math.floor($scope.time%60000))/1000
-            var run = {}
-            run.tiles = $scope.tiles;
-            run.time = {};
-            run.time.minutes = $scope.minutes;;
-            run.time.seconds = $scope.seconds;
-            $http.post("/api/runs/"+runId+"/update", run).then(function(response){
+            $http.put("/api/runs/line/"+runId, {tiles: $scope.stiles}).then(function(response){
                 $scope.score = response.data.score;
-                $scope.tiles[x+','+y+','+z].processing = false;
+                $scope.mtiles[x+','+y+','+z].processing = false;
             }, function(response){
                 console.log("Error: " + response.statusText);
             });
@@ -401,23 +446,20 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.saveEverything = function(){
         var run = {}
-        run.height = $scope.height;
-        run.width = $scope.width;
-        run.length = $scope.length;
-        run.rescuedLiveVictims = $scope.rescuedLiveVictims;
-        run.rescuedDeadVictims = $scope.rescuedDeadVictims;
-        run.rescueLevel = $scope.rescueLevel;
-        run.escapeEvacuationZone = $scope.escapeEvacuationZone;
-        run.tiles = $scope.tiles;
+	run.LoPs = $scope.LoPs;
+	run.evacuationLevel = $scope.evacuationLevel;
+	run.exitBonus = $scope.exitBonus;
+	run.rescuedDeadVictims = $scope.rescuedDeadVictims;
+	run.rescuedLiveVictims = $scope.rescuedLiveVictims;
         run.showedUp = $scope.showedUp;
-        run.LoPs = $scope.LoPs;
-        run.time = {};
-        run.time.minutes = $scope.minutes;
-        run.time.seconds = $scope.seconds;
+	run.started = $scope.started;
+	run.tiles = $scope.stiles;
+	run.time = {minutes: $scope.minutes, seconds: $scope.seconds};
         run.retired = $scope.retired;
-
-        $http.post("/api/runs/"+runId+"/update", run).then(function(response){
+	console.log("Update run", run);
+        $http.put("/api/runs/line/"+runId, run).then(function(response){
             $scope.score = response.data.score;
+	    console.log("Run updated, got score: ", $scope.score);
         }, function(response){
             console.log("Error: " + response.statusText);
         });
@@ -437,8 +479,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.retired = true;
             $scope.saveEverything();
         });
-        
-
     }
 
     $scope.confirm = function(){
@@ -446,8 +486,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             swal("Oops!", "You may have forgot to clear implicit checkpoint", "error");
         }else{
             var run = {}
+	    run.rescuedDeadVictims = $scope.rescuedDeadVictims;
             run.rescuedLiveVictims = $scope.rescuedLiveVictims;
-            run.tiles = $scope.tiles;
+            run.tiles = $scope.stiles;
             run.showedUp = $scope.showedUp;
             run.LoPs = $scope.LoPs;
             // Verified time by timekeeper
@@ -456,7 +497,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             run.time.seconds = $scope.seconds;
             run.status = 3;
 
-            $http.post("/api/runs/"+runId+"/update", run).then(function(response){
+            $http.put("/api/runs/line/"+runId, run).then(function(response){
                 $scope.score = response.data.score;
                 $scope.go('/line/sign/'+runId)
             }, function(response){
@@ -468,10 +509,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     
     $scope.go = function(path){
       window.location = path
-    }
-    
-    
-    
+    }    
 
 }]);
 
@@ -479,8 +517,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 // Please note that $uibModalInstance represents a modal window (instance) dependency.
 // It is not the same as the $uibModal service used above.
 
-app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, tile) {
-    $scope.tile = tile;
+app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, stiles) {
+    $scope.mtile = mtile;
+    $scope.stiles = stiles;
+    $scope.words = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth"];
     $scope.ok = function () {
         $uibModalInstance.close();
     };
@@ -541,29 +581,40 @@ app.directive('tile', function() {
                 return ret_txt;
             }
 
+
+	    $scope.isDropTile = function(tile){
+		if(!tile || tile.index.length == 0)
+		    return;
+		return $scope.$parent.stiles[tile.index[0]].isDropTile;
+	    }
+	    
             $scope.tileStatus = function(tile){
                 // If this is a non-existent tile
-                if(!tile)
+                if(!tile || tile.index.length == 0)
                     return;
-                var successfully = 0;
-                var possible = 0;
 
-                var count = function(list){
-                    for(var i = 0; i < list.length; i++){
-                        if(list[i])
-                            successfully++;
-                        possible++;
-                    }
-                }
-                
-                count(tile.scoredItems.gaps);
-                count(tile.scoredItems.speedbumps);
-                count(tile.scoredItems.intersections);
-                count(tile.scoredItems.obstacles);
-                if(tile.scoredItems.dropTiles.length > 0)
-                    count(tile.scoredItems.dropTiles);
-                
-                if(tile.processing)return "processing";
+		// If this tile has no scoring elements we should just return empty string
+		if(tile.items.obstacles == 0 &&
+		   tile.items.speedbumps == 0 &&
+		   tile.tileType.gaps == 0 &&
+		   tile.tileType.intersections == 0 &&
+		   !$scope.$parent.stiles[tile.index[0]].isDropTile
+		  ){
+		    return;
+		}
+
+		// Number of successfully passed times
+		var successfully = 0;
+		// Number of times it is possible to pass this tile
+		var possible = tile.index.length;
+		
+		for(var i = 0; i < tile.index.length; i++){
+		    if($scope.$parent.stiles[tile.index[i]].scored){
+			successfully++;
+		    }
+		}
+                if(tile.processing)
+		    return "processing";
                 else if((possible > 0 && successfully == possible) || tile.start)
                     return "done";
                 else if(successfully > 0)

@@ -4,47 +4,40 @@ module.exports.findPath = function (map) {
   var tiles = []
   for (var i = 0; i < map.tiles.length; i++) {
     var tile = map.tiles[i]
+    tile.index = []
     tiles[tile.x + ',' + tile.y + ',' + tile.z] = tile
-
-    if (tile.scoreItems === undefined) {
-      tile.scoreItems = {
-        gaps : 0,
-        intersections : 0,
-        obstacles : 0,
-        speedbumps : 0
-      }
-    }
   }
 
-  var startTile = tiles[map.startTile.x + ',' + map.startTile.y + ',' + map.startTile.z]
+  var startTile = tiles[map.startTile.x + ',' + map.startTile.y + ',' +
+                        map.startTile.z]
 
   var startDir = ""
   var startPaths = startTile.tileType.paths
-  Object.keys(startPaths).forEach(function (key, index) {
-    var nextTile = tiles[nextCoord(startTile, key)]
+  Object.keys(startPaths).forEach(function (dir, index) {
+    var nextTile = tiles[nextCoord(startTile, dir)]
     if (nextTile !== undefined) {
-      startDir = key
+      startDir = dir
     }
   })
 
   traverse(startTile, startDir, tiles, map, 0)
-  return tiles
 }
 
+/**
+ *
+ * @param curTile
+ * @param entryDir {
+ * @param tiles
+ * @param map
+ * @param index {Number}
+ */
 function traverse(curTile, entryDir, tiles, map, index) {
-  if (curTile.index === undefined) {
-    curTile.index = []
-  }
   curTile.index.push(index)
-
-  curTile.scoreItems.gaps += curTile.tileType.gaps
-  curTile.scoreItems.intersections += curTile.tileType.intersections
-  curTile.scoreItems.obstacles += curTile.items.obstacles
-  curTile.scoreItems.speedbumps += curTile.items.speedbumps
 
   var nextTile = tiles[nextCoord(curTile, entryDir)]
 
   if (nextTile === undefined) {
+    map.indexCount = index + 1
     return
   }
 
@@ -87,9 +80,11 @@ function nextCoord(curTile, entryDir) {
 }
 
 function rotateDir(dir, rot) {
-  switch ((rot + 360) % 360) {
+  switch (rot) {
     case 0:
       return dir
+
+    case -270:
     case 90:
       switch (dir) {
         case "top":
@@ -101,8 +96,12 @@ function rotateDir(dir, rot) {
         case "left":
           return "top"
       }
+
+    case -180:
     case 180:
       return flipDir(dir)
+
+    case -90:
     case 270:
       switch (dir) {
         case "top":

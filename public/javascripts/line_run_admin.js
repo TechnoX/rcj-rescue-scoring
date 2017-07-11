@@ -19,22 +19,28 @@ angular.module("RunAdmin", ['ngAnimate']).controller('RunAdminController', ['$sc
     $scope.competition = response.data
   })
 
-  $http.get("/api/competitions/" + competitionId +
-            "/teams").then(function (response) {
-    $scope.teams = response.data
-    console.log($scope.teams);
+  $http.get("/api/teams/leagues").then(function (response) {
+    $scope.leagues = response.data
+    console.log($scope.leagues)
   })
-  $http.get("/api/competitions/" + competitionId +
-            "/rounds").then(function (response) {
-    $scope.rounds = response.data
-  })
-  $http.get("/api/competitions/" + competitionId +
-            "/fields").then(function (response) {
-    $scope.fields = response.data
-  })
-  $http.get("/api/maps").then(function (response) {
-    $scope.maps = response.data
-  })
+  $scope.updateLists = function () {
+    $http.get("/api/competitions/" + competitionId +
+              "/" + $scope.league + "/teams").then(function (response) {
+      $scope.teams = response.data
+    })
+    $http.get("/api/competitions/" + competitionId +
+              "/" + $scope.league + "/rounds").then(function (response) {
+      $scope.rounds = response.data
+    })
+    $http.get("/api/competitions/" + competitionId +
+              "/" + $scope.league + "/fields").then(function (response) {
+      $scope.fields = response.data
+    })
+    $http.get("/api/competitions/" + competitionId +
+              "/line/maps").then(function (response) {
+      $scope.maps = response.data
+    })
+  }
 
   $scope.addRun = function () {
     if ($scope.run === undefined ||
@@ -55,7 +61,7 @@ angular.module("RunAdmin", ['ngAnimate']).controller('RunAdminController', ['$sc
 
     console.log(run)
 
-    $http.post("/api/runs/createrun", run).then(function (response) {
+    $http.post("/api/runs/line", run).then(function (response) {
       console.log(response)
       updateRunList()
     }, function (error) {
@@ -72,7 +78,7 @@ angular.module("RunAdmin", ['ngAnimate']).controller('RunAdminController', ['$sc
           confirmButtonText: "Yes, delete it!",
           confirmButtonColor: "#ec6c62"
         }, function() {
-        $http.get("/api/runs/" + run._id + "/delete").then(function (response) {
+      $http.delete("/api/runs/line/" + run._id).then(function (response) {
         console.log(response)
         updateRunList()
       }, function (error) {
@@ -83,7 +89,7 @@ angular.module("RunAdmin", ['ngAnimate']).controller('RunAdminController', ['$sc
 
   function updateRunList() {
     $http.get("/api/competitions/" + competitionId +
-              "/runs?populate=true").then(function (response) {
+              "/line/runs?populate=true").then(function (response) {
       $scope.runs = response.data
     })
   }

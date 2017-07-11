@@ -1,0 +1,60 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'TilesetAdmin'
+
+append scripts
+  script(src='/javascripts/tileset_admin.js')
+
+append css
+  style(type='text/css').
+    .tile {
+      width: 40px;
+      height: 40px;
+      border: solid;
+      border-width: 1px;
+      border-color: black;
+      margin-right: 2px;
+    }
+    .tile-container {
+      display: inline-block;
+      margin: 5px;
+    }
+
+block location
+  a(href='/home' style="color:#333333") Home
+  | >
+  a(href='/admin' style="color:#333333") Admin
+  | >
+  a(ng-href='/admin/line' style="color:#333333") Line
+  | >
+  a(ng-href='/admin/line/tilesets' style="color:#333333") Tilesets
+
+block content
+  .row
+    .col-md-offset-2.col-md-8
+      .row
+        .col-md-offset-2.col-md-8
+          .form-group
+            label.control-label New tileset:
+            input.control-input(ng-model='newTileSetName')
+            button(ng-click='createNewTileSet()') Create
+      .row
+        .col-md-offset-2.col-md-8
+          .form-group
+            label.control-label Tileset:
+            select(ng-model='tileSet' ng-options='set as set.name for set in tileSets')
+            button(ng-click='delete()') Delete
+      .row
+        .col-md-offset-5.col-md-2
+            button.btn.btn-primary.btn-lg.btn-block(ng-click='save()') Save!
+      .row
+        .col-md-6
+          h2 Available tiles
+          img.tile.tile-container(ng-repeat='tileType in tileTypes' ng-src='/images/tiles/{{tileType.image}}' ng-click='addTile(tileType)')
+        .col-md-6
+          h2 Tiles in {{tileSet.name}}
+          span.tile-container(ng-repeat='tile in tileSet.tiles track by tile.tileType._id')
+            img.tile(ng-src='/images/tiles/{{tile.tileType.image}}' ng-click='removeTile(tile)')
+            span(ng-bind='tile.count')

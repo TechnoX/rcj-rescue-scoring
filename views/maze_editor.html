@@ -4,11 +4,12 @@
 <div ng-controller="ddController" style="margin-top:50px;">
   <div class="row">
     <div class="col-md-12">
-        <button class="btn btn-primary" type="button" ng-click="saveMap()">Save map</button><br>
+      <button class="btn btn-primary" type="button" ng-click="saveMap()">Save map</button> <button class="btn btn-primary" type="button" ng-click="saveMapAs()">Save map as: </button> <input type="text" ng-model="saveasname"><br>
       <label>Name of design: <input type="text" ng-model="name"></label><br>
       <label>Max height: <input type="number" ng-model="height" ng-change="sliderOptions.ceil = height - 1" min="1"></label><br>
       <label>Max width: <input type="number" ng-model="width" min="1" ></label><br>
       <label>Max length: <input type="number" ng-model="length" min="1" ></label><br>
+      <label>Finished for using in runs: <input type="checkbox" ng-model="finished"></label><br>
       <div class="error" ng-show="startNotSet()">No start tile is defined!</div>
     </div>
   </div>
@@ -19,18 +20,30 @@
     <div class="col-md-10">
       <table>
       <tr ng-repeat="r in range(2*length + 1)">
-	<td ng-repeat="c in range(2*width + 1)" ng-class="{'wallspot': $odd != $parent.$odd, 'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall, 'checkpoint': cells[c+','+r+','+z].checkpoint, 'black': cells[c+','+r+','+z].black, 'linear': cells[c+','+r+','+z].isLinear}"
+	<td ng-repeat="c in range(2*width + 1)" ng-class="{'wallspot': $odd != $parent.$odd, 'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall, 'checkpoint': cells[c+','+r+','+z].tile.checkpoint, 'black': cells[c+','+r+','+z].tile.black, 'linear': cells[c+','+r+','+z].isLinear}"
 	    ng-click="cellClick(c, r, z, $odd != $parent.$odd, $odd && $parent.$odd)">
 	  <div class="tile-image-container" ng-show="cells[c+','+r+','+z].isTile">
-	    <img ng-src="/images/log.png" class="tile-image" ng-show="cells[c+','+r+','+z].speedbump">
-	    <img ng-src="/images/elevator.png" class="tile-image" ng-show="!isUndefined(cells[c+','+r+','+z].changeFloorTo) && cells[c+','+r+','+z].changeFloorTo != z">
+	    <img ng-src="/images/log.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.speedbump">
+	    <img ng-src="/images/elevator.png" class="tile-image" ng-show="!isUndefined(cells[c+','+r+','+z].tile.changeFloorTo) && cells[c+','+r+','+z].tile.changeFloorTo != z">
 	    <img ng-src="/images/start.png" class="tile-image" ng-show="startTile.x == c && startTile.y == r && startTile.z == z">
-	    <img ng-src="/images/ramp_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].rampTop">
-	    <img ng-src="/images/ramp_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].rampBottom">
-	    <img ng-src="/images/victim_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].victim.top">
-	    <img ng-src="/images/victim_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].victim.right">
-	    <img ng-src="/images/victim_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].victim.bottom">
-	    <img ng-src="/images/victim_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].victim.left">
+	    <img ng-src="/images/ramp_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.rampTop">
+	    <img ng-src="/images/ramp_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.rampBottom">
+	    <img ng-src="/images/heated_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'Heated'">
+	    <img ng-src="/images/heated_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'Heated'">
+	    <img ng-src="/images/heated_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'Heated'">
+	    <img ng-src="/images/heated_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'Heated'">
+	    <img ng-src="/images/h_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'H'">
+	    <img ng-src="/images/h_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'H'">
+	    <img ng-src="/images/h_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'H'">
+	    <img ng-src="/images/h_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'H'">
+	    <img ng-src="/images/s_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'S'">
+	    <img ng-src="/images/s_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'S'">
+	    <img ng-src="/images/s_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'S'">
+	    <img ng-src="/images/s_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'S'">
+	    <img ng-src="/images/u_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'U'">
+	    <img ng-src="/images/u_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'U'">
+	    <img ng-src="/images/u_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'U'">
+	    <img ng-src="/images/u_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'U'">
 	  </div>
 	</td>
       </tr>

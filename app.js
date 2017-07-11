@@ -45,11 +45,13 @@ var adminRoute = require('./routes/admin')
 //========================================================================
 
 var apiAuthRoute = require('./routes/api/auth')
-var apiMapsRoute = require('./routes/api/maps')
+var apiLineMapsRoute = require('./routes/api/lineMaps')
+var apiMazeMapsRoute = require('./routes/api/mazeMaps')
 var apiTeamsRoute = require('./routes/api/teams')
 var apiRoundsRoute = require('./routes/api/rounds')
 var apiFieldsRoute = require('./routes/api/fields')
-var apiRunsRoute = require('./routes/api/runs')
+var apiLineRunsRoute = require('./routes/api/lineRuns')
+var apiMazeRunsRoute = require('./routes/api/mazeRuns')
 var apiCompetitionsRoute = require('./routes/api/competitions')
 
 //========================================================================
@@ -98,11 +100,13 @@ app.use(passport.session())
 //========================================================================
 
 app.use('/api/auth', apiAuthRoute)
-app.use('/api/maps', [apiMapsRoute.public, pass.ensureLoginApi, apiMapsRoute.private, pass.ensureAdminApi, apiMapsRoute.admin])
+app.use('/api/maps/line', [apiLineMapsRoute.public, pass.ensureLoginApi, apiLineMapsRoute.private, pass.ensureAdminApi, apiLineMapsRoute.admin])
+app.use('/api/maps/maze', [apiMazeMapsRoute.public, pass.ensureLoginApi, apiMazeMapsRoute.private, pass.ensureAdminApi, apiMazeMapsRoute.admin])
 app.use('/api/teams', [apiTeamsRoute.public, pass.ensureLoginApi, apiTeamsRoute.private, pass.ensureAdminApi, apiTeamsRoute.admin])
 app.use('/api/rounds', [apiRoundsRoute.public, pass.ensureLoginApi, apiRoundsRoute.private, pass.ensureAdminApi, apiRoundsRoute.admin])
 app.use('/api/fields', [apiFieldsRoute.public, pass.ensureLoginApi, apiFieldsRoute.private, pass.ensureAdminApi, apiFieldsRoute.admin])
-app.use('/api/runs', [apiRunsRoute.public, pass.ensureLoginApi, apiRunsRoute.private, pass.ensureAdminApi, apiRunsRoute.admin])
+app.use('/api/runs/line', [apiLineRunsRoute.public, pass.ensureLoginApi, apiLineRunsRoute.private, pass.ensureAdminApi, apiLineRunsRoute.admin])
+app.use('/api/runs/maze', [apiMazeRunsRoute.public, pass.ensureLoginApi, apiMazeRunsRoute.private, pass.ensureAdminApi, apiMazeRunsRoute.admin])
 app.use('/api/competitions', [apiCompetitionsRoute.public, pass.ensureLoginApi, apiCompetitionsRoute.private, pass.ensureAdminApi, apiCompetitionsRoute.admin])
 
 //========================================================================
@@ -162,6 +166,8 @@ app.use(function (err, req, res, next) {
    *
    */
   else {
+
+    logger.error(err)
 
     // since we are running api and static website on same we need to hack the different custom routes
     var stringSplit = req.originalUrl.split("/")

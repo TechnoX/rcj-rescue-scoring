@@ -44,7 +44,7 @@ block content
               th 
               th
         tbody
-            tr(ng-repeat='run in runs' runs-read-finished='')
+            tr(ng-repeat="run in runs | orderBy:['round.name','field.name']" runs-read-finished='')
               td(ng-bind='run.round.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':''}")
               td(ng-bind='run.team.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':''}")
               td(ng-bind='run.field.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':''}")

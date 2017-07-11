@@ -1,0 +1,39 @@
+<div class="modal-header">
+  <h3 class="modal-title">Score items</h3>
+</div>
+<div class="modal-body">
+  <ul>
+    <li ng-show="cell.tile.checkpoint">
+      <label>Reach checkpoint: <input type="checkbox" ng-model="tile.scoredItems.checkpoint"></label>
+    </li>
+    <li ng-show="cell.tile.speedbump">
+      <label>Speedbumps: <input type="checkbox" ng-model="tile.scoredItems.speedbump"></label>
+    </li>
+    <li ng-show="cell.tile.rampBottom">
+      <label>Ramp bottom: <input type="checkbox" ng-model="tile.scoredItems.rampBottom"></label>
+    </li>
+    <li ng-show="cell.tile.rampTop">
+      <label>Ramp top: <input type="checkbox" ng-model="tile.scoredItems.rampTop"></label>
+    </li>
+    
+    <li ng-show="hasVictims">
+      <label>Flash within 15cm from victim:</label>
+      <ul>
+        <li ng-repeat="(direction, type) in cell.tile.victims" ng-show="type != 'None'">
+          <label><input type="checkbox" ng-model="tile.scoredItems.victims[direction]"> Victim {{direction}}</label>
+        </li>
+      </ul>
+    </li>
+    <li ng-show="hasVictims">
+      <label>Delivered rescue kits:</label>
+      <ul>
+	<li ng-repeat="(direction, type) in cell.tile.victims" ng-show="type != 'None'">
+          <label><input type="number" ng-model="tile.scoredItems.rescueKits[direction]" min="0" max="12" style="width: 2em;"> Victim {{direction}}</label>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+</div>

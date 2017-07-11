@@ -13,7 +13,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.visType = "slider";
     $scope.z = 0;
-    $scope.tiles = {};
+
+    // Scoring elements of the tiles
+    $scope.stiles = [];
+    // Map (images etc.) for the tiles
+    $scope.mtiles = [];
+
+
+    
     if(typeof runId !== 'undefined'){
         loadNewRun();
     }
@@ -24,20 +31,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         if(typeof runId !== 'undefined'){
             $scope.actualUsedDropTiles = 0; 
             socket.emit('subscribe', 'runs/' + runId);
+	    
             socket.on('data', function(data) {
                 console.log(data);
-                for(var i = 0; i < data.tiles.length; i++){
-                    $scope.tiles[data.tiles[i].x + ',' +
-                                 data.tiles[i].y + ',' +
-                                 data.tiles[i].z].scoredItems = data.tiles[i].scoredItems;
-                }
-                $scope.tiles[data.startTile.x + ',' +
-                         data.startTile.y + ',' +
-                         data.startTile.z].start = data.showedUp;
                 $scope.rescuedLiveVictims = data.rescuedLiveVictims;
                 $scope.rescuedDeadVictims = data.rescuedDeadVictims;
-                $scope.rescueLevel = data.rescueLevel;
-                $scope.escapeEvacuationZone = data.escapeEvacuationZone;
+                $scope.evacuationLevel = data.evacuationLevel;
+                $scope.exitBonus = data.exitBonus;
+		$scope.stiles = data.tiles;
                 $scope.score = data.score;
                 $scope.showedUp = data.showedUp;
                 $scope.LoPs = data.LoPs;
@@ -49,8 +50,12 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             });
         }
 
-        if(typeof fieldId !== 'undefined'){
-            socket.emit('subscribe', 'fields/' + fieldId);
+        if(typeof fieldIds !== 'undefined'){
+	    console.log(fieldIds);
+	    var fields = fieldIds.split(',');
+	    for(var i = 0; i < fields.length; i++){
+		socket.emit('subscribe', 'fields/' + fields[i]);
+	    }
             socket.on('data', function(data) {
 //                if(typeof runId === 'undefined') || runId != data.newRun){ // TODO: FIX!
                     console.log("Judge changed to a new run");
@@ -64,54 +69,57 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     })();
 
-
-
+    
 
     function loadNewRun(){
-        $http.get("/api/runs/"+runId+"?populate=true").then(function(response){
-            $scope.height = response.data.height;
-            $scope.sliderOptions.ceil = $scope.height - 1;
-            $scope.width = response.data.width;
-            $scope.length = response.data.length;
-            width = response.data.width;
-            length = response.data.length;
-            $scope.team = response.data.team;
-            $scope.field = response.data.field;
-            $scope.competition = response.data.competition;
-            $scope.round = response.data.round;
+        $http.get("/api/runs/line/"+runId+"?populate=true").then(function(response){
+	    console.log(response.data);
+	    $scope.LoPs = response.data.LoPs;
+	    $scope.evacuationLevel = response.data.evacuationLevel;
+	    $scope.exitBonus = response.data.exitBonus;
+	    $scope.field = response.data.field.name;
+	    $scope.rescuedDeadVictims = response.data.rescuedDeadVictims;
+	    $scope.rescuedLiveVictims = response.data.rescuedLiveVictims;
+	    $scope.score = response.data.score;
+	    $scope.showedUp = response.data.showedUp;
+	    $scope.started = response.data.started;
+	    $scope.round = response.data.round.name;
+	    $scope.team = response.data.team.name;
             $scope.retired = response.data.retired;
-            $scope.numberOfDropTiles = response.data.numberOfDropTiles;;
-            $scope.rescuedLiveVictims = response.data.rescuedLiveVictims;
-            $scope.rescuedDeadVictims = response.data.rescuedDeadVictims;
-            $scope.escapeEvacuationZone = response.data.escapeEvacuationZone;
-            $scope.rescueLevel = response.data.rescueLevel;
-
-            for(var i = 0; i < response.data.tiles.length; i++){
-                $scope.tiles[response.data.tiles[i].x + ',' +
-                             response.data.tiles[i].y + ',' +
-                             response.data.tiles[i].z] = response.data.tiles[i];
-                if(response.data.tiles[i].scoredItems.dropTiles.length>0){
-                $scope.placedDropTiles++;
-		        $scope.actualUsedDropTiles += response.data.tiles[i].scoredItems.dropTiles.length;
-                    for(var j = 0; j < response.data.tiles[i].index.length ; j++){
-                    marker[response.data.tiles[i].index[j]] = true;
-                    } 
-	           }
-            }
-            $scope.tiles[response.data.startTile.x + ',' +
-                         response.data.startTile.y + ',' +
-                         response.data.startTile.z].start = response.data.showedUp;
-            $scope.score = response.data.score;
-            $scope.showedUp = response.data.showedUp;
-            $scope.LoPs = response.data.LoPs;
-            // Verified time by timekeeper
-            $scope.minutes = response.data.time.minutes;;
+	    // Verified time by timekeeper
+            $scope.minutes = response.data.time.minutes;
             $scope.seconds = response.data.time.seconds;
+
             $scope.cap_sig = response.data.sign.captain;
             $scope.ref_sig = response.data.sign.referee;
             $scope.refas_sig = response.data.sign.referee_as;
+	    
+	    // Scoring elements of the tiles
+            $scope.stiles = response.data.tiles;
 
-            console.log($scope.tiles);
+	    // Get the map
+            $http.get("/api/maps/line/" + response.data.map + "?populate=true").then(function(response){
+		console.log(response.data);
+
+		$scope.height = response.data.height;
+		$scope.sliderOptions.ceil = $scope.height - 1;
+		$scope.width = response.data.width;
+		$scope.length = response.data.length;
+		width = response.data.width;
+		length = response.data.length;
+		$scope.startTile = response.data.startTile;
+		$scope.numberOfDropTiles = response.data.numberOfDropTiles;;
+		$scope.mtiles = {};
+		for(var i = 0; i < response.data.tiles.length; i++){
+                    $scope.mtiles[response.data.tiles[i].x + ',' +
+				  response.data.tiles[i].y + ',' +
+				  response.data.tiles[i].z] = response.data.tiles[i];
+                    // FROM RYO: marker[response.data.tiles[i].index[j]] = true;
+		}
+		
+	    }, function(response){
+		console.log("Error: " + response.statusText);
+            });
         }, function(response){
             console.log("Error: " + response.statusText);
         });
@@ -129,7 +137,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.getOpacity = function(x,y){
         var stackedTiles = 0;
         for(var z = 0; z < $scope.height; z++){
-            if($scope.tiles[x+','+y+','+z])
+            if($scope.mtiles[x+','+y+','+z])
                 stackedTiles++;
         }
         return 1.0/stackedTiles;
@@ -222,7 +230,7 @@ app.directive('tile', function() {
         restrict: 'E',
         templateUrl: '/templates/tile.html',
         link : function($scope, element, attrs){
-            
+
             $scope.checkpointNumber = function(tile){
                 var ret_txt="";
                 if(!tile)return;
@@ -243,27 +251,38 @@ app.directive('tile', function() {
                 return ret_txt;
             }
             
+	    $scope.isDropTile = function(tile){
+		if(!tile || tile.index.length == 0)
+		    return;
+		return $scope.$parent.stiles[tile.index[0]].isDropTile;
+	    }
+
+	    
             $scope.tileStatus = function(tile){
                 // If this is a non-existent tile
-                if(!tile)
+                if(!tile || tile.index.length == 0)
                     return;
-                var successfully = 0;
-                var possible = 0;
 
-                var count = function(list){
-                    for(var i = 0; i < list.length; i++){
-                        if(list[i])
-                            successfully++;
-                        possible++;
-                    }
-                }
-                count(tile.scoredItems.gaps);
-                count(tile.scoredItems.speedbumps);
-                count(tile.scoredItems.intersections);
-                count(tile.scoredItems.obstacles);
-                if(tile.scoredItems.dropTiles.length > 0)
-                    count(tile.scoredItems.dropTiles);
+		// If this tile has no scoring elements we should just return empty string
+		if(tile.items.obstacles == 0 &&
+		   tile.items.speedbumps == 0 &&
+		   tile.tileType.gaps == 0 &&
+		   tile.tileType.intersections == 0 &&
+		   !$scope.$parent.stiles[tile.index[0]].isDropTile
+		  ){
+		    return;
+		}
 
+		// Number of successfully passed times
+		var successfully = 0;
+		// Number of times it is possible to pass this tile
+		var possible = tile.index.length;
+		
+		for(var i = 0; i < tile.index.length; i++){
+		    if($scope.$parent.stiles[tile.index[i]].scored){
+			successfully++;
+		    }
+		}
                 if((possible > 0 && successfully == possible) || tile.start)
                     return "done";
                 else if(successfully > 0)
@@ -273,6 +292,7 @@ app.directive('tile', function() {
                 else
                     return "";
             }
+            
 
             $scope.rotateRamp = function(direction){
                 switch(direction){

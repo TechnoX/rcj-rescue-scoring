@@ -7,8 +7,13 @@ angular.module("RoundAdmin", []).controller("RoundAdminController", function ($s
     $scope.competition = response.data
   })
 
+  $http.get("/api/teams/leagues").then(function (response) {
+    $scope.leagues = response.data
+    console.log($scope.leagues)
+  })
+
   $scope.addRound = function () {
-    var round = {name: $scope.roundName, competition: competitionId}
+    var round = {name: $scope.roundName, competition: competitionId, league: $scope.roundLeague}
 
     $http.post("/api/rounds/createround", round).then(function (response) {
       console.log(response)

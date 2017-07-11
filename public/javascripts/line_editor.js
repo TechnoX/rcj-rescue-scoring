@@ -4,15 +4,15 @@ var app = angular.module('ddApp', ['lvl.services', 'ngAnimate', 'ui.bootstrap', 
 // function referenced by the drop target
 app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function($scope, $uibModal, $log, $http){
 
-    $scope.tileBox = {};
-    $http.get("/api/maps/tiletypes").then(function(response){
-        for(var i = 0; i < response.data.length; i++){
-            $scope.tileBox[response.data[i]._id] = response.data[i];
-        }
+    
+    $scope.tileSets = [];
+    $scope.tileSet = {};
+    $http.get("/api/maps/line/tilesets?populate=true").then(function(response){
+	$scope.tileSets = response.data
+	$scope.tileSet = $scope.tileSets[0]
     }, function(response){
         console.log("Error: " + response.statusText);
     });
-
 
     $scope.sliderOptions = {
         floor: 0,
@@ -26,7 +26,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
     };
     $scope.z = 0;
     $scope.tiles = {};
-    $scope.startTile = {x: 0, y: 0, z: 0};
+    $scope.startTile = {x: -1, y: -1, z: -1};
     $scope.numberOfDropTiles = 0;
     $scope.height = 1;
     $scope.sliderOptions.ceil = $scope.height - 1;
@@ -35,12 +35,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
     $scope.name = "Awesome Testbana";
 
     if(mapId){
-        $http.get("/api/maps/" + mapId + "?populate=true").then(function(response){
+        $http.get("/api/maps/line/" + mapId + "?populate=true").then(function(response){
             for(var i = 0; i < response.data.tiles.length; i++){
                 $scope.tiles[response.data.tiles[i].x + ',' +
                              response.data.tiles[i].y + ',' +
                              response.data.tiles[i].z] = response.data.tiles[i];
             }
+	    competitionId = response.data.competition;
             $scope.startTile = response.data.startTile;
             $scope.numberOfDropTiles = response.data.numberOfDropTiles;
             $scope.height = response.data.height;
@@ -48,6 +49,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
             $scope.width = response.data.width;
             $scope.length = response.data.length;
             $scope.name = response.data.name;
+            $scope.finished = response.data.finished;
 
         }, function(response){
             console.log("Error: " + response.statusText);
@@ -74,26 +76,84 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
             $scope.tiles[x+','+y+','+$scope.z].rot = 0;
     }
 
-    $scope.saveMap = function(){
+
+    $scope.startNotSet = function(){
+	return $scope.startTile.x == -1 && $scope.startTile.y == -1 && $scope.startTile.z == -1;
+    }
+
+    
+    $scope.saveMapAs = function(){
+	if($scope.startNotSet()){
+	    alert("You must define a starting tile");
+	    return;
+	}
+	
+	if($scope.saveasname == $scope.name){
+	    alert("You must have a new name when saving as!");
+	    return;
+	}
         var map = {
+	    competition: competitionId,
+            name: $scope.saveasname,
+            length: $scope.length,
+            height: $scope.height,
+            width: $scope.width,
+	    finished: $scope.finished,
+            numberOfDropTiles: $scope.numberOfDropTiles,
+            startTile: $scope.startTile,
+            tiles: $scope.tiles
+        };
+	
+	$http.post("/api/maps/line", map).then(function(response){
+	    alert("Created map!");
+	    console.log(response.data);
+	    window.location.replace("/line/editor/" + response.data.id)
+        }, function(response){
+	    console.log(response);
+	    console.log("Error: " + response.statusText);
+	    alert(response.data.msg);
+        });
+    }
+    $scope.saveMap = function(){
+	if($scope.startNotSet()){
+	    alert("You must define a starting tile");
+	    return;
+	}
+        var map = {
+	    competition: competitionId,
             name: $scope.name,
             length: $scope.length,
             height: $scope.height,
             width: $scope.width,
+	    finished: $scope.finished,
             numberOfDropTiles: $scope.numberOfDropTiles,
             startTile: $scope.startTile,
             tiles: $scope.tiles
         };
 
         console.log(map);
-        $http.post("/api/maps/createmap/", map).then(function(response){
-            alert("Success!");
-            console.log(response.data);
-            window.location.replace("/line/editor/" + response.data.id)
-        }, function(response){
-            console.log(response);
-            console.log("Error: " + response.statusText);
-        });
+	console.log("Update map", mapId);
+	console.log("Competition ID", competitionId);
+	if(mapId){
+	    $http.put("/api/maps/line/" + mapId, map).then(function(response){
+		alert("Updated map");
+		console.log(response.data);
+            }, function(response){
+		console.log(response);
+		console.log("Error: " + response.statusText);
+		alert(response.data.msg);
+            });
+	}else{
+            $http.post("/api/maps/line", map).then(function(response){
+		alert("Created map!");
+		console.log(response.data);
+		window.location.replace("/line/editor/" + response.data.id)
+            }, function(response){
+		console.log(response);
+		console.log("Error: " + response.statusText);
+		alert(response.data.msg);
+            });
+	}
     }
 
 
@@ -219,7 +279,6 @@ app.directive('lvlDraggable', ['$rootScope', 'uuid', function ($rootScope, uuid)
             //console.log(id);
             el.bind("dragstart", function (e) {
                 e.dataTransfer.setData('text', id);
-                console.log('drag');
                 $rootScope.$emit("LVL-DRAG-START");
             });
 
@@ -278,10 +337,9 @@ app.directive('lvlDropTarget', ['$rootScope', 'uuid', function ($rootScope, uuid
                     // Remove the element from where we dragged it
                     delete scope.tiles[drag.attr("x")+","+drag.attr("y")+","+drag.attr("z")];
                 }else if(drag[0].tagName == "IMG"){// If we drag out an image, this is a new tile
-                    console.log(drag.attr("id"));
-                    scope.tiles[drop.attr("x")+","+drop.attr("y")+","+drop.attr("z")] = {image: drag.attr("src"),
-                                                                                         rot: +drag.attr("rot"),
-                                                                                         tileType: scope.tileBox[drag.attr("tile-id")],
+		    
+                    scope.tiles[drop.attr("x")+","+drop.attr("y")+","+drop.attr("z")] = {rot: +drag.attr("rot"),
+                                                                                         tileType: scope.tileSet.tiles.find(function(t){return t.tileType._id == drag.attr("tile-id")}).tileType,
                                                                                          items:{obstacles: 0,
                                                                                                 speedbumps: 0}};
                     // We dragged an non-existing tile

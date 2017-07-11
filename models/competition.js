@@ -1,9 +1,19 @@
-var mongoose = require('mongoose')
-var validator = require('validator')
-var Schema = mongoose.Schema
-var ObjectId = Schema.Types.ObjectId
+const mongoose = require('mongoose')
+const validator = require('validator')
+const Schema = mongoose.Schema
+const ObjectId = Schema.Types.ObjectId
 
-var logger = require('../config/logger').mainLogger
+const logger = require('../config/logger').mainLogger
+
+const LINE_LEAGUES = ["Primary", "Secondary"]
+const MAZE_LEAGUES = ["Maze"]
+
+const LEAGUES = [].concat(LINE_LEAGUES, MAZE_LEAGUES)
+
+module.exports.LINE_LEAGUES = LINE_LEAGUES
+module.exports.MAZE_LEAGUES = MAZE_LEAGUES
+module.exports.LEAGUES = LEAGUES
+
 
 /**
  *
@@ -16,43 +26,62 @@ var logger = require('../config/logger').mainLogger
  */
 
 
-var competitionSchema = new Schema({
+const competitionSchema = new Schema({
   name: {type: String, required: true, unique: true}
 })
 
-var roundSchema = new Schema({
+const roundSchema = new Schema({
+  competition: {
+    type    : ObjectId,
+    ref     : 'Competition',
+    required: true,
+    index   : true
+  },
   name       : {type: String, required: true},
-  competition: {type: ObjectId, ref: 'Competition', required: true}
+  league     : {type: String, enum: LEAGUES, required: true, index: true}
 })
 
 roundSchema.pre('save', function (next) {
-  var self = this
+  const self = this
   if (self.isNew) {
-    Round.findOne({competition: self._id, name: self.name}, function (err, dbRound) {
+    Round.findOne({
+      competition: self._id,
+      name       : self.name,
+      league     : self.league
+    }, function (err, dbRound) {
       if (err) {
-        next(err)
+        return next(err)
       } else if (dbRound) {
         err = new Error('Round with name "' + self.name + '" already exists!')
-        next(err)
+        return next(err)
       } else {
-        next()
+        return next()
       }
     })
   } else {
-    next()
+    return next()
   }
 })
 
-var teamSchema = new Schema({
+const teamSchema = new Schema({
+  competition: {
+    type    : ObjectId,
+    ref     : 'Competition',
+    required: true,
+    index   : true
+  },
   name       : {type: String, required: true},
-  league     : {type: String, enum: ["primary", "secondary"], required: true},
-  competition: {type: ObjectId, ref: 'Competition', required: true}
+  league     : {type: String, enum: LEAGUES, required: true, index: true}
 })
 
 teamSchema.pre('save', function (next) {
-  var self = this
+  const self = this
   if (self.isNew) {
-    Team.findOne({competition: self._id, name: self.name}, function (err, dbTeam) {
+    Team.findOne({
+      competition: self._id,
+      name       : self.name,
+      league     : self.league
+    }, function (err, dbTeam) {
       if (err) {
         next(err)
       } else if (dbTeam) {
@@ -67,15 +96,25 @@ teamSchema.pre('save', function (next) {
   }
 })
 
-var fieldSchema = new Schema({
+const fieldSchema = new Schema({
+  competition: {
+    type    : ObjectId,
+    ref     : 'Competition',
+    required: true,
+    index   : true
+  },
   name       : {type: String, required: true},
-  competition: {type: ObjectId, ref: 'Competition', required: true}
+  league     : {type: String, enum: LEAGUES, required: true, index: true}
 })
 
 fieldSchema.pre('save', function (next) {
-  var self = this
+  const self = this
   if (self.isNew) {
-    Field.findOne({competition: self._id, name: self.name}, function (err, dbField) {
+    Field.findOne({
+      competition: self._id,
+      name       : self.name,
+      league     : self.league
+    }, function (err, dbField) {
       if (err) {
         next(err)
       } else if (dbField) {
@@ -90,92 +129,14 @@ fieldSchema.pre('save', function (next) {
   }
 })
 
-var runSchema = new Schema({
-  round      : {type: ObjectId, ref: 'Round', required: true},
-  team       : {type: ObjectId, ref: 'Team', required: true},
-  field      : {type: ObjectId, ref: 'Field', required: true},
-  competition: {type: ObjectId, ref: 'Competition', required: true},
 
-  height           : {type: Number, required: true, min: 1},
-  width            : {type: Number, required: true, min: 1},
-  length           : {type: Number, required: true, min: 1},
-  tiles            : [{
-    x          : {type: Number, required: true},
-    y          : {type: Number, required: true},
-    z          : {type: Number, required: true},
-    tileType   : {type: ObjectId, ref: 'TileType', required: true},
-    rot        : {type: Number, min: 0, max: 270, required: true},
-    items      : {
-      obstacles    : {type: Number, min: 0},
-      speedbumps   : {type: Number, min: 0},
-      intersections: {type: Number, min: 0},
-      gaps         : {type: Number, min: 0},
-      dropTiles    : {type: Number, min: 0}
-    },
-    scoredItems: {
-      obstacles    : {type: [Boolean]},
-      speedbumps   : {type: [Boolean]},
-      intersections: {type: [Boolean]},
-      gaps         : {type: [Boolean]},
-      dropTiles    : {type: [Boolean]}
-    },
-    index      : {type: [Number], min: 0},
-    levelUp    : {type: String, enum: ["top", "right", "bottom", "left"]},
-    levelDown  : {type: String, enum: ["top", "right", "bottom", "left"]}
-  }],
-  startTile        : {
-    x: {type: Number, required: true, min: 0},
-    y: {type: Number, required: true, min: 0},
-    z: {type: Number, required: true, min: 0}
-  },
-  LoPs             : {type: [Number], min: 0},
-  numberOfDropTiles: {type: Number, required: true, min: 0},
-  rescueLevel   : {type: Boolean},
-  rescuedLiveVictims   : {type: Number, min: 0},
-  rescuedDeadVictims   : {type: Number, min: 0},
-  escapeEvacuationZone : {type: Boolean},
-  score            : {type: Number, min: 0},
-  showedUp         : {type: Boolean},
-  time             : {
-    minutes: {type: Number, min: 0},
-    seconds: {type: Number, min: 0, max: 59}
-  },
-  status           : {type: Number, min: 0},
-  retired           : {type: Boolean},
-  sign             :{
-    captain: {type: String},
-    referee: {type: String},
-    referee_as: {type: String}
-  }　
-})
-
-runSchema.pre('save', function (next) {
-  var self = this
-  if (self.isNew) {
-    Run.findOne({round: self.round, team: self.team}).populate("round team").exec(function (err, dbRun) {
-      if (err) {
-        next(err)
-      } else if (dbRun) {
-        err = new Error('Team "' + dbRun.team.name + '" already has a run in round "' + dbRun.round.name + '"!')
-        next(err)
-      } else {
-        next()
-      }
-    })
-  } else {
-    next()
-  }
-})
-
-var Competition = mongoose.model('Competition', competitionSchema)
-var Round = mongoose.model('Round', roundSchema)
-var Team = mongoose.model('Team', teamSchema)
-var Field = mongoose.model('Field', fieldSchema)
-var Run = mongoose.model('Run', runSchema)
+const Competition = mongoose.model('Competition', competitionSchema)
+const Round = mongoose.model('Round', roundSchema)
+const Team = mongoose.model('Team', teamSchema)
+const Field = mongoose.model('Field', fieldSchema)
 
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
 module.exports.competition = Competition
 module.exports.round = Round
 module.exports.team = Team
 module.exports.field = Field
-module.exports.run = Run

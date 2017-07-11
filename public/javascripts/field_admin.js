@@ -7,8 +7,13 @@ angular.module("FieldAdmin", []).controller("FieldAdminController", function ($s
     $scope.competition = response.data
   })
 
+  $http.get("/api/teams/leagues").then(function (response) {
+    $scope.leagues = response.data
+    console.log($scope.leagues)
+  })
+
   $scope.addField = function () {
-    var field = {name: $scope.fieldName, competition: competitionId}
+    var field = {name: $scope.fieldName, competition: competitionId, league: $scope.fieldLeague}
 
     $http.post("/api/fields/createfield", field).then(function (response) {
       console.log(response)

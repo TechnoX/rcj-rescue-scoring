@@ -4,33 +4,17 @@
 <div class="modal-body">
   <ul>
     <li>
-      <label>Has speedbumps: </label>
-      <a href="#" ng-click="tile.items.speedbumps>0?tile.items.speedbumps=tile.items.speedbumps-1:0">-</a>
-      {{tile.items.speedbumps}}
-      <a href="#" ng-click="tile.items.speedbumps=tile.items.speedbumps+1">+</a>
-      <!--
-      <a href="#" ng-click="tile.items.speedbumps>0?tile.items.speedbumps=tile.items.speedbumps-1:0">-</a>
-      {{tile.items.speedbumps}}
-      <a href="#" ng-click="tile.items.speedbumps=tile.items.speedbumps+1">+</a>-->
+      <label>Speedbumps:</label>
+	<a href="#" ng-click="tile.items.speedbumps>0?tile.items.speedbumps=tile.items.speedbumps-1:0">-</a>
+	{{tile.items.speedbumps}}
+	<a href="#" ng-click="tile.items.speedbumps=tile.items.speedbumps+1">+</a>
     </li>
-<!--    <li>
-      <label>Gaps:</label>
-      <a href="#" ng-click="tile.items.gaps>0?tile.items.gaps=tile.items.gaps-1:0">-</a>
-      {{tile.items.gaps}}
-      <a href="#" ng-click="tile.items.gaps=tile.items.gaps+1">+</a>
-    </li>-->
     <li>
       <label>Obstacles:</label>
       <a href="#" ng-click="tile.items.obstacles>0?tile.items.obstacles=tile.items.obstacles-1:0">-</a>
       {{tile.items.obstacles}}
       <a href="#" ng-click="tile.items.obstacles=tile.items.obstacles+1">+</a>
     </li>
-<!--    <li>
-      <label>Intersections:</label>
-      <a href="#" ng-click="tile.items.intersections>0?tile.items.intersections=tile.items.intersections-1:0">-</a>
-      {{tile.items.intersections}}
-      <a href="#" ng-click="tile.items.intersections=tile.items.intersections+1">+</a>
-    </li>-->
   </ul>
 
   <label><input type="checkbox" ng-model="start" ng-disabled="start"> Is start</label>

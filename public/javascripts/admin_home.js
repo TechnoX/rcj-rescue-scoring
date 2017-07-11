@@ -2,12 +2,12 @@ angular.module("AdminHome", []).controller("AdminHomeController", function ($sco
   $scope.competitionId = competitionId
 
   updateCompetitionList()
-  updateMapList()
+  //updateMapList()
 
   $scope.addCompetition = function () {
     var competition = {name: $scope.competitionName}
 
-    $http.post("/api/competitions/createcompetition", competition).then(function (response) {
+    $http.post("/api/competitions", competition).then(function (response) {
       console.log(response)
       updateCompetitionList()
     }, function (error) {

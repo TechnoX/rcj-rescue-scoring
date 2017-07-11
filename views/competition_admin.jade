@@ -22,5 +22,14 @@ block content
       h1 Admin Console - {{competition.name}}
       button(ng-click="go('/admin/' + competitionId + '/teams')" class='btn btn-outline-info btn-lg btn-block') Teams
       button(ng-click="go('/admin/' + competitionId + '/rounds')" class='btn btn-outline-info btn-lg btn-block') Rounds
-      button(ng-click="go('/admin/' + competitionId + '/fields')" class='btn btn-outline-info btn-lg btn-block') Fields
-      button(ng-click="go('/admin/' + competitionId + '/runs')" class='btn btn-outline-info btn-lg btn-block') Runs
+			button(ng-click="go('/admin/' + competitionId + '/fields')" class='btn btn-outline-info btn-lg btn-block') Fields
+      
+      h3 Line
+      button(ng-click="go('/admin/{{competitionId}}/line/maps')" class='btn btn-outline-info btn-lg btn-block') Maps
+      button(ng-click="go('/admin/line/tilesets')" class='btn btn-outline-info btn-lg btn-block') Tilesets
+			button(ng-click="go('/admin/{{competitionId}}/line/runs')" class='btn btn-outline-info btn-lg btn-block') Runs
+
+      h3 Maze
+      button(ng-click="go('/admin/{{competitionId}}/maze/maps')" class='btn btn-outline-info btn-lg btn-block') Maps
+      button(ng-click="go('/admin/{{competitionId}}/maze/runs')" class='btn btn-outline-info btn-lg btn-block') Runs
+

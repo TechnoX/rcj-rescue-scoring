@@ -89,7 +89,8 @@ else {*/
     })
   })
 
-  require('./routes/api/runs').connectSocketIo(io)
+  require('./routes/api/lineRuns').connectSocketIo(io)
+  require('./routes/api/mazeRuns').connectSocketIo(io)
   
   
   /**

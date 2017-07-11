@@ -2,7 +2,7 @@
   <!-- Navbar content -->
     <div class="row">
         <div class="col-md-6 col-sm4 col-12">
-            <li class="navbar-brand" href="#"><i class="fa fa-spinner fa-pulse fa-fw"></i> {{team.name}}</li>
+            <li class="navbar-brand" href="#"><i class="fa fa-spinner fa-pulse fa-fw"></i> {{team}}</li>
         </div>
         <div class="col-md-3 col-sm4 col-7">
             <i class="fa fa-calculator fa-2x" aria-hidden="true"></i>
@@ -13,9 +13,7 @@
             <li class="navbar-brand" href="#"  ng-if="!retired">  {{time | date:'mm:ss'}}</li>
             <li class="navbar-brand" href="#" ng-if="retired">  Retire</li>
         </div>
-    </div>
-    
-
+    </div>    
 </nav>
 <div class="container">
     <div style="text-align: center;" ng-hide="checked">
@@ -24,10 +22,10 @@
                   <h3 class="card-header"><i class="fa fa-info-circle" aria-hidden="true"></i>Basic Informations</h3>
                       <pre>
                         <ul class="list-group list-group-flush scrool" style="margin:0 0 0 0; padding:0;overflow: scroll;"><!--
-                          --><li class="list-group-item">Competition : {{competition.name}}</li><!--
-                          --><li class="list-group-item">Round       : {{round.name}}</li><!--
-                          --><li class="list-group-item">Field       : {{field.name}}</li><!--
-                          --><li class="list-group-item">Team　　     : {{team.name}}</li><!--
+                          --><li class="list-group-item">Competition : {{competition}}</li><!--
+                          --><li class="list-group-item">Round       : {{round}}</li><!--
+                          --><li class="list-group-item">Field       : {{field}}</li><!--
+                          --><li class="list-group-item">Team　　     : {{team}}</li><!--
                           --><li class="list-group-item">League　　　 : {{team.league=='primary'?"Primary":"Secondary"}}</li><!--
                           --></ul><!--
                       --></pre>  
@@ -42,10 +40,9 @@
             <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleScoring()"><i class="fa fa-calculator" aria-hidden="true"> Run Record {{ startedScoring ? 'End' : 'Start' }}</i></button>
             <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleTime()"><i class="fa fa-clock-o" aria-hidden="true"> {{ startedTime ? 'Stop' : 'Start' }}</i></button>
             <button ng-show="!startedTime && time!=0" class="btn btn-warning" style="margin:0 10px 10px 0;" type="button" ng-click="TimeReset()"><i class="fa fa-clock-o" aria-hidden="true"> Reset</i></button>
-            <p ng-show="!startedScoring">Please choose the rescue level of the victims from the bottom toggle.</p>
+            <p ng-show="!startedScoring">Please choose the evacuation level of the victims from the bottom toggle.</p>
             <label class="switch-light" onclick="" ng-show="!startedScoring">
-              <input type="checkbox" ng-model="rescueLevel" ng-change="changeRescueLevel()" ng-show="!startedScoring">
-
+              <input type="checkbox" ng-model="evacuationLevel" ng-change="changeEvacuationLevel()" ng-show="!startedScoring">
               <span class="well" ng-show="!startedScoring">
                 <span style="border: solid 1px #000000;">Level 1</span>
                 <span style="border: solid 1px #000000;">Level 2</span>
@@ -83,9 +80,9 @@
               </div>   
           </div>
           <div id="resc" class="card">
-              <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> Rescuing victims　<span class="badge badge-danger">Rescue Level{{rescueLevel + 1}} is selecting.</span></h3>
+              <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> Rescuing victims　<span class="badge badge-danger">Evacuation Level{{evacuationLevel}} is selecting.</span></h3>
               <div class="card-block">
-                  <p class="card-text">【LIVE Victims】Number：　　 <span class="badge badge-info">{{30 + rescueLevel*10}}　points /victim</span></p>
+                  <p class="card-text">【LIVE Victims】Number：　　 <span class="badge badge-info">{{30 + (evacuationLevel-1)*10}}　points /victim</span></p>
                   <img src="/images/minus.png" alt="-" ng-click="decVictims('live')" class="plusminus">
                   <img src="/images/loader2.gif" width="37px" height="37px" alt="" ng-show="rprocessing == true">
                   <span class="count" ng-show="rlprocessing != true">{{rescuedLiveVictims}}</span>
@@ -93,7 +90,7 @@
               </div>
               <hr>
               <div class="card-block">
-                  <p class="card-text">【DEAD Victims】Number： 　　　　<span class="badge badge-info">{{15 + rescueLevel*5}} points /victim</span></p>
+                  <p class="card-text">【DEAD Victims】Number： 　　　　<span class="badge badge-info">{{15 + (evacuationLevel-1)*5}} points /victim</span></p>
                   <img src="/images/minus.png" alt="-" ng-click="decVictims('dead')" class="plusminus">
                   <img src="/images/loader2.gif" width="37px" height="37px" alt="" ng-show="rprocessing == true">
                   <span class="count" ng-show="rdprocessing != true">{{rescuedDeadVictims}}</span>
@@ -101,8 +98,8 @@
               </div>
               <hr>
               <div class="card-block">
-                  <p class="card-text">Escape the evacuation zone：   　　　<span class="badge badge-info">20　points</span></p>
-                  <input type="checkbox" ng-model="escapeEvacuationZone" ng-change="changeEscapeEvacuationZone()" id="scoredrun"><label class="checkbox" for="scoredrun">Success</label><br>
+                  <p class="card-text">Robot exited the evacuation zone after touching at least one victim: <span class="badge badge-info">20　points</span></p>
+                  <input type="checkbox" ng-model="exitBonus" ng-change="changeExitBonus()" id="scoredrun"><label class="checkbox" for="scoredrun">Success</label><br>
               </div> 
           </div>
         </div>
@@ -114,7 +111,7 @@
             </div>
               <div ng-repeat="r in range(length)" class="row">
                 <div ng-repeat="c in range(width)" class="slot">
-                  <tile tile="tiles[c+','+r+','+z]"  ng-click="doScoring(c,r,z)" ng-if="showtile"></tile>
+                  <tile tile="mtiles[c+','+r+','+z]"  ng-click="doScoring(c,r,z)" ng-if="showtile"></tile>
                 </div>
               </div>
         </div>
