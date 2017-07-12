@@ -88,12 +88,12 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         });
 
 
-	// Update map (added by RYO)
-	$http.put("/api/runs/line/"+runId, {status: 1}).then(function(response){
-		    
+	/* Doesn't work for Fredrik (maybe Ryo or Sebbe can fix?)
+        $http.put("/api/runs/line/"+runId, {status: 1}).then(function(response){
+            
         }, function(response){
             console.log("Error: " + response.statusText);
-        });
+        });*/
 
     }, function(response){
         console.log("Error: " + response.statusText);
@@ -247,11 +247,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 	    }
             // Start the timer
             $timeout(tick, $scope.tickInterval);
-            $http.post("/api/runs/"+runId+"/update", {status: 2}).then(function(response){
+            /* Doesn't work for Fredrik (maybe Ryo or Sebbe can fix?)
+            $http.put("/api/runs/line/"+runId, {status: 2}).then(function(response){
                 
-                }, function(response){
-                    console.log("Error: " + response.statusText);
+            }, function(response){
+                console.log("Error: " + response.statusText);
             });
+            */
         }else{
             // Save everything when you stop the time
             
