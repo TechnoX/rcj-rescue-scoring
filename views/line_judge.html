@@ -40,12 +40,12 @@
             <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleScoring()"><i class="fa fa-calculator" aria-hidden="true"> Run Record {{ startedScoring ? 'End' : 'Start' }}</i></button>
             <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleTime()"><i class="fa fa-clock-o" aria-hidden="true"> {{ startedTime ? 'Stop' : 'Start' }}</i></button>
             <button ng-show="!startedTime && time!=0" class="btn btn-warning" style="margin:0 10px 10px 0;" type="button" ng-click="TimeReset()"><i class="fa fa-clock-o" aria-hidden="true"> Reset</i></button>
-            <p ng-show="!startedScoring">Please choose the evacuation level of the victims from the bottom toggle.</p>
+            <p ng-show="!startedScoring">Please select the evacuation level:</p>
             <label class="switch-light" onclick="" ng-show="!startedScoring">
               <input type="checkbox" ng-model="evacuationLevel" ng-change="changeEvacuationLevel()" ng-show="!startedScoring">
               <span class="well" ng-show="!startedScoring">
-                <span style="border: solid 1px #000000;">Level 1</span>
-                <span style="border: solid 1px #000000;">Level 2</span>
+                <span style="border: solid 1px #000000;">Low</span>
+                <span style="border: solid 1px #000000;">High</span>
                 <a class="btn btn-info"></a>
               </span>
             </label>
@@ -80,7 +80,7 @@
               </div>   
           </div>
           <div id="resc" class="card">
-              <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> Rescuing victims　<span class="badge badge-danger">Evacuation Level{{evacuationLevel}} is selecting.</span></h3>
+              <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> Rescuing victims　<span class="badge badge-danger">{{evacuationLevel?"High":"Low"}} evacuation point</span></h3>
               <div class="card-block">
                   <p class="card-text">【LIVE Victims】Number：　　 <span class="badge badge-info">{{30 + (evacuationLevel-1)*10}}　points /victim</span></p>
                   <img src="/images/minus.png" alt="-" ng-click="decVictims('live')" class="plusminus">
