@@ -22,7 +22,9 @@
     "angular": "~1.4.5",
     "angular-datatables": "~0.4.3",
     "angularjs-slider": "^2.11.0",
-    "jquery.ex-table-filter": "https://raw.githubusercontent.com/rrrobo/jquery.ex-table-filter/gh-pages/jquery.ex-table-filter.js"
+    "jquery.ex-table-filter": "https://raw.githubusercontent.com/rrrobo/jquery.ex-table-filter/gh-pages/jquery.ex-table-filter.js",
+    "sweetalert": "^1.1.3",
+    "footerFixed": "http://blog.webcreativepark.net/sample/js/36/footerFixed.js"
   },
   "description": "",
   "main": "",
