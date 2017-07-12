@@ -24,14 +24,14 @@ block content
         thead
             tr
                 th Name
-								th League
+                th League
                 th Action
         tbody
             tr
                 td
                     input(ng-model='fieldName')
-								td
-								    select(ng-model='fieldLeague' ng-options='league for league in leagues')
+                td
+                    select(ng-model='fieldLeague' ng-options='league for league in leagues')
                 td
                     button(ng-click='addField()') Add field
       
@@ -43,11 +43,11 @@ block content
         thead
             tr
               th Name
-							th League
+              th League
               th Operation
         tbody
             tr(ng-repeat='field in fields')
               td(ng-bind='field.name')
-		          td(ng-bind='field.league')
+              td(ng-bind='field.league')
               td
                 a(href="" ng-click='removeField(field)') Delete

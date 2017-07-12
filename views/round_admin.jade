@@ -24,14 +24,14 @@ block content
         thead
             tr
                 th Name
-								th League
+                th League
                 th Action
         tbody
             tr
                 td
                     input(ng-model='roundName')
-								td
-								    select(ng-model='roundLeague' ng-options='league for league in leagues')
+                td
+                    select(ng-model='roundLeague' ng-options='league for league in leagues')
                 td
                     button(ng-click='addRound()') Add round
       
@@ -42,11 +42,11 @@ block content
         thead
             tr
               th Name
-							th League
+              th League
               th Operation
         tbody
             tr(ng-repeat='round in rounds')
               td(ng-bind='round.name')
-							td(ng-bind='round.league')
+              td(ng-bind='round.league')
               td
                 a(href="" ng-click='removeRound(round)') Delete      
