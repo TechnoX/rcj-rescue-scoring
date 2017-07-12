@@ -21,7 +21,8 @@
     "datatables": "~1.10.9",
     "angular": "~1.4.5",
     "angular-datatables": "~0.4.3",
-    "angularjs-slider": "^2.11.0"
+    "angularjs-slider": "^2.11.0",
+    "jquery.ex-table-filter": "https://raw.githubusercontent.com/rrrobo/jquery.ex-table-filter/gh-pages/jquery.ex-table-filter.js"
   },
   "description": "",
   "main": "",
