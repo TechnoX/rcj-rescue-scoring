@@ -635,12 +635,12 @@ function tile_size(){
         $(function() {
             try{
                 var b = $('.tilearea');
-                console.log('コンテンツ本体：' + b.height() + '×' + b.width());
-                console.log('window：' + window.innerHeight);
+                //console.log('コンテンツ本体：' + b.height() + '×' + b.width());
+                //console.log('window：' + window.innerHeight);
                 var tilesize_w = ($('.tilearea').width()-50) / width;
                 var tilesize_h = (window.innerHeight - 150) / length;
-                console.log('tilesize_w:' + tilesize_w);
-                console.log('tilesize_h:' + tilesize_h);
+                //console.log('tilesize_w:' + tilesize_w);
+                //console.log('tilesize_h:' + tilesize_h);
                 if(tilesize_h > tilesize_w)var tilesize = tilesize_w;
                 else var tilesize = tilesize_h;
                 $('tile').css('height',tilesize); 
