@@ -292,24 +292,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         });
     }
     
-    $scope.changeRescueLevel = function(){
-        console.log('Change Rescue');
-        $http.post("/api/runs/"+runId+"/update", {evacuationLevel: $scope.evacuationLevel}).then(function(response){ // Updated by Fredrik Merge marking
-            console.log($scope.evacuationLevel);// Updated by ffredrik merges
-            $scope.score = response.data.score;
-        }, function(response){
-            console.log("Error: " + response.statusText);
-        });
-    }
-    
-    $scope.changeEscapeEvacuationZone = function(){// Updated by Fredrik Löfgren in merge!!
-        $http.post("/api/runs/"+runId+"/update", {exitBonus: $scope.exitBonus}).then(function(response){
-            $scope.score = response.data.score;
-        }, function(response){
-            console.log("Error: " + response.statusText);
-        });
-    }
-
     $scope.doScoring = function(x,y,z){
         var mtile = $scope.mtiles[x+','+y+','+z];
 	var stile = [];
