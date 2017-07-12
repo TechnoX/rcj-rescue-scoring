@@ -31,6 +31,8 @@ block content
         tbody
             tr
               td
+                select(ng-model='league' ng-options='league for league in leagues' ng-change='updateLists()')
+              td
                 select(ng-model='run.round' ng-options='round as round.name for round in rounds')
               td
                 select(ng-model='run.team' ng-options='team as team.name for team in teams')
