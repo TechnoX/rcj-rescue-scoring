@@ -257,7 +257,11 @@ app.directive('tile', function() {
 		return $scope.$parent.stiles[tile.index[0]].isDropTile;
 	    }
 
-	    
+	    $scope.isStart = function(tile){
+                return tile.x == $scope.$parent.startTile.x &&
+		    tile.y == $scope.$parent.startTile.y &&
+		    tile.z == $scope.$parent.startTile.z;                
+	    }
             $scope.tileStatus = function(tile){
                 // If this is a non-existent tile
                 if(!tile || tile.index.length == 0)

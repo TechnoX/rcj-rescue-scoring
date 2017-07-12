@@ -240,6 +240,12 @@ app.directive('tile', function() {
                     return "rot270";
                 }
             }
+            scope.isStart = function(tile){
+                console.log(tile);
+                return attrs.x == scope.$parent.startTile.x &&
+		    attrs.y == scope.$parent.startTile.y &&
+		    attrs.z == scope.$parent.startTile.z;
+	    }
         }
     };
 });

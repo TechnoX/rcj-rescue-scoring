@@ -13,7 +13,7 @@
 
 
 
-<img src="/images/start.png" class="tile-image" ng-show="tile.start != null">
+<img src="/images/start.png" class="tile-image" ng-show="isStart(tile)">
 
 <img src="/images/done.png" class="tile-image" ng-show="tileStatus(tile) == 'done'">
 <img src="/images/halfdone.png" class="tile-image" ng-show="tileStatus(tile) == 'halfdone'">
