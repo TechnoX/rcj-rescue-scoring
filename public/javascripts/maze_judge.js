@@ -311,11 +311,12 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 	    (cell.tile.victims.bottom != "None") ||
 	    (cell.tile.victims.left != "None");
 
+        console.log(cell.tile);
 	// Total number of scorable things on this tile
-	var total = cell.tile.speedbump +
-	    cell.tile.checkpoint +
-	    cell.tile.rampBottom +
-	    cell.tile.rampTop +
+	var total = !!cell.tile.speedbump +
+	    !!cell.tile.checkpoint +
+	    !!cell.tile.rampBottom +
+	    !!cell.tile.rampTop +
 	    hasVictims;
 	console.log("totalt antal saker", total);
 	console.log("Has victims", hasVictims);
