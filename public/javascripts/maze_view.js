@@ -47,8 +47,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
                 console.log("Updated view from socket.io");
             });
         }
-	console.log(fieldId);
         if(typeof fieldId !== 'undefined'){
+	    console.log("Field ID: ", fieldId);
             socket.emit('subscribe', 'fields/' + fieldId);
             socket.on('data', function(data) {
 //                if(typeof runId === 'undefined') || runId != data.newRun){ // TODO: FIX!
@@ -59,6 +59,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
             });
 
 
+        }else{
+            console.log("No fieldId provided");
         }
 
     })();
