@@ -302,7 +302,7 @@ privateRouter.put('/:runid', function (req, res, next) {
           } else {
             if (socketIo !== undefined) {
               socketIo.sockets.in('runs/line').emit('changed')
-              socketIo.sockets.in('competition/'+ dbrun.competition).emit('changed')
+              socketIo.sockets.in('competition/'+ dbRun.competition).emit('changed')
               socketIo.sockets.in('runs/' + dbRun._id).emit('data', dbRun)
               socketIo.sockets.in('fields/' +
                                   dbRun.field).emit('data', {newRun: dbRun._id})
