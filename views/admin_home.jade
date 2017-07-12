@@ -19,23 +19,7 @@ block content
     .col-md-1
     .col-md-10
       .row
-        .col-md-6
-          h1 Line-Maps
-          button(onclick="location.href='/line/editor'" class='btn btn-primary') Create a new map layout
-          br
-          br
-          table
-            thead
-                tr
-                  th Name
-                  th Operation
-            tbody
-                tr(ng-repeat='map in maps')
-                  td
-                    a(ng-bind='map.name' ng-href="/line/editor/{{map._id}}")
-                  td
-                    a(href="" ng-click='removeMap(map)') Delete
-        .col-md-6
+        .col-md-12
           h1 Competitions
           input(ng-model='competitionName')
           button(ng-click='addCompetition()') Add competition

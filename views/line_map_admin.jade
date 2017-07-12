@@ -21,11 +21,18 @@ block location
 block content
   .row
     .col-md-offset-2.col-md-8
-      a(href="/admin/{{competitionId}}/line/editor") Create a new map layout
-      h1 Maps
+      h1 Line-Maps
+      button(onclick="location.href='/admin/'+competitionId+'/line/editor'" class='btn btn-primary') Create a new map layout
+      br
+      br
       table
-        tr(ng-repeat='map in maps')
-          td
-            a(ng-bind='map.name' ng-href="/line/editor/{{map._id}}")
-          td
-            a(href="" ng-click='removeMap(map)') Delete
+        thead
+            tr
+              th Name
+              th Operation
+        tbody
+            tr(ng-repeat='map in maps')
+              td
+                a(ng-bind='map.name' ng-href="/line/editor/{{map._id}}")
+              td
+                a(href="" ng-click='removeMap(map)') Delete
