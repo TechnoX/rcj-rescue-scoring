@@ -319,9 +319,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         // If the run is not started, we can place drop pucks on this tile
         if(!$scope.startedScoring){
             // We can only place drop markers on tiles without scoring elements (rule 3.3.5)
-            if($scope.numberOfDropTiles - $scope.placedDropTiles != 0 && tile.index.length == 0 ){
-		swal("Oops!", "Cannot place checkpoint markers on tile that robot can't visit (System specification)", "error");
-            }else if($scope.numberOfDropTiles - $scope.placedDropTiles != 0 &&(total > 0 || tile.start != null)){
+            if(mtile.index.length == 0){
+		swal("Oops!", "Cannot place checkpoint markers on tile that robot can't visit", "error");
+            }else if(total > 0){
                 swal("Oops!", "Place checkpoint markers on tiles without scoring elements (rule 3.3.5)", "error");
             }else if(mtile.x == $scope.startTile.x &&
 		     mtile.y == $scope.startTile.y &&
@@ -375,9 +375,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 total += stile.length;
             }
             
-            if(tile.start != null){
-		total++;
-	    }
             if(total == 0){
                 return;
             }else if(total > 1){
@@ -537,7 +534,6 @@ app.directive('tile', function() {
                 count(tile.scoredItems.speedbumps);
                 count(tile.scoredItems.intersections);
                 count(tile.scoredItems.obstacles);
-                if(tile.start != null)possible++;
                 if(possible !=0)return;
                 
                 for(var i = 0; i < tile.index.length ; i++){
@@ -607,11 +603,11 @@ app.directive('tile', function() {
 		}
                 if(tile.processing)
 		    return "processing";
-                else if((possible > 0 && successfully == possible) || tile.start)
+                else if(possible > 0 && successfully == possible)
                     return "done";
                 else if(successfully > 0)
                     return "halfdone";
-                else if(possible > 0 || (tile.start != null && !tile.start))
+                else if(possible > 0)
                     return "undone";
                 else
                     return "";
