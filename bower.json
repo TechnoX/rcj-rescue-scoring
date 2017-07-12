@@ -13,7 +13,7 @@
   ],
   "dependencies": {
     "jquery": "~2.1.3",
-    "bootstrap": "~3.3.4",
+    "bootstrap": "^v4.0.0-alpha.6",
     "socket.io": "~1.3.5",
     "socket.io-client": "~1.3.5",
     "async": "~1.4.2",
@@ -26,7 +26,9 @@
     "sweetalert": "^1.1.3",
     "footerFixed": "http://blog.webcreativepark.net/sample/js/36/footerFixed.js",
     "font-awesome": "^4.7.0",
-    "jSignature": "^2.1.1"
+    "jSignature": "^2.1.1",
+    "angular-animate": "^1.6.5",
+    "angular-bootstrap": "^2.5.0"
   },
   "description": "",
   "main": "",
