@@ -4,6 +4,7 @@ const publicRouter = express.Router()
 const privateRouter = express.Router()
 const adminRouter = express.Router()
 const lineMap = require('../../models/lineMap').lineMap
+const lineRun = require('../../models/lineRun').lineRun
 const tileType = require('../../models/lineMap').tileType
 const tileSet = require('../../models/lineMap').tileSet
 const validator = require('validator')
