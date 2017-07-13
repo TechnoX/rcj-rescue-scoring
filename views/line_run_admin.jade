@@ -63,7 +63,7 @@ block content
               th
               th
               th
-              th
+              //th
               th Operation
         tbody
             tr(ng-repeat='run in runs' runs-read-finished='')
@@ -85,7 +85,7 @@ block content
                 button(ng-click="go_sign(run._id)" class='btn btn-warning') Sign
               td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
                 button(ng-click="go_judge(run._id)" class='btn btn-danger') Judge
-              td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
+              //td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
                 button(ng-click="go_approval(run._id)" class='btn btn-secondary') Approval
               td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
                 a(href="" ng-click='removeRun(run)') Delete
