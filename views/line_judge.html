@@ -98,8 +98,12 @@
               </div>
               <hr>
               <div class="card-block">
-                  <p class="card-text">Robot exited the evacuation zone after touching at least one victim: <span class="badge badge-info">20　points</span></p>
+                  <p class="card-text">Robot exited evacuation zone: <span class="badge badge-info">20　points</span></p>
                   <input type="checkbox" ng-model="exitBonus" ng-change="changeExitBonus()" id="scoredrun"><label class="checkbox" for="scoredrun">Success</label><br>
+              </div> 
+              <div class="card-block">
+                  <p class="card-text">Team did show up for start within their time: <span class="badge badge-info">3　points</span></p>
+                  <input type="checkbox" ng-model="showedUp" ng-change="changeShowedUp()" id="exitcheckbox"><label class="checkbox" for="exitcheckbox">Success</label><br>
               </div> 
           </div>
         </div>
