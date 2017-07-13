@@ -57,9 +57,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             if(response.data.tiles[i].isDropTile){
                 $scope.placedDropTiles++;
                 $scope.actualUsedDropTiles += 1;//response.data.tiles[i].scoredItems.dropTiles.length;
-	        for(var j = 0; j < response.data.tiles[i].index.length ; j++){
-                    marker[response.data.tiles[i].index[j]] = true;
-                }
 	    }
         }
 
@@ -80,6 +77,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.mtiles[response.data.tiles[i].x + ',' +
                               response.data.tiles[i].y + ',' +
                               response.data.tiles[i].z] = response.data.tiles[i];
+                for(var j = 0; j < response.data.tiles[i].index.length ; j++){
+                    if($scope.stiles[response.data.tiles[i].index[j]].isDropTile){
+                        marker[response.data.tiles[i].index[j]] = true;
+                    }
+                }
             }
 
 	    
