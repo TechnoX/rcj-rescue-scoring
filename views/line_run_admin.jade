@@ -43,10 +43,10 @@ block content
                 select(ng-model='run.field' ng-options='field as field.name for field in fields')
               td
                 button(ng-click='addRun()') Add Run
-      a(ng-href='/admin/{{competitionId}}/runs/bulk') Bulk Regstration
+      a(ng-href='/admin/{{competitionId}}/line/runs/bulk') Bulk Regstration
       br
       br
-      a(ng-href='/admin/{{competitionId}}/runs/monitor') Runs Monitor
+      a(ng-href='/admin/{{competitionId}}/line/runs/monitor') Runs Monitor
       center
           .loader
             img(src="/images/loader2.gif")
