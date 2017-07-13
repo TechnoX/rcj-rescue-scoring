@@ -29,12 +29,16 @@
     "angular-animate": "^1.6.5",
     "angular-bootstrap": "^2.5.0",
     "css-toggle-switch": "^4.0.2",
-    "bootstrap": "https://github.com/rrrobo/bst-for-rcj-scoring.git"
+    "bootstrap": "https://github.com/rrrobo/bst-for-rcj-scoring.git",
+    "popper.js": "https://unpkg.com/popper.js"
   },
   "description": "",
   "main": "",
   "moduleType": [
     "node"
   ],
-  "private": true
+  "private": true,
+  "resolutions": {
+    "popper.js": "^1.10.8"
+  }
 }
