@@ -5,7 +5,7 @@
   <label>Passed (note this is not attempts!):</label>
   <ul>
     <li ng-repeat="pass in mtile.index track by $index">
-      <label><input type="checkbox" ng-model="stiles[pass].scored"> Passed {{words[$index]}} time</label>
+      <input type="checkbox" ng-model="stiles[pass].scored" id="{{ 'passed-' + $index }}"><label class="checkbox" for="{{ 'passed-' + $index }}">Passed {{words[$index]}} time</label>
     </li>
   </ul>
 </div>
