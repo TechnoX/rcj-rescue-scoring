@@ -68,8 +68,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.sliderOptions.ceil = $scope.height - 1;
             $scope.width = response.data.width;
             $scope.length = response.data.length;
-	    // FROM RYO: width = response.data.width;
-            // FROM RYO: length = response.data.length;
+	        width = response.data.width;
+            length = response.data.length;
 	    $scope.startTile = response.data.startTile;
             $scope.numberOfDropTiles = response.data.numberOfDropTiles;;
 	    $scope.mtiles = {};
