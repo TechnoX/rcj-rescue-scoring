@@ -55,7 +55,7 @@ router.get('/:competitionid/line/runs/monitor', function (req, res, next) {
     return next()
   }
 
-  res.render('runs_monitor', {id : id, user: req.user})
+  res.render('line_runs_monitor', {id : id, user: req.user})
 })
 
 router.get('/:competitionid/line/runs/bulk', function (req, res, next) {
@@ -65,7 +65,7 @@ router.get('/:competitionid/line/runs/bulk', function (req, res, next) {
     return next()
   }
 
-  res.render('run_bulk', {id : id, user: req.user})
+  res.render('line_run_bulk', {id : id, user: req.user})
 })
 
 router.get('/:competitionid/line/maps', function (req, res, next) {
