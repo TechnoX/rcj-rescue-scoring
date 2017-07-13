@@ -6,23 +6,29 @@ angular.module("TeamAdmin", []).controller("TeamAdminController", function ($sco
   $http.get("/api/competitions/" + competitionId).then(function (response) {
     $scope.competition = response.data
   })
+  $http.get("/api/teams/leagues").then(function (response) {
+    $scope.leagues = response.data
+    console.log($scope.leagues)
+  })
 
-  $http.get("/api/competitions/" + competitionId +
-            "/teams").then(function (response) {
-    $scope.teams = response.data
-    console.log($scope.teams);
-  })
-  $http.get("/api/competitions/" + competitionId +
-            "/rounds").then(function (response) {
-    $scope.rounds = response.data
-  })
-  $http.get("/api/competitions/" + competitionId +
-            "/fields").then(function (response) {
-    $scope.fields = response.data
-  })
-  $http.get("/api/maps").then(function (response) {
-    $scope.maps = response.data
-  })
+  $scope.updateLists = function () {
+    $http.get("/api/competitions/" + competitionId +
+              "/" + $scope.league + "/teams").then(function (response) {
+      $scope.teams = response.data
+    })
+    $http.get("/api/competitions/" + competitionId +
+              "/" + $scope.league + "/rounds").then(function (response) {
+      $scope.rounds = response.data
+    })
+    $http.get("/api/competitions/" + competitionId +
+              "/" + $scope.league + "/fields").then(function (response) {
+      $scope.fields = response.data
+    })
+    $http.get("/api/competitions/" + competitionId +
+              "/line/maps").then(function (response) {
+      $scope.maps = response.data
+    })
+  }
   
   $scope.addRun = function () {
     $scope.processing = true;
