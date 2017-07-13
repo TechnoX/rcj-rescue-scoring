@@ -30,7 +30,8 @@
     "angular-bootstrap": "^2.5.0",
     "css-toggle-switch": "^4.0.2",
     "bootstrap": "https://github.com/rrrobo/bst-for-rcj-scoring.git",
-    "popper.js": "https://unpkg.com/popper.js"
+    "popper.js": "https://unpkg.com/popper.js",
+    "responsive-nav": "^1.0.39"
   },
   "description": "",
   "main": "",
