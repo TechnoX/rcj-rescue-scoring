@@ -208,7 +208,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         }else if(type == 'dead'){
             $scope.rdprocessing = true;
             $scope.rescuedDeadVictims++;
-            $http.post("/api/runs/line/"+runId, {rescuedDeadVictims: $scope.rescuedDeadVictims}).then(function(response){
+            $http.put("/api/runs/line/"+runId, {rescuedDeadVictims: $scope.rescuedDeadVictims}).then(function(response){
                 $scope.score = response.data.score;
                 $scope.rdprocessing = false;
             }, function(response){
