@@ -53,7 +53,7 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
                         } else {
                             primaryTeamRuns[run.team._id].runs.push(run)
                         }
-                        var sum = sum_jpop(primaryTeamRuns[run.team._id].runs)
+                        var sum = sumBest(primaryTeamRuns[run.team._id].runs)
                         primaryTeamRuns[run.team._id].sumScore = sum.score
                         primaryTeamRuns[run.team._id].sumTime = sum.time
                         primaryTeamRuns[run.team._id].sumRescue = sum.rescued
