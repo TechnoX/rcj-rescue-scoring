@@ -231,7 +231,30 @@ app.directive('tile', function() {
         restrict: 'E',
         templateUrl: '/templates/tile.html',
         link : function($scope, element, attrs){
+            $scope.tileNumber = function(tile){
+                $scope.tileN = 1;
+                var ret_txt="";
+                if(!tile)return;
+                
+                var possible = 0;
 
+                var count = function(list){
+                    for(var i = 0; i < list.length; i++){
+                        possible++;
+                    }
+                }
+                count(tile.scoredItems.gaps);
+                count(tile.scoredItems.speedbumps);
+                count(tile.scoredItems.intersections);
+                count(tile.scoredItems.obstacles);
+                if(possible !=0)return;
+                
+                for(var i = 0; i < tile.index.length ; i++){
+                    if(i!=0)ret_txt += ','
+                    ret_txt += tile.index[i]+1;
+                }
+                return ret_txt;
+            }
             $scope.checkpointNumber = function(tile){
                 var ret_txt="";
                 if(!tile)return;
@@ -251,14 +274,17 @@ app.directive('tile', function() {
                 }
                 return ret_txt;
             }
-            
+
+
 	    $scope.isDropTile = function(tile){
 		if(!tile || tile.index.length == 0)
 		    return;
 		return $scope.$parent.stiles[tile.index[0]].isDropTile;
 	    }
-
-	    $scope.isStart = function(tile){
+	    
+            $scope.isStart = function(tile){
+                if(!tile)
+                    return;
                 return tile.x == $scope.$parent.startTile.x &&
 		    tile.y == $scope.$parent.startTile.y &&
 		    tile.z == $scope.$parent.startTile.z;                
@@ -288,16 +314,17 @@ app.directive('tile', function() {
 			successfully++;
 		    }
 		}
-                if((possible > 0 && successfully == possible) || tile.start)
+                if(tile.processing)
+		    return "processing";
+                else if(possible > 0 && successfully == possible)
                     return "done";
                 else if(successfully > 0)
                     return "halfdone";
-                else if(possible > 0 || (tile.start != null && !tile.start))
+                else if(possible > 0)
                     return "undone";
                 else
                     return "";
             }
-            
 
             $scope.rotateRamp = function(direction){
                 switch(direction){
@@ -311,6 +338,7 @@ app.directive('tile', function() {
                     return "rot270";
                 }
             }
+
         }
     };
 });
