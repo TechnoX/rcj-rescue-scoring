@@ -31,7 +31,8 @@
     "css-toggle-switch": "^4.0.2",
     "bootstrap": "https://github.com/rrrobo/bst-for-rcj-scoring.git",
     "popper.js": "https://unpkg.com/popper.js",
-    "responsive-nav": "^1.0.39"
+    "responsive-nav": "^1.0.39",
+    "tether": "^1.4.0"
   },
   "description": "",
   "main": "",
