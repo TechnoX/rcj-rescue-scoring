@@ -158,6 +158,12 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 
 
     $scope.open = function(x,y) {
+        // If the tile doesn't exists yet
+        if(!$scope.tiles[x+','+y+','+$scope.z]){
+            swal("Oops!", "Need to place a tile here before changing it.", "error");
+            return;
+        }
+        
         var modalInstance = $uibModal.open({
             animation: true,
             templateUrl: '/templates/line_editor_modal.html?gs',
