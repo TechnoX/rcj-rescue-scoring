@@ -79,7 +79,7 @@
                         </div>
                     </div>
                     <div id="resc" class="card">
-                        <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> Rescuing victims　<span class="badge badge-danger">{{evacuationLevel?"High":"Low"}} evacuation point</span></h3>
+                        <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> Rescuing victims　<span class="badge badge-danger">{{evacuationLevel-1?"High":"Low"}} evacuation point</span></h3>
                         <div class="card-block">
                             <p class="card-text">【LIVE Victims】Number：　　 <span class="badge badge-info">{{30 + (evacuationLevel-1)*10}}　points /victim</span></p>
                             <img src="/images/minus.png" alt="-" ng-click="decVictims('live')" class="plusminus">
