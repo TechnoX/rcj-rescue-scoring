@@ -42,7 +42,7 @@
             <button ng-show="!startedTime && time!=0" class="btn btn-warning" style="margin:0 10px 10px 0;" type="button" ng-click="TimeReset()"><i class="fa fa-clock-o" aria-hidden="true"> Reset</i></button>
             <p ng-show="!startedScoring">Please select the evacuation level:</p>
             <label class="switch-light" onclick="" ng-show="!startedScoring">
-              <input type="checkbox" ng-model="evacuationLevel" ng-change="changeEvacuationLevel()" ng-show="!startedScoring">
+              <input type="checkbox" ng-model="evacuationLevel" ng-change="changeLevel()" ng-show="!startedScoring" ng-true-value="2" ng-false-value="1">
               <span class="well" ng-show="!startedScoring">
                 <span style="border: solid 1px #000000;">Low</span>
                 <span style="border: solid 1px #000000;">High</span>
