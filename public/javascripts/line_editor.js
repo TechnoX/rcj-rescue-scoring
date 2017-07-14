@@ -84,7 +84,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
     
     $scope.saveMapAs = function(){
 	if($scope.startNotSet()){
-	    alert("You must define a starting tile");
+	    alert("You must define a starting tile by right-clicking a tile");
 	    return;
 	}
 	
@@ -116,7 +116,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
     }
     $scope.saveMap = function(){
 	if($scope.startNotSet()){
-	    alert("You must define a starting tile");
+	    alert("You must define a starting tile by right-clicking a tile");
 	    return;
 	}
         var map = {

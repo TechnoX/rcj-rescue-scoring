@@ -65,7 +65,8 @@ angular.module("RunAdmin", ['ngAnimate']).controller('RunAdminController', ['$sc
       console.log(response)
       updateRunList()
     }, function (error) {
-      console.log(error)
+        console.log(error)
+        swal("Oops!", error.data.err, "error");
     })
   }
 
