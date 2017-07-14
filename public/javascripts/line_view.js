@@ -101,6 +101,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             // Scoring elements of the tiles
             $scope.stiles = response.data.tiles;
 
+            for (var i = 0; i < response.data.tiles.length; i++) {
+                if (response.data.tiles[i].isDropTile) {
+                    $scope.actualUsedDropTiles++;
+                    marker[i] = true;
+                }
+            }
+
             // Get the map
             $http.get("/api/maps/line/" + response.data.map + "?populate=true").then(function (response) {
                 console.log(response.data);
