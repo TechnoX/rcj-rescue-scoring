@@ -41,8 +41,9 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
 
                 if (run.score != 0 || run.time.minutes != 0 || run.time.seconds != 0) {
                     if (run.team.league == "Line") {
-                        $scope.primaryRuns.push(run)
-                        console.log(run)
+
+
+
                         if (primaryTeamRuns[run.team._id] === undefined) {
                             primaryTeamRuns[run.team._id] = {
                                 team: {
@@ -59,6 +60,11 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
                         primaryTeamRuns[run.team._id].sumRescue = sum.rescued
                         primaryTeamRuns[run.team._id].sumLoPs = sum.lops
                         primaryTeamRuns[run.team._id].retired = sum.retired
+                        if (run.status == 2 || run.status == 3) {
+                            primaryTeamRuns[run.team._id].isplaying = true
+                            run.isplaying = true
+                        }
+                        $scope.primaryRuns.push(run)
 
                     } else if (run.team.league == "Secondary") {
                         $scope.secondaryRuns.push(run)
@@ -95,7 +101,8 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
                     time: teamRun.sumTime,
                     rescuedVictims: teamRun.sumRescue,
                     LoPsNum: teamRun.sumLoPs,
-                    retired: teamRun.retired
+                    retired: teamRun.retired,
+                    isplaying: teamRun.isplaying
                 })
             }
             $scope.primaryRunsTop.sort(sortRuns)

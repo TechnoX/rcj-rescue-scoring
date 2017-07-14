@@ -65,13 +65,13 @@ block content
             th.text-center LoPs
         tbody
           tr(ng-repeat='run in primaryRunsTop track by $index')
-            td.text-center(ng-bind='$index + 1')
-            td.text-center(ng-bind='run.team.name')
-            td.text-center(ng-bind='run.score')
-            td.text-center(ng-if="!run.retired"){{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
-            td.text-center(ng-if="run.retired") R
-            td.text-center(ng-bind='run.rescuedVictims')
-            td.text-center(ng-bind='run.LoPsNum')
+            td.text-center(ng-bind='$index + 1' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+            td.text-center(ng-bind='run.team.name' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+            td.text-center(ng-bind='run.score' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+            td.text-center(ng-if="!run.retired" ng-style="run.isplaying && {'background-color': '#ffffa8'}"){{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+            td.text-center(ng-if="run.retired" ng-style="run.isplaying && {'background-color': '#ffffa8'}") R
+            td.text-center(ng-bind='run.rescuedVictims' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+            td.text-center(ng-bind='run.LoPsNum' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
   //
     .col-lg-6
       h3 Secondary - Rank
@@ -111,14 +111,14 @@ block content
             th.text-center LoPs
         tbody
           tr(ng-repeat='run in primaryRuns')
-            td.text-center(ng-bind='run.team.name')
-            td.text-center(ng-bind='run.round.name')
-            td.text-center(ng-bind='run.field.name')
-            td.text-center(ng-bind='run.score')
-            td.text-center(ng-if="!run.retired"){{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
-            td.text-center(ng-if="run.retired") R
-            td.text-center(ng-bind='run.rescuedLiveVictims + run.rescuedDeadVictims')
-            td.text-center(ng-bind='run.LoPsNum')
+            td.text-center(ng-bind='run.team.name' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+            td.text-center(ng-bind='run.round.name'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+            td.text-center(ng-bind='run.field.name'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+            td.text-center(ng-bind='run.score'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+            td.text-center(ng-if="!run.retired"  ng-style="run.isplaying && {'background-color': '#ffffa8'}"){{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+            td.text-center(ng-if="run.retired"  ng-style="run.isplaying && {'background-color': '#ffffa8'}") R
+            td.text-center(ng-bind='run.rescuedLiveVictims + run.rescuedDeadVictims'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+            td.text-center(ng-bind='run.LoPsNum'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
   //
     .col-lg-6
       h3 Secondary - All
