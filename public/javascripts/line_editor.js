@@ -290,6 +290,7 @@ app.directive('lvlDraggable', ['$rootScope', 'uuid', function ($rootScope, uuid)
             }
             //console.log(id);
             el.bind("dragstart", function (e) {
+                e.dataTransfer = e.originalEvent.dataTransfer;
                 e.dataTransfer.setData('text', id);
                 $rootScope.$emit("LVL-DRAG-START");
             });
@@ -315,7 +316,7 @@ app.directive('lvlDropTarget', ['$rootScope', 'uuid', function ($rootScope, uuid
                 if (e.preventDefault) {
                     e.preventDefault(); // Necessary. Allows us to drop.
                 }
-
+                e.dataTransfer = e.originalEvent.dataTransfer;
                 e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
                 return false;
             });
@@ -337,6 +338,7 @@ app.directive('lvlDropTarget', ['$rootScope', 'uuid', function ($rootScope, uuid
                 if (e.stopPropagation) {
                     e.stopPropagation(); // Necessary. Allows us to drop.
                 }
+                e.dataTransfer = e.originalEvent.dataTransfer;
                 var data = e.dataTransfer.getData("text");
                 var dest = document.getElementById(id);
                 var src = document.getElementById(data);
