@@ -85,6 +85,9 @@ block content
       center(ng-if="completed" style="color:#2ecc71;")
         i.fa.fa-check-circle-o.fa-5x(aria-hidden="true")
         p {{total}} Registration completed
+      center(ng-if="error" style="color:#e74c3c;")
+        i.fa.fa-exclamation-circle.fa-5x(aria-hidden="true")
+        p {{now}} / {{total}} ERROR
       br
       br
       button(ng-click="addRun()" class='btn btn-primary') Execution
