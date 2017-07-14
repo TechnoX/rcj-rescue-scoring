@@ -1,8 +1,8 @@
 // register the directive with your app module
-var app = angular.module('ddApp', ['lvl.services', 'ngAnimate', 'ui.bootstrap', 'rzModule']);
+var app = angular.module('LineEditor', ['lvl.services', 'ngAnimate', 'ui.bootstrap', 'rzModule']);
 
 // function referenced by the drop target
-app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function($scope, $uibModal, $log, $http){
+app.controller('LineEditorController', ['$scope', '$uibModal', '$log','$http', function($scope, $uibModal, $log, $http){
 
     
     $scope.tileSets = [];
