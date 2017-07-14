@@ -51,8 +51,9 @@ block content
   br
   br
   .row
-    .col-lg-6
-      h3 Primary - Rank
+    //.col-lg-6
+    .col-lg-12
+      h3 Rank
       table(style="overflow: scroll;")
         thead
           tr
@@ -71,7 +72,7 @@ block content
             td.text-center(ng-if="run.retired") R
             td.text-center(ng-bind='run.rescuedVictims')
             td.text-center(ng-bind='run.LoPsNum')
-
+  //
     .col-lg-6
       h3 Secondary - Rank
       table(style="overflow: scroll;")
@@ -95,8 +96,9 @@ block content
   .row
     hr
   .row
-    .col-lg-6
-      h3 Primary - All
+    //.col-lg-6
+    .col-lg-12
+      h3 All runs
       table(style="overflow: scroll;")
         thead
           tr
@@ -117,7 +119,7 @@ block content
             td.text-center(ng-if="run.retired") R
             td.text-center(ng-bind='run.rescuedLiveVictims + run.rescuedDeadVictims')
             td.text-center(ng-bind='run.LoPsNum')
-
+  //
     .col-lg-6
       h3 Secondary - All
       table(style="overflow: scroll; width:100%;")
