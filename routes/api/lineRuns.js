@@ -53,7 +53,7 @@ function getLineRuns(req, res) {
     query = lineRun.find({})
   }
 
-  query.select("competition round team field map score time")
+  query.select("competition round team field map score time status")
 
   if (req.query['populate'] !== undefined && req.query['populate']) {
     query.populate([
