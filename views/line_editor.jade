@@ -21,8 +21,8 @@ append css
 block location
     a.breadcrumb-item(href='/home') Home
     a.breadcrumb-item(href='/admin') Admin
-    a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition.name}}
-    span.breadcrumb-item.active Editor
+    a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition}}
+    span.breadcrumb-item.active Line editor
 
 block content
     include line_editor.html

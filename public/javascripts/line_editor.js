@@ -4,6 +4,12 @@ var app = angular.module('LineEditor', ['lvl.services', 'ngAnimate', 'ui.bootstr
 // function referenced by the drop target
 app.controller('LineEditorController', ['$scope', '$uibModal', '$log','$http', function($scope, $uibModal, $log, $http){
 
+
+    $scope.competitionId = competitionId;
+    $http.get("/api/competitions/" + competitionId).then(function (response) {
+        $scope.competition = response.data.name;
+    })
+    
     
     $scope.tileSets = [];
     $scope.tileSet = {};
