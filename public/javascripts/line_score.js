@@ -27,11 +27,6 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
             for (var i in runs) {
                 var run = runs[i]
                 run.LoPsNum = 0
-                for (var j in runs.LoPs) {
-                    if (runs.LoPs[j] == null) {
-                        runs.LoPs[j] = 0
-                    }
-                }
                 for (var j in run.LoPs) {
                     if (run.LoPs[j] == null) {
                         run.LoPs[j] = 0
