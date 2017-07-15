@@ -1,5 +1,8 @@
 angular.module("MazeScore", ['datatables']).controller("MazeScoreController", function ($scope, $http) {
   $scope.competitionId = competitionId
+  $scope.go = function (path) {
+    window.location = path
+  }
 
   launchSocketIo()
   updateRunList()
