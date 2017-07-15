@@ -47,7 +47,7 @@ angular.module("LineCompetition", []).controller("LineCompetitionController", fu
   }
   
   $scope.no_judge = function(){
-      swal("Oops!", "The run you selected was already ended!  If you edit, please contact competition manager.", "error");
+      swal("Oops!", "The run you selected was already ended! If you need to edit, please contact OC.", "error");
   }
 })
 .directive("runsReadFinished", function($timeout){
