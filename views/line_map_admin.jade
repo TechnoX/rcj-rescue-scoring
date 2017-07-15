@@ -10,18 +10,15 @@ append scripts
   script(src='/javascripts/line_map_admin.js')
 
 block location
-  a(href='/home' style="color:#333333") Home
-  | >
-  a(href='/admin' style="color:#333333") Admin
-  | >
-  a(ng-href='/admin/{{competitionId}}' style="color:#333333") {{competition.name}}
-  | >
-  a(ng-href='/admin/{{competitionId}}/line/maps' style="color:#333333") Maps
+    a.breadcrumb-item(href='/home') Home
+    a.breadcrumb-item(href='/admin') Admin
+    a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition.name}}
+    span.breadcrumb-item.active Line maps
 
 block content
   .row
     .col-md-offset-2.col-md-8
-      h1 Line-Maps
+      h1 Line maps
       button(onclick="location.href='/admin/'+competitionId+'/line/editor'" class='btn btn-primary') Create a new map layout
       br
       br
