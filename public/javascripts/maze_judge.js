@@ -63,6 +63,16 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
             console.log("Error: " + response.statusText);
         });
 
+
+
+        $http.put("/api/runs/maze/" + runId, {
+            status: 1
+        }).then(function (response) {
+
+        }, function (response) {
+            console.log("Error: " + response.statusText);
+        });
+
     }, function(response){
         console.log("Error: " + response.statusText);
     });
