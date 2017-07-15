@@ -163,50 +163,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         return objects.gaps + objects.speedbumps + objects.obstacles + objects.intersections;
     }
 
-    $scope.showElements = function (x, y, z) {
-        var tile = $scope.tiles[x + ',' + y + ',' + z];
-        // If this is not a created tile
-        if (!tile)
-            return;
-
-
-        var total = $scope.totalNumberOf(tile.items);
-
-        // If the run is not started, we can place drop pucks on this tile
-
-        // Add the number of possible passes for drop tiles
-        if (tile.scoredItems.dropTiles.length > 0) {
-            total += tile.scoredItems.dropTiles.length;
-        }
-        if (tile.start != null) total++;
-
-        if (total == 0) {
-            return;
-        } else if (total > 1) {
-            $scope.open(x, y, z);
-            // Save data from modal when closing it
-        } else {
-            return;
-        }
-    }
-
-
-    $scope.open = function (x, y, z) {
-        var modalInstance = $uibModal.open({
-            animation: true,
-            templateUrl: '/templates/line_view_modal.html',
-            controller: 'ModalInstanceCtrl',
-            size: 'sm',
-            resolve: {
-                tile: function () {
-                    return $scope.tiles[x + ',' + y + ',' + z];
-                }
-            }
-        }).closed.then(function (result) {
-            console.log("Closed modal");
-        });
-    };
-
 
 
 }]).directive("tileLoadFinished", function ($timeout) {
