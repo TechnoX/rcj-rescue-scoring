@@ -125,9 +125,12 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             return;
         }
         // Start/stop scoring
+        var i;
+        for (i = $scope.LoPs.length; i < $scope.actualUsedDropTiles + 1; i++) {
+            $scope.LoPs.push(0);
+        }
         $scope.startedScoring = !$scope.startedScoring;
-        if (!$scope.startedScoring)
-            $scope.saveEverything();
+        $scope.saveEverything();
     }
 
     $scope.infochecked = function () {
