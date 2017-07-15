@@ -9,7 +9,7 @@
       <label>Max height: <input type="number" ng-model="height" ng-change="sliderOptions.ceil = height - 1" min="1"></label><br>
       <label>Max width: <input type="number" ng-model="width" min="1" ></label><br>
       <label>Max length: <input type="number" ng-model="length" min="1" ></label><br>
-      <label>Finished for using in runs: <input type="checkbox" ng-model="finished"></label><br>
+      <input type="checkbox" ng-model="finished" id="isFinished"><label class="checkbox" for="isFinished">Finished for using in runs</label><br>
       <div class="error" ng-show="startNotSet()">No start tile is defined!</div>
     </div>
   </div>
