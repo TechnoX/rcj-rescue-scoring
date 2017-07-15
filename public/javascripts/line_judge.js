@@ -43,6 +43,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.started = response.data.started;
         $scope.round = response.data.round.name;
         $scope.team = response.data.team.name;
+        $scope.league = response.data.team.league;
         $scope.competition = response.data.competition.name;
         $scope.retired = response.data.retired;
         // Verified time by timekeeper
@@ -547,7 +548,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 // Please note that $uibModalInstance represents a modal window (instance) dependency.
 // It is not the same as the $uibModal service used above.
 
-app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, stiles ) {
+app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, stiles) {
     $scope.mtile = mtile;
     $scope.stiles = stiles;
     $scope.words = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth"];
