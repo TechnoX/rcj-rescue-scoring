@@ -4,12 +4,7 @@ var app = angular.module('LineEditor', ['lvl.services', 'ngAnimate', 'ui.bootstr
 // function referenced by the drop target
 app.controller('LineEditorController', ['$scope', '$uibModal', '$log','$http', function($scope, $uibModal, $log, $http){
 
-
     $scope.competitionId = competitionId;
-    $http.get("/api/competitions/" + competitionId).then(function (response) {
-        $scope.competition = response.data.name;
-    })
-    
     
     $scope.tileSets = [];
     $scope.tileSet = {};
@@ -47,7 +42,11 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log','$http', f
                              response.data.tiles[i].y + ',' +
                              response.data.tiles[i].z] = response.data.tiles[i];
             }
-	    competitionId = response.data.competition;
+	    $scope.competitionId = response.data.competition;
+            $http.get("/api/competitions/" + $scope.competitionId).then(function (response) {
+                $scope.competition = response.data.name;
+            })
+
             $scope.startTile = response.data.startTile;
             $scope.numberOfDropTiles = response.data.numberOfDropTiles;
             $scope.height = response.data.height;
@@ -60,6 +59,10 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log','$http', f
         }, function(response){
             console.log("Error: " + response.statusText);
         });
+    }else{
+        $http.get("/api/competitions/" + $scope.competitionId).then(function (response) {
+            $scope.competition = response.data.name;
+        })
     }
 
 
@@ -99,7 +102,7 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log','$http', f
 	    return;
 	}
         var map = {
-	    competition: competitionId,
+	    competition: $scope.competitionId,
             name: $scope.saveasname,
             length: $scope.length,
             height: $scope.height,
@@ -126,7 +129,7 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log','$http', f
 	    return;
 	}
         var map = {
-	    competition: competitionId,
+	    competition: $scope.competitionId,
             name: $scope.name,
             length: $scope.length,
             height: $scope.height,
@@ -139,7 +142,7 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log','$http', f
 
         console.log(map);
 	console.log("Update map", mapId);
-	console.log("Competition ID", competitionId);
+	console.log("Competition ID", $scope.competitionId);
 	if(mapId){
 	    $http.put("/api/maps/line/" + mapId, map).then(function(response){
 		alert("Updated map");
