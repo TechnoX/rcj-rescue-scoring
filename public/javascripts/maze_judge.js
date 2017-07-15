@@ -83,12 +83,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
         $scope.saveEverything();
     }
 
-    $scope.toggleScoring = function () {
-        // Start/stop scoring
-        $scope.startedScoring = !$scope.startedScoring;
-        $scope.saveEverything();
-    }
-
     $scope.infochecked = function () {
         $scope.checked = true;
         setTimeout("tile_size()", 10);

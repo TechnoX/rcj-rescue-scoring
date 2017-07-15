@@ -37,16 +37,12 @@
     <div ng-show="checked">
         <div class="row">
             <div class="col-md-6">
-                <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleScoring()"><i class="fa fa-calculator" aria-hidden="true"> Run Record {{ startedScoring ? 'End' : 'Start' }}</i></button>
                 <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleTime()"><i class="fa fa-clock-o" aria-hidden="true"> {{ startedTime ? 'Stop' : 'Start' }}</i></button>
                 <button ng-show="!startedTime && time!=0" class="btn btn-warning" style="margin:0 10px 10px 0;" type="button" ng-click="timeReset()"><i class="fa fa-clock-o" aria-hidden="true"> Reset</i></button>
-                <div class="alert alert-info" role="alert" ng-show="!startedScoring">
-                    We are ready to start run recording!!<br><strong>Please push the "Run Record Start" button.</strong>
-                </div>
-                <div class="alert alert-info" role="alert" ng-show="!startedTime && startedScoring">
+                <div class="alert alert-info" role="alert" ng-show="!startedTime">
                     Please press the "Timer Start" button according to the cheif referee.
                 </div>
-                <div id="card_area" class="scrool" style="overflow: scroll;" ng-show="startedScoring">
+                <div id="card_area" class="scrool" style="overflow: scroll;">
                   <div class="card">
                     <h3 class="card-header"><i class="fa fa-undo" aria-hidden="true"></i> LoPs</h3>
                     <div class="card-block">
@@ -113,7 +109,6 @@
             <div class="col-sm-12">
 
                 <p>
-                    <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleScoring()"><i class="fa fa-calculator" aria-hidden="true"> Run Record {{ startedScoring ? 'End' : 'Start' }}</i></button>
                     <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleTime()"><i class="fa fa-clock-o" aria-hidden="true"> {{ startedTime ? 'Stop' : 'Start' }}</i></button>
                 </p>
             </div>
