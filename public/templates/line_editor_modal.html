@@ -17,21 +17,21 @@
     </li>
   </ul>
 
-  <label><input type="checkbox" ng-model="start" ng-disabled="start"> Is start</label>
+  <input type="checkbox" ng-model="start" ng-disabled="start" id="isStartCheck"><label class="checkbox" for="isStartCheck"> Is start</label>
 
   <h5>Direction if ramp down:</h5>
-  <label><input type="radio" ng-model="tile.levelDown" value="top"> Top</label> <br>
-  <label><input type="radio" ng-model="tile.levelDown" value="bottom"> Bottom</label> <br>
-  <label><input type="radio" ng-model="tile.levelDown" value="left"> Left</label> <br>
-  <label><input type="radio" ng-model="tile.levelDown" value="right"> Right</label> <br>
-  <label><input type="radio" ng-model="tile.levelDown" ng-click="tile.levelDown = undefined"> Nothing</label> <br>
+  <input type="radio" ng-model="tile.levelDown" value="top" id="isDownTop"><label class="radio" for="isDownTop">Top</label> <br>
+  <input type="radio" ng-model="tile.levelDown" value="bottom" id="isDownBottom"><label class="radio" for="isDownBottom">Bottom</label> <br>
+  <input type="radio" ng-model="tile.levelDown" value="left" id="isDownLeft"><label class="radio" for="isDownLeft">Left</label> <br>
+  <input type="radio" ng-model="tile.levelDown" value="right" id="isDownRight"><label class="radio" for="isDownRight">Right</label> <br>
+  <input type="radio" ng-model="tile.levelDown" ng-click="tile.levelDown = undefined" id="isDownNothing"><label class="radio" for="isDownNothing">Nothing</label> <br>
 
   <h5>Direction if ramp up:</h5>
-  <label><input type="radio" ng-model="tile.levelUp" value="top"> Top</label> <br>
-  <label><input type="radio" ng-model="tile.levelUp" value="bottom"> Bottom</label> <br>
-  <label><input type="radio" ng-model="tile.levelUp" value="left"> Left</label> <br>
-  <label><input type="radio" ng-model="tile.levelUp" value="right"> Right</label> <br>
-  <label><input type="radio" ng-model="tile.levelUp" ng-click="tile.levelUp = undefined"> Nothing</label> <br>
+  <input type="radio" ng-model="tile.levelUp" value="top" id="isUpTop"><label class="radio" for="isUpTop">Top</label> <br>
+  <input type="radio" ng-model="tile.levelUp" value="bottom" id="isUpBottom"><label class="radio" for="isUpBottom">Bottom</label> <br>
+  <input type="radio" ng-model="tile.levelUp" value="left" id="isUpLeft"><label class="radio" for="isUpLeft">Left</label> <br>
+  <input type="radio" ng-model="tile.levelUp" value="right" id="isUpRight"><label class="radio" for="isUpRight">Right</label> <br>
+  <input type="radio" ng-model="tile.levelUp" ng-click="tile.levelUp = undefined" id="isUpNothing"><label class="radio" for="isUpNothing">Nothing</label> <br>
 
 </div>
 <div class="modal-footer">
