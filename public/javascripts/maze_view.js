@@ -282,6 +282,65 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
             return "";
     }
 
+    $scope.cellClick = function(x,y,z,isWall,isTile){
+	var cell = $scope.cells[x+','+y+','+z];
+	if(!cell)
+	    return;
+	if(!isTile)
+	    return;
+
+	var hasVictims = (cell.tile.victims.top != "None") ||
+	    (cell.tile.victims.right != "None") ||
+	    (cell.tile.victims.bottom != "None") ||
+	    (cell.tile.victims.left != "None");
+
+	// Total number of scorable things on this tile
+	var total = !!cell.tile.speedbump +
+	    !!cell.tile.checkpoint +
+	    !!cell.tile.rampBottom +
+	    !!cell.tile.rampTop +
+	    hasVictims;
+
+        if(total > 1 || hasVictims){
+            // Open modal for multi-select
+	    $scope.open(x,y,z);
+	}
+
+    }
+
+    $scope.open = function(x,y,z) {
+        var modalInstance = $uibModal.open({
+            animation: true,
+            templateUrl: '/templates/maze_view_modal.html',
+            controller: 'ModalInstanceCtrl',
+            size: 'sm',
+            resolve: {
+                cell: function() {
+                    return $scope.cells[x+','+y+','+z];
+                },
+		tile: function() {
+                    return $scope.tiles[x+','+y+','+z];
+                }
+            }
+        }).closed.then(function(result){
+            console.log("Closed modal");
+        });
+    };
+
 
 }]);
+
+
+app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, cell, tile) {
+    $scope.cell = cell;
+    $scope.tile = tile;
+    $scope.hasVictims = (cell.tile.victims.top != "None") ||
+	(cell.tile.victims.right != "None") ||
+	(cell.tile.victims.bottom != "None") ||
+	(cell.tile.victims.left != "None");
+
+    $scope.ok = function () {
+        $uibModalInstance.close();
+    };
+});
 
