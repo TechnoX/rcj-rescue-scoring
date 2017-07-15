@@ -2,7 +2,7 @@ var socket;
 angular.module("RunAdmin", ['ngAnimate']).controller('RunAdminController', ['$scope', '$http', '$log','$location', function($scope, $http, $log, $location){
   $scope.competitionId = competitionId
 
-  updateRunList()
+  updateRunList();
 
   (function launchSocketIo() {
         // launch socket.io
