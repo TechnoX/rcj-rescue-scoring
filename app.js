@@ -142,6 +142,7 @@ app.get('/logout', function (req, res) {
  * This is called last in the routing config, therefor it'll take care of 404s
  */
 app.use(function (req, res, next) {
+    console.log(req.originalUrl)
     var err = new Error('Not Found')
     err.status = 404
     next(err)
