@@ -158,37 +158,35 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         window.location = path
     }
 
-    $scope.totalNumberOf = function (objects) {
-        return objects.gaps + objects.speedbumps + objects.obstacles + objects.intersections;
-    }
-
     $scope.showElements = function (x, y, z) {
-        var tile = $scope.tiles[x + ',' + y + ',' + z];
+        var mtile = $scope.mtiles[x + ',' + y + ',' + z];
+        var isDropTile = false;
         // If this is not a created tile
-        if (!tile)
+        if (!mtile || mtile.index.length == 0)
             return;
 
-
-        var total = $scope.totalNumberOf(tile.items);
-
-        // If the run is not started, we can place drop pucks on this tile
-
-        // Add the number of possible passes for drop tiles
-        if (tile.scoredItems.dropTiles.length > 0) {
-            total += tile.scoredItems.dropTiles.length;
+        
+        for (var i = 0; i < mtile.index.length; i++) {
+            if ($scope.stiles[mtile.index[i]].isDropTile) {
+                isDropTile = true;
+            }
         }
-        if (tile.start != null) total++;
 
-        if (total == 0) {
-            return;
-        } else if (total > 1) {
+
+        var total = (mtile.items.obstacles > 0 ||
+                     mtile.items.speedbumps > 0 ||
+                     mtile.tileType.gaps > 0 ||
+                     mtile.tileType.intersections > 0) * mtile.index.length;
+        // Add the number of possible passes for drop tiles
+        if (isDropTile) {
+            total += mtile.index.length;
+        }
+
+        if (total > 1) {
+            // Show modal
             $scope.open(x, y, z);
-            // Save data from modal when closing it
-        } else {
-            return;
         }
     }
-
 
     $scope.open = function (x, y, z) {
         var modalInstance = $uibModal.open({
@@ -197,8 +195,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             controller: 'ModalInstanceCtrl',
             size: 'sm',
             resolve: {
-                tile: function () {
-                    return $scope.tiles[x + ',' + y + ',' + z];
+                mtile: function () {
+                    return $scope.mtiles[x + ',' + y + ',' + z];
+                },
+                stiles: function () {
+                    return $scope.stiles;
                 }
             }
         }).closed.then(function (result) {
@@ -225,8 +226,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 });
 
 
-app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, tile) {
-    $scope.tile = tile;
+app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, stiles) {
+    $scope.mtile = mtile;
+    $scope.stiles = stiles;
+    $scope.words = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth"];
     $scope.ok = function () {
         $uibModalInstance.close();
     };

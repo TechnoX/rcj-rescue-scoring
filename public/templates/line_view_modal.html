@@ -2,49 +2,14 @@
   <h3 class="modal-title">Scored items</h3>
 </div>
 <div class="modal-body">
+  <label>Passed (note this is not attempts!):</label>
   <ul>
-    <li ng-show="tile.scoredItems.dropTiles.length > 0">
-      <label>Reach checkpoint (note this is not attempts!):</label>
-      <ul>
-        <li ng-repeat="dropTile in tile.scoredItems.dropTiles track by $index">
-          <input type="checkbox" ng-model="tile.scoredItems.dropTiles[$index]" id="chkp{{$index+1}}" disabled> <label class="checkbox" for="chkp{{$index+1}}">Reach {{$index+1}}</label>
-        </li>
-      </ul>
+    <li ng-repeat="pass in mtile.index track by $index">
+      <input type="checkbox" ng-model="stiles[pass].scored" id="{{ 'passed-' + $index }}" disabled="disabled"><label class="checkbox" for="{{ 'passed-' + $index }}">Passed {{words[$index]}} time</label>
     </li>
-    <li ng-show="tile.scoredItems.speedbumps.length > 0">
-      <label>Speedbumps:</label>
-      <ul>
-        <li ng-repeat="speedbump in tile.scoredItems.speedbumps track by $index">
-          <input type="checkbox" ng-model="tile.scoredItems.speedbumps[$index]" id="bump{{$index+1}}" disabled> <label class="checkbox" for="bump{{$index+1}}">Speedbump {{$index+1}}</label>
-        </li>
-      </ul>
-    </li>
-    <li ng-show="tile.scoredItems.gaps.length > 0">
-      <label>Gaps:</label>
-      <ul>
-        <li ng-repeat="gap in tile.scoredItems.gaps track by $index">
-          <input type="checkbox" ng-model="tile.scoredItems.gaps[$index]" id="gap{{$index+1}}" disabled> <label class="checkbox" for="gap{{$index+1}}">Gap {{$index+1}}</label>
-        </li>
-      </ul>
-    </li>
-    <li ng-show="tile.scoredItems.obstacles.length > 0">
-      <label>Obstacles:</label>
-      <ul>
-        <li ng-repeat="obstacle in tile.scoredItems.obstacles track by $index">
-          <input type="checkbox" ng-model="tile.scoredItems.obstacles[$index]" id="obst{{$index+1}}" disabled> <label class="checkbox" for="obst{{$index+1}}">Obstacle {{$index+1}}</label>
-        </li>
-      </ul>
-    </li>
-    <li ng-show="tile.scoredItems.intersections.length > 0">
-      <label>Intersections:</label>
-      <ul>
-        <li ng-repeat="intersection in tile.scoredItems.intersections track by $index">
-          <input type="checkbox" ng-model="tile.scoredItems.intersections[$index]" id="ints{{$index+1}}" disabled> <label class="checkbox" for="ints{{$index+1}}">Intersection {{$index+1}}</label>
-        </li>
-      </ul>
   </ul>
 </div>
 
 <div class="modal-footer">
-    <button type="button" class="btn btn-success btn-lg btn-block" ng-click="ok()">OK</button>
+  <button class="btn btn-success btn-lg btn-block" type="button" ng-click="ok()">OK</button>
 </div>

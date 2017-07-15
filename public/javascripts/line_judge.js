@@ -547,7 +547,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 // Please note that $uibModalInstance represents a modal window (instance) dependency.
 // It is not the same as the $uibModal service used above.
 
-app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, stiles) {
+app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, stiles ) {
     $scope.mtile = mtile;
     $scope.stiles = stiles;
     $scope.words = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth"];
