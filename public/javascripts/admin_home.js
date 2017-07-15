@@ -3,6 +3,10 @@ angular.module("AdminHome", []).controller("AdminHomeController", function ($sco
 
   updateCompetitionList()
 
+  $scope.go = function(path){
+    window.location = path
+  }
+
   $scope.addCompetition = function () {
     var competition = {name: $scope.competitionName}
 

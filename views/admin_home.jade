@@ -19,7 +19,7 @@ block content
     .col-md-1
     .col-md-10
       .row
-        .col-md-12
+        .col-md-6
           h1 Competitions
           input(ng-model='competitionName')
           button(ng-click='addCompetition()') Add competition
@@ -37,3 +37,6 @@ block content
                   td
                     a(href="" ng-click='removeCompetition(competition)') Delete
       
+        .col-md-6
+          h1 Common items
+          button(ng-click="go('/admin/line/tilesets')" class='btn btn-outline-info btn-lg btn-block') Line tilesets
