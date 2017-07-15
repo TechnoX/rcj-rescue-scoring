@@ -10,18 +10,12 @@ append scripts
   script(src='/javascripts/maze_home.js')
 
 block location
-  a(href='/home' style="color:#333333") Home
-  | >
-  a(href='/maze' style="color:#333333") Maze
+    a.breadcrumb-item(href='/home') Home
+    span.breadcrumb-item.active Maze
 
 block content
   .row
-    .col-md-offset-2.col-md-8
-      h1 RoboCup Junior - Rescue Maze
-
+    .col-md-1
+    .col-md-10
       h1 Competitions
-      table
-        tr(ng-repeat='competition in competitions')
-          td
-            a(ng-bind='competition.name' ng-href="/maze/{{competition._id}}")
-
+      button(ng-click="go('/maze/' + competition._id)" class='button-s button-bb' ng-repeat='competition in competitions') {{competition.name}}
