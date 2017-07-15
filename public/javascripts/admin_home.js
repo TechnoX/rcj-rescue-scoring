@@ -23,7 +23,7 @@ angular.module("AdminHome", []).controller("AdminHomeController", function ($sco
           confirmButtonText: "Remove it!",
           confirmButtonColor: "#ec6c62"
         }, function() {
-            $http.get("/api/competitions/" + competition._id + "/delete").then(function (response) {
+            $http.delete("/api/competitions/" + competition._id).then(function (response) {
                 console.log(response)
                 updateCompetitionList()
               }, function (error) {
