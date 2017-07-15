@@ -1,0 +1,95 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'RunAdmin'
+
+append scripts
+  script.
+    var competitionId = "#{id}"
+  script(src='/javascripts/maze_run_bulk.js')
+
+block location
+    a.breadcrumb-item(href='/home') Home
+    a.breadcrumb-item(href='/admin') Admin
+    a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition.name}}
+    a.breadcrumb-item(ng-href='/admin/{{competitionId}}/maze/runs') Maze runs
+    span.breadcrumb-item.active Bulk Registration
+
+
+block content
+  .row
+    .col-md-1
+    .col-md-10
+      h1 {{competition.name}} - Run Bulk Registration
+      br
+      br
+      h3 STEP1 Download the template file
+      p Download the template file from the link below.
+      a(href="/tmp/run_bulk.csv") Download!
+      br
+      br
+      h3 STEP2 Edit the file
+      p Firstly, please select league from below dropdown.
+      select(ng-model='league' ng-options='league for league in leagues' ng-change='updateLists()')
+      br
+      p Open the csv format of Excel etc. with editable software and fill the information.
+      | For Round, select one from the following and enter.
+      table
+        thead
+            tr
+              th Round
+        tbody
+            tr(ng-repeat='round in rounds')
+              td(ng-bind='round.name')
+      hr
+      p For Team name, select one from the following and enter.
+      table
+        thead
+            tr
+              th Team name
+        tbody
+            tr(ng-repeat='team in teams')
+              td(ng-bind='team.name')
+      hr
+      p For Map name, select one from the following and enter.
+      table
+        thead
+            tr
+              th Map name
+        tbody
+            tr(ng-repeat='map in maps')
+              td(ng-bind='map.name')
+      hr
+      p For Field name, select one from the following and enter.
+      table
+        thead
+            tr
+              th Field name
+        tbody
+            tr(ng-repeat='field in fields')
+              td(ng-bind='field.name')
+      hr
+      p Please save with comma separated by Shift-JIS.
+      |　When the end of the team name ends with a space, an error will occur during run registration.
+      br
+      h3 STEP3 Upload the file
+      input#select(type="file" name="select")
+      p After selecting the file, please check the contents displayed below.
+      #result The table will display here.
+      br
+      br
+      center(ng-if="processing")
+        img(src="/images/loader2.gif")
+        p {{now}} / {{total}} Registration in progress ...
+      center(ng-if="completed" style="color:#2ecc71;")
+        i.fa.fa-check-circle-o.fa-5x(aria-hidden="true")
+        p {{total}} Registration completed
+      center(ng-if="error" style="color:#e74c3c;")
+        i.fa.fa-exclamation-circle.fa-5x(aria-hidden="true")
+        p {{now}} / {{total}} ERROR
+      br
+      br
+      button(ng-click="addRun()" class='btn btn-primary') Execution
+      
+      
