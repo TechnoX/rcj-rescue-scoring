@@ -19,7 +19,11 @@ privateRouter.get('/judge/:roundid', function (req, res, next) {
 
   res.render('maze_judge', {id : id, user: req.user})
 })
- 
+
+privateRouter.get('/sign/:roundid', function (req, res) {
+  res.render('maze_sign', {id : req.params.roundid})
+})
+
 publicRouter.get('/:competitionid', function (req, res, next) {
   const id = req.params.competitionid
   
