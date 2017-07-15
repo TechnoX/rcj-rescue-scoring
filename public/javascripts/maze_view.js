@@ -76,6 +76,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 	    $scope.round = response.data.round.name;
 	    $scope.score = response.data.score;
 	    $scope.team = response.data.team.name;
+            $scope.competition = response.data.competition.name;
 	    $scope.LoPs = response.data.LoPs;
 	    
 	    // Verified time by timekeeper
