@@ -8,26 +8,52 @@ append scripts
   script.
     var competitionId = "#{id}"
   script(src='/javascripts/maze_competition.js')
+  
 
 block location
-  a(href='/home' style="color:#333333") Home
-  | >
-  a(href='/maze' style="color:#333333") Maze
-  | >
-  a(ng-href='/maze/{{competitionId}}' style="color:#333333") {{competition.name}}
+    a.breadcrumb-item(onclick="location.href='/home'") Home
+    a.breadcrumb-item(onclick="location.href='/maze'") Maze
+    span.breadcrumb-item.active {{competition.name}}
+
 
 block content
   .row
-    .col-md-offset-2.col-md-8
-      a(ng-href='/maze/{{competitionId}}/score') Score
+    .col-md-1
+    .col-md-10
+      h1 Maze runs - {{competition.name}}
+      br
+      button(ng-click="go('/maze/' + competition._id + '/score')" class='btn btn-outline-info btn-lg btn-block') Result (preliminary report ranking)
+      br
+      .refine(style="visibility:hidden")
+          form
+              label Refine by round
+              .filter-round
+              label Refine by field
+              .filter-arena
+      br
+      center
+          .loader
+            img(src="/images/loader2.gif")
+            p Now Loading...
+      table(class="comp")
+        thead
+            tr
+              th Round
+              th Team
+              th Field
+              th 
+              th
+        tbody
+            tr(ng-repeat="run in runs | orderBy:['round.name','field.name']" runs-read-finished='')
+              td(ng-bind='run.round.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':''}")
+              td(ng-bind='run.team.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':''}")
+              td(ng-bind='run.field.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':''}")
+              td
+                button(ng-click="go('/maze/view/' + run._id)" class='btn btn-info') View
 
-      h1 Runs
-      table
-        tr(ng-repeat="run in runs| orderBy:['round.name','field.name']")
-          td(ng-bind='run.round.name')
-          td(ng-bind='run.team.name')
-          td(ng-bind='run.field.name')
-          td
-            a(ng-href="/maze/view/{{run._id}}") View
-          td
-            a(ng-href="/maze/judge/{{run._id}}") Judge
+              td(ng-style="{'background-color':run.status>=3?'#ecf0f1':''}")
+                button(ng-click="no_judge()" class='btn btn-danger' ng-if="run.status>=3" ) Judge
+                button(ng-click="go_judge('/maze/judge/' + run._id)" class='btn btn-danger' ng-if="run.status<3" ) Judge
+      br
+      br
+      br
