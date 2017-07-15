@@ -1,6 +1,6 @@
 var xmlHttp;
 
-angular.module("TeamAdmin", []).controller("TeamAdminController", function ($scope, $http) {
+angular.module("RunAdmin", []).controller("RunAdminController", function ($scope, $http) {
     $scope.competitionId = competitionId
 
     $http.get("/api/competitions/" + competitionId).then(function (response) {

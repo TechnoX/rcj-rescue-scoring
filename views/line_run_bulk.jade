@@ -2,7 +2,7 @@
 extends includes/layout
 
 block vars
-  - var ngAppDef = 'TeamAdmin'
+  - var ngAppDef = 'RunAdmin'
 
 append scripts
   script.
@@ -13,7 +13,7 @@ block location
     a.breadcrumb-item(href='/home') Home
     a.breadcrumb-item(href='/admin') Admin
     a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition.name}}
-    a.breadcrumb-item(ng-href='/admin/{{competitionId}}/line/runs') Runs
+    a.breadcrumb-item(ng-href='/admin/{{competitionId}}/line/runs') Line runs
     span.breadcrumb-item.active Bulk Registration
 
 
