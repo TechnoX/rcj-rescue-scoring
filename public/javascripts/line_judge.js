@@ -12,7 +12,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.actualUsedDropTiles = 0; // Count droptiles twice that will be passed two times
     $scope.startedScoring = false;
     $scope.startedTime = false;
-    $scope.startTime = 0;
     $scope.time = 0;
     $scope.processing = new Array();
     $scope.rprocessing = false;
@@ -249,19 +248,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         }
     }
 
-    $scope.resetTime = function () {
-        $scope.startedTime = false;
-        $scope.startTime = 0;
-        $scope.time = 0;
-    }
-
     $scope.toggleTime = function () {
         // Start/stop timer
         $scope.startedTime = !$scope.startedTime;
         if ($scope.startedTime) {
-            if ($scope.startTime == 0) {
-                $scope.startTime = new Date();
-            }
             // Start the timer
             $timeout(tick, $scope.tickInterval);
             $http.put("/api/runs/line/" + runId, {
@@ -273,7 +263,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             });
         } else {
             // Save everything when you stop the time
-
             $scope.minutes = Math.floor($scope.time / 60000)
             $scope.seconds = (Math.floor($scope.time % 60000)) / 1000
             $scope.saveEverything();
@@ -495,7 +484,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             showCancelButton: true,
             confirmButtonText: "Yes"
         }, function () {
-            $scope.startedTime = 0;
+            $scope.startedTime = false;
             $scope.minutes = 8
             $scope.seconds = 0 //1 (<-- FOR JAPANOPEN)
             $scope.retired = true;
