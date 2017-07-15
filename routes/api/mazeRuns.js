@@ -263,6 +263,7 @@ privateRouter.put('/:runid', function (req, res, next) {
         for (let i in run.tiles) {
           if (run.tiles.hasOwnProperty(i)) {
             let tile = run.tiles[i]
+            delete tile.processing
 
             if (isNaN(i)) {
               const coords = i.split(',')

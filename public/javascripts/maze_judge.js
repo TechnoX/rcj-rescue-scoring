@@ -6,8 +6,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 
     $scope.z = 0;
     $scope.startedTime = false;
-    $scope.startTime = 0;
     $scope.time = 0;
+    $scope.lopProcessing = false;
 
     $scope.sliderOptions = {
         floor: 0,
@@ -27,11 +27,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 	$scope.round = response.data.round.name;
 	$scope.score = response.data.score;
 	$scope.team = response.data.team.name;
+        $scope.league = response.data.team.league;
+        $scope.competition = response.data.competition.name;
 	$scope.LoPs = response.data.LoPs;
 		
 	// Verified time by timekeeper
         $scope.minutes = response.data.time.minutes;
         $scope.seconds = response.data.time.seconds;
+        $scope.time = $scope.minutes * 60 * 1000 + $scope.seconds * 1000;
 
 	// Scoring elements of the tiles
 	for(var i = 0; i < response.data.tiles.length; i++){
@@ -73,8 +76,25 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
         return arr;
     }
 
+    $scope.timeReset = function () {
+        $scope.time = 0;
+        $scope.minutes = 0;
+        $scope.seconds = 0;
+        $scope.saveEverything();
+    }
 
+    $scope.toggleScoring = function () {
+        // Start/stop scoring
+        $scope.startedScoring = !$scope.startedScoring;
+        $scope.saveEverything();
+    }
+
+    $scope.infochecked = function () {
+        $scope.checked = true;
+        setTimeout("tile_size()", 10);
+    }
     $scope.decrement = function(){
+        $scope.lopProcessing = true;
         $scope.LoPs--;
         if($scope.LoPs < 0)
             $scope.LoPs = 0;
@@ -82,50 +102,60 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
         $http.put("/api/runs/maze/"+runId, {LoPs: $scope.LoPs}).then(function(response){
             console.log(response);
             $scope.score = response.data.score;
+            $scope.lopProcessing = false;
         }, function(response){
             console.log("Error: " + response.statusText);
         });
 
     }
     $scope.increment = function(){
+        $scope.lopProcessing = true;
         $scope.LoPs++;
         
         $http.put("/api/runs/maze/"+runId, {LoPs: $scope.LoPs}).then(function(response){
             console.log(response);
             $scope.score = response.data.score;
+            $scope.lopProcessing = false;
         }, function(response){
             console.log("Error: " + response.statusText);
         });
     }
 
-    var tick = function() {
-        if($scope.startedTime){
+    var tick = function () {
+        $scope.time += 1000;
+        if ($scope.time >= 480000) {
+            $scope.startedTime = !$scope.startedTime;
+            $scope.minutes = Math.floor($scope.time / 60000)
+            $scope.seconds = (Math.floor($scope.time % 60000)) / 1000
+            $scope.saveEverything();
+            swal("Time Up!", "Do NOT push the Retire button.", "info");
+        }
+        if ($scope.startedTime) {
             $timeout(tick, 1000);
-            $scope.time = ((new Date()) - $scope.startTime) ;
-	}
-    }
-
-    $scope.resetTime = function(){
-	$scope.startedTime = false;
-	$scope.startTime = 0;
-	$scope.time = 0;
+        }
     }
 
     $scope.toggleTime = function(){
         // Start/stop timer
         $scope.startedTime = !$scope.startedTime;
-        if($scope.startedTime){
-	    if($scope.startTime == 0){
-		$scope.startTime = new Date();
-	    }
+        if ($scope.startedTime) {
             // Start the timer
             $timeout(tick, $scope.tickInterval);
-        }else{
+            $http.put("/api/runs/maze/" + runId, {
+                status: 2
+            }).then(function (response) {
+
+            }, function (response) {
+                console.log("Error: " + response.statusText);
+            });
+        } else {
             // Save everything when you stop the time
+            $scope.minutes = Math.floor($scope.time / 60000)
+            $scope.seconds = (Math.floor($scope.time % 60000)) / 1000
             $scope.saveEverything();
         }
     }
-    
+
     $scope.changeExitBonus = function(){
         $http.put("/api/runs/maze/"+runId, {exitBonus: $scope.exitBonus}).then(function(response){
             $scope.score = response.data.score;
@@ -280,8 +310,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 	    break;
 	}
 
-	
-	if(current > 0 && current == possible)
+	if (tile.processing)
+            return "processing";
+	else if(current > 0 && current == possible)
             return "done";
         else if(current > 0)
             return "halfdone";
@@ -322,6 +353,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 	console.log("Has victims", hasVictims);
 
 	if(total == 1 && !hasVictims){
+            tile.processing = true;
 	    if(cell.tile.speedbump){
 		tile.scoredItems.speedbump = !tile.scoredItems.speedbump;
 	    }
@@ -338,10 +370,12 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 	    console.log(httpdata);
             $http.put("/api/runs/maze/"+runId, httpdata).then(function(response){
 		$scope.score = response.data.score;
+                tile.processing = false;
             }, function(response){
 		console.log("Error: " + response.statusText);
             });
 	}else if(total > 1 || hasVictims){
+            tile.processing = true;
 	    // Open modal for multi-select
 	    $scope.open(x,y,z);
 	}
@@ -367,6 +401,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 	    console.log(httpdata);
             $http.put("/api/runs/maze/"+runId, httpdata).then(function(response){
                 $scope.score = response.data.score;
+                $scope.tiles[x+','+y+','+z].processing = false;
             }, function(response){
                 console.log("Error: " + response.statusText);
             });
@@ -392,7 +427,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
         });
     };
 
-    $scope.sign = function(){
+    $scope.confirm = function () {
         var run = {}
 	run.exitBonus = $scope.exitBonus;
 	run.LoPs = $scope.LoPs;
@@ -404,14 +439,19 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
         run.time = {};
         run.time.minutes = $scope.minutes;;
         run.time.seconds = $scope.seconds;
-	console.log(run);
+        run.status = 3;
+
         $http.put("/api/runs/maze/"+runId, run).then(function(response){
             $scope.score = response.data.score;
-            alert("Run signed");
+            $scope.go('/maze/sign/' + runId)
         }, function(response){
             console.log("Error: " + response.statusText);
         });
     };
+
+    $scope.go = function (path) {
+        window.location = path
+    }
 
 }]);
 
@@ -431,3 +471,61 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, cell, t
         $uibModalInstance.close();
     };
 });
+
+
+
+function tile_size() {
+    return; // TODO: Make this work in Maze as well!!
+    $(function () {
+        try {
+            var b = $('.tilearea');
+            //console.log('コンテンツ本体：' + b.height() + '×' + b.width());
+            //console.log('window：' + window.innerHeight);
+            var tilesize_w = ($('.tilearea').width() - 50) / width;
+            var tilesize_h = (window.innerHeight - 150) / length;
+            //console.log('tilesize_w:' + tilesize_w);
+            //console.log('tilesize_h:' + tilesize_h);
+            if (tilesize_h > tilesize_w) var tilesize = tilesize_w;
+            else var tilesize = tilesize_h;
+            $('tile').css('height', tilesize);
+            $('tile').css('width', tilesize);
+            $('.tile-image').css('height', tilesize);
+            $('.tile-image').css('width', tilesize);
+            $('.slot').css('height', tilesize);
+            $('.slot').css('width', tilesize);
+            $('.chnumtxt').css('font-size', tilesize / 8);
+
+
+            $('#card_area').css('height', (window.innerHeight - 150));
+            if (b.height() == 0) setTimeout("tile_size()", 500);
+        } catch (e) {
+            setTimeout("tile_size()", 500);
+        }
+
+
+    });
+}
+
+var currentWidth = -1;
+
+
+
+$(window).on('load resize', function () {
+    if (currentWidth == window.innerWidth) {
+        return;
+    }
+    currentWidth = window.innerWidth;
+    var height = $('.navbar').height();
+    $('body').css('padding-top', height + 40);
+    tile_size();
+
+});
+
+let lastTouch = 0;
+document.addEventListener('touchend', event => {
+    const now = window.performance.now();
+    if (now - lastTouch <= 500) {
+        event.preventDefault();
+    }
+    lastTouch = now;
+}, true);
