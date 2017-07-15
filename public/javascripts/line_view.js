@@ -125,7 +125,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     $scope.mtiles[response.data.tiles[i].x + ',' +
                         response.data.tiles[i].y + ',' +
                         response.data.tiles[i].z] = response.data.tiles[i];
-                    // FROM RYO: marker[response.data.tiles[i].index[j]] = true;
                 }
 
             }, function (response) {
