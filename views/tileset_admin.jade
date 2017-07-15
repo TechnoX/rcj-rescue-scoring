@@ -23,13 +23,9 @@ append css
     }
 
 block location
-  a(href='/home' style="color:#333333") Home
-  | >
-  a(href='/admin' style="color:#333333") Admin
-  | >
-  a(ng-href='/admin/line' style="color:#333333") Line
-  | >
-  a(ng-href='/admin/line/tilesets' style="color:#333333") Tilesets
+    a.breadcrumb-item(href='/home') Home
+    a.breadcrumb-item(href='/admin') Admin
+    span.breadcrumb-item.active Line tilesets
 
 block content
   .row
