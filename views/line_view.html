@@ -85,7 +85,7 @@
         <div class="col-md-6 tilearea" style="height=600px">
             <div ng-repeat="r in range(length)" class="row" ng-if="visType=='stacked'" tile-load-finished=''>
                 <div ng-repeat="c in range(width)" class="slot">
-                    <tile tile="mtiles[c+','+r+','+z]" ng-repeat="z in range(height)" ng-style="{'opacity': getOpacity(c,r)}">
+                    <tile tile="mtiles[c+','+r+','+z]" ng-repeat="z in range(height)" ng-click="showElements(c,r,z)" ng-style="{'opacity': getOpacity(c,r)}">
                     </tile>
                 </div>
             </div>
@@ -93,14 +93,14 @@
                 <rzslider rz-slider-model="z" rz-slider-options="sliderOptions"></rzslider>
                 <div ng-repeat="r in range(length)" class="row" tile-load-finished=''>
                     <div ng-repeat="c in range(width)" class="slot">
-                        <tile tile="mtiles[c+','+r+','+z]"></tile>
+                        <tile tile="mtiles[c+','+r+','+z]" ng-click="showElements(c,r,z)"></tile>
                     </div>
                 </div>
             </div>
             <div ng-repeat="z in range(height)" style="float: left; border-left: 3px solid black;" ng-if="visType=='side'" tile-load-finished=''>
                 <div ng-repeat="r in range(length)">
                     <div ng-repeat="c in range(width)" class="slot">
-                        <tile tile="mtiles[c+','+r+','+z]"></tile>
+                        <tile tile="mtiles[c+','+r+','+z]" ng-click="showElements(c,r,z)"></tile>
                     </div>
                 </div>
             </div>
