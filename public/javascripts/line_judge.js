@@ -264,7 +264,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             }
             // Start the timer
             $timeout(tick, $scope.tickInterval);
-            //Doesn't work for Fredrik (maybe Ryo or Sebbe can fix?)
             $http.put("/api/runs/line/" + runId, {
                 status: 2
             }).then(function (response) {
