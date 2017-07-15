@@ -1,8 +1,11 @@
 // register the directive with your app module
-var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'rzModule']);
+var app = angular.module('MazeEditor', ['ngAnimate', 'ui.bootstrap', 'rzModule']);
 
 // function referenced by the drop target
-app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function($scope, $uibModal, $log, $http){
+app.controller('MazeEditorController', ['$scope', '$uibModal', '$log','$http', function($scope, $uibModal, $log, $http){
+
+    $scope.competitionId = competitionId;
+
     $scope.sliderOptions = {
         floor: 0,
         ceil: 0,
@@ -34,8 +37,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
             $scope.length = response.data.length;
             $scope.name = response.data.name;
 	    $scope.finished = response.data.finished;
-	    competitionId = response.data.competition;
-	    
+            $scope.competitionId = response.data.competition;
+	    $http.get("/api/competitions/" + $scope.competitionId).then(function (response) {
+                $scope.competition = response.data.name;
+            })
+
 	    for(var i = 0; i < response.data.cells.length; i++){
                 $scope.cells[response.data.cells[i].x + ',' +
                              response.data.cells[i].y + ',' +
@@ -46,6 +52,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
         }, function(response){
             console.log("Error: " + response.statusText);
         });
+    }else{
+        $http.get("/api/competitions/" + $scope.competitionId).then(function (response) {
+            $scope.competition = response.data.name;
+        })
     }
 
     $scope.range = function(n){
@@ -166,7 +176,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 
     $scope.saveMapAs = function(){
 	if($scope.startNotSet()){
-	    alert("You must define a starting tile by right-clicking a tile");
+	    alert("You must define a starting tile by clicking a tile");
 	    return;
 	}
 
@@ -175,7 +185,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
 	    return;
 	}
 	var map = {
-	    competition: competitionId,
+	    competition: $scope.competitionId,
             name: $scope.saveasname,
             length: $scope.length,
             height: $scope.height,
@@ -197,11 +207,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
     }
     $scope.saveMap = function(){
 	if($scope.startNotSet()){
-	    alert("You must define a starting tile by right-clicking a tile");
+	    alert("You must define a starting tile by clicking a tile");
 	    return;
 	}
         var map = {
-	    competition: competitionId,
+	    competition: $scope.competitionId,
             name: $scope.name,
             length: $scope.length,
             height: $scope.height,
@@ -212,7 +222,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$http', function(
         };
         console.log(map);
 	console.log("Update map", mapId);
-	console.log("Competition ID", competitionId);
+	console.log("Competition ID", $scope.competitionId);
 	if(mapId){
 	    $http.put("/api/maps/maze/" + mapId, map).then(function(response){
 		alert("Updated map");

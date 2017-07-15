@@ -1,22 +1,28 @@
-html
-  head
-    title Rescue Maze Map Editor
-    script.
-      var mapId = "#{mapid}"
-      var competitionId = "#{compid}"
+//- -*- tab-width: 2 -*-
+extends includes/layout
 
-    script(src="/components/angular/angular.min.js")
-    script(src="/components/angular-animate/angular-animate.js")
-    script(src="/components/angular-bootstrap/ui-bootstrap-tpls.min.js")
-    script(src="/components/angularjs-slider/dist/rzslider.min.js")
+block vars
+  - var ngAppDef = 'MazeEditor'
 
-    link(href="/components/bootstrap/dist/css/bootstrap.css" rel="stylesheet")
-    link(href="/components/angularjs-slider/dist/rzslider.min.css" rel="stylesheet")
-    script(src="/javascripts/lvl-uuid.js")
-    script(src="/javascripts/maze_editor.js")
-    link(href="/stylesheets/maze.css" rel="stylesheet")
+append scripts
+  script.
+    var mapId = "#{mapid}"
+    var competitionId = "#{compid}"
 
+  script(src="/components/angularjs-slider/dist/rzslider.min.js")
+  script(src="/javascripts/lvl-uuid.js")
+  script(src="/javascripts/maze_editor.js")
 
+append css
+  link(href="/components/angularjs-slider/dist/rzslider.min.css" rel="stylesheet")
+  link(href="/stylesheets/maze.css" rel="stylesheet")
 
-  body(ng-app="ddApp")
+block location
+    a.breadcrumb-item(href='/home') Home
+    a.breadcrumb-item(href='/admin') Admin
+    a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition}}
+    a.breadcrumb-item(ng-href='/admin/{{competitionId}}/maze/maps') Maze maps
+    span.breadcrumb-item.active Maze editor
+
+block content
     include maze_editor.html
