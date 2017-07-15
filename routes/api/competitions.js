@@ -385,28 +385,6 @@ publicRouter.get('/:competition/:league/rounds', function (req, res, next) {
     })
 })
 
-adminRouter.post('/createcompetition', function (req, res) {
-    var competition = req.body
-
-    var newCompetition = new competitiondb.competition({
-        name: competition.name
-    })
-
-    newCompetition.save(function (err, data) {
-        if (err) {
-            logger.error(err)
-            res.status(400).send({
-                msg: "Error saving competition"
-            })
-        } else {
-            res.status(201).send({
-                msg: "New competition has been saved",
-                id: data._id
-            })
-        }
-    })
-})
-
 adminRouter.post('/', function (req, res) {
     const competition = req.body
 
