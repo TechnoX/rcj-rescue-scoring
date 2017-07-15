@@ -19,7 +19,7 @@ block content
   .row
     .col-md-1
     .col-md-10
-      h1 {{competition.name}} - Line runs
+      h1 {{competition.name}} - Maze runs
       table
         thead
             tr
@@ -43,10 +43,10 @@ block content
                 select(ng-model='run.field' ng-options='field as field.name for field in fields')
               td
                 button(ng-click='addRun()') Add Run
-      a(ng-href='/admin/{{competitionId}}/line/runs/bulk') Bulk Regstration
+      a(ng-href='/admin/{{competitionId}}/maze/runs/bulk') Bulk Regstration
       br
       br
-      a(ng-href='/admin/{{competitionId}}/line/runs/monitor') Runs Monitor
+      a(ng-href='/admin/{{competitionId}}/maze/runs/monitor') Runs Monitor
       center
           .loader
             img(src="/images/loader2.gif")
@@ -80,7 +80,7 @@ block content
                 span(ng-if="run.status==4") 4.Finished
                 span(ng-if="run.status==5") 5.Approved
               td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
-                button(ng-click="go('/line/view/' + run._id)" class='btn btn-info') View
+                button(ng-click="go('/maze/view/' + run._id)" class='btn btn-info') View
               td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
                 button(ng-click="go_sign(run._id)" class='btn btn-warning') Sign
               td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
