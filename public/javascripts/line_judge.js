@@ -351,7 +351,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             } else if (mtile.x == $scope.startTile.x &&
                 mtile.y == $scope.startTile.y &&
                 mtile.z == $scope.startTile.z) {
-                swal("Oops!", "Not allowed to place drop markers on start tile (rule 3.3.6)", "error");
+                swal("Oops!", "Not allowed to place checkpoint markers on start tile (rule 3.3.6)", "error");
             } else {
                 var placed = false;
                 var removed = false;
