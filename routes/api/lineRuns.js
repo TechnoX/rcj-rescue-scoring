@@ -167,6 +167,7 @@ publicRouter.get('/find/:competitionid/:field/:status', function (req, res, next
         field: field_id,
         status: status
     }, "field team competition status")
+    query.populate(["team"])
     query.exec(function (err, data) {
         if (err) {
             logger.error(err)
