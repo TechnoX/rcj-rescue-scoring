@@ -1,6 +1,6 @@
 // register the directive with your app module
 var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'rzModule']);
-
+var socket;
 // function referenced by the drop target
 app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http', function($scope, $uibModal, $log, $timeout, $http){
 
@@ -24,7 +24,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 
     (function launchSocketIo() {
         // launch socket.io
-        var socket = io.connect(window.location.origin);
+        socket = io(window.location.origin, {
+            transports: ['websocket']
+        });
         if(typeof runId !== 'undefined'){
             socket.emit('subscribe', 'runs/' + runId);
             socket.on('data', function(data) {
@@ -83,6 +85,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log','$timeout', '$http
 	    // Verified time by timekeeper
             $scope.minutes = response.data.time.minutes;
             $scope.seconds = response.data.time.seconds;
+            
+            $scope.cap_sig = response.data.sign.captain;
+            $scope.ref_sig = response.data.sign.referee;
+            $scope.refas_sig = response.data.sign.referee_as;
 
 	    // Scoring elements of the tiles
 	    for(var i = 0; i < response.data.tiles.length; i++){
