@@ -7,7 +7,7 @@ var scp;
 app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', function($scope, $uibModal, $log, $timeout, $http){
     
     $http.get("/api/competitions/" + competitionId +
-            "/fields").then(function (response) {
+            "/Line/fields").then(function (response) {
     $scope.fields = response.data
   })
     scp = $scope;
