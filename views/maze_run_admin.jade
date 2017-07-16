@@ -23,7 +23,6 @@ block content
       table
         thead
             tr
-              th League
               th Round
               th Team Name
               th Map Name
@@ -31,8 +30,6 @@ block content
               th Action
         tbody
             tr
-              td
-                select(ng-model='league' ng-options='league for league in leagues' ng-change='updateLists()')
               td
                 select(ng-model='run.round' ng-options='round as round.name for round in rounds')
               td

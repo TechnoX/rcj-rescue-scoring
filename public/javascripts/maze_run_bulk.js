@@ -6,22 +6,18 @@ angular.module("RunAdmin", []).controller("RunAdminController", function ($scope
     $http.get("/api/competitions/" + competitionId).then(function (response) {
         $scope.competition = response.data
     })
-    $http.get("/api/teams/leagues").then(function (response) {
-        $scope.leagues = response.data
-        console.log($scope.leagues)
-    })
 
     $scope.updateLists = function () {
         $http.get("/api/competitions/" + competitionId +
-            "/" + $scope.league + "/teams").then(function (response) {
+            "/maze/teams").then(function (response) {
             $scope.teams = response.data
         })
         $http.get("/api/competitions/" + competitionId +
-            "/" + $scope.league + "/rounds").then(function (response) {
+            "/maze/rounds").then(function (response) {
             $scope.rounds = response.data
         })
         $http.get("/api/competitions/" + competitionId +
-            "/" + $scope.league + "/fields").then(function (response) {
+            "/maze/fields").then(function (response) {
             $scope.fields = response.data
         })
         $http.get("/api/competitions/" + competitionId +
@@ -36,14 +32,6 @@ angular.module("RunAdmin", []).controller("RunAdminController", function ($scope
         $scope.total = obj.length - 1;
         $scope.now = 0;
         next_add();
-        /*var team = {name: $scope.teamName, league: $scope.teamLeague, competition: competitionId}
-
-        $http.post("/api/teams/createteam", team).then(function (response) {
-          console.log(response)
-          updateTeamList()
-        }, function (error) {
-          console.log(error)
-        })*/
     }
 
     get_round = function () {
