@@ -34,7 +34,7 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
                     run.LoPsNum += run.LoPs[j]
                 }
 
-                if (run.score != 0 || run.time.minutes != 0 || run.time.seconds != 0) {
+                if (run.status != 0) {
                     if (run.team.league == "Line") {
 
 
