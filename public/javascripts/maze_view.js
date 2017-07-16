@@ -337,6 +337,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     }
 
+    $scope.go = function (path) {
+        socket.emit('unsubscribe', 'runs/' + runId);
+        window.location = path
+    }
+
     $scope.open = function (x, y, z) {
         var modalInstance = $uibModal.open({
             animation: true,
