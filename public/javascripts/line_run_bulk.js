@@ -7,24 +7,22 @@ angular.module("RunAdmin", []).controller("RunAdminController", function ($scope
         $scope.competition = response.data
     })
 
-    $scope.updateLists = function () {
         $http.get("/api/competitions/" + competitionId +
-            "/line/teams").then(function (response) {
+            "/Line/teams").then(function (response) {
             $scope.teams = response.data
         })
         $http.get("/api/competitions/" + competitionId +
-            "/line/rounds").then(function (response) {
+            "/Line/rounds").then(function (response) {
             $scope.rounds = response.data
         })
         $http.get("/api/competitions/" + competitionId +
-            "/line/fields").then(function (response) {
+            "/Line/fields").then(function (response) {
             $scope.fields = response.data
         })
         $http.get("/api/competitions/" + competitionId +
-            "/line/maps").then(function (response) {
+            "/Line/maps").then(function (response) {
             $scope.maps = response.data
         })
-    }
 
     $scope.addRun = function () {
         $scope.processing = true;

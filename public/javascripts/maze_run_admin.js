@@ -16,24 +16,22 @@ angular.module("RunAdmin", ['ngAnimate']).controller('RunAdminController', ['$sc
     $scope.competition = response.data
   })
 
-  $scope.updateLists = function () {
     $http.get("/api/competitions/" + competitionId +
-              "/maze/teams").then(function (response) {
+              "/Maze/teams").then(function (response) {
       $scope.teams = response.data
     })
     $http.get("/api/competitions/" + competitionId +
-              "/maze/rounds").then(function (response) {
+              "/Maze/rounds").then(function (response) {
       $scope.rounds = response.data
     })
     $http.get("/api/competitions/" + competitionId +
-              "/maze/fields").then(function (response) {
+              "/Maze/fields").then(function (response) {
       $scope.fields = response.data
     })
     $http.get("/api/competitions/" + competitionId +
-              "/maze/maps").then(function (response) {
+              "/Maze/maps").then(function (response) {
       $scope.maps = response.data
     })
-  }
 
   $scope.addRun = function () {
     if ($scope.run === undefined ||
