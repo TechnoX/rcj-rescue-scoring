@@ -81,10 +81,12 @@ exports.ensureLoginApi = function ensureLogin(req, res, next) {
 
 // Check for admin
 exports.ensureAdmin = function ensureAdmin(req, res, next) {
-    if (req.user && req.user.admin === true)
+    if (req.user && req.user.admin === true){
         next();
-    else
-        res.redirect('/login');
+    }else{
+        now_access = req.originalUrl;
+        res.redirect('/login?page=' + now_access);
+    }
 }
 
 // Check for admin, json resp for api calls
