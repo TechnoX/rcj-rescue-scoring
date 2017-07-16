@@ -14,7 +14,7 @@ const scoreCalculator = require('../../helper/scoreCalculator')
 var socketIo
 
 module.exports.connectSocketIo = function (io) {
-  socketIo = io
+    socketIo = io
 }
 
 /**
@@ -40,77 +40,107 @@ module.exports.connectSocketIo = function (io) {
  * @apiError (400) {String} msg The error message
  */
 publicRouter.get('/', getMazeRuns)
+
 function getMazeRuns(req, res) {
-  const competition = req.query.competition || req.params.competition
+    const competition = req.query.competition || req.params.competition
 
-  var query
-  if (competition != null && competition.constructor === String) {
-    query = mazeRun.find({competition: competition})
-  } else if (Array.isArray(competition)) {
-    query = mazeRun.find({competition: {$in: competition.filter(ObjectId.isValid)}})
-  } else {
-    query = mazeRun.find({})
-  }
-
-  query.select("competition round team field map score time")
-
-  if (req.query['populate'] !== undefined && req.query['populate']) {
-    query.populate([
-      {path: "competition", select: "name"},
-      {path: "round", select: "name"},
-      {path: "team", select: "name league"},
-      {path: "field", select: "name"},
-      {path: "map", select: "name"}
-    ])
-  }
-
-  query.lean().exec(function (err, data) {
-    if (err) {
-      logger.error(err)
-      res.status(400).send({msg: "Could not get runs", err: err.message})
+    var query
+    if (competition != null && competition.constructor === String) {
+        query = mazeRun.find({
+            competition: competition
+        })
+    } else if (Array.isArray(competition)) {
+        query = mazeRun.find({
+            competition: {
+                $in: competition.filter(ObjectId.isValid)
+            }
+        })
     } else {
-      res.status(200).send(data)
+        query = mazeRun.find({})
     }
-  })
+
+    query.select("competition round team field map score time status")
+
+    if (req.query['populate'] !== undefined && req.query['populate']) {
+        query.populate([
+            {
+                path: "competition",
+                select: "name"
+            },
+            {
+                path: "round",
+                select: "name"
+            },
+            {
+                path: "team",
+                select: "name league"
+            },
+            {
+                path: "field",
+                select: "name"
+            },
+            {
+                path: "map",
+                select: "name"
+            }
+    ])
+    }
+
+    query.lean().exec(function (err, data) {
+        if (err) {
+            logger.error(err)
+            res.status(400).send({
+                msg: "Could not get runs",
+                err: err.message
+            })
+        } else {
+            res.status(200).send(data)
+        }
+    })
 }
 module.exports.getMazeRuns = getMazeRuns
 
 
 publicRouter.get('/latest', getLatestMazeRun)
+
 function getLatestMazeRun(req, res) {
-  const competition = req.query.competition || req.params.competition
-  const field = req.query.field || req.params.field
-  const fields = req.query.fields
+    const competition = req.query.competition || req.params.competition
+    const field = req.query.field || req.params.field
+    const fields = req.query.fields
 
-  var selection = {
-    competition: competition,
-    field      : field
-  }
-  if (selection.competition == undefined) {
-    delete selection.competition
-  }
-  if (selection.field == undefined) {
-    delete selection.field
-  }
-
-  if (fields != null) {
-    selection.field = {$in : fields}
-  }
-
-  var query = mazeRun.findOne(selection).sort("-updatedAt")
-
-  if (req.query['populate'] !== undefined && req.query['populate']) {
-    query.populate(["round", "team", "field", "competition"])
-  }
-
-  query.lean().exec(function (err, data) {
-    if (err) {
-      logger.error(err)
-      res.status(400).send({msg: "Could not get run"})
-    } else {
-      res.status(200).send(data)
+    var selection = {
+        competition: competition,
+        field: field
     }
-  })
+    if (selection.competition == undefined) {
+        delete selection.competition
+    }
+    if (selection.field == undefined) {
+        delete selection.field
+    }
+
+    if (fields != null) {
+        selection.field = {
+            $in: fields
+        }
+    }
+
+    var query = mazeRun.findOne(selection).sort("-updatedAt")
+
+    if (req.query['populate'] !== undefined && req.query['populate']) {
+        query.populate(["round", "team", "field", "competition"])
+    }
+
+    query.lean().exec(function (err, data) {
+        if (err) {
+            logger.error(err)
+            res.status(400).send({
+                msg: "Could not get run"
+            })
+        } else {
+            res.status(200).send(data)
+        }
+    })
 }
 module.exports.getLatestMazeRun = getLatestMazeRun
 
@@ -155,26 +185,29 @@ module.exports.getLatestMazeRun = getLatestMazeRun
  * @apiError (400) {String} msg The error message
  */
 publicRouter.get('/:runid', function (req, res, next) {
-  const id = req.params.runid
-  
-  if (!ObjectId.isValid(id)) {
-    return next()
-  }
+    const id = req.params.runid
 
-  const query = mazeRun.findById(id, "-__v")
-
-  if (req.query['populate'] !== undefined && req.query['populate']) {
-    query.populate(["round", "team", "field", "competition"])
-  }
-
-  query.lean().exec(function (err, data) {
-    if (err) {
-      logger.error(err)
-      return res.status(400).send({msg: "Could not get run", err: err.message})
-    } else {
-      return res.status(200).send(data)
+    if (!ObjectId.isValid(id)) {
+        return next()
     }
-  })
+
+    const query = mazeRun.findById(id, "-__v")
+
+    if (req.query['populate'] !== undefined && req.query['populate']) {
+        query.populate(["round", "team", "field", "competition"])
+    }
+
+    query.lean().exec(function (err, data) {
+        if (err) {
+            logger.error(err)
+            return res.status(400).send({
+                msg: "Could not get run",
+                err: err.message
+            })
+        } else {
+            return res.status(200).send(data)
+        }
+    })
 })
 
 /**
@@ -210,126 +243,134 @@ publicRouter.get('/:runid', function (req, res, next) {
  * @apiError (400) {String} msg The error message
  */
 privateRouter.put('/:runid', function (req, res, next) {
-  const id = req.params.runid
-  if (!ObjectId.isValid(id)) {
-    return next()
-  }
-  
-  const run = req.body
+    const id = req.params.runid
+    if (!ObjectId.isValid(id)) {
+        return next()
+    }
 
-  // Exclude fields that are not allowed to be publicly changed
-  delete run._id
-  delete run.__v
-  delete run.map
-  delete run.competition
-  delete run.round
-  delete run.team
-  delete run.field
-  delete run.score
+    const run = req.body
 
-  //logger.debug(run)
+    // Exclude fields that are not allowed to be publicly changed
+    delete run._id
+    delete run.__v
+    delete run.map
+    delete run.competition
+    delete run.round
+    delete run.team
+    delete run.field
+    delete run.score
 
-  mazeRun.findById(id)
-  //.select("-_id -__v -competition -round -team -field -score")
-    .populate("map")
-    .exec(function (err, dbRun) {
-      if (err) {
-        logger.error(err)
-        res.status(400).send({msg: "Could not get run", err: err.message})
-      } else {
+    //logger.debug(run)
 
-
-        // Recursively updates properties in "dbObj" from "obj"
-        const copyProperties = function (obj, dbObj) {
-          for (let prop in obj) {
-            if (obj.hasOwnProperty(prop) && (dbObj.hasOwnProperty(prop) ||
-                                             dbObj.get(prop) !== undefined)) { // Mongoose objects don't have hasOwnProperty
-              if (typeof obj[prop] == 'object' && dbObj[prop] != null) { // Catches object and array
-                copyProperties(obj[prop], dbObj[prop])
-
-                if (dbObj.markModified !== undefined) {
-                  dbObj.markModified(prop)
-                }
-              } else if (obj[prop] !== undefined) {
-                //logger.debug("copy " + prop)
-                dbObj[prop] = obj[prop]
-              }
+    mazeRun.findById(id)
+        //.select("-_id -__v -competition -round -team -field -score")
+        .populate("map")
+        .exec(function (err, dbRun) {
+            if (err) {
+                logger.error(err)
+                res.status(400).send({
+                    msg: "Could not get run",
+                    err: err.message
+                })
             } else {
-              return new Error("Illegal key: " + prop)
-            }
-          }
-        }
 
-        for (let i in run.tiles) {
-          if (run.tiles.hasOwnProperty(i)) {
-            let tile = run.tiles[i]
-            delete tile.processing
 
-            if (isNaN(i)) {
-              const coords = i.split(',')
-              tile.x = Number(coords[0])
-              tile.y = Number(coords[1])
-              tile.z = Number(coords[2])
-            }
+                // Recursively updates properties in "dbObj" from "obj"
+                const copyProperties = function (obj, dbObj) {
+                    for (let prop in obj) {
+                        if (obj.hasOwnProperty(prop) && (dbObj.hasOwnProperty(prop) ||
+                                dbObj.get(prop) !== undefined)) { // Mongoose objects don't have hasOwnProperty
+                            if (typeof obj[prop] == 'object' && dbObj[prop] != null) { // Catches object and array
+                                copyProperties(obj[prop], dbObj[prop])
 
-            let existing = false
-            for (let j = 0; j < dbRun.tiles.length; j++) {
-              let dbTile = dbRun.tiles[j]
-              //logger.debug(tile)
-              //logger.debug(dbTile)
-              if (tile.x == dbTile.x && tile.y == dbTile.y &&
-                  tile.z == dbTile.z) {
-                existing = true
-                err = copyProperties(tile, dbTile)
-                dbRun.markModified("tiles")
-                if (err) {
-                  logger.error(err)
-                  return res.status(400).send({
-                    err: err.message,
-                    msg: "Could not save run"
-                  })
+                                if (dbObj.markModified !== undefined) {
+                                    dbObj.markModified(prop)
+                                }
+                            } else if (obj[prop] !== undefined) {
+                                //logger.debug("copy " + prop)
+                                dbObj[prop] = obj[prop]
+                            }
+                        } else {
+                            return new Error("Illegal key: " + prop)
+                        }
+                    }
                 }
-                break
-              }
-            }
-            if (!existing) {
-              dbRun.tiles.push(tile)
-              dbRun.markModified("tiles")
-            }
-          }
-        }
 
-        delete run.tiles
-        err = copyProperties(run, dbRun)
-        if (err) {
-          logger.error(err)
-          return res.status(400).send({
-            err: err.message,
-            msg: "Could not save run"
-          })
-        }
+                for (let i in run.tiles) {
+                    if (run.tiles.hasOwnProperty(i)) {
+                        let tile = run.tiles[i]
+                        delete tile.processing
 
-        dbRun.score = scoreCalculator.calculateMazeScore(dbRun)
+                        if (isNaN(i)) {
+                            const coords = i.split(',')
+                            tile.x = Number(coords[0])
+                            tile.y = Number(coords[1])
+                            tile.z = Number(coords[2])
+                        }
 
-        dbRun.save(function (err) {
-          if (err) {
-            logger.error(err)
-            return res.status(400).send({
-              err: err.message,
-              msg: "Could not save run"
-            })
-          } else {
-            if (socketIo !== undefined) {
-              socketIo.sockets.in('runs/maze').emit('changed')
-              socketIo.sockets.in('runs/' + dbRun._id).emit('data', dbRun)
-              socketIo.sockets.in('fields/' +
-                                  dbRun.field).emit('data', {newRun: dbRun._id})
+                        let existing = false
+                        for (let j = 0; j < dbRun.tiles.length; j++) {
+                            let dbTile = dbRun.tiles[j]
+                            //logger.debug(tile)
+                            //logger.debug(dbTile)
+                            if (tile.x == dbTile.x && tile.y == dbTile.y &&
+                                tile.z == dbTile.z) {
+                                existing = true
+                                err = copyProperties(tile, dbTile)
+                                dbRun.markModified("tiles")
+                                if (err) {
+                                    logger.error(err)
+                                    return res.status(400).send({
+                                        err: err.message,
+                                        msg: "Could not save run"
+                                    })
+                                }
+                                break
+                            }
+                        }
+                        if (!existing) {
+                            dbRun.tiles.push(tile)
+                            dbRun.markModified("tiles")
+                        }
+                    }
+                }
+
+                delete run.tiles
+                err = copyProperties(run, dbRun)
+                if (err) {
+                    logger.error(err)
+                    return res.status(400).send({
+                        err: err.message,
+                        msg: "Could not save run"
+                    })
+                }
+
+                dbRun.score = scoreCalculator.calculateMazeScore(dbRun)
+
+                dbRun.save(function (err) {
+                    if (err) {
+                        logger.error(err)
+                        return res.status(400).send({
+                            err: err.message,
+                            msg: "Could not save run"
+                        })
+                    } else {
+                        if (socketIo !== undefined) {
+                            socketIo.sockets.in('runs/maze').emit('changed')
+                            socketIo.sockets.in('runs/' + dbRun._id).emit('data', dbRun)
+                            socketIo.sockets.in('fields/' +
+                                dbRun.field).emit('data', {
+                                newRun: dbRun._id
+                            })
+                        }
+                        return res.status(200).send({
+                            msg: "Saved run",
+                            score: dbRun.score
+                        })
+                    }
+                })
             }
-            return res.status(200).send({msg: "Saved run", score: dbRun.score})
-          }
         })
-      }
-    })
 })
 
 /**
@@ -345,20 +386,27 @@ privateRouter.put('/:runid', function (req, res, next) {
  * @apiError (400) {String} err The error message
  */
 adminRouter.delete('/:runid', function (req, res, next) {
-  var id = req.params.runid
-  
-  if (!ObjectId.isValid(id)) {
-    return next()
-  }
-  
-  mazeRun.remove({_id: id}, function (err) {
-    if (err) {
-      logger.error(err)
-      res.status(400).send({msg: "Could not remove run", err: err.message})
-    } else {
-      res.status(200).send({msg: "Run has been removed!"})
+    var id = req.params.runid
+
+    if (!ObjectId.isValid(id)) {
+        return next()
     }
-  })
+
+    mazeRun.remove({
+        _id: id
+    }, function (err) {
+        if (err) {
+            logger.error(err)
+            res.status(400).send({
+                msg: "Could not remove run",
+                err: err.message
+            })
+        } else {
+            res.status(200).send({
+                msg: "Run has been removed!"
+            })
+        }
+    })
 })
 
 /**
@@ -379,36 +427,36 @@ adminRouter.delete('/:runid', function (req, res, next) {
  * @apiError (400) {String} err The error message
  */
 adminRouter.post('/', function (req, res) {
-  const run = req.body
-  
-  new mazeRun({
-    competition: run.competition,
-    round      : run.round,
-    team       : run.team,
-    field      : run.field,
-    map        : run.map
-  }).save(function (err, data) {
-    if (err) {
-      logger.error(err)
-      return res.status(400).send({
-        msg: "Error saving run in db",
-        err: err.message
-      })
-    } else {
-      res.location("/api/runs/" + data._id)
-      return res.status(201).send({
-        msg: "New run has been saved",
-        id : data._id
-      })
-    }
-  })
+    const run = req.body
+
+    new mazeRun({
+        competition: run.competition,
+        round: run.round,
+        team: run.team,
+        field: run.field,
+        map: run.map
+    }).save(function (err, data) {
+        if (err) {
+            logger.error(err)
+            return res.status(400).send({
+                msg: "Error saving run in db",
+                err: err.message
+            })
+        } else {
+            res.location("/api/runs/" + data._id)
+            return res.status(201).send({
+                msg: "New run has been saved",
+                id: data._id
+            })
+        }
+    })
 })
 
 publicRouter.all('*', function (req, res, next) {
-  next()
+    next()
 })
 privateRouter.all('*', function (req, res, next) {
-  next()
+    next()
 })
 
 module.exports.public = publicRouter
