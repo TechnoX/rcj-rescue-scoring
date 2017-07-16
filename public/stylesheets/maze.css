@@ -14,9 +14,10 @@ table tr:nth-child(even) {
     height: 40px;
 }
 
-tr td:nth-child(odd) {
+
+/*tr td:nth-child(odd) {
     width: 5px;
-}
+}*/
 
 tr td:nth-child(even) {
     width: 40px;
