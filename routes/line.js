@@ -81,6 +81,16 @@ privateRouter.get('/sign/:roundid', function (req, res) {
   res.render('line_sign', {id : req.params.roundid})
 })
 
+adminRouter.get('/approval/:roundid', function (req, res) {
+  const id = req.params.roundid
+		
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  res.render('line_approval', {id : id})
+})
+
 adminRouter.get('/editor', function (req, res) {
   res.render('line_editor')
 })

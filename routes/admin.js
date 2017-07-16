@@ -158,16 +158,6 @@ router.get('/:competitionid/fields', function (req, res, next) {
   res.render('field_admin', {id : id, user: req.user})
 })
 
-router.get('/approval/:roundid', function (req, res) {
-  const id = req.params.roundid
-		
-  if (!ObjectId.isValid(id)) {
-    return next()
-  }
-
-  res.render('line_approval', {id : id})
-})
-
 router.get('/line/tilesets', function (req, res, next) {
   res.render('tileset_admin')
 })

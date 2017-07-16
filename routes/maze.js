@@ -9,21 +9,6 @@ var ObjectId = require('mongoose').Types.ObjectId
 publicRouter.get('/', function (req, res) {
   res.render('maze_home',{user: req.user});
 })
-
-privateRouter.get('/judge/:roundid', function (req, res, next) {
-  const id = req.params.roundid
-
-  if (!ObjectId.isValid(id)) {
-    return next()
-  }
-
-  res.render('maze_judge', {id : id, user: req.user})
-})
-
-privateRouter.get('/sign/:roundid', function (req, res) {
-  res.render('maze_sign', {id : req.params.roundid})
-})
-
 publicRouter.get('/:competitionid', function (req, res, next) {
   const id = req.params.competitionid
   
@@ -81,17 +66,28 @@ publicRouter.get('/view/inline/:runid', function (req, res) {
   res.render('maze_inline_view', {id : id})
 })
 
-
 privateRouter.get('/judge/:roundid', function (req, res, next) {
   const id = req.params.roundid
-  
+    
   if (!ObjectId.isValid(id)) {
     return next()
   }
-  
   res.render('maze_judge', {id : id, user: req.user})
 })
 
+privateRouter.get('/sign/:roundid', function (req, res) {
+  res.render('maze_sign', {id : req.params.roundid})
+})
+
+adminRouter.get('/approval/:roundid', function (req, res) {
+  const id = req.params.roundid
+		
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  res.render('maze_approval', {id : id})
+})
 adminRouter.get('/editor/:mapid', function (req, res, next) {
   const id = req.params.mapid
   
