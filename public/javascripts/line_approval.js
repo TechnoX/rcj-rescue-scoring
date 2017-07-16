@@ -188,7 +188,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         });
     };
     
-    $scope.sucess_message = function(){
+    $scope.success_message = function(){
         swal({
                     title: 'Recorded!', 
                     text: 'Recording to public server succeeded', 
@@ -196,7 +196,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 },function(){
                     $scope.go("/admin/"+$scope.competition._id+"/runs/");
                 });
-                console.log("Sucess!!");
+                console.log("Success!!");
     }
     
     $scope.send_public = function(){
@@ -225,7 +225,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 var run = {}
                 run.status = 5;
                 $http.post("/api/runs/"+runId+"/update", run).then(function(response){
-                    setTimeout($scope.sucess_message,500);
+                    setTimeout($scope.success_message,500);
                 }, function(response){
                     swal("Oops", "It could not be sent normally. Please call the system manager.", "error");
                     console.log("Error: " + response.statusText);

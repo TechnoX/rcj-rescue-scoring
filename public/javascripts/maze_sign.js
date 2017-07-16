@@ -342,7 +342,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 
 
-    $scope.sucess_message = function () {
+    $scope.success_message = function () {
         swal({
             title: 'Recorded!',
             text: 'Recording succeeded',
@@ -350,7 +350,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         }, function () {
             $scope.go("/maze/" + $scope.competition_id);
         });
-        console.log("Sucess!!");
+        console.log("Success!!");
     }
 
     $scope.send_sign = function () {
@@ -395,7 +395,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             console.log("STATUS UPDATED(4)")
             run.status = 4;
             $http.put("/api/runs/maze/" + runId, run).then(function (response) {
-                setTimeout($scope.sucess_message, 500);
+                setTimeout($scope.success_message, 500);
             }, function (response) {
                 swal("Oops", "We couldn't connect to the server! Please notice to system manager.", "error");
                 console.log("Error: " + response.statusText);
