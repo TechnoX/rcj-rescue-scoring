@@ -45,6 +45,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.team = response.data.team.name;
         $scope.league = response.data.team.league;
         $scope.competition = response.data.competition.name;
+        $scope.competition_id = response.data.competition._id;
         $scope.retired = response.data.retired;
         // Verified time by timekeeper
         $scope.minutes = response.data.time.minutes;
