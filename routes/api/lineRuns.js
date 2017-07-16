@@ -22,7 +22,7 @@ module.exports.connectSocketIo = function (io) {
  * @api {get} /runs/line Get runs
  * @apiName GetRun
  * @apiGroup Run
- * @apiVersion 1.0.0
+ * @apiVersion 1.0.1
  *
  * @apiParam {Boolean} [populate] Whether to populate references with name
  *
@@ -40,6 +40,7 @@ module.exports.connectSocketIo = function (io) {
  * @apiSuccess (200) {Number}   -.status
  * @apiSuccess (200) {Number}   -.rescuedLiveVictims
  * @apiSuccess (200) {Number}   -.rescuedDeadVictims
+ * @apiSuccess (200) {Object[]} -             Array of LoPs
  *
  * @apiError (400) {String} msg The error message
  */
@@ -150,6 +151,34 @@ function getLatestLineRun(req, res) {
     })
 }
 module.exports.getLatestLineRun = getLatestLineRun
+
+publicRouter.get('/find/:competitionid/:field/:status', function (req, res, next) {
+    var id = req.params.competitionid
+    var field_id = req.params.field
+    var status = req.params.status
+    if (!ObjectId.isValid(id)) {
+        return next()
+    }
+    if (!ObjectId.isValid(field_id)) {
+        return next()
+    }
+    var query = lineRun.find({
+        competition: id,
+        field: field_id,
+        status: status
+    }, "field team competition status")
+    query.exec(function (err, data) {
+        if (err) {
+            logger.error(err)
+            res.status(400).send({
+                msg: "Could not get runs"
+            })
+        } else {
+            res.status(200).send(data)
+        }
+    })
+})
+
 
 /**
  * @api {get} /runs/line/:runid Get run
@@ -439,6 +468,7 @@ adminRouter.post('/', function (req, res) {
         }
     })
 })
+
 
 publicRouter.all('*', function (req, res, next) {
     next()
