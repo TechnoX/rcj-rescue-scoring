@@ -71,6 +71,17 @@ publicRouter.get('/viewcurrent', function (req, res) {
   res.render('maze_view_current')
 })
 
+
+publicRouter.get('/view/inline/:runid', function (req, res) {
+  const id = req.params.runid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+  res.render('maze_inline_view', {id : id})
+})
+
+
 privateRouter.get('/judge/:roundid', function (req, res, next) {
   const id = req.params.roundid
   

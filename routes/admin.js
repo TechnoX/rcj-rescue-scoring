@@ -58,6 +58,16 @@ router.get('/:competitionid/line/runs/monitor', function (req, res, next) {
   res.render('line_runs_monitor', {id : id, user: req.user})
 })
 
+router.get('/:competitionid/maze/runs/monitor', function (req, res, next) {
+  const id = req.params.competitionid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  res.render('maze_runs_monitor', {id : id, user: req.user})
+})
+
 router.get('/:competitionid/line/runs/bulk', function (req, res, next) {
   const id = req.params.competitionid
 
