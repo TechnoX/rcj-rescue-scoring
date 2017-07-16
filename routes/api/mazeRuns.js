@@ -144,6 +144,34 @@ function getLatestMazeRun(req, res) {
 }
 module.exports.getLatestMazeRun = getLatestMazeRun
 
+publicRouter.get('/find/:competitionid/:field/:status', function (req, res, next) {
+    var id = req.params.competitionid
+    var field_id = req.params.field
+    var status = req.params.status
+    if (!ObjectId.isValid(id)) {
+        return next()
+    }
+    if (!ObjectId.isValid(field_id)) {
+        return next()
+    }
+    var query = mazeRun.find({
+        competition: id,
+        field: field_id,
+        status: status
+    }, "field team competition status")
+    query.populate(["team"])
+    query.exec(function (err, data) {
+        if (err) {
+            logger.error(err)
+            res.status(400).send({
+                msg: "Could not get runs"
+            })
+        } else {
+            res.status(200).send(data)
+        }
+    })
+})
+
 
 /**
  * @api {get} /runs/maze/:runid Get run
