@@ -82,6 +82,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.competition = response.data.competition.name;
             $scope.competition_id = response.data.competition._id;
             $scope.LoPs = response.data.LoPs;
+            $scope.status = response.data.status;
 
             // Verified time by timekeeper
             $scope.minutes = response.data.time.minutes;
@@ -116,6 +117,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 width = response.data.width;
                 length = response.data.length;
                 height = response.data.height;
+                if (height > 2) height = 2;
                 console.log("h" + height);
 
             }, function (response) {
@@ -386,7 +388,7 @@ function tile_size() {
             var b = $('.tilearea');
             //console.log('コンテンツ本体：' + b.height() + '×' + b.width());
             //console.log('window：' + window.innerHeight);
-            var tilesize_w = (b.width() - (80 + 11 * (width + 1) * height)) / (width * height);
+            var tilesize_w = (b.width() - (70 + 11 * (width + 1) * height)) / (width * height);
             var tilesize_h = (window.innerHeight - (200 + 11 * (length + 1))) / length;
             console.log(width + 'tilesize_w:' + tilesize_w);
             console.log('tilesize_h:' + tilesize_h);

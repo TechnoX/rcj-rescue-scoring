@@ -10,18 +10,20 @@ table tr:nth-child(odd) {
     height: 5px;
 }
 
-table tr:nth-child(even) {
+
+/*table tr:nth-child(even) {
     height: 40px;
-}
+}*/
 
 
 /*tr td:nth-child(odd) {
     width: 5px;
 }*/
 
-tr td:nth-child(even) {
+
+/*tr td:nth-child(even) {
     width: 40px;
-}
+}*/
 
 .wall {
     background-color: navy;

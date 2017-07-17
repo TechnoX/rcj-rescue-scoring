@@ -11,8 +11,8 @@
 
 <div class="row">
     <div class="col-md-12  tilearea">
-        <div ng-repeat="z in range(height) track by $index" style="float: left; margin-right: 10px">
-            <h3>{{countWords[$index]}} floor</h3>
+        <div ng-repeat="z in range(height) track by $index" style="float: left;">
+            <h4>{{countWords[$index]}} floor</h4>
             <table>
                 <tr ng-repeat="r in range(2*length + 1)">
                     <td ng-repeat="c in range(2*width + 1)" ng-class="{'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall, 'checkpoint': cells[c+','+r+','+z].tile.checkpoint, 'black': cells[c+','+r+','+z].tile.black, 'linear': cells[c+','+r+','+z].isLinear}" ng-click="cellClick(c, r, z, $odd != $parent.$odd, $odd && $parent.$odd)">
@@ -59,7 +59,7 @@
             <i class="fa fa-undo" aria-hidden="true"> : {{LoPs}} times</i>
         </div>
         <div class="col-6">
-            <i class="fa fa-home" aria-hidden="true"> : Returned: {{exitBonus}}</i>
+            <i class="fa fa-home" aria-hidden="true"> : Returned: <b>{{exitBonus}}</b></i>
         </div>
     </div>
 </div>
