@@ -44,7 +44,7 @@ tr td:nth-child(even) {
 }
 
 .tile.checkpoint {
-    background-color: silver;
+    background-image: linear-gradient(to top left, #A5A5A5, #BABAC2, #E8E8E8, #A5A5A5, #BABAC2);
 }
 
 .tile.black {
