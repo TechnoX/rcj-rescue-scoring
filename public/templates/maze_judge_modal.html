@@ -1,39 +1,54 @@
 <div class="modal-header">
-  <h3 class="modal-title">Score items</h3>
+    <h3 class="modal-title">Score items</h3>
 </div>
 <div class="modal-body">
-  <ul>
-    <li ng-show="cell.tile.checkpoint">
-      <input type="checkbox" ng-model="tile.scoredItems.checkpoint" id="hasCheckpoint"><label for="hasCheckpoint" class="checkbox">Reach checkpoint</label>
-    </li>
-    <li ng-show="cell.tile.speedbump">
-      <input type="checkbox" ng-model="tile.scoredItems.speedbump" id="hasSpeedbumps"><label class="checkbox" for="hasSpeedbumps">Speedbumps</label>
-    </li>
-    <li ng-show="cell.tile.rampBottom">
-      <input type="checkbox" ng-model="tile.scoredItems.rampBottom" id="hasRampBottom"><label class="checkbox" for="hasRampBottom">Ramp bottom</label>
-    </li>
-    <li ng-show="cell.tile.rampTop">
-      <input type="checkbox" ng-model="tile.scoredItems.rampTop" id="hasRampTop"><label class="checkbox" for="hasRampTop">Ramp top</label>
-    </li>
-    
-    <li ng-show="hasVictims">
-      <label>Flash within 15cm from victim:</label>
-      <ul>
-        <li ng-repeat="(direction, type) in cell.tile.victims track by $index" ng-show="type != 'None'">
-          <input type="checkbox" ng-model="tile.scoredItems.victims[direction]" id="{{ 'victim-' + $index }}"><label class="checkbox" for="{{ 'victim-' + $index }}">Victim {{direction}}</label>
+    <ul>
+        <li ng-show="cell.tile.checkpoint">
+            <input type="checkbox" ng-model="tile.scoredItems.checkpoint" id="hasCheckpoint"><label for="hasCheckpoint" class="checkbox">Reach checkpoint</label>
         </li>
-      </ul>
-    </li>
-    <li ng-show="hasVictims">
-      <label>Delivered rescue kits:</label>
-      <ul>
-	<li ng-repeat="(direction, type) in cell.tile.victims" ng-show="type != 'None'">
-          <label><input type="number" ng-model="tile.scoredItems.rescueKits[direction]" min="0" max="12" style="width: 3em;">Victim {{direction}}</label>
+        <li ng-show="cell.tile.speedbump">
+            <input type="checkbox" ng-model="tile.scoredItems.speedbump" id="hasSpeedbumps"><label class="checkbox" for="hasSpeedbumps">Speedbumps</label>
         </li>
-      </ul>
-    </li>
-  </ul>
+        <li ng-show="cell.tile.rampBottom">
+            <input type="checkbox" ng-model="tile.scoredItems.rampBottom" id="hasRampBottom"><label class="checkbox" for="hasRampBottom">Ramp bottom</label>
+        </li>
+        <li ng-show="cell.tile.rampTop">
+            <input type="checkbox" ng-model="tile.scoredItems.rampTop" id="hasRampTop"><label class="checkbox" for="hasRampTop">Ramp top</label>
+        </li>
+
+        <li ng-show="hasVictims">
+            <label>Flash within 15cm from victim:</label>
+            <ul>
+                <li ng-repeat="(direction, type) in cell.tile.victims track by $index" ng-show="type != 'None'">
+                    <input type="checkbox" ng-model="tile.scoredItems.victims[direction]" id="{{ 'victim-' + $index }}"><label class="checkbox" for="{{ 'victim-' + $index }}">Victim {{direction}}</label>
+                </li>
+            </ul>
+        </li>
+        <li ng-show="hasVictims">
+            <label>Delivered rescue kits:</label>
+            <ul>
+                <li ng-repeat="(direction, type) in cell.tile.victims" ng-show="type != 'None'">
+                    <div class="input-group" style="width:100%;">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-danger"  ng-click="decKits(direction)">
+                                <i class="fa fa-minus" aria-hidden="true"></i>
+                            </button>
+                        </span>
+                        <input type="text" name="quant[2]" class="form-control input-number" ng-model="tile.scoredItems.rescueKits[direction] +' '+direction" min="1" max="12" readonly="readonly">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-success" ng-click="incKits(direction)">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+                        </span>
+                    </div>
+                </li>
+
+            </ul>
+        </li>
+    </ul>
 </div>
+
+
 <div class="modal-footer">
-  <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+    <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
 </div>

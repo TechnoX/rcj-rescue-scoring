@@ -133,6 +133,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         });
     }
 
+
     var tick = function () {
         $scope.time += 1000;
         if ($scope.time >= 480000) {
@@ -529,6 +530,17 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, cell, t
         (cell.tile.victims.right != "None") ||
         (cell.tile.victims.bottom != "None") ||
         (cell.tile.victims.left != "None");
+
+    $scope.incKits = function (direction) {
+        $scope.tile.scoredItems.rescueKits[direction]++;
+    }
+
+    $scope.decKits = function (direction) {
+        $scope.tile.scoredItems.rescueKits[direction]--;
+        if ($scope.tile.scoredItems.rescueKits[direction] < 0) {
+            $scope.tile.scoredItems.rescueKits[direction] = 0;
+        }
+    }
 
     $scope.ok = function () {
         $uibModalInstance.close();
