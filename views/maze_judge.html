@@ -48,10 +48,23 @@
                     <div class="card-block">
                       <p class="card-text">
                         <b>Total number of LoPs:</b><br>
-                        <img src="/images/minus.png" alt="-" ng-click="decrement()" class="plusminus">
-                        <img src="/images/loader2.gif" width="37px" height="37px" alt="" ng-show="lopProcessing">
-                        <span class="count" ng-show="!lopProcessing">{{LoPs}}</span>
-                        <img src="/images/plus.png" alt="+" ng-click="increment()" class="plusminus">  
+                        <div class="input-group" style="width:100%;">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-danger"  ng-click="decrement()">
+                                    <i class="fa fa-minus" aria-hidden="true"></i>
+                                </button>
+                            </span>
+                            <div style="background-color: #F2F2F2; width:100px; text-align: center;">
+                              <img src="/images/loader2.gif" alt="" ng-show="lopProcessing" style="height:30px; width:auto;">
+                              <span class="count" ng-show="!lopProcessing">{{LoPs}}</span>
+                            </div>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-success" ng-click="increment()">
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                </button>
+                            </span>
+                        </div>
+
                       </p>
                     </div>
                     <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> Other</h3>
