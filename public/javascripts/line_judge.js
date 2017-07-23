@@ -241,7 +241,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.minutes = Math.floor($scope.time / 60000)
             $scope.seconds = (Math.floor($scope.time % 60000)) / 1000
             $scope.saveEverything();
-            swal("Time Up!", "Do NOT push the Retire button.", "info");
+            swal("Time Up!", "8 minutes has passed", "info");
         }
         if ($scope.startedTime) {
             $timeout(tick, 1000);
