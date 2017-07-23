@@ -87,6 +87,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.started = response.data.started;
             $scope.round = response.data.round.name;
             $scope.team = response.data.team.name;
+            $scope.league = response.data.team.league;
             $scope.competition = response.data.competition.name;
             $scope.competition_id = response.data.competition._id;
             $scope.retired = response.data.retired;
@@ -165,7 +166,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         if (!mtile || mtile.index.length == 0)
             return;
 
-        
+
         for (var i = 0; i < mtile.index.length; i++) {
             if ($scope.stiles[mtile.index[i]].isDropTile) {
                 isDropTile = true;
@@ -174,9 +175,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
 
         var total = (mtile.items.obstacles > 0 ||
-                     mtile.items.speedbumps > 0 ||
-                     mtile.tileType.gaps > 0 ||
-                     mtile.tileType.intersections > 0) * mtile.index.length;
+            mtile.items.speedbumps > 0 ||
+            mtile.tileType.gaps > 0 ||
+            mtile.tileType.intersections > 0) * mtile.index.length;
         // Add the number of possible passes for drop tiles
         if (isDropTile) {
             total += mtile.index.length;
