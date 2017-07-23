@@ -44,10 +44,21 @@
                     <div class="card-block">
                         <p class="card-text">
                             <b>Total number of LoPs:</b><br>
-                            <img src="/images/minus.png" alt="-" class="plusminus" style="opacity:0.5;">
-                            <img src="/images/loader2.gif" width="37px" height="37px" alt="" ng-show="lopProcessing">
-                            <span class="count" ng-show="!lopProcessing">{{LoPs}}</span>
-                            <img src="/images/plus.png" alt="+" class="plusminus" style="opacity:0.5;">
+                            <div class="input-group" style="width:100%;">
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-danger" disabled="disabled">
+                                        <i class="fa fa-minus" aria-hidden="true"></i>
+                                    </button>
+                                </span>
+                                <div style="background-color: #F2F2F2; width:100px; text-align: center;">
+                                  <span class="count">{{LoPs}}</span>
+                                </div>
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-success" disabled="disabled">
+                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                    </button>
+                                </span>
+                            </div>
                         </p>
                     </div>
                     <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> Other</h3>
@@ -184,11 +195,11 @@
                 <h3 class="card-header"><i class="fa fa-key" aria-hidden="true"></i> Sign</h3>
                 <div class="card-block"><strong>
                       <p class="card-text  text-warning">
-                          By wiritng a sign below, you accept that the 
-                          [Score：{{score}}]   
-                          [Time：{{minutes}} min {{seconds}} sec] 
-                          are correct.  
-                          Your team also further undertakes to not appeal the score at a later stage. 
+                          By wiritng a sign below, you accept that the
+                          [Score：{{score}}]
+                          [Time：{{minutes}} min {{seconds}} sec]
+                          are correct.
+                          Your team also further undertakes to not appeal the score at a later stage.
                       </p></strong>
                     <h2>Captain Sign</h2>
                     <div id="cap_sig" class="confirmation"></div>
