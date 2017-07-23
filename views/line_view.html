@@ -49,9 +49,21 @@
                         <div ng-repeat="dropTile in range(actualUsedDropTiles+1) track by $index">
                             <p class="card-text">
                                 <b>{{$index==0?'Start':('Checkpoint ' + ($index))}}</b> to <b>{{!$last?('Checkpoint ' + ($index+1)):'Evacuation zone'}}</b><br>
-                                <img src="/images/minus.png" alt="-" class="plusminus" style="opacity:0.5;">
-                                <span class="count">{{LoPs[$index]?LoPs[$index]:0}}</span>
-                                <img src="/images/plus.png" alt="+" class="plusminus" style="opacity:0.5;">
+                                <div class="input-group" style="width:100%;">
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-danger" disabled>
+                                            <i class="fa fa-minus" aria-hidden="true"></i>
+                                        </button>
+                                    </span>
+                                    <div style="background-color: #F2F2F2; width:100px; text-align: center;">
+                                      <span class="count">{{LoPs[$index]?LoPs[$index]:0}}</span>
+                                    </div>
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-success" disabled>
+                                            <i class="fa fa-plus" aria-hidden="true"></i>
+                                        </button>
+                                    </span>
+                                </div>
                             </p>
                             <hr ng-show="!$last" />
                         </div>
@@ -62,16 +74,40 @@
                     <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> Rescuing victims　<span class="badge badge-danger">{{evacuationLevel-1?"High":"Low"}} evacuation point</span></h3>
                     <div class="card-block">
                         <p class="card-text">【LIVE Victims】Number：　　 <span class="badge badge-info">{{30 + (evacuationLevel-1)*10}}　points /victim</span></p>
-                        <img src="/images/minus.png" alt="-" style="opacity:0.5;" class="plusminus">
-                        <span class="count" ng-show="rlprocessing != true">{{rescuedLiveVictims}}</span>
-                        <img src="/images/plus.png" alt="+" style="opacity:0.5;" class="plusminus">
+                        <div class="input-group" style="width:100%;">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-danger" disabled>
+                                    <i class="fa fa-minus" aria-hidden="true"></i>
+                                </button>
+                            </span>
+                            <div style="background-color: #F2F2F2; width:100px; text-align: center;">
+                              <span class="count">{{rescuedLiveVictims}}</span>
+                            </div>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-success" disabled>
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                </button>
+                            </span>
+                        </div>
                     </div>
                     <hr>
                     <div class="card-block">
                         <p class="card-text">【DEAD Victims】Number： 　　　　<span class="badge badge-info">{{15 + (evacuationLevel-1)*5}} points /victim</span></p>
-                        <img src="/images/minus.png" alt="-" style="opacity:0.5;" class="plusminus">
-                        <span class="count" ng-show="rdprocessing != true">{{rescuedDeadVictims}}</span>
-                        <img src="/images/plus.png" alt="+" style="opacity:0.5;" class="plusminus">
+                        <div class="input-group" style="width:100%;">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-danger" disabled>
+                                    <i class="fa fa-minus" aria-hidden="true"></i>
+                                </button>
+                            </span>
+                            <div style="background-color: #F2F2F2; width:100px; text-align: center;">
+                              <span class="count">{{rescuedDeadVictims}}</span>
+                            </div>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-success" disabled>
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                </button>
+                            </span>
+                        </div>
                     </div>
                     <hr>
                     <div class="card-block">
