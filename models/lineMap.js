@@ -44,8 +44,20 @@ const lineMapSchema = new Schema({
       }
     },
     items    : {
-      obstacles : {type: Number, integer: true, required: true, default: 0, min: 0},
-      speedbumps: {type: Number, integer: true, required: true, default: 0, min: 0}
+      obstacles : {
+        type    : Number,
+        integer : true,
+        required: true,
+        default : 0,
+        min     : 0
+      },
+      speedbumps: {
+        type    : Number,
+        integer : true,
+        required: true,
+        default : 0,
+        min     : 0
+      }
     },
     index    : {type: [Number], min: 0},
     levelUp  : {type: String, enum: ["top", "right", "bottom", "left"]},
@@ -125,8 +137,20 @@ const tileSetSchema = new Schema({
 
 const tileTypeSchema = new Schema({
   image        : {type: String, required: true, unique: true},
-  gaps         : {type: Number, integer: true, required: true, default: 0, min: 0},
-  intersections: {type: Number, integer: true, required: true, default: 0, min: 0},
+  gaps         : {
+    type    : Number,
+    integer : true,
+    required: true,
+    default : 0,
+    min     : 0
+  },
+  intersections: {
+    type    : Number,
+    integer : true,
+    required: true,
+    default : 0,
+    min     : 0
+  },
   paths        : {
     "top"   : {type: String, enum: ["top", "right", "bottom", "left"]},
     "right" : {type: String, enum: ["top", "right", "bottom", "left"]},
@@ -557,7 +581,8 @@ const tileTypes = [
     "paths"        : {
       "left" : "right",
       "right": "left"
-    }
+    },
+    "_id"          : "5975fb67038dda73c0f5ddaf"
   },
   {
     "image"        : "tile-56.png",
@@ -566,7 +591,8 @@ const tileTypes = [
     "paths"        : {
       "left" : "right",
       "right": "left"
-    }
+    },
+    "_id"          : "5975fb67038dda73c0f5ddb0"
   },
   {
     "image"        : "tile-57.png",
@@ -575,7 +601,8 @@ const tileTypes = [
     "paths"        : {
       "bottom": "right",
       "right" : "bottom"
-    }
+    },
+    "_id"          : "5975fb67038dda73c0f5ddb1"
   },
   {
     "image"        : "tile-58.png",
@@ -584,7 +611,8 @@ const tileTypes = [
     "paths"        : {
       "bottom": "right",
       "right" : "bottom"
-    }
+    },
+    "_id"          : "5975fb67038dda73c0f5ddb2"
   },
   {
     "image"        : "tile-59.png",
@@ -593,7 +621,8 @@ const tileTypes = [
     "paths"        : {
       "left" : "right",
       "right": "left"
-    }
+    },
+    "_id"          : "5975fb67038dda73c0f5ddb3"
   },
   {
     "image"        : "tile-60.png",
@@ -602,16 +631,18 @@ const tileTypes = [
     "paths"        : {
       "left" : "right",
       "right": "left"
-    }
+    },
+    "_id"          : "5975fb67038dda73c0f5ddb4"
   },
   {
     "image"        : "tile-61.png",
     "gaps"         : 0,
     "intersections": 0,
     "paths"        : {
-      "bottom" : "right",
-      "right": "bottom"
-    }
+      "bottom": "right",
+      "right" : "bottom"
+    },
+    "_id"          : "5975fb67038dda73c0f5ddb5"
   },
   {
     "image"        : "tile-62.png",
@@ -620,7 +651,8 @@ const tileTypes = [
     "paths"        : {
       "top"   : "bottom",
       "bottom": "top"
-    }
+    },
+    "_id"          : "5975fb67038dda73c0f5ddb6"
   },
   {
     "image"        : "tile-63.png",
@@ -631,7 +663,8 @@ const tileTypes = [
       "right" : "bottom",
       "left"  : "top",
       "top"   : "left"
-    }
+    },
+    "_id"          : "5975fb67038dda73c0f5ddb7"
   },
   {
     "image"        : "tile-64.png",
@@ -640,7 +673,8 @@ const tileTypes = [
     "paths"        : {
       "top"   : "bottom",
       "bottom": "top"
-    }
+    },
+    "_id"          : "5975fb67038dda73c0f5ddb8"
   },
   {
     "image"        : "tile-65.png",
@@ -649,7 +683,8 @@ const tileTypes = [
     "paths"        : {
       "bottom": "right",
       "right" : "bottom"
-    }
+    },
+    "_id"          : "5975fb67038dda73c0f5ddb9"
   },
   {
     "image"        : "tile-66.png",
@@ -658,7 +693,8 @@ const tileTypes = [
     "paths"        : {
       "left" : "right",
       "right": "left"
-    }
+    },
+    "_id"          : "5975fb67038dda73c0f5ddba"
   },
   {
     "image"        : "tile-67.png",
@@ -667,7 +703,8 @@ const tileTypes = [
     "paths"        : {
       "left" : "right",
       "right": "left"
-    }
+    },
+    "_id"          : "5975fb67038dda73c0f5ddbb"
   },
   {
     "image"        : "tile-68.png",
@@ -676,7 +713,8 @@ const tileTypes = [
     "paths"        : {
       "left" : "right",
       "right": "left"
-    }
+    },
+    "_id"          : "5975fb67038dda73c0f5ddbc"
   },
   {
     "image"        : "tile-69.png",
@@ -685,7 +723,8 @@ const tileTypes = [
     "paths"        : {
       "left" : "right",
       "right": "left"
-    }
+    },
+    "_id"          : "5975fb67038dda73c0f5ddbd"
   },
   {
     "image"        : "tile-70.png",
@@ -694,7 +733,8 @@ const tileTypes = [
     "paths"        : {
       "left" : "right",
       "right": "left"
-    }
+    },
+    "_id"          : "5975fb67038dda73c0f5ddbe"
   },
   {
     "image"        : "007.png",
