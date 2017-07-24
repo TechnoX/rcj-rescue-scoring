@@ -99,6 +99,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.ref_sig = response.data.sign.referee;
             $scope.refas_sig = response.data.sign.referee_as;
 
+            $scope.comment = response.data.comment;
+
             // Scoring elements of the tiles
             $scope.stiles = response.data.tiles;
 
