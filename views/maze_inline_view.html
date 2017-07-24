@@ -39,9 +39,9 @@
                             <img ng-src="/images/u_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'U'">
                             <img ng-src="/images/u_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'U'">
 
-                            <img src="/images/done.png" class="tile-image" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'done'">
-                            <img src="/images/halfdone.png" class="tile-image" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'halfdone'">
-                            <img src="/images/undone.png" class="tile-image" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'undone'">
+                            <i class="fa fa-check fa-fw tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'done'" style="padding-top:4px; color:#27ae60; opacity:0.9;"></i>
+                            <i class="fa fa-play fa-fw fa-rotate-270 tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'halfdone'" style="padding-top:4px; color:#f4d03f; opacity:0.9;"></i>
+                            <i class="fa fa-times fa-fw tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'undone'" style="padding-top:4px; color:#e74c3c; opacity:0.9;"></i>
                         </div>
                     </td>
                 </tr>
