@@ -695,6 +695,7 @@ function tile_size() {
             $('.tile-image').css('height', tilesize);
             $('.tile-image').css('width', tilesize);
             $('.tile-font').css('font-size', tilesize-10);
+            $('.tile-font-1-25').css('font-size', tilesize/2.5);
             $('.slot').css('height', tilesize);
             $('.slot').css('width', tilesize);
             $('.chnumtxt').css('font-size', tilesize / 8);
