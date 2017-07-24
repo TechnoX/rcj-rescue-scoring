@@ -15,7 +15,7 @@ angular.module("RoundAdmin", []).controller("RoundAdminController", function ($s
   $scope.addRound = function () {
     var round = {name: $scope.roundName, competition: competitionId, league: $scope.roundLeague}
 
-    $http.post("/api/rounds/createround", round).then(function (response) {
+    $http.post("/api/rounds", round).then(function (response) {
       console.log(response)
       updateRoundList()
     }, function (error) {
@@ -32,7 +32,7 @@ angular.module("RoundAdmin", []).controller("RoundAdminController", function ($s
           confirmButtonText: "Remove it!",
           confirmButtonColor: "#ec6c62"
         }, function() {
-            $http.get("/api/rounds/" + round._id + "/delete").then(function (response) {
+            $http.delete("/api/rounds/" + round._id).then(function (response) {
             console.log(response)
             updateRoundList()
           }, function (error) {

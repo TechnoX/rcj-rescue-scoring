@@ -45,7 +45,7 @@ roundSchema.pre('save', function (next) {
   const self = this
   if (self.isNew) {
     Round.findOne({
-      competition: self._id,
+      competition: self.competition,
       name       : self.name,
       league     : self.league
     }, function (err, dbRound) {
@@ -78,7 +78,7 @@ teamSchema.pre('save', function (next) {
   const self = this
   if (self.isNew) {
     Team.findOne({
-      competition: self._id,
+      competition: self.competition,
       name       : self.name,
       league     : self.league
     }, function (err, dbTeam) {
@@ -111,7 +111,7 @@ fieldSchema.pre('save', function (next) {
   const self = this
   if (self.isNew) {
     Field.findOne({
-      competition: self._id,
+      competition: self.competition,
       name       : self.name,
       league     : self.league
     }, function (err, dbField) {

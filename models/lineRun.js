@@ -51,14 +51,15 @@ const lineRunSchema = new Schema({
     minutes: {type: Number, min: 0, max: 8, default: 0},
     seconds: {type: Number, min: 0, max: 59, default: 0}
   },
-  status            : {type: Number, min: 0 , default: 0},
+  status            : {type: Number, min: 0, default: 0},
   retired           : {type: Boolean, default: false},
   sign              : {
-    captain: {type: String, default: ""},
-    referee: {type: String, default: ""},
+    captain   : {type: String, default: ""},
+    referee   : {type: String, default: ""},
     referee_as: {type: String, default: ""}
   },
-  started           : {type: Boolean, default: false, index: true}
+  started           : {type: Boolean, default: false, index: true},
+  comment           : {type: String, default: ""}
 })
 
 lineRunSchema.pre('save', function (next) {

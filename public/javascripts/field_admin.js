@@ -15,7 +15,7 @@ angular.module("FieldAdmin", []).controller("FieldAdminController", function ($s
   $scope.addField = function () {
     var field = {name: $scope.fieldName, competition: competitionId, league: $scope.fieldLeague}
 
-    $http.post("/api/fields/createfield", field).then(function (response) {
+    $http.post("/api/fields", field).then(function (response) {
       console.log(response)
       updateFieldList()
     }, function (error) {
@@ -32,7 +32,7 @@ angular.module("FieldAdmin", []).controller("FieldAdminController", function ($s
           confirmButtonText: "Remove it!",
           confirmButtonColor: "#ec6c62"
         }, function() {
-            $http.get("/api/fields/" + field._id + "/delete").then(function (response) {
+            $http.delete("/api/fields/" + field._id).then(function (response) {
             console.log(response)
             updateFieldList()
           }, function (error) {

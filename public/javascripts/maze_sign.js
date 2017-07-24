@@ -462,6 +462,7 @@ function tile_size() {
             $('.tile-image-container').css('width', tilesize);
             $('.tile-image').css('height', tilesize);
             $('.tile-image').css('width', tilesize);
+            $('.tile-font').css('font-size', tilesize-10);
             if (b.height() == 0) setTimeout("tile_size()", 500);
         } catch (e) {
             setTimeout("tile_size()", 500);
