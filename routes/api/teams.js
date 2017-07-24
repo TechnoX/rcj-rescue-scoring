@@ -50,7 +50,7 @@ publicRouter.get('/:teamid/runs', function (req, res, next) {
   })
 })
 
-adminRouter.get('/:teamid/delete', function (req, res, next) {
+adminRouter.delete('/:teamid', function (req, res, next) {
   var id = req.params.teamid
 
   if (!ObjectId.isValid(id)) {
@@ -67,7 +67,7 @@ adminRouter.get('/:teamid/delete', function (req, res, next) {
   })
 })
 
-adminRouter.post('/createteam', function (req, res) {
+adminRouter.post('/', function (req, res) {
   var team = req.body
 
   var newTeam = new competitiondb.team({
@@ -81,6 +81,7 @@ adminRouter.post('/createteam', function (req, res) {
       logger.error(err)
       res.status(400).send({msg: "Error saving team", err: err.message})
     } else {
+      res.location("/api/teams/" + data._id)
       res.status(201).send({msg: "New team has been saved", id: data._id})
     }
   })

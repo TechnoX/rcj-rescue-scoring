@@ -15,7 +15,7 @@ angular.module("TeamAdmin", []).controller("TeamAdminController", function ($sco
   $scope.addTeam = function () {
     var team = {name: $scope.teamName, league: $scope.teamLeague, competition: competitionId}
 
-    $http.post("/api/teams/createteam", team).then(function (response) {
+    $http.post("/api/teams", team).then(function (response) {
       console.log(response)
       updateTeamList()
     }, function (error) {
@@ -32,7 +32,7 @@ angular.module("TeamAdmin", []).controller("TeamAdminController", function ($sco
           confirmButtonText: "Remove it!",
           confirmButtonColor: "#ec6c62"
         }, function() {
-            $http.get("/api/teams/" + team._id + "/delete").then(function (response) {
+            $http.delete("/api/teams/" + team._id).then(function (response) {
                 console.log(response)
                 updateTeamList()
               }, function (error) {

@@ -49,7 +49,7 @@ publicRouter.get('/:fieldid/runs', function (req, res, next) {
   })
 })
 
-adminRouter.get('/:fieldid/delete', function (req, res, next) {
+adminRouter.delete('/:fieldid', function (req, res, next) {
   var id = req.params.fieldid
 
   if (!ObjectId.isValid(id)) {
@@ -66,7 +66,7 @@ adminRouter.get('/:fieldid/delete', function (req, res, next) {
   })
 })
 
-adminRouter.post('/createfield', function (req, res) {
+adminRouter.post('/', function (req, res) {
   var field = req.body
 
   var newField = new competitiondb.field({
@@ -80,6 +80,7 @@ adminRouter.post('/createfield', function (req, res) {
       logger.error(err)
       res.status(400).send({msg: "Error saving field", err: err.message})
     } else {
+      res.location("/api/fields/" + data._id)
       res.status(201).send({msg: "New field has been saved", id: data._id})
     }
   })

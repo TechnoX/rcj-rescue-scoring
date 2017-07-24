@@ -46,7 +46,7 @@ publicRouter.get('/:roundid/runs', function (req, res, next) {
   })
 })
 
-adminRouter.get('/:roundid/delete', function (req, res, next) {
+adminRouter.delete('/:roundid', function (req, res, next) {
   var id = req.params.roundid
 
   if (!ObjectId.isValid(id)) {
@@ -63,7 +63,7 @@ adminRouter.get('/:roundid/delete', function (req, res, next) {
   })
 })
 
-adminRouter.post('/createround', function (req, res) {
+adminRouter.post('/', function (req, res) {
   var round = req.body
 
   var newRound = new competitiondb.round({
@@ -77,6 +77,7 @@ adminRouter.post('/createround', function (req, res) {
       logger.error(err)
       res.status(400).send({msg: "Error saving round", err: err.message})
     } else {
+      res.location("/api/rounds/" + data._id)
       res.status(201).send({msg: "New round has been saved", id: data._id})
     }
   })
