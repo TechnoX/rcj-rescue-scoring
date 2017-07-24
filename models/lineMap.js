@@ -818,7 +818,7 @@ for (var i in tileTypes) {
         TileType.findById(tileType._id, function (err, dbTileType) {
           if (err) {
             logger.error(err)
-          } else {
+          } else if (dbTileType) {
             dbTileType.image = tileType.image
             dbTileType.gaps = tileType.gaps
             dbTileType.intersections = tileType.intersections
