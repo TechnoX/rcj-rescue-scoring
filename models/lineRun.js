@@ -59,7 +59,8 @@ const lineRunSchema = new Schema({
     referee_as: {type: String, default: ""}
   },
   started           : {type: Boolean, default: false, index: true},
-  comment           : {type: String, default: ""}
+  comment           : {type: String, default: ""},
+  startTime         : {type: Number, default: 0}
 })
 
 lineRunSchema.pre('save', function (next) {

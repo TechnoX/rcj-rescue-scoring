@@ -59,7 +59,7 @@ function getMazeRuns(req, res) {
     query = mazeRun.find({})
   }
 
-  query.select("competition round team field map score time status")
+  query.select("competition round team field map score time status comment startTime")
 
   if (req.query['populate'] !== undefined && req.query['populate']) {
     query.populate([
