@@ -551,6 +551,152 @@ const tileTypes = [
     "_id"          : "570c27c3f5a9dabe23f3afb4"
   },
   {
+    "image"        : "tile-41.png",
+    "gaps"         : 0,
+    "intersections": 1,
+    "paths"        : {
+      "left" : "right",
+      "right": "left"
+    }
+  },
+  {
+    "image"        : "tile-56.png",
+    "gaps"         : 0,
+    "intersections": 0,
+    "paths"        : {
+      "left" : "right",
+      "right": "left"
+    }
+  },
+  {
+    "image"        : "tile-57.png",
+    "gaps"         : 0,
+    "intersections": 0,
+    "paths"        : {
+      "bottom": "right",
+      "right" : "bottom"
+    }
+  },
+  {
+    "image"        : "tile-58.png",
+    "gaps"         : 0,
+    "intersections": 0,
+    "paths"        : {
+      "bottom": "right",
+      "right" : "bottom"
+    }
+  },
+  {
+    "image"        : "tile-59.png",
+    "gaps"         : 0,
+    "intersections": 0,
+    "paths"        : {
+      "left" : "right",
+      "right": "left"
+    }
+  },
+  {
+    "image"        : "tile-60.png",
+    "gaps"         : 0,
+    "intersections": 0,
+    "paths"        : {
+      "left" : "right",
+      "right": "left"
+    }
+  },
+  {
+    "image"        : "tile-61.png",
+    "gaps"         : 0,
+    "intersections": 0,
+    "paths"        : {
+      "bottom" : "right",
+      "right": "bottom"
+    }
+  },
+  {
+    "image"        : "tile-62.png",
+    "gaps"         : 0,
+    "intersections": 0,
+    "paths"        : {
+      "top"   : "bottom",
+      "bottom": "top"
+    }
+  },
+  {
+    "image"        : "tile-63.png",
+    "gaps"         : 0,
+    "intersections": 0,
+    "paths"        : {
+      "bottom": "right",
+      "right" : "bottom",
+      "left"  : "top",
+      "top"   : "left"
+    }
+  },
+  {
+    "image"        : "tile-64.png",
+    "gaps"         : 0,
+    "intersections": 0,
+    "paths"        : {
+      "top"   : "bottom",
+      "bottom": "top"
+    }
+  },
+  {
+    "image"        : "tile-65.png",
+    "gaps"         : 0,
+    "intersections": 0,
+    "paths"        : {
+      "bottom": "right",
+      "right" : "bottom"
+    }
+  },
+  {
+    "image"        : "tile-66.png",
+    "gaps"         : 0,
+    "intersections": 0,
+    "paths"        : {
+      "left" : "right",
+      "right": "left"
+    }
+  },
+  {
+    "image"        : "tile-67.png",
+    "gaps"         : 0,
+    "intersections": 0,
+    "paths"        : {
+      "left" : "right",
+      "right": "left"
+    }
+  },
+  {
+    "image"        : "tile-68.png",
+    "gaps"         : 0,
+    "intersections": 0,
+    "paths"        : {
+      "left" : "right",
+      "right": "left"
+    }
+  },
+  {
+    "image"        : "tile-69.png",
+    "gaps"         : 0,
+    "intersections": 0,
+    "paths"        : {
+      "left" : "right",
+      "right": "left"
+    }
+  },
+  {
+    "image"        : "tile-70.png",
+    "gaps"         : 0,
+    "intersections": 0,
+    "paths"        : {
+      "left" : "right",
+      "right": "left"
+    }
+  },
+  {
     "image"        : "007.png",
     "gaps"         : 0,
     "intersections": 0,
