@@ -349,13 +349,13 @@ app.directive('tile', function () {
             $scope.rotateRamp = function (direction) {
                 switch (direction) {
                     case "bottom":
-                        return "rot0";
+                        return;
                     case "top":
-                        return "rot180";
+                        return "fa-rotate-180";
                     case "left":
-                        return "rot90";
+                        return "fa-rotate-90";
                     case "right":
-                        return "rot270";
+                        return "fa-rotate-270";
                 }
             }
 
@@ -379,6 +379,7 @@ function tile_size() {
             $('tile').css('width', tilesize);
             $('.tile-image').css('height', tilesize);
             $('.tile-image').css('width', tilesize);
+            $('.tile-font').css('font-size', tilesize-10);
             $('.slot').css('height', tilesize);
             $('.slot').css('width', tilesize);
             $('#card_area').css('height', (window.innerHeight - 150));

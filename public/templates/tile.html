@@ -8,15 +8,19 @@
 <!--<img ng-src="/images/gap.png" class="tile-image" ng-show="tile.items.gaps>0">
 <img ng-src="/images/intersection.png" class="tile-image" ng-show="tile.items.intersections>0">-->
 
-<img src="/images/up.png" class="tile-image" ng-show="tile.levelUp" ng-class="rotateRamp(tile.levelUp)">
-<img src="/images/down.png" class="tile-image" ng-show="tile.levelDown" ng-class="rotateRamp(tile.levelDown)">
+<!--<img src="/images/up.png" class="tile-image" ng-show="tile.levelUp" ng-class="rotateRamp(tile.levelUp)">-->
+<i class="fa fa-caret-square-o-down fa-fw tile-image tile-font" ng-class="rotateRamp(tile.levelUp)" ng-show="tile.levelUp" style="padding-top:4px; color:#3498db; opacity:0.9;"></i>
+<!--<img src="/images/down.png" class="tile-image" ng-show="tile.levelDown" ng-class="rotateRamp(tile.levelDown)">-->
+<i class="fa fa-caret-square-o-down fa-fw tile-image tile-font" ng-class="rotateRamp(tile.levelDown)" ng-show="tile.levelDown" style="padding-top:4px; color:#ff8095; opacity:0.9;"></i>
 
 
 
 <img src="/images/start.png" class="tile-image" ng-show="isStart(tile)">
 
-<img src="/images/done.png" class="tile-image" ng-show="tileStatus(tile) == 'done'">
-<img src="/images/halfdone.png" class="tile-image" ng-show="tileStatus(tile) == 'halfdone'">
-<img src="/images/undone.png" class="tile-image" ng-show="tileStatus(tile) == 'undone'">
+<!--<img src="/images/done.png" class="tile-image" ng-show="tileStatus(tile) == 'done'">-->
+<i class="fa fa-check fa-fw tile-image tile-font" ng-show="tileStatus(tile) == 'done'" style="padding-top:4px; color:#27ae60; opacity:0.9;"></i>
+<!--<img src="/images/halfdone.png" class="tile-image" ng-show="tileStatus(tile) == 'halfdone'">-->
+<i class="fa fa-play fa-fw fa-rotate-270 tile-image tile-font" ng-show="tileStatus(tile) == 'halfdone'" style="padding-top:4px; color:#f4d03f; opacity:0.9;"></i>
+<!--<img src="/images/undone.png" class="tile-image" ng-show="tileStatus(tile) == 'undone'">-->
+<i class="fa fa-times fa-fw tile-image tile-font" ng-show="tileStatus(tile) == 'undone'" style="padding-top:4px; color:#e74c3c; opacity:0.9;"></i>
 <img src="/images/loader2.gif" class="tile-image" ng-show="tileStatus(tile) == 'processing'">
-
