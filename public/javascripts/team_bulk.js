@@ -8,7 +8,7 @@ angular.module("TeamAdmin", []).controller("TeamAdminController", function ($sco
     $scope.leagues = response.data
     console.log($scope.leagues)
   })
-  
+
   $scope.addTeam = function () {
     $scope.processing = true;
     $scope.total = obj.length - 1;
@@ -23,7 +23,7 @@ angular.module("TeamAdmin", []).controller("TeamAdminController", function ($sco
       console.log(error)
     })*/
   }
-  
+
   next_add = function(){
       $scope.now++;
       console.log($scope.now);
@@ -33,19 +33,19 @@ angular.module("TeamAdmin", []).controller("TeamAdminController", function ($sco
           $scope.$apply();
           return;
       }
-      
+
       var team = {name: obj[$scope.now][0], league: obj[$scope.now][1], competition: competitionId};
-      $http.post("/api/teams/createteam", team).then(function (response) {
+      $http.post("/api/teams", team).then(function (response) {
         setTimeout(next_add,100);
     }, function (error) {
       console.log(error)
     })
 
   }
-  
-  
-  
-  
+
+
+
+
   $(window).on('load', function(){
     // File APIに対応しているか確認
 if(window.File) {
@@ -88,7 +88,7 @@ if(window.File) {
 	}, false);
 }
 });
-    
+
     /* Usage:
  *  jQuery.csv()(csvtext)		returns an array of arrays representing the CSV text.
  *  jQuery.csv("\t")(tsvtext)		uses Tab as a delimiter (comma is the default)
@@ -129,19 +129,18 @@ jQuery.extend({
 			for (var i=0, l=lines.length; i<l; i++) {
 				lines[i] = splitline(lines[i]);
 			}
-			
+
 			// 最後の行を削除
 			var last = lines.length - 1;
 			if (lines[last].length == 1 && lines[last][0] == "") {
 				lines.splice(last, 1);
 			}
-			
+
 			return lines;
 		};
 	}
 });
 
-  
-  
-})
 
+
+})
