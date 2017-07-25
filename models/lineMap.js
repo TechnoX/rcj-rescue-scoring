@@ -737,6 +737,16 @@ const tileTypes = [
     "_id"          : "5975fb67038dda73c0f5ddbe"
   },
   {
+    "image"        : "tile-71.png",
+    "gaps"         : 0,
+    "intersections": 0,
+    "paths"        : {
+      "left"  : "bottom",
+      "bottom": "left"
+    },
+    "_id"          : "5976b9b7607ff6242c06a614"
+  },
+  {
     "image"        : "007.png",
     "gaps"         : 0,
     "intersections": 0,
