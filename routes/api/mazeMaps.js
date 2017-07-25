@@ -184,6 +184,10 @@ adminRouter.put('/:map', function (req, res, next) {
         msg: "Could not get map",
         err: err.message
       })
+    } else if (!dbMap) {
+      return res.status(400).send({
+        msg: "Could not get map"
+      })
     } else {
 
       let cells = []
