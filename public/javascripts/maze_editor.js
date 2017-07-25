@@ -184,6 +184,14 @@ app.controller('MazeEditorController', ['$scope', '$uibModal', '$log','$http', f
 	    alert("You must have a new name when saving as!");
 	    return;
 	}
+
+	if (!$scope.finished) {
+		if (!confirm("Your map is not marked as finished, are you sure you still want to save??")) {
+			return;
+		}
+	}
+
+
 	var map = {
 	    competition: $scope.competitionId,
             name: $scope.saveasname,

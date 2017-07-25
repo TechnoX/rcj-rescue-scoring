@@ -128,6 +128,18 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log','$http', f
 	    alert("You must define a starting tile by right-clicking a tile");
 	    return;
 	}
+        if ($scope.numberOfDropTiles == 0) {
+            if (!confirm("Are you sure you want to create a map without droptiles??")) {
+                return;
+            }
+        }
+
+        if (!$scope.finished) {
+            if (!confirm("Your map is not marked as finished, are you sure you still want to save??")) {
+                return;
+            }
+        }
+
         var map = {
 	    competition: $scope.competitionId,
             name: $scope.name,
