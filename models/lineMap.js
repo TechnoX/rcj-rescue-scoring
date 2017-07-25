@@ -80,7 +80,7 @@ lineMapSchema.pre('save', function (next) {
       return next(err)
     } else {
       self = populatedMap
-      logger.debug(self)
+      //logger.debug(self)
 
       if (self.finished) {
         try {
