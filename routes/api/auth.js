@@ -2,8 +2,8 @@
 //                          Libraries
 //========================================================================
 
-var express = require('express');
-var router = express.Router();
+var express = require('express')
+var router = express.Router()
 var validator = require('validator')
 var userdb = require('../../models/user')
 var passport = require('passport')

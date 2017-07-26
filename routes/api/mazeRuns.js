@@ -10,6 +10,7 @@ const ObjectId = require('mongoose').Types.ObjectId
 const logger = require('../../config/logger').mainLogger
 const fs = require('fs')
 const scoreCalculator = require('../../helper/scoreCalculator')
+const auth = require('../../helper/authLevels')
 
 var socketIo
 
@@ -86,7 +87,7 @@ function getMazeRuns(req, res) {
     ])
   }
 
-  query.lean().exec(function (err, data) {
+  query.lean().exec(function (err, dbRuns) {
     if (err) {
       logger.error(err)
       res.status(400).send({
@@ -94,7 +95,14 @@ function getMazeRuns(req, res) {
         err: err.message
       })
     } else {
-      res.status(200).send(data)
+      // Hide map and field from public
+      if (!auth.authViewRun(req.user, dbRuns)) {
+        for (let i = 0; i < dbRuns.length; i++) {
+          delete dbRuns[i].map
+          delete dbRuns[i].field
+        }
+      }
+      res.status(200).send(dbRuns)
     }
   })
 }
@@ -131,14 +139,19 @@ function getLatestMazeRun(req, res) {
     query.populate(["round", "team", "field", "competition"])
   }
 
-  query.lean().exec(function (err, data) {
+  query.lean().exec(function (err, dbRun) {
     if (err) {
       logger.error(err)
       res.status(400).send({
         msg: "Could not get run"
       })
     } else {
-      res.status(200).send(data)
+      // Hide map and field from public
+      if (!auth.authViewRun(req.user, dbRun)) {
+        delete dbRun.map
+        delete dbRun.field
+      }
+      return res.status(200).send(dbRun)
     }
   })
 }
@@ -225,7 +238,7 @@ publicRouter.get('/:runid', function (req, res, next) {
     query.populate(["round", "team", "field", "competition"])
   }
 
-  query.lean().exec(function (err, data) {
+  query.lean().exec(function (err, dbRun) {
     if (err) {
       logger.error(err)
       return res.status(400).send({
@@ -233,7 +246,12 @@ publicRouter.get('/:runid', function (req, res, next) {
         err: err.message
       })
     } else {
-      return res.status(200).send(data)
+      // Hide map and field from public
+      if (!auth.authViewRun(req.user, dbRun)) {
+        delete dbRun.map
+        delete dbRun.field
+      }
+      return res.status(200).send(dbRun)
     }
   })
 })
