@@ -58,13 +58,13 @@ angular.module("MazeCompetition", []).controller("MazeCompetitionController", fu
         $timeout(function(){
           $('table.comp').exTableFilter({
             filters : {
-                0 : {
+                1 : {
                     append : {
                         to : 'div.filter-round',
                         type : 'checkbox'
                     }
                 },
-                2 : {
+                3 : {
                     append : {
                         to : 'div.filter-arena',
                         type : 'checkbox'
