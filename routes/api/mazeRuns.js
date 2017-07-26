@@ -462,7 +462,8 @@ adminRouter.post('/', function (req, res) {
     round      : run.round,
     team       : run.team,
     field      : run.field,
-    map        : run.map
+    map        : run.map,
+    startTime  : run.startTime
   }).save(function (err, data) {
     if (err) {
       logger.error(err)

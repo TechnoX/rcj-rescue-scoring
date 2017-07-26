@@ -80,6 +80,7 @@ block content
       table(class="comp")
         thead
           tr
+            th Start Time
             th Round
             th Team
             th Field
@@ -92,7 +93,8 @@ block content
             //th
             th Operation
         tbody
-          tr(ng-repeat='run in runs' runs-read-finished='')
+          tr(ng-repeat='run in runs | orderBy:"[startTime,round.name,field.name,team.name]"' runs-read-finished='')
+            td(ng-bind='run.startTime | date:"dd EEE HH:mm"' ng-style="{'background-color':run.status==5?'#bdafdb':''}" )
             td(ng-bind='run.round.name' ng-style="{'background-color':run.status==5?'#bdafdb':''}" )
             td(ng-bind='run.team.name' ng-style="{'background-color':run.status==5?'#bdafdb':''}")
             td(ng-bind='run.field.name' ng-style="{'background-color':run.status==5?'#bdafdb':''}")
