@@ -34,7 +34,7 @@ angular.module("RunAdmin", []).controller("RunAdminController", function ($scope
 
     get_round = function () {
         $http.get("/api/competitions/" + competitionId +
-            "/rounds/" + obj[$scope.now][0]).then(function (response) {
+            "/rounds/Maze/" + obj[$scope.now][0]).then(function (response) {
             $scope.now_round = response.data;
             setTimeout(get_team, 100);
         }, function (error) {
@@ -44,7 +44,7 @@ angular.module("RunAdmin", []).controller("RunAdminController", function ($scope
 
     get_team = function () {
         $http.get("/api/competitions/" + competitionId +
-            "/teams/" + obj[$scope.now][1]).then(function (response) {
+            "/teams/Maze/" + obj[$scope.now][1]).then(function (response) {
             $scope.now_team = response.data;
             setTimeout(get_field, 100);
         }, function (error) {
@@ -54,7 +54,7 @@ angular.module("RunAdmin", []).controller("RunAdminController", function ($scope
 
     get_field = function () {
         $http.get("/api/competitions/" + competitionId +
-            "/fields/" + obj[$scope.now][3]).then(function (response) {
+            "/fields/Maze/" + obj[$scope.now][3]).then(function (response) {
             $scope.now_field = response.data;
             setTimeout(get_map, 100);
         }, function (error) {
@@ -72,16 +72,14 @@ angular.module("RunAdmin", []).controller("RunAdminController", function ($scope
     }
 
     exe = function () {
-        if ($scope.now_field.length != 1) return;
-        if ($scope.now_map.length != 1) return;
-        if ($scope.now_team.length != 1) return;
-        if ($scope.now_round.length != 1) return;
+      var time = new Date(obj[$scope.now][4]);
         var run = {
             round: $scope.now_round[0]._id,
             team: $scope.now_team[0]._id,
             field: $scope.now_field[0]._id,
             map: $scope.now_map[0]._id,
-            competition: competitionId
+            competition: competitionId,
+            startTime : time.getTime()
         }
         console.log(run)
 
@@ -139,7 +137,7 @@ angular.module("RunAdmin", []).controller("RunAdminController", function ($scope
                     console.log(obj)
 
                     // tableで出力
-                    var insert = '<table><thead><tr><th>Round</th><th>Team name</th><th>Map name</th><th>Field name</th></tr></thead><tbody>';
+                    var insert = '<table><thead><tr><th>Round</th><th>Team name</th><th>Map name</th><th>Field name</th><th>Start Time</th></tr></thead><tbody>';
                     for (var i = 1; i < obj.length; i++) {
                         insert += '<tr>';
                         insert += '<td>';
@@ -156,6 +154,10 @@ angular.module("RunAdmin", []).controller("RunAdminController", function ($scope
 
                         insert += '<td>';
                         insert += obj[i][3];
+                        insert += '</td>';
+
+                        insert += '<td>';
+                        insert += new Date(obj[i][4]);
                         insert += '</td>';
                         insert += '</tr>';
                     }
