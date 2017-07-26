@@ -455,7 +455,7 @@ function tile_size() {
             //console.log('コンテンツ本体：' + b.height() + '×' + b.width());
             //console.log('window：' + window.innerHeight);
             var tilesize_w = (b.width() - (40 + 11 * (width + 1))) / width;
-            var tilesize_h = (window.innerHeight - (300 + 11 * (length + 1))) / length;
+            var tilesize_h = (window.innerHeight - (100 + 11 * (length + 1))) / length;
             //console.log(width + 'tilesize_w:' + tilesize_w);
             //console.log('tilesize_h:' + tilesize_h);
             if (tilesize_h > tilesize_w) var tilesize = tilesize_w;
