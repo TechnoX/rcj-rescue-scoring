@@ -371,8 +371,8 @@ function tile_size() {
             var b = $('.tilearea');
             console.log('コンテンツ本体：' + b.height() + '×' + b.width());
             console.log('window：' + window.innerHeight);
-            var tilesize_w = ($('.tilearea').width() - 50) / width;
-            var tilesize_h = (window.innerHeight * 0.7) / length;
+            var tilesize_w = ($('.tilearea').width() - 40) / width;
+            var tilesize_h = (window.innerHeight -130) / length;
             console.log('tilesize_w:' + tilesize_w);
             console.log('tilesize_h:' + tilesize_h);
             if (tilesize_h > tilesize_w) var tilesize = tilesize_w;
@@ -385,7 +385,7 @@ function tile_size() {
             $('.tile-font-1-25').css('font-size', tilesize/2.5);
             $('.slot').css('height', tilesize);
             $('.slot').css('width', tilesize);
-            $('#card_area').css('height', (window.innerHeight - 150));
+            $('#card_area').css('height', (window.innerHeight - 80));
             $('.chnumtxt').css('font-size', tilesize / 6);
             if (b.height() == 0) setTimeout("tile_size()", 500);
         } catch (e) {
