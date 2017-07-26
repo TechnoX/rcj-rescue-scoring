@@ -101,8 +101,8 @@ function getLineRuns(req, res) {
     } else {
 
       // Hide map and field from public
-      if (!auth.authViewRun(req.user, dbRuns)) {
-        for (let i = 0; i < dbRuns.length; i++) {
+      for (let i = 0; i < dbRuns.length; i++) {
+        if (!auth.authViewRun(req.user, dbRuns[i])) {
           delete dbRuns[i].map
           delete dbRuns[i].field
         }
