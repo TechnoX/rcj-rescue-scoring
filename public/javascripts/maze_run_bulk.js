@@ -7,22 +7,22 @@ angular.module("RunAdmin", []).controller("RunAdminController", function ($scope
         $scope.competition = response.data
     })
 
-        $http.get("/api/competitions/" + competitionId +
-            "/Maze/teams").then(function (response) {
-            $scope.teams = response.data
-        })
-        $http.get("/api/competitions/" + competitionId +
-            "/Maze/rounds").then(function (response) {
-            $scope.rounds = response.data
-        })
-        $http.get("/api/competitions/" + competitionId +
-            "/Maze/fields").then(function (response) {
-            $scope.fields = response.data
-        })
-        $http.get("/api/competitions/" + competitionId +
-            "/Maze/maps").then(function (response) {
-            $scope.maps = response.data
-        })
+    $http.get("/api/competitions/" + competitionId +
+        "/Maze/teams").then(function (response) {
+        $scope.teams = response.data
+    })
+    $http.get("/api/competitions/" + competitionId +
+        "/Maze/rounds").then(function (response) {
+        $scope.rounds = response.data
+    })
+    $http.get("/api/competitions/" + competitionId +
+        "/Maze/fields").then(function (response) {
+        $scope.fields = response.data
+    })
+    $http.get("/api/competitions/" + competitionId +
+        "/Maze/maps").then(function (response) {
+        $scope.maps = response.data
+    })
 
     $scope.addRun = function () {
         $scope.processing = true;
@@ -135,7 +135,7 @@ angular.module("RunAdmin", []).controller("RunAdminController", function ($scope
                 // ファイル読み取りに成功したとき
                 reader.onload = function () {
                     // 行単位で配列にする
-                    obj = $.csv()(reader.result);
+                    obj = $.csv(",", "", "\n")(reader.result);
                     console.log(obj)
 
                     // tableで出力
