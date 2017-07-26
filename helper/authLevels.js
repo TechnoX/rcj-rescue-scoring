@@ -11,9 +11,12 @@ const ACCESSLEVELS = require('../models/user').ACCESSLEVELS
 function authViewRun(user, run) {
   if (user == null) {
     return run.started !== undefined && run.started
-  } else {
-    return authRun(user, run, ACCESSLEVELS.NONE + 1)
+  } else if (user.superDuperAdmin) {
+    return true
+  } else if (authCompetition(user, run.competition, ACCESSLEVELS.NONE + 1)) {
+    return true
   }
+  return false
 }
 module.exports.authViewRun = authViewRun
 
