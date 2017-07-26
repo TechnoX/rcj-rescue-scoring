@@ -46,14 +46,14 @@ block content
             th
         tbody
           tr(ng-repeat='run in runs | orderBy:"[startTime,round.name,field.name,team.name]"' runs-read-finished='')
-            td(ng-bind='run.startTime | date:"dd EEE HH:mm"' ng-style="{'background-color':run.status>=3?'#ecf0f1':''}")
-            td(ng-bind='run.round.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':''}")
-            td(ng-bind='run.team.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':''}")
-            td(ng-bind='run.field.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':''}")
+            td(ng-bind='run.startTime | date:"dd EEE HH:mm"' ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
+            td(ng-bind='run.round.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
+            td(ng-bind='run.team.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
+            td(ng-bind='run.field.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
             td
               button(ng-click="go('/maze/view/' + run._id)" class='btn btn-info') View
 
-            td(ng-style="{'background-color':run.status>=3?'#ecf0f1':''}")
+            td(ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
               button(ng-click="no_judge()" class='btn btn-danger' ng-if="run.status>=3" ) Judge
               button(ng-click="go_judge('/maze/judge/' + run._id)" class='btn btn-danger' ng-if="run.status<3" ) Judge
       br

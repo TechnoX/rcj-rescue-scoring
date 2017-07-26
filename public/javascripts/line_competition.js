@@ -1,5 +1,6 @@
 angular.module("LineCompetition", []).controller("LineCompetitionController", function ($scope, $http) {
   $scope.competitionId = competitionId
+  $scope.curTime = new Date().getTime()
 
   $http.get("/api/competitions/" + competitionId +
             "/line/runs?populate=true").then(function (response) {

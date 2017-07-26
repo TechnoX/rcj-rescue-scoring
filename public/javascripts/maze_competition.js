@@ -1,5 +1,6 @@
 angular.module("MazeCompetition", []).controller("MazeCompetitionController", function ($scope, $http) {
   $scope.competitionId = competitionId
+  $scope.curTime = new Date().getTime()
 
   $http.get("/api/competitions/" + competitionId +
             "/maze/runs?populate=true").then(function (response) {
