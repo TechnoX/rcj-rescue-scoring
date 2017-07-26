@@ -172,6 +172,9 @@ var testUser2 = new User({
   competitions: [{
     id         : "5976b89445524f1e629f63f5",
     accessLevel: ACCESSLEVELS.JUDGE
+  }, {
+    id         : "59759831aa67ba5178a2751e",
+    accessLevel: ACCESSLEVELS.JUDGE
   }]
 });
 
