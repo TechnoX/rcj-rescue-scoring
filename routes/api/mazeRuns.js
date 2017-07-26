@@ -11,6 +11,7 @@ const logger = require('../../config/logger').mainLogger
 const fs = require('fs')
 const scoreCalculator = require('../../helper/scoreCalculator')
 const auth = require('../../helper/authLevels')
+const ACCESSLEVELS = require('../../models/user').ACCESSLEVELS
 
 var socketIo
 
@@ -97,9 +98,11 @@ function getMazeRuns(req, res) {
     } else {
       // Hide map and field from public
       for (let i = 0; i < dbRuns.length; i++) {
-        if (!auth.authViewRun(req.user, dbRuns[i])) {
+        if (!auth.authViewRun(req.user, dbRuns[i], ACCESSLEVELS.NONE + 1)) {
           delete dbRuns[i].map
           delete dbRuns[i].field
+          delete dbRuns[i].comment
+          delete dbRuns[i].sign
         }
       }
       res.status(200).send(dbRuns)
@@ -147,9 +150,11 @@ function getLatestMazeRun(req, res) {
       })
     } else {
       // Hide map and field from public
-      if (!auth.authViewRun(req.user, dbRun)) {
+      if (!auth.authViewRun(req.user, dbRun, ACCESSLEVELS.NONE + 1)) {
         delete dbRun.map
         delete dbRun.field
+        delete dbRun.comment
+        delete dbRun.sign
       }
       return res.status(200).send(dbRun)
     }
@@ -247,9 +252,11 @@ publicRouter.get('/:runid', function (req, res, next) {
       })
     } else {
       // Hide map and field from public
-      if (!auth.authViewRun(req.user, dbRun)) {
+      if (!auth.authViewRun(req.user, dbRun, ACCESSLEVELS.NONE + 1)) {
         delete dbRun.map
         delete dbRun.field
+        delete dbRun.comment
+        delete dbRun.sign
       }
       return res.status(200).send(dbRun)
     }

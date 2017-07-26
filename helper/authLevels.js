@@ -8,7 +8,7 @@ const ACCESSLEVELS = require('../models/user').ACCESSLEVELS
  * @param user
  * @param run
  */
-function authViewRun(user, run) {
+function authViewRun(user, run, level) {
   if (user == null) {
     return run.started !== undefined && run.started
   }
@@ -17,20 +17,20 @@ function authViewRun(user, run) {
     return true
   }
 
-
   if (run.competition != undefined && run.competition.constructor == String) {
     var competitionId = run.competition
-  } else if (run.competition != undefined && run.competition.constructor == Object) {
+  } else if (run.competition != undefined &&
+             run.competition.constructor == Object) {
     var competitionId = run.competition._id
   }
-  if (authCompetition(user, competitionId, ACCESSLEVELS.NONE + 1)) {
+  if (authCompetition(user, competitionId, level)) {
     return true
   }
   return false
 }
 module.exports.authViewRun = authViewRun
 
-function authRun(user, run, level) {
+function authJudgeRun(user, run, level) {
   if (user == null) {
     return false
   }
@@ -41,7 +41,8 @@ function authRun(user, run, level) {
 
   if (run.competition != undefined && run.competition.constructor == String) {
     var competitionId = run.competition
-  } else if (run.competition != undefined && run.competition.constructor == Object) {
+  } else if (run.competition != undefined &&
+             run.competition.constructor == Object) {
     var competitionId = run.competition._id
   }
   if (authCompetition(user, competitionId, level)) {
@@ -54,7 +55,7 @@ function authRun(user, run, level) {
   }
   return false
 }
-module.exports.authRun = authRun
+module.exports.authJudgeRun = authJudgeRun
 
 function authCompetition(user, competitionId, level) {
   if (user == null) {
