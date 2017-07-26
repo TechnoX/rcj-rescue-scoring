@@ -63,8 +63,8 @@ block content
             td
               p.input-group
                 span.input-group-btn
-                  button.btn.btn-default(type="button" ng-click="openStartDate()")
-                    i.glyphicon.glyphicon-calendar
+                  button.btn.btn-info(type="button" ng-click="openStartDate()")
+                    i.fa.fa-calendar(aria-hidden='true')
                 input.form-control(type="text" uib-datepicker-popup ng-model="startDate" ng-change="updateStartTime()" is-open="startDatePopup.opened" datepicker-options="startDateOptions" close-text="Close")
               div(uib-timepicker ng-model="startTime" ng-change="updateStartTime()" hour-step="1" minute-step="5" show-meridian="false" show-spinners='true')
             td
