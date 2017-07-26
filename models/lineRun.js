@@ -24,7 +24,9 @@ const lineRunSchema = new Schema({
   team       : {type: ObjectId, ref: 'Team', required: true, index: true},
   field      : {type: ObjectId, ref: 'Field', required: true, index: true},
   map        : {type: ObjectId, ref: 'LineMap', required: true, index: true},
-  
+
+  judges: [{type: ObjectId, ref: 'User'}],
+
   tiles             : [{
     isDropTile: {type: Boolean, default: false},
     scored    : {type: Boolean, default: false}

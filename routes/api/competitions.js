@@ -166,7 +166,7 @@ publicRouter.get('/:competition/maze/latestrun', function (req, res, next) {
   return mazeRunsApi.getLatestMazeRun(req, res, next)
 })
 
-publicRouter.get('/:competition/:league/maps', function (req, res, next) {
+privateRouter.get('/:competition/:league/maps', function (req, res, next) {
   const id = req.params.competition
   const league = req.params.league
 
@@ -186,7 +186,7 @@ publicRouter.get('/:competition/:league/maps', function (req, res, next) {
 })
 
 
-publicRouter.get('/:competition/line/maps', function (req, res, next) {
+privateRouter.get('/:competition/line/maps', function (req, res, next) {
   const id = req.params.competition
 
   if (!ObjectId.isValid(id)) {
@@ -196,7 +196,7 @@ publicRouter.get('/:competition/line/maps', function (req, res, next) {
   return lineMapsApi.getLineMaps(req, res, next)
 })
 
-publicRouter.get('/:competition/maze/maps', function (req, res, next) {
+privateRouter.get('/:competition/maze/maps', function (req, res, next) {
   const id = req.params.competition
 
   if (!ObjectId.isValid(id)) {
