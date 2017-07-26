@@ -50,7 +50,7 @@ function authCompetition(user, competitionId, level) {
   if (user.competitions != undefined) {
     for (let i = 0; i < user.competitions.length; i++) {
       const comp = user.competitions[i]
-      if (comp[i].id == competitionId && comp[i].accessLevel >= level) {
+      if (comp != null && comp[i].id == competitionId && comp[i].accessLevel >= level) {
         return true
       }
     }
