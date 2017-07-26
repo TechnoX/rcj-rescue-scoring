@@ -14,7 +14,7 @@ const logger = require('../../config/logger').mainLogger
 const fs = require('fs')
 
 
-publicRouter.get('/', getLineMaps)
+privateRouter.get('/', getLineMaps)
 
 function getLineMaps(req, res) {
   const competition = req.query.competition || req.params.competition
@@ -124,7 +124,7 @@ adminRouter.post('/', function (req, res) {
 })
 
 
-publicRouter.get('/:map', function (req, res, next) {
+privateRouter.get('/:map', function (req, res, next) {
   const id = req.params.map
 
   if (!ObjectId.isValid(id)) {
@@ -268,18 +268,31 @@ adminRouter.delete('/:map', function (req, res, next) {
     return next()
   }
 
-  lineMap.remove({
-    _id: id
-  }, function (err) {
+  lineRun.findOne({map: id, started: true}, function (err, dbRun) {
     if (err) {
       logger.error(err)
-      res.status(400).send({
-        msg: "Could not remove map",
-        err: err.message
-      })
+      res.status(400).send({msg: "Could not remove map", err: err.message})
+    } else if (dbRun) {
+      const err = new Error("Can't remove map with started run connected!")
+      logger.error(err)
+      res.status(400).send({msg: "Could not remove map", err: err.message})
     } else {
-      res.status(200).send({
-        msg: "Map has been removed!"
+      lineRun.remove({map: id}, function (err) {
+        if (err) {
+          logger.error(err)
+        } else {
+          lineMap.remove({_id: id}, function (err) {
+            if (err) {
+              logger.error(err)
+              res.status(400).send({
+                msg: "Could not remove map",
+                err: err.message
+              })
+            } else {
+              res.status(200).send({msg: "Map has been removed!"})
+            }
+          })
+        }
       })
     }
   })
