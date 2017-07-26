@@ -170,7 +170,10 @@ var testUser2 = new User({
   username    : "judge",
   password    : "judgepass",
   competitions: [{
-    id         : "5977012f1455bdc371e065ba",
+    id         : "5976b89445524f1e629f63f5",
+    accessLevel: ACCESSLEVELS.JUDGE
+  }, {
+    id         : "59759831aa67ba5178a2751e",
     accessLevel: ACCESSLEVELS.JUDGE
   }]
 });
