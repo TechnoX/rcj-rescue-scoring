@@ -87,6 +87,7 @@ block content
             th Score
             th Time
             th Status
+            th Comment
             th
             th
             th
@@ -107,6 +108,8 @@ block content
               span(ng-if="run.status==3") 3.Record checking
               span(ng-if="run.status==4") 4.Finished
               span(ng-if="run.status==5") 5.Approved
+            td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
+              button(uib-popover="{{run.comment}}" type="button" class="btn btn-default" ng-disabled="run.comment==''") Comment
             td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
               button(ng-click="go('/maze/view/' + run._id)" class='btn btn-info') View
             td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
