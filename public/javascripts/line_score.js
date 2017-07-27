@@ -8,6 +8,9 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
   }
   launchSocketIo()
   updateRunList()
+  if (get['autoscroll'] != undefined) {
+    scrollpage()
+  }
 
   $http.get("/api/competitions/" + competitionId).then(function (response) {
     $scope.competition = response.data
@@ -291,6 +294,29 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
     console.log(row);
   }
 })
+
+// HAX
+function scrollpage() {
+  var i = 1, status = 0, speed = 1, period = 15
+  function f() {
+    window.scrollTo(0, window.scrollY + document.getElementById("allRuns").getBoundingClientRect().top - 50 + i);
+    if (status == 0) {
+      i = i + speed;
+      if (document.getElementById("allRuns").getBoundingClientRect().bottom < Math.max(document.documentElement.clientHeight, window.innerHeight || 0)) {
+        status = 1;
+        return setTimeout(f, 1000);
+      }
+    } else {
+      i = i - speed;
+      if (document.getElementById("allRuns").getBoundingClientRect().top > 50) {
+        status = 0;
+        return setTimeout(f, 1000);
+      }
+    }
+    setTimeout(f, period);
+  }
+  f();
+}
 
 $(window).on('beforeunload', function () {
   socket.emit('unsubscribe', 'runs/line');

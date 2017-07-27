@@ -7,6 +7,7 @@ block vars
 append scripts
   script.
     var competitionId = "#{id}"
+    var get = !{JSON.stringify(get)}
   script(src = '/components/datatables/media/js/jquery.dataTables.min.js')
   script(src = '/components/angular-datatables/dist/angular-datatables.min.js')
   script(src="/components/socket.io-client/socket.io.js")
@@ -62,7 +63,7 @@ block content
                 td.text-center {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
       .row
         hr
-      .row
+      .row#allRuns
         .col-md-12
           h3 Maze - All rounds
           label Sort by round:
