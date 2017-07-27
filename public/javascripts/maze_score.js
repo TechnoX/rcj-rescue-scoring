@@ -1,5 +1,6 @@
 angular.module("MazeScore", ['datatables']).controller("MazeScoreController", function ($scope, $http) {
   $scope.competitionId = competitionId
+  $scope.sortOrder = '-score'
   $scope.go = function (path) {
     window.location = path
   }
@@ -72,14 +73,21 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
 
     runs.sort(sortRuns)
 
-    return {
-      score: runs[0].score + runs[1].score,
+    let sum = {
+      score :0,
       time : {
-        minutes: runs[0].time.minutes + runs[1].time.minutes +
-                 (runs[0].time.seconds + runs[1].time.seconds >= 60 ? 1 : 0),
-        seconds: (runs[0].time.seconds + runs[1].time.seconds) % 60
+        minutes :0,
+        seconds:0
       }
     }
+
+    for (let i = 0; i < Math.min(8, runs.length); i++) {
+      sum.score += runs[i].score
+      sum.time.minutes += runs[i].time.minutes
+      sum.time.seconds += runs[i].time.seconds
+    }
+
+    return sum
   }
 
   function sortRuns(a, b) {
