@@ -25,7 +25,7 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
       for (var i in runs) {
         var run = runs[i]
 
-        if (run.score != 0 || run.time.minutes != 0 || run.time.seconds != 0) {
+        if (run.status != 0) {
           $scope.mazeRuns.push(run)
           if (mazeTeamRuns[run.team._id] === undefined) {
             mazeTeamRuns[run.team._id] = {
