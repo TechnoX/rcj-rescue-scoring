@@ -95,7 +95,7 @@ function getMazeRuns(req, res) {
         msg: "Could not get runs",
         err: err.message
       })
-    } else {
+    } else if (dbRuns){
       // Hide map and field from public
       for (let i = 0; i < dbRuns.length; i++) {
         if (!auth.authViewRun(req.user, dbRuns[i], ACCESSLEVELS.NONE + 1)) {
@@ -148,7 +148,7 @@ function getLatestMazeRun(req, res) {
       res.status(400).send({
         msg: "Could not get run"
       })
-    } else {
+    } else if (dbRun){
       // Hide map and field from public
       if (!auth.authViewRun(req.user, dbRun, ACCESSLEVELS.NONE + 1)) {
         delete dbRun.map

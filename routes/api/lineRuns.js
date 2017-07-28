@@ -157,7 +157,7 @@ function getLatestLineRun(req, res) {
       res.status(400).send({
         msg: "Could not get run"
       })
-    } else {
+    } else if (dbRun){
       // Hide map and field from public
       if (!auth.authViewRun(req.user, dbRun, ACCESSLEVELS.NONE + 1)) {
         delete dbRun.map
@@ -264,7 +264,7 @@ publicRouter.get('/:runid', function (req, res, next) {
         err: err.message,
         msg: "Could not get run"
       })
-    } else {
+    } else if (dbRun) {
       // Hide map and field from public
       if (!auth.authViewRun(req.user, dbRun, ACCESSLEVELS.NONE + 1)) {
         delete dbRun.map
