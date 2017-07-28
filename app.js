@@ -7,6 +7,7 @@ var env = require('node-env-file')
 env('process.env')
 
 var express = require('express')
+const compression = require('compression')
 var path = require('path')
 var fs = require('fs')
 var favicon = require('serve-favicon')
@@ -59,6 +60,9 @@ var apiCompetitionsRoute = require('./routes/api/competitions')
 //========================================================================
 
 var app = express()
+
+app.use(compression())
+
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
