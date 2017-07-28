@@ -99,7 +99,7 @@ function getLineRuns(req, res) {
       res.status(400).send({
         msg: "Could not get runs"
       })
-    } else {
+    } else if (dbRuns) {
 
       // Hide map and field from public
       for (let i = 0; i < dbRuns.length; i++) {

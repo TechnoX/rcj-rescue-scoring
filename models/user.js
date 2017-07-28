@@ -66,7 +66,7 @@ module.exports.ACCESSLEVELS = ACCESSLEVELS
  */
 var userSchema = new Schema({
   username       : {type: String, required: true, unique: true},
-  password       : {type: String, required: true, select: false},
+  password       : {type: String, /*required: true,*/ select: false},
   salt           : {type: String, select: false},
   admin          : {type: Boolean, default: false}, // deprecated
   superDuperAdmin: {type: Boolean, default: false},

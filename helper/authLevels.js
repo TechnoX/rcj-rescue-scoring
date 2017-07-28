@@ -9,6 +9,10 @@ const ACCESSLEVELS = require('../models/user').ACCESSLEVELS
  * @param run
  */
 function authViewRun(user, run, level) {
+  if (run == null) {
+    return false
+  }
+
   if (user == null) {
     return run.started !== undefined && run.started
   }
