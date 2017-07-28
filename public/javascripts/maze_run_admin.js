@@ -4,12 +4,26 @@ angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.datetimep
 
   updateRunList();
 
+  var runListTimer = null;
+  var runListChanged = false;
+
   (function launchSocketIo() {
     // launch socket.io
     socket = io.connect(window.location.origin);
     socket.emit('subscribe', 'competition/' + competitionId);
     socket.on('changed', function (data) {
-      updateRunList();
+      runListChanged = true;
+      if (runListTimer == null) {
+        updateRunList();
+        runListChanged = false;
+        runListTimer = setTimeout(function () {
+          if (runListChanged) {
+            updateRunList();
+            runListChanged = false;
+          }
+          runListTimer = null
+        }, 1000 * 15)
+      }
     });
   })();
   $http.get("/api/competitions/" + competitionId).then(function (response) {

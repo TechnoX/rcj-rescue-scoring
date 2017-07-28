@@ -6,11 +6,16 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
   $scope.go = function (path) {
     window.location = path
   }
+
+  var runListTimer = null;
+  var runListChanged = false;
   launchSocketIo()
   updateRunList(function () {
     setTimeout(function () {
-      window.scrollTo(0, window.scrollY + document.getElementById("rank").getBoundingClientRect().top - 50);
-    },200)
+      window.scrollTo(0, window.scrollY +
+                         document.getElementById("rank").getBoundingClientRect().top -
+                         50);
+    }, 200)
   })
   if (get['autoscroll'] != undefined) {
     scrollpage()
@@ -66,8 +71,8 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
             primaryTeamRuns[run.team._id].sumLoPs = sum.lops
             primaryTeamRuns[run.team._id].retired = sum.retired
             if (run.status == 2 || run.status == 3) {
-              primaryTeamRuns[run.team._id].isplaying = true
-              run.isplaying = true
+              //primaryTeamRuns[run.team._id].isplaying = true
+              //run.isplaying = true
             }
             $scope.primaryRuns.push(run)
 
@@ -141,7 +146,18 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
       socket.emit('subscribe', 'runs/line')
     })
     socket.on('changed', function () {
-      updateRunList()
+      runListChanged = true;
+      if (runListTimer == null) {
+        updateRunList();
+        runListChanged = false;
+        runListTimer = setTimeout(function () {
+          if (runListChanged) {
+            updateRunList();
+            runListChanged = false;
+          }
+          runListTimer = null
+        }, 1000 * 15)
+      }
     })
   }
 
