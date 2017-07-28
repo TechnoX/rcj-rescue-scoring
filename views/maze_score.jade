@@ -74,11 +74,13 @@ block content
               tr
                 th.text-center Team
                 th.text-center Round
+                th.text-center Field
                 th.text-center Score
                 th.text-center Time
             tbody
               tr(ng-repeat='run in mazeRuns | orderBy:sortOrder')
                 td.text-center(ng-bind='run.team.name')
                 td.text-center(ng-bind='run.round.name')
+                td.text-center(ng-bind='run.field.name')
                 td.text-center(ng-bind='run.score')
                 td.text-center {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
