@@ -5,11 +5,16 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
     window.location = path
   }
 
+  var runListTimer = null;
+  var runListChanged = false;
+
   launchSocketIo()
   updateRunList(function () {
     setTimeout(function () {
-      window.scrollTo(0, window.scrollY + document.getElementById("rank").getBoundingClientRect().top - 50);
-    },200)
+      window.scrollTo(0, window.scrollY +
+                         document.getElementById("rank").getBoundingClientRect().top -
+                         50);
+    }, 200)
   })
   if (get['autoscroll'] != undefined) {
     scrollpage()
@@ -32,7 +37,8 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
       for (var i in runs) {
         var run = runs[i]
 
-        if (run.status >= 2 || run.score != 0 || run.time.minutes != 0 || run.time.seconds != 0) {
+        if (run.status >= 2 || run.score != 0 || run.time.minutes != 0 ||
+            run.time.seconds != 0) {
           $scope.mazeRuns.push(run)
           if (mazeTeamRuns[run.team._id] === undefined) {
             mazeTeamRuns[run.team._id] = {
@@ -73,7 +79,18 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
       socket.emit('subscribe', 'runs/maze')
     })
     socket.on('changed', function () {
-      updateRunList()
+      runListChanged = true;
+      if (runListTimer == null) {
+        updateRunList();
+        runListChanged = false;
+        runListTimer = setTimeout(function () {
+          if (runListChanged) {
+            updateRunList();
+            runListChanged = false;
+          }
+          runListTimer = null
+        }, 1000 * 15)
+      }
     })
   }
 
@@ -85,10 +102,10 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
     runs.sort(sortRuns)
 
     let sum = {
-      score :0,
+      score: 0,
       time : {
-        minutes :0,
-        seconds:0
+        minutes: 0,
+        seconds: 0
       }
     }
 
@@ -125,11 +142,16 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
 // HAX
 function scrollpage() {
   var i = 1, status = 0, speed = 1, period = 15
+
   function f() {
-    window.scrollTo(0, window.scrollY + document.getElementById("allRuns").getBoundingClientRect().top - 50 + i);
+    window.scrollTo(0, window.scrollY +
+                       document.getElementById("allRuns").getBoundingClientRect().top -
+                       50 + i);
     if (status == 0) {
       i = i + speed;
-      if (document.getElementById("allRuns").getBoundingClientRect().bottom < Math.max(document.documentElement.clientHeight, window.innerHeight || 0)) {
+      if (document.getElementById("allRuns").getBoundingClientRect().bottom <
+          Math.max(document.documentElement.clientHeight, window.innerHeight ||
+                                                          0)) {
         status = 1;
         return setTimeout(f, 1000);
       }
@@ -142,5 +164,6 @@ function scrollpage() {
     }
     setTimeout(f, period);
   }
+
   f();
 }
