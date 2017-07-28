@@ -66,8 +66,8 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
             primaryTeamRuns[run.team._id].sumLoPs = sum.lops
             primaryTeamRuns[run.team._id].retired = sum.retired
             if (run.status == 2 || run.status == 3) {
-              primaryTeamRuns[run.team._id].isplaying = true
-              run.isplaying = true
+              //primaryTeamRuns[run.team._id].isplaying = true
+              //run.isplaying = true
             }
             $scope.primaryRuns.push(run)
 
