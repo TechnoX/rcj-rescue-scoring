@@ -602,7 +602,7 @@ app.directive('tile', function () {
             $scope.isDropTile = function (tile) {
                 if (!tile || tile.index.length == 0)
                     return;
-                return $scope.$parent.stiles[tile.index[0]].isDropTile;
+                return false;//$scope.$parent.stiles[tile.index[0]].isDropTile;
             }
 
             $scope.isStart = function (tile) {
