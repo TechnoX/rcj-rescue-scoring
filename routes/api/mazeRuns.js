@@ -48,9 +48,16 @@ function getMazeRuns(req, res) {
 
   var query
   if (competition != null && competition.constructor === String) {
-    query = mazeRun.find({
-      competition: competition
-    })
+    if (req.query['ended']=='false') {
+        query = mazeRun.find({
+            competition: competition,
+            status: {$lte: 1}
+        })
+    } else {
+        query = mazeRun.find({
+            competition: competition
+        })
+    }
   } else if (Array.isArray(competition)) {
     query = mazeRun.find({
       competition: {
@@ -66,7 +73,7 @@ function getMazeRuns(req, res) {
     }else{
         query.select("competition round team field map score time status started comment startTime")
     }
- 
+
 
   if (req.query['populate'] !== undefined && req.query['populate']) {
     query.populate([
@@ -80,7 +87,7 @@ function getMazeRuns(req, res) {
       },
       {
         path  : "team",
-        select: "name league"
+        select: "name"
       },
       {
         path  : "field",

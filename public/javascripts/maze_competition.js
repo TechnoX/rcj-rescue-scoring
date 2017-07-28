@@ -12,6 +12,14 @@ angular.module("MazeCompetition", []).controller("MazeCompetitionController", fu
     $scope.competition = response.data
   })
 
+  $scope.update_list = function(){
+    $http.get("/api/competitions/" + competitionId +
+              "/maze/runs?populate=true&minimum=true&ended="+$scope.show_ended).then(function (response) {
+      $scope.runs = response.data
+      //console.log($scope.teams)
+    })
+  }
+
   $scope.go = function(path){
       window.location = path
   }
