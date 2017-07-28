@@ -51,7 +51,7 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
 
         if (run.status >= 2 || run.score != 0 || run.time.minutes != 0 ||
             run.time.seconds != 0) {
-          if (run.team.league == "Line") {
+          if (true || run.team.league == "Line") {
 
 
             if (primaryTeamRuns[run.team._id] === undefined) {
