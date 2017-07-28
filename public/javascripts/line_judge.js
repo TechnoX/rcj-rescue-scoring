@@ -602,7 +602,8 @@ app.directive('tile', function () {
             $scope.isDropTile = function (tile) {
                 if (!tile || tile.index.length == 0)
                     return;
-                return false;//$scope.$parent.stiles[tile.index[0]].isDropTile;
+                console.log(tile.index[0]);
+                return $scope.$parent.stiles[tile.index[0]].isDropTile;
             }
 
             $scope.isStart = function (tile) {
@@ -624,7 +625,7 @@ app.directive('tile', function () {
                 // If this is a non-existent tile
                 if ((!tile || tile.index.length == 0) && !isStart(tile))
                     return;
-
+                console.log(tile.index[0]);
                 // If this tile has no scoring elements we should just return empty string
                 if (tile.items.obstacles == 0 &&
                     tile.items.speedbumps == 0 &&
