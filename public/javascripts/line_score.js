@@ -7,7 +7,11 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
     window.location = path
   }
   launchSocketIo()
-  updateRunList()
+  updateRunList(function () {
+    setTimeout(function () {
+      window.scrollTo(0, window.scrollY + document.getElementById("rank").getBoundingClientRect().top - 50);
+    },200)
+  })
   if (get['autoscroll'] != undefined) {
     scrollpage()
   }
@@ -16,7 +20,7 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
     $scope.competition = response.data
   })
 
-  function updateRunList() {
+  function updateRunList(callback) {
     $http.get("/api/competitions/" + competitionId +
               "/line/runs?populate=true").then(function (response) {
       var runs = response.data
@@ -40,7 +44,8 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
 
         run.score = parseInt(run.score)
 
-        if (run.status >= 2 || run.score != 0 || run.time.minutes != 0 || run.time.seconds != 0) {
+        if (run.status >= 2 || run.score != 0 || run.time.minutes != 0 ||
+            run.time.seconds != 0) {
           if (run.team.league == "Line") {
 
 
@@ -122,6 +127,10 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
         })
       }
       $scope.secondaryRunsTop.sort(sortRuns)
+
+      if (callback != null && callback.constructor == Function) {
+        callback()
+      }
     })
   }
 
@@ -201,13 +210,13 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
     runs.sort(sortRuns)
 
     let sum = {
-      score :0,
-      time : {
-        minutes :0,
-        seconds:0
+      score  : 0,
+      time   : {
+        minutes: 0,
+        seconds: 0
       },
-      rescued :0,
-      lops :0
+      rescued: 0,
+      lops   : 0
     }
 
     for (let i = 0; i < Math.min(9, runs.length); i++) {
@@ -298,11 +307,16 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
 // HAX
 function scrollpage() {
   var i = 1, status = 0, speed = 1, period = 15
+
   function f() {
-    window.scrollTo(0, window.scrollY + document.getElementById("allRuns").getBoundingClientRect().top - 50 + i);
+    window.scrollTo(0, window.scrollY +
+                       document.getElementById("allRuns").getBoundingClientRect().top -
+                       50 + i);
     if (status == 0) {
       i = i + speed;
-      if (document.getElementById("allRuns").getBoundingClientRect().bottom < Math.max(document.documentElement.clientHeight, window.innerHeight || 0)) {
+      if (document.getElementById("allRuns").getBoundingClientRect().bottom <
+          Math.max(document.documentElement.clientHeight, window.innerHeight ||
+                                                          0)) {
         status = 1;
         return setTimeout(f, 1000);
       }
@@ -315,6 +329,7 @@ function scrollpage() {
     }
     setTimeout(f, period);
   }
+
   f();
 }
 

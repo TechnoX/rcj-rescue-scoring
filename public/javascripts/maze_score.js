@@ -6,7 +6,11 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
   }
 
   launchSocketIo()
-  updateRunList()
+  updateRunList(function () {
+    setTimeout(function () {
+      window.scrollTo(0, window.scrollY + document.getElementById("rank").getBoundingClientRect().top - 50);
+    },200)
+  })
   if (get['autoscroll'] != undefined) {
     scrollpage()
   }
@@ -15,7 +19,7 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
     $scope.competition = response.data
   })
 
-  function updateRunList() {
+  function updateRunList(callback) {
     $http.get("/api/competitions/" + competitionId +
               "/maze/runs?populate=true").then(function (response) {
       var runs = response.data
@@ -55,6 +59,10 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
         })
       }
       $scope.mazeRunsTop.sort(sortRuns)
+
+      if (callback != null && callback.constructor == Function) {
+        callback()
+      }
     })
   }
 
