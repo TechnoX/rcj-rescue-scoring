@@ -30,6 +30,9 @@ block content
           .filter-round
           label Refine by field
           .filter-arena
+      hr
+      input#showEnd(type='checkbox', ng-model='show_ended', ng-change='update_list()')
+      label.checkbox(for='showEnd') Display ended runs
       br
       center
         .loader

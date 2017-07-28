@@ -9,7 +9,12 @@
 
 var crypto = require('crypto');
 
-var cryptoSettings = {method: 'sha512', maxStrLength: 100, maxLength: 128, saltLength: 16}
+var cryptoSettings = {
+    method: 'sha512',
+    maxStrLength: 100,
+    maxLength: 128,
+    saltLength: 16
+}
 
 var saltIt = function (salt, data) {
     return salt + data + salt;
@@ -32,8 +37,11 @@ var saltIt = function (salt, data) {
  * @param {parseValuesCb} cb The callback function
  */
 var generateHashWithSalt = function (stringToHash, cb) {
+    if (stringToHash == null) return;
     if (stringToHash.length > cryptoSettings.maxStrLength) {
-        return cb({err: "The string you are trying to hash is too large"}, null, null);
+        return cb({
+            err: "The string you are trying to hash is too large"
+        }, null, null);
     } else {
 
         var salt = crypto.randomBytes(cryptoSettings.saltLength);
