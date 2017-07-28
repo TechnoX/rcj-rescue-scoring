@@ -3,7 +3,7 @@ angular.module("LineCompetition", []).controller("LineCompetitionController", fu
   $scope.curTime = new Date().getTime()
 
   $http.get("/api/competitions/" + competitionId +
-            "/line/runs?populate=true").then(function (response) {
+            "/line/runs?populate=true&minimum=true&ended=false").then(function (response) {
     $scope.runs = response.data
     //console.log($scope.teams)
   })
@@ -11,15 +11,15 @@ angular.module("LineCompetition", []).controller("LineCompetitionController", fu
   $http.get("/api/competitions/" + competitionId).then(function (response) {
     $scope.competition = response.data
   })
-  
+
   $scope.go = function(path){
       window.location = path
   }
-  
+
   $scope.go_judge = function(path){
       swal({
-          title: "Judge?", 
-          text: "Are you sure to move Judge Page?", 
+          title: "Judge?",
+          text: "Are you sure to move Judge Page?",
           type: "warning",
           showCancelButton: true,
           confirmButtonText: "Yes",
@@ -29,7 +29,7 @@ angular.module("LineCompetition", []).controller("LineCompetitionController", fu
         console.log(error);
     });
   }
-  
+
   $scope.no_judge = function(){
       swal("Oops!", "The run you selected was already ended! If you need to edit, please contact OC.", "error");
   }
