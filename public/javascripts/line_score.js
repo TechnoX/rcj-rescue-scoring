@@ -21,7 +21,7 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
               "/line/runs?populate=true").then(function (response) {
       var runs = response.data
 
-      console.log(runs)
+      //console.log(runs)
 
       $scope.primaryRuns = []
       var primaryTeamRuns = {}
@@ -188,7 +188,7 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
   }
 
   function sumBest(runs) {
-    console.log(runs);
+    //console.log(runs);
     if (runs.length == 1) {
       return {
         score  : runs[0].score,
@@ -258,8 +258,8 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
   }
 
   function sortRuns(a, b) {
-    console.log(a);
-    console.log(b);
+    //console.log(a);
+    //console.log(b);
     if (a.score == b.score) {
       if (a.retired && !b.retired) return 1
       else if (!a.retired && b.retired) return -1
@@ -291,7 +291,7 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
   }
 
   $scope.detail = function (row) {
-    console.log(row);
+    //console.log(row);
   }
 })
 

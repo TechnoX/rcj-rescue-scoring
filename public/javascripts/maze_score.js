@@ -20,7 +20,7 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
               "/maze/runs?populate=true").then(function (response) {
       var runs = response.data
 
-      console.log(runs)
+      //console.log(runs)
 
       $scope.mazeRuns = []
       var mazeTeamRuns = {}
