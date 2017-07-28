@@ -7,6 +7,7 @@ block vars
 append scripts
   script.
     var competitionId = "#{id}"
+    var get = !{JSON.stringify(get)}
   script(src = '/components/datatables/media/js/jquery.dataTables.min.js')
   script(src = '/components/angular-datatables/dist/angular-datatables.min.js')
   script(src="/components/socket.io-client/socket.io.js")
@@ -53,7 +54,8 @@ block content
   .row
     //.col-lg-6
     .col-lg-12
-      h3 Rank
+      h3 Line - Rank
+      h6 Showing sum of the 9 best rounds
       table(style="overflow: scroll;")
         thead
           tr
@@ -95,10 +97,13 @@ block content
             td.text-center(ng-bind='run.LoPsNum')
   .row
     hr
-  .row
+  .row#allRuns
     //.col-lg-6
     .col-lg-12
-      h3 All runs
+      h3 Line - All runs
+      label Sort by round:
+        input(type="checkbox" style='display:inline;' ng-model="sortOrder" ng-true-value="'[startTime,round.name,field.name,team.name]'" ng-false-value="'-score'")
+      //span {{sortOrder}}
       table(style="overflow: scroll;")
         thead
           tr
@@ -110,7 +115,7 @@ block content
             th.text-center Rescued
             th.text-center LoPs
         tbody
-          tr(ng-repeat='run in primaryRuns')
+          tr(ng-repeat='run in primaryRuns | orderBy:sortOrder')
             td.text-center(ng-bind='run.team.name' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
             td.text-center(ng-bind='run.round.name'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
             td.text-center(ng-bind='run.field.name'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")

@@ -26,7 +26,7 @@ publicRouter.get('/:competitionid/score', function (req, res, next) {
     return next()
   }
   
-  res.render('maze_score', {id : id})
+  res.render('maze_score', {id : id, get: req.query})
 })
 
 publicRouter.get('/view/:roundid', function (req, res, next) {

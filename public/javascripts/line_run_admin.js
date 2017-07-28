@@ -2,7 +2,6 @@ var socket;
 angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.datetimepicker']).controller('RunAdminController', ['$scope', '$http', '$log', '$location', function ($scope, $http, $log, $location) {
   $scope.competitionId = competitionId
   
-  
   updateRunList();
 
   (function launchSocketIo() {

@@ -7,7 +7,7 @@ var ObjectId = require('mongoose').Types.ObjectId
 
 /* GET home page. */
 publicRouter.get('/', function (req, res) {
-  res.render('line_home',{user: req.user});
+  res.render('line_home', {user: req.user});
 })
 
 publicRouter.get('/:competitionid', function (req, res, next) {
@@ -26,8 +26,8 @@ publicRouter.get('/:competitionid/score', function (req, res, next) {
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
-  res.render('line_score', {id: id, user: req.user})
+  
+  res.render('line_score', {id: id, user: req.user, get: req.query})
 })
 
 
@@ -52,7 +52,7 @@ publicRouter.get('/view/inline/:runid', function (req, res) {
   if (!ObjectId.isValid(id)) {
     return next()
   }
-  res.render('line_inline_view', {id : id})
+  res.render('line_inline_view', {id: id})
 })
 
 publicRouter.get('/viewfield/:fieldid', function (req, res, next) {
@@ -78,17 +78,17 @@ privateRouter.get('/judge/:roundid', function (req, res, next) {
 })
 
 privateRouter.get('/sign/:roundid', function (req, res) {
-  res.render('line_sign', {id : req.params.roundid})
+  res.render('line_sign', {id: req.params.roundid})
 })
 
 adminRouter.get('/approval/:roundid', function (req, res) {
   const id = req.params.roundid
-		
+
   if (!ObjectId.isValid(id)) {
     return next()
   }
 
-  res.render('line_approval', {id : id})
+  res.render('line_approval', {id: id})
 })
 
 adminRouter.get('/editor', function (req, res) {

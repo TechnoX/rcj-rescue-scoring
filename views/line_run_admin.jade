@@ -87,6 +87,7 @@ block content
             th Score
             th Time
             th Status
+            th Comment
             th
             th
             th
@@ -94,7 +95,18 @@ block content
             th Operation
         tbody
           tr(ng-repeat='run in runs | orderBy:"[startTime,round.name,field.name,team.name]"' runs-read-finished='')
-            td(ng-bind='run.startTime | date:"dd EEE HH:mm"' ng-style="{'background-color':run.status==5?'#bdafdb':''}" )
+            td(ng-style="{'background-color':run.status==5?'#bdafdb':''}" )
+              span {{run.startTime | date:"dd EEE HH:mm"}}
+              //button(uib-popover-template="'myPopoverTemplate.html'" popover-trigger="'outsideClick'" type="button" class="btn btn-default") Edit
+              //script(type="text/ng-template" id="myPopoverTemplate.html")
+              //  div.form-group
+              //    p.input-group
+              //      span.input-group-btn
+              //        button.btn.btn-info(type="button" ng-click="openStartDate()")
+              //          i.fa.fa-calendar(aria-hidden='true')
+              //      input.form-control(type="text" uib-datepicker-popup ng-model="startDate" ng-change="updateStartTime()" is-open="startDatePopup.opened" datepicker-options="startDateOptions" close-text="Close")
+              //    div(uib-timepicker ng-model="startTime" ng-change="updateStartTime()" hour-step="1" minute-step="5" show-meridian="false" show-spinners='true')
+
             td(ng-bind='run.round.name' ng-style="{'background-color':run.status==5?'#bdafdb':''}" )
             td(ng-bind='run.team.name' ng-style="{'background-color':run.status==5?'#bdafdb':''}")
             td(ng-bind='run.field.name' ng-style="{'background-color':run.status==5?'#bdafdb':''}")
@@ -107,6 +119,8 @@ block content
               span(ng-if="run.status==3") 3.Record checking
               span(ng-if="run.status==4") 4.Finished
               span(ng-if="run.status==5") 5.Approved
+            td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
+              button(uib-popover="{{run.comment}}" popover-trigger="'outsideClick'"  type="button" class="btn btn-default" ng-disabled="run.comment==''") Comment
             td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
               button(ng-click="go('/line/view/' + run._id)" class='btn btn-info') View
             td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")

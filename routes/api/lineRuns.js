@@ -66,7 +66,7 @@ function getLineRuns(req, res) {
     query = lineRun.find({})
   }
 
-  query.select("competition round team field map score time status rescuedLiveVictims rescuedDeadVictims LoPs comment startTime")
+  query.select("competition round team field map score time status started rescuedLiveVictims rescuedDeadVictims LoPs comment startTime")
 
   if (req.query['populate'] !== undefined && req.query['populate']) {
     query.populate([
@@ -394,6 +394,13 @@ privateRouter.put('/:runid', function (req, res, next) {
         }
 
         dbRun.score = scoreCalculator.calculateLineScore(dbRun)
+
+        if (dbRun.score > 0 || dbRun.time.minutes != 0 ||
+            dbRun.time.seconds != 0 || dbRun.status >= 2) {
+          dbRun.started = true
+        } else {
+          dbRun.started = false
+        }
 
         dbRun.save(function (err) {
           if (err) {

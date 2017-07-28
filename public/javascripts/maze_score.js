@@ -1,11 +1,15 @@
 angular.module("MazeScore", ['datatables']).controller("MazeScoreController", function ($scope, $http) {
   $scope.competitionId = competitionId
+  $scope.sortOrder = '-score'
   $scope.go = function (path) {
     window.location = path
   }
 
   launchSocketIo()
   updateRunList()
+  if (get['autoscroll'] != undefined) {
+    scrollpage()
+  }
 
   $http.get("/api/competitions/" + competitionId).then(function (response) {
     $scope.competition = response.data
@@ -24,7 +28,7 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
       for (var i in runs) {
         var run = runs[i]
 
-        if (run.score != 0 || run.time.minutes != 0 || run.time.seconds != 0) {
+        if (run.status >= 2 || run.score != 0 || run.time.minutes != 0 || run.time.seconds != 0) {
           $scope.mazeRuns.push(run)
           if (mazeTeamRuns[run.team._id] === undefined) {
             mazeTeamRuns[run.team._id] = {
@@ -72,14 +76,21 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
 
     runs.sort(sortRuns)
 
-    return {
-      score: runs[0].score + runs[1].score,
+    let sum = {
+      score :0,
       time : {
-        minutes: runs[0].time.minutes + runs[1].time.minutes +
-                 (runs[0].time.seconds + runs[1].time.seconds >= 60 ? 1 : 0),
-        seconds: (runs[0].time.seconds + runs[1].time.seconds) % 60
+        minutes :0,
+        seconds:0
       }
     }
+
+    for (let i = 0; i < Math.min(8, runs.length); i++) {
+      sum.score += runs[i].score
+      sum.time.minutes += runs[i].time.minutes
+      sum.time.seconds += runs[i].time.seconds
+    }
+
+    return sum
   }
 
   function sortRuns(a, b) {
@@ -102,3 +113,26 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
     }
   }
 })
+
+// HAX
+function scrollpage() {
+  var i = 1, status = 0, speed = 1, period = 15
+  function f() {
+    window.scrollTo(0, window.scrollY + document.getElementById("allRuns").getBoundingClientRect().top - 50 + i);
+    if (status == 0) {
+      i = i + speed;
+      if (document.getElementById("allRuns").getBoundingClientRect().bottom < Math.max(document.documentElement.clientHeight, window.innerHeight || 0)) {
+        status = 1;
+        return setTimeout(f, 1000);
+      }
+    } else {
+      i = i - speed;
+      if (document.getElementById("allRuns").getBoundingClientRect().top > 50) {
+        status = 0;
+        return setTimeout(f, 1000);
+      }
+    }
+    setTimeout(f, period);
+  }
+  f();
+}

@@ -7,6 +7,7 @@ block vars
 append scripts
   script.
     var competitionId = "#{id}"
+    var get = !{JSON.stringify(get)}
   script(src = '/components/datatables/media/js/jquery.dataTables.min.js')
   script(src = '/components/angular-datatables/dist/angular-datatables.min.js')
   script(src="/components/socket.io-client/socket.io.js")
@@ -45,7 +46,8 @@ block content
     .col-md-10
       .row
         .col-md-12
-          h3 Maze - Top
+          h3 Maze - Rank
+          h6 Showing sum of the 8 best rounds
           table
             thead
               tr
@@ -61,9 +63,12 @@ block content
                 td.text-center {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
       .row
         hr
-      .row
+      .row#allRuns
         .col-md-12
           h3 Maze - All rounds
+          label Sort by round:
+            input(type="checkbox" style='display:inline;' ng-model="sortOrder" ng-true-value="'[startTime,round.name,field.name,team.name]'" ng-false-value="'-score'")
+          //span {{sortOrder}}
           table
             thead
               tr
@@ -72,7 +77,7 @@ block content
                 th.text-center Score
                 th.text-center Time
             tbody
-              tr(ng-repeat='run in mazeRuns')
+              tr(ng-repeat='run in mazeRuns | orderBy:sortOrder')
                 td.text-center(ng-bind='run.team.name')
                 td.text-center(ng-bind='run.round.name')
                 td.text-center(ng-bind='run.score')
