@@ -4,44 +4,25 @@
 <div style="margin-top:50px;">
   <div class="row">
     <div class="col-md-12">
-      <button class="btn btn-primary" type="button" ng-click="saveMap()">Save
-        map
-      </button>
-      <button class="btn btn-primary" type="button" ng-click="saveMapAs()">Save
-        map as:
-      </button>
-      <input type="text" ng-model="saveasname"><br>
+      <button class="btn btn-primary" type="button" ng-click="saveMap()">Save map</button> <button class="btn btn-primary" type="button" ng-click="saveMapAs()">Save map as: </button> <input type="text" ng-model="saveasname"><br>
       <label>Name of design: <input type="text" ng-model="name"></label><br>
-      <label>Max height: <input type="number" ng-model="height"
-                                ng-change="sliderOptions.ceil = height - 1"
-                                min="1"></label><br>
-      <label>Max width: <input type="number" ng-model="width"
-                               min="1"></label><br>
-      <label>Max length: <input type="number" ng-model="length" min="1"></label><br>
-      <label>Number of checkpoint markers: <input type="number"
-                                                  ng-model="numberOfDropTiles"
-                                                  min="0"></label><br>
-      <input type="checkbox" ng-model="finished" id="isFinished"><label
-            class="checkbox" for="isFinished">Finished for using in runs</label><br>
+      <label>Max height: <input type="number" ng-model="height" ng-change="sliderOptions.ceil = height - 1" min="1"></label><br>
+      <label>Max width: <input type="number" ng-model="width" min="1" ></label><br>
+      <label>Max length: <input type="number" ng-model="length" min="1" ></label><br>
+      <label>Number of checkpoint markers: <input type="number" ng-model="numberOfDropTiles" min="0" ></label><br>
+      <input type="checkbox" ng-model="finished" id="isFinished"><label class="checkbox" for="isFinished">Finished for using in runs</label><br>
       <div class="error" ng-show="startNotSet()">No start tile is defined!</div>
     </div>
   </div>
   <div class="row">
     <div class="col-md-1">
-      <rzslider rz-slider-model="z" rz-slider-options="sliderOptions"
-                ng-show="height > 1"></rzslider>
+      <rzslider rz-slider-model="z" rz-slider-options="sliderOptions" ng-show="height > 1"></rzslider>
     </div>
     <div class="col-md-5 tools">
-      <p><label>Select tileset: <select ng-model="tileSet"
-                                        ng-options="set as set.name for set in tileSets"></select></label>
-      </p>
+      <p><label>Select tileset: <select ng-model="tileSet" ng-options="set as set.name for set in tileSets"></select></label></p>
       
-      <span ng-repeat="tile in tileSet.tiles track by tile.tileType._id"
-            class="toolbox-tile-container">
-	<img class="toolbox-tile rot0" ng-src="/images/tiles/{{tile.tileType.image}}"
-       x-lvl-draggable="true" x-lvl-drop-target="true"
-       x-on-drop="dropped(dragEl, dropEl)" tile-id="{{tile.tileType._id}}"
-       rotate-on-click rot="0">
+      <span ng-repeat="tile in tileSet.tiles track by tile.tileType._id" class="toolbox-tile-container">
+	<img class="toolbox-tile rot0" ng-src="/images/tiles/{{tile.tileType.image}}" x-lvl-draggable="true" x-lvl-drop-target="true" x-on-drop="dropped(dragEl, dropEl)" tile-id="{{tile.tileType._id}}" rotate-on-click rot="0">
 	<span ng-bind="tile.count"></span>
       </span>
       
@@ -50,10 +31,8 @@
     <div class="col-md-6">
       <div ng-repeat="r in range(length)" class="row">
         <div ng-repeat="c in range(width)" class="slot">
-          <tile tile="tiles[c+','+r+','+z]" x="{{c}}" y="{{r}}" z="{{z}}"
-                x-lvl-draggable="true"
-                x-lvl-drop-target="true" ng-right-click="open(c,r)"
-                ng-click="$parent.rotateTile(c,r)"></tile>
+          <tile tile="tiles[c+','+r+','+z]" x="{{c}}" y="{{r}}" z="{{z}}" x-lvl-draggable="true"
+                x-lvl-drop-target="true" ng-right-click="open(c,r)" ng-click="$parent.rotateTile(c,r)"></tile>
         </div>
       </div>
     </div>

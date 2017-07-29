@@ -1,100 +1,75 @@
-<nav class="navbar"
-     style="background-color: #3498db; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%">
+<nav  class="navbar" style="background-color: #3498db; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%">
   <!-- Navbar content -->
-  <div class="row">
-    <div class="col-md-4 col-sm4" style="border-right: solid 2px #fff;">
-      <li class="navbar-brand" href="#">{{field_run[0].name}}</li>
+    <div class="row">
+        <div class="col-md-4 col-sm4" style="border-right: solid 2px #fff;">
+            <li class="navbar-brand" href="#">{{field_run[0].name}}</li>
+        </div>
+        <div class="col-md-4 col-sm4" style="border-right: solid 2px #fff;">
+            <li class="navbar-brand" href="#">{{field_run[1].name}}</li>
+        </div>
+        <div class="col-md-4 col-sm4">
+            <li class="navbar-brand" href="#">{{field_run[2].name}}</li>
+        </div>
     </div>
-    <div class="col-md-4 col-sm4" style="border-right: solid 2px #fff;">
-      <li class="navbar-brand" href="#">{{field_run[1].name}}</li>
-    </div>
-    <div class="col-md-4 col-sm4">
-      <li class="navbar-brand" href="#">{{field_run[2].name}}</li>
-    </div>
-  </div>
-
+    
 
 </nav>
 
 
-<div class="row" style="height:100%;">
-  <div class="col-md-4 col-sm4" style="border-right: solid 1px #000;">
-    <label>Display field:</label>
-    <select ng-model='selectfield[0]'
-            ng-options='field as field.name for field in fields'></select>
-    <div style="width:100%; height:100%;">
-      <iframe ng-src="{{getIframeSrc(field_run[0].id)}}"
-              style="width:100%; height:100%; border:none;"
-              ng-if="field_run[0].id != '-1' && field_run[0].id != '-2' && field_run[0].id != null"></iframe>
-      <div class="alert alert-warning" role="alert"
-           ng-if="field_run[0].id == '-1' || field_run[0].id == '-2' || field_run[0].id == null">
-        <div class="row">
-          <div class="col-12">
-            <p>Currently, there is no run in {{selectfield[0].name}}</p>
-          </div>
-
+    <div class="row" style="height:100%;">
+        <div class="col-md-4 col-sm4" style="border-right: solid 1px #000;">
+            <label>Display field:</label>
+            <select ng-model='selectfield[0]' ng-options='field as field.name for field in fields'></select>
+            <div style="width:100%; height:100%;">
+                <iframe ng-src="{{getIframeSrc(field_run[0].id)}}" style="width:100%; height:100%; border:none;" ng-if="field_run[0].id != '-1' && field_run[0].id != '-2' && field_run[0].id != null"></iframe>
+                <div class="alert alert-warning" role="alert" ng-if="field_run[0].id == '-1' || field_run[0].id == '-2' || field_run[0].id == null">
+                    <div class="row">
+                        <div class="col-12">
+                                <p>Currently, there is no run in {{selectfield[0].name}}</p>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div style="text-align:center; margin: 10 10 10 10;" ng-if="field_run[0].id != '-1' && field_run[0].id != '-2' && field_run[0].id != null">
+                    <button class="btn btn-info" type="button" ng-click="go('/maze/view/'+field_run[0].id)"><i class="fa fa-arrow-right" aria-hidden="true" > Run detail infomation</i></button>
+                </div>
+            </div>
         </div>
-      </div>
-      <div style="text-align:center; margin: 10 10 10 10;"
-           ng-if="field_run[0].id != '-1' && field_run[0].id != '-2' && field_run[0].id != null">
-        <button class="btn btn-info" type="button"
-                ng-click="go('/maze/view/'+field_run[0].id)"><i
-                class="fa fa-arrow-right" aria-hidden="true"> Run detail
-          infomation</i></button>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-4 col-sm4" style="border-right: solid 1px #000;">
-    <label>Display field:</label>
-    <select ng-model='selectfield[1]'
-            ng-options='field as field.name for field in fields'></select>
-    <div style="width:100%; height:100%;">
-      <iframe ng-src="{{getIframeSrc(field_run[1].id)}}"
-              style="width:100%; height:100%; border:none;"
-              ng-if="field_run[1].id != '-1' && field_run[1].id != '-2' && field_run[1].id != null"></iframe>
-      <div class="alert alert-warning" role="alert"
-           ng-if="field_run[1].id == '-1' || field_run[1].id == '-2' || field_run[1].id == null">
-        <div class="row">
-          <div class="col-12">
-            <p>Currently, there is no run in {{selectfield[1].name}}</p>
-          </div>
+        <div class="col-md-4 col-sm4" style="border-right: solid 1px #000;">
+            <label>Display field:</label>
+            <select ng-model='selectfield[1]' ng-options='field as field.name for field in fields'></select>
+            <div style="width:100%; height:100%;">
+                <iframe ng-src="{{getIframeSrc(field_run[1].id)}}" style="width:100%; height:100%; border:none;" ng-if="field_run[1].id != '-1' && field_run[1].id != '-2' && field_run[1].id != null"></iframe>
+                <div class="alert alert-warning" role="alert" ng-if="field_run[1].id == '-1' || field_run[1].id == '-2' || field_run[1].id == null">
+                    <div class="row">
+                        <div class="col-12">
+                                <p>Currently, there is no run in {{selectfield[1].name}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align:center; margin: 10 10 10 10;" ng-if="field_run[1].id != '-1' && field_run[1].id != '-2' && field_run[1].id != null">
+                    <button class="btn btn-info" type="button" ng-click="go('/maze/view/'+field_run[1].id)"><i class="fa fa-arrow-right" aria-hidden="true" >Run detail infomation</i></button>
+                </div>
+            </div>
         </div>
-      </div>
-      <div style="text-align:center; margin: 10 10 10 10;"
-           ng-if="field_run[1].id != '-1' && field_run[1].id != '-2' && field_run[1].id != null">
-        <button class="btn btn-info" type="button"
-                ng-click="go('/maze/view/'+field_run[1].id)"><i
-                class="fa fa-arrow-right" aria-hidden="true">Run detail
-          infomation</i></button>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-4 col-sm4">
-    <label>Display field:</label>
-    <select ng-model='selectfield[2]'
-            ng-options='field as field.name for field in fields'></select>
-    <div style="width:100%; height:100%;">
-      <iframe ng-src="{{getIframeSrc(field_run[2].id)}}"
-              style="width:100%; height:100%; border:none;"
-              ng-if="field_run[2].id != '-1' && field_run[2].id != '-2' && field_run[2].id != null"></iframe>
-      <div class="alert alert-warning" role="alert"
-           ng-if="field_run[2].id == '-1' || field_run[2].id == '-2' || field_run[2].id == null">
-        <div class="row">
-          <div class="col-12">
-            <p>Currently, there is no run in {{selectfield[2].name}}．</p>
-          </div>
+        <div class="col-md-4 col-sm4" >
+            <label>Display field:</label>
+            <select ng-model='selectfield[2]' ng-options='field as field.name for field in fields'></select>
+            <div style="width:100%; height:100%;">
+                <iframe ng-src="{{getIframeSrc(field_run[2].id)}}" style="width:100%; height:100%; border:none;" ng-if="field_run[2].id != '-1' && field_run[2].id != '-2' && field_run[2].id != null"></iframe>
+                <div class="alert alert-warning" role="alert" ng-if="field_run[2].id == '-1' || field_run[2].id == '-2' || field_run[2].id == null">
+                    <div class="row">
+                        <div class="col-12">
+                                <p>Currently, there is no run in {{selectfield[2].name}}．</p>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align:center; margin: 10 10 10 10;" ng-if="field_run[2].id != '-1' && field_run[2].id != '-2' && field_run[2].id != null">
+                    <button class="btn btn-info" type="button" ng-click="go('/maze/view/'+field_run[2].id)"><i class="fa fa-arrow-right" aria-hidden="true" > Run detail infomation</i></button>
+                </div>
+            </div>
         </div>
-      </div>
-      <div style="text-align:center; margin: 10 10 10 10;"
-           ng-if="field_run[2].id != '-1' && field_run[2].id != '-2' && field_run[2].id != null">
-        <button class="btn btn-info" type="button"
-                ng-click="go('/maze/view/'+field_run[2].id)"><i
-                class="fa fa-arrow-right" aria-hidden="true"> Run detail
-          infomation</i></button>
-      </div>
     </div>
-  </div>
-</div>
 
 
 

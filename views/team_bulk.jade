@@ -10,11 +10,11 @@ append scripts
   script(src='/javascripts/team_bulk.js')
 
 block location
-  a.breadcrumb-item(href='/home') Home
-  a.breadcrumb-item(href='/admin') Admin
-  a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition.name}}
-  a.breadcrumb-item(ng-href='/admin/{{competitionId}}/teams') Teams
-  span.breadcrumb-item.active Bulk Registration
+    a.breadcrumb-item(href='/home') Home
+    a.breadcrumb-item(href='/admin') Admin
+    a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition.name}}
+    a.breadcrumb-item(ng-href='/admin/{{competitionId}}/teams') Teams
+    span.breadcrumb-item.active Bulk Registration
 
 
 block content
@@ -33,7 +33,7 @@ block content
       p Open the csv format of Excel etc. with editable software and fill the information.
       | For league, choose one of {{leagues}} and enter.
       | Please save with comma separated by Shift-JIS.
-      | When the end of the team name ends with a space, an error will occur during run registration.
+      |　When the end of the team name ends with a space, an error will occur during run registration.
       br
       br
       h3 STEP3 Upload the file

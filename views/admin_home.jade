@@ -10,8 +10,8 @@ append scripts
   script(src='/javascripts/admin_home.js')
 
 block location
-  a.breadcrumb-item(href='/home') Home
-  span.breadcrumb-item.active Admin
+    a.breadcrumb-item(href='/home') Home
+    span.breadcrumb-item.active Admin
 
 
 block content
@@ -27,16 +27,16 @@ block content
           br
           table
             thead
-              tr
-                th Name
-                th Operation
+                tr
+                  th Name
+                  th Operation
             tbody
-              tr(ng-repeat='competition in competitions')
-                td
-                  a(ng-bind='competition.name' ng-href="/admin/{{competition._id}}")
-                td
-                  a(href="" ng-click='removeCompetition(competition)') Delete
-
+                tr(ng-repeat='competition in competitions')
+                  td
+                    a(ng-bind='competition.name' ng-href="/admin/{{competition._id}}")
+                  td
+                    a(href="" ng-click='removeCompetition(competition)') Delete
+      
         .col-md-6
           h1 Common items
           button(ng-click="go('/admin/line/tilesets')" class='btn btn-outline-info btn-lg btn-block') Line tilesets

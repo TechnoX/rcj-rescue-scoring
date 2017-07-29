@@ -10,10 +10,10 @@ append scripts
   script(src='/javascripts/line_map_admin.js')
 
 block location
-  a.breadcrumb-item(href='/home') Home
-  a.breadcrumb-item(href='/admin') Admin
-  a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition.name}}
-  span.breadcrumb-item.active Line maps
+    a.breadcrumb-item(href='/home') Home
+    a.breadcrumb-item(href='/admin') Admin
+    a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition.name}}
+    span.breadcrumb-item.active Line maps
 
 block content
   .row
@@ -24,12 +24,12 @@ block content
       br
       table
         thead
-          tr
-            th Name
-            th Operation
+            tr
+              th Name
+              th Operation
         tbody
-          tr(ng-repeat='map in maps')
-            td
-              a(ng-bind='map.name' ng-href="/line/editor/{{map._id}}")
-            td
-              a(href="" ng-click='removeMap(map)') Delete
+            tr(ng-repeat='map in maps')
+              td
+                a(ng-bind='map.name' ng-href="/line/editor/{{map._id}}")
+              td
+                a(href="" ng-click='removeMap(map)') Delete
