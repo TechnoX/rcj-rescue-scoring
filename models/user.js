@@ -162,13 +162,13 @@ module.exports.user = User;
 
 var testUser = new User({
   username       : "admin",
-  //password       : "adminpass",
+  password       : "adminpass",
   admin          : true,
   superDuperAdmin: true
 });
 var testUser2 = new User({
   username    : "judge",
-  //password    : "judgepass",
+  password    : "judgepass",
   competitions: [{
     id         : "5976b89445524f1e629f63f5",
     accessLevel: ACCESSLEVELS.JUDGE

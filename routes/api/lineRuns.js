@@ -118,7 +118,7 @@ function getLineRuns(req, res) {
             for (let i = 0; i < dbRuns.length; i++) {
                 if (!auth.authViewRun(req.user, dbRuns[i], ACCESSLEVELS.NONE + 1)) {
                     delete dbRuns[i].map
-                    delete dbRuns[i].field
+                    //delete dbRuns[i].field
                     delete dbRuns[i].comment
                     delete dbRuns[i].sign
                 }

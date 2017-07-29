@@ -69,7 +69,7 @@ function getMazeRuns(req, res) {
   }
 
     if(req.query['minimum']){
-         query.select("round team field status started startTime")
+         query.select("competition round team field status started startTime")
     }else{
         query.select("competition round team field map score time status started comment startTime")
     }
@@ -112,7 +112,7 @@ function getMazeRuns(req, res) {
       for (let i = 0; i < dbRuns.length; i++) {
         if (!auth.authViewRun(req.user, dbRuns[i], ACCESSLEVELS.NONE + 1)) {
           delete dbRuns[i].map
-          delete dbRuns[i].field
+          //delete dbRuns[i].field
           delete dbRuns[i].comment
           delete dbRuns[i].sign
         }
