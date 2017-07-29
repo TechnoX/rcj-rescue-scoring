@@ -72,9 +72,18 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
     })
   }
   
+  function timerUpdateRunList() {
+    if (runListChanged) {
+      updateRunList();
+      runListChanged = false;
+      runListTimer = setTimeout(timerUpdateRunList, 1000 * 15);
+    } else {
+      runListTimer = null
+    }
+  }
   function launchSocketIo() {
     // launch socket.io
-    var socket = io({transports: ['websocket']}).connect(window.location.origin)
+    socket = io({transports: ['websocket']}).connect(window.location.origin)
     socket.on('connect', function () {
       socket.emit('subscribe', 'runs/maze')
     })
@@ -83,13 +92,7 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
       if (runListTimer == null) {
         updateRunList();
         runListChanged = false;
-        runListTimer = setTimeout(function () {
-          if (runListChanged) {
-            updateRunList();
-            runListChanged = false;
-          }
-          runListTimer = null
-        }, 1000 * 15)
+        runListTimer = setTimeout(timerUpdateRunList, 1000 * 15)
       }
     })
   }

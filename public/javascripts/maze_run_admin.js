@@ -3,29 +3,35 @@ angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.datetimep
   $scope.competitionId = competitionId
   
   updateRunList();
+  launchSocketIo();
   
   var runListTimer = null;
   var runListChanged = false;
   
-  (function launchSocketIo() {
+  function timerUpdateRunList() {
+    if (runListChanged) {
+      updateRunList();
+      runListChanged = false;
+      runListTimer = setTimeout(timerUpdateRunList, 1000 * 15);
+    } else {
+      runListTimer = null
+    }
+  }
+  function launchSocketIo() {
     // launch socket.io
-    socket = io({transports: ['websocket']}).connect(window.location.origin);
-    socket.emit('subscribe', 'competition/' + competitionId);
-    socket.on('changed', function (data) {
+    socket = io({transports: ['websocket']}).connect(window.location.origin)
+    socket.on('connect', function () {
+      socket.emit('subscribe', 'runs/line')
+    })
+    socket.on('changed', function () {
       runListChanged = true;
       if (runListTimer == null) {
         updateRunList();
         runListChanged = false;
-        runListTimer = setTimeout(function () {
-          if (runListChanged) {
-            updateRunList();
-            runListChanged = false;
-          }
-          runListTimer = null
-        }, 1000 * 15)
+        runListTimer = setTimeout(timerUpdateRunList, 1000 * 15)
       }
-    });
-  })();
+    })
+  }
   $http.get("/api/competitions/" + competitionId).then(function (response) {
     $scope.competition = response.data
   })

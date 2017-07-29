@@ -138,7 +138,17 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
       }
     })
   }
-  
+
+
+  function timerUpdateRunList() {
+    if (runListChanged) {
+      updateRunList();
+      runListChanged = false;
+      runListTimer = setTimeout(timerUpdateRunList, 1000 * 15);
+    } else {
+      runListTimer = null
+    }
+  }
   function launchSocketIo() {
     // launch socket.io
     socket = io({transports: ['websocket']}).connect(window.location.origin)
@@ -150,13 +160,7 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
       if (runListTimer == null) {
         updateRunList();
         runListChanged = false;
-        runListTimer = setTimeout(function () {
-          if (runListChanged) {
-            updateRunList();
-            runListChanged = false;
-          }
-          runListTimer = null
-        }, 1000 * 15)
+        runListTimer = setTimeout(timerUpdateRunList, 1000 * 15)
       }
     })
   }
