@@ -141,7 +141,7 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
   
   function launchSocketIo() {
     // launch socket.io
-    socket = io.connect(window.location.origin)
+    socket = io({transports: ['websocket']}).connect(window.location.origin)
     socket.on('connect', function () {
       socket.emit('subscribe', 'runs/line')
     })

@@ -74,7 +74,7 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
   
   function launchSocketIo() {
     // launch socket.io
-    var socket = io.connect(window.location.origin)
+    var socket = io({transports: ['websocket']}).connect(window.location.origin)
     socket.on('connect', function () {
       socket.emit('subscribe', 'runs/maze')
     })

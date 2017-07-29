@@ -9,7 +9,7 @@ angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.datetimep
   
   (function launchSocketIo() {
     // launch socket.io
-    socket = io.connect(window.location.origin);
+    socket = io({transports: ['websocket']}).connect(window.location.origin);
     socket.emit('subscribe', 'competition/' + competitionId);
     socket.on('changed', function (data) {
       runListChanged = true;
