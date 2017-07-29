@@ -1,182 +1,235 @@
-<nav  class="navbar" style="background-color: #8e44ad; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%">
+<nav class="navbar"
+     style="background-color: #8e44ad; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%">
   <!-- Navbar content -->
-    <div class="row">
-        <div class="col-md-6 col-sm4 col-12">
-            <li class="navbar-brand" href="#"><i class="fa fa-spinner fa-pulse fa-fw"></i> {{team.name}}</li>
-        </div>
-        <div class="col-md-3 col-sm4 col-7">
-            <i class="fa fa-calculator fa-2x" aria-hidden="true"></i>
-            <li class="navbar-brand" href="#"> {{score}} points</li>
-        </div>
-        <div class="col-md-3 col-sm4 col-5">
-            <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
-            <li class="navbar-brand" href="#" ng-if="!retired">  {{minutes*60*1000+seconds*1000 | date:'mm:ss'}}</li>
-            <li class="navbar-brand" href="#" ng-if="retired">  Retire</li>
-        </div>
+  <div class="row">
+    <div class="col-md-6 col-sm4 col-12">
+      <li class="navbar-brand" href="#"><i
+              class="fa fa-spinner fa-pulse fa-fw"></i> {{team.name}}
+      </li>
     </div>
-    
+    <div class="col-md-3 col-sm4 col-7">
+      <i class="fa fa-calculator fa-2x" aria-hidden="true"></i>
+      <li class="navbar-brand" href="#"> {{score}} points</li>
+    </div>
+    <div class="col-md-3 col-sm4 col-5">
+      <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
+      <li class="navbar-brand" href="#" ng-if="!retired">
+        {{minutes*60*1000+seconds*1000 | date:'mm:ss'}}
+      </li>
+      <li class="navbar-brand" href="#" ng-if="retired"> Retire</li>
+    </div>
+  </div>
+
 
 </nav>
 <div class="container">
-    <div class="row">
-        <div class="col-md12">
-            <button class="btn btn-secondary" style="margin:0 10px 10px 0;" type="button" ng-click="go('/admin/' + competition._id +'/runs/')"><i class="fa fa-undo" aria-hidden="true"> Back</i></button>
-        </div>
+  <div class="row">
+    <div class="col-md12">
+      <button class="btn btn-secondary" style="margin:0 10px 10px 0;"
+              type="button"
+              ng-click="go('/admin/' + competition._id +'/runs/')"><i
+              class="fa fa-undo" aria-hidden="true"> Back</i></button>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div id="lops" class="card">
-                  <h3 class="card-header"><i class="fa fa-info-circle" aria-hidden="true"></i> Basic Informations</h3>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div id="lops" class="card">
+        <h3 class="card-header"><i class="fa fa-info-circle"
+                                   aria-hidden="true"></i> Basic Informations
+        </h3>
                       <pre>
-                        <ul class="list-group list-group-flush scrool" style="margin:0 0 0 0; padding:0;overflow: scroll;"><!--
+                        <ul class="list-group list-group-flush scrool"
+                            style="margin:0 0 0 0; padding:0;overflow: scroll;"><!--
                           --><li class="list-group-item">Competition : {{competition.name}}</li><!--
                           --><li class="list-group-item">Round       : {{round.name}}</li><!--
                           --><li class="list-group-item">Field       : {{field.name}}</li><!--
                           --><li class="list-group-item">Team　　     : {{team.name}}</li><!--
                           --><li class="list-group-item">League　　　 : {{team.league=='primary'?"Primary":"Secondary"}}</li><!--
                           --></ul><!--
-                      --></pre>  
-              </div>
-            
-        </div>
+                      --></pre>
+      </div>
+
     </div>
-    <br>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-md-6">
+      <div id="card_area" class="scrool" style="overflow: scroll;">
+        <div id="lops" class="card">
+          <h3 class="card-header"><i class="fa fa-undo" aria-hidden="true"></i>
+            LoPs</h3>
+          <div class="card-block">
+
+            <div ng-repeat="dropTile in range(actualUsedDropTiles+1) track by $index">
+              <p class="card-text">
+                <b>{{$index==0?'Start':('Checkpoint ' + ($index))}}</b> to <b>{{!$last?('Checkpoint
+                ' + ($index+1)):'Evacuation zone'}}</b>の間:<br>
+                <img src="/images/minus.png" alt="-" class="plusminus"
+                     style="opacity:0.5;">
+                <span class="count">{{LoPs[$index]?LoPs[$index]:0}}</span>
+                <img src="/images/plus.png" alt="+" class="plusminus"
+                     style="opacity:0.5;">
+              </p>
+              <hr ng-show="!$last"/>
+            </div>
+
+          </div>
+        </div>
+        <div id="resc" class="card">
+          <h3 class="card-header"><i class="fa fa-ambulance"
+                                     aria-hidden="true"></i> Rescuing
+            victims　<span class="badge badge-danger">Rescue Level{{rescueLevel + 1}} is selecting.</span>
+          </h3>
+          <div class="card-block">
+            <p class="card-text">【LIVE Victims】Number：　 　 <span
+                    class="badge badge-info">{{30 + rescueLevel*10}}　points /victim</span>
+            </p>
+            <img src="/images/minus.png" alt="-" ng-click="decVictims('live')"
+                 class="plusminus">
+            <img src="/images/loader2.gif" width="37px" height="37px" alt=""
+                 ng-show="rprocessing == true">
+            <span class="count" ng-show="rlprocessing != true">{{rescuedLiveVictims}}</span>
+            <img src="/images/plus.png" alt="+" ng-click="incVictims('live')"
+                 class="plusminus">
+          </div>
+          <hr>
+          <div class="card-block">
+            <p class="card-text">DEAD Victims】Number： 　　<span
+                    class="badge badge-info">{{15 + rescueLevel*5}} points /victim</span>
+            </p>
+            <img src="/images/minus.png" alt="-" ng-click="decVictims('dead')"
+                 class="plusminus">
+            <img src="/images/loader2.gif" width="37px" height="37px" alt=""
+                 ng-show="rprocessing == true">
+            <span class="count" ng-show="rdprocessing != true">{{rescuedDeadVictims}}</span>
+            <img src="/images/plus.png" alt="+" ng-click="incVictims('dead')"
+                 class="plusminus">
+          </div>
+          <hr>
+          <div class="card-block">
+            <p class="card-text">Escape the evacuation zone： <span
+                    class="badge badge-info">20 points</span></p>
+            <input type="checkbox" ng-model="escapeEvacuationZone"
+                   ng-change="changeEscapeEvacuationZone()" id="scoredrun"
+                   disabled><label class="checkbox"
+                                   for="scoredrun">Success</label><br>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 tilearea" style="height=600px">
+      <form>
+        <input type="radio" ng-model="visType" value="stacked"
+               id="stacked"><label class="radio" for="stacked">Stacked　</label>
+        <input type="radio" ng-model="visType" value="slider" checked
+               id="slider"><label class="radio" for="slider">Slider　</label>
+        <input type="radio" ng-model="visType" value="side" id="slide-by-slide"><label
+              class="radio" for="slide-by-slide">Slide-by-Slide　</label>
+      </form>
+      <div ng-repeat="r in range(length)" class="row" ng-if="visType=='stacked'"
+           tile-load-finished=''>
+        <div ng-repeat="c in range(width)" class="slot">
+          <tile tile="tiles[c+','+r+','+z]" ng-repeat="z in range(height)"
+                ng-click="showElements(c,r,z)"
+                ng-style="{'opacity': getOpacity(c,r)}">
+          </tile>
+        </div>
+      </div>
+      <div ng-if="visType=='slider'">
+        <rzslider rz-slider-model="z"
+                  rz-slider-options="sliderOptions"></rzslider>
+        <div ng-repeat="r in range(length)" class="row" tile-load-finished=''>
+          <div ng-repeat="c in range(width)" class="slot">
+            <tile tile="tiles[c+','+r+','+z]"
+                  ng-click="showElements(c,r,z)"></tile>
+          </div>
+        </div>
+      </div>
+      <div ng-repeat="z in range(height)"
+           style="float: left; border-left: 3px solid black;"
+           ng-if="visType=='side'" tile-load-finished=''>
+        <div ng-repeat="r in range(length)">
+          <div ng-repeat="c in range(width)" class="slot">
+            <tile tile="tiles[c+','+r+','+z]"
+                  ng-click="showElements(c,r,z)"></tile>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="alert alert-success" style="margin:100 0 0 0;" role="alert">
     <div class="row">
-        <div class="col-md-6">
-            <div id="card_area" class="scrool" style="overflow: scroll;">
-              <div id="lops" class="card">
-                  <h3 class="card-header"><i class="fa fa-undo" aria-hidden="true"></i> LoPs</h3>
-                  <div class="card-block">
-
-                      <div  ng-repeat="dropTile in range(actualUsedDropTiles+1) track by $index">
-                         <p class="card-text">
-                         <b>{{$index==0?'Start':('Checkpoint ' + ($index))}}</b> to <b>{{!$last?('Checkpoint ' + ($index+1)):'Evacuation zone'}}</b>の間:<br>
-                        <img src="/images/minus.png" alt="-" class="plusminus" style="opacity:0.5;">
-                        <span class="count">{{LoPs[$index]?LoPs[$index]:0}}</span>
-                        <img src="/images/plus.png" alt="+"  class="plusminus" style="opacity:0.5;">
-                        </p>
-                        <hr ng-show="!$last" /> 
-                      </div>
-
-                  </div>   
-              </div>
-              <div id="resc" class="card">
-                  <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> Rescuing victims　<span class="badge badge-danger">Rescue Level{{rescueLevel + 1}} is selecting.</span></h3>
-                  <div class="card-block">
-                      <p class="card-text">【LIVE Victims】Number：　  　 <span class="badge badge-info">{{30 + rescueLevel*10}}　points /victim</span></p>
-                      <img src="/images/minus.png" alt="-" ng-click="decVictims('live')" class="plusminus">
-                      <img src="/images/loader2.gif" width="37px" height="37px" alt="" ng-show="rprocessing == true">
-                      <span class="count" ng-show="rlprocessing != true">{{rescuedLiveVictims}}</span>
-                      <img src="/images/plus.png" alt="+" ng-click="incVictims('live')" class="plusminus">
-                  </div>
-                  <hr>
-                  <div class="card-block">
-                      <p class="card-text">DEAD Victims】Number：    　　<span class="badge badge-info">{{15 + rescueLevel*5}} points /victim</span></p>
-                      <img src="/images/minus.png" alt="-" ng-click="decVictims('dead')" class="plusminus">
-                      <img src="/images/loader2.gif" width="37px" height="37px" alt="" ng-show="rprocessing == true">
-                      <span class="count" ng-show="rdprocessing != true">{{rescuedDeadVictims}}</span>
-                      <img src="/images/plus.png" alt="+" ng-click="incVictims('dead')" class="plusminus">
-                  </div>
-                  <hr>
-                  <div class="card-block">
-                      <p class="card-text">Escape the evacuation zone： <span class="badge badge-info">20 points</span></p>
-                      <input type="checkbox" ng-model="escapeEvacuationZone" ng-change="changeEscapeEvacuationZone()" id="scoredrun" disabled><label class="checkbox" for="scoredrun">Success</label><br>
-                  </div> 
-                </div>
-            </div>
+      <div class="col-md-6">
+        <div class="hidden-xs-down">
+          <i class="fa fa-calculator fa-3x" aria-hidden="true"> : {{score}}
+            points</i>
         </div>
-        
-        <div class="col-md-6 tilearea" style="height=600px">
-            <form>
-                <input type="radio" ng-model="visType" value="stacked" id="stacked"><label class="radio" for="stacked">Stacked　</label>
-                <input type="radio" ng-model="visType" value="slider" checked id="slider"><label class="radio" for="slider">Slider　</label>
-                <input type="radio" ng-model="visType" value="side" id="slide-by-slide"><label class="radio" for="slide-by-slide">Slide-by-Slide　</label>
-            </form>
-            <div ng-repeat="r in range(length)" class="row"  ng-if="visType=='stacked'" tile-load-finished=''>
-                <div ng-repeat="c in range(width)" class="slot">
-                  <tile tile="tiles[c+','+r+','+z]" ng-repeat="z in range(height)" ng-click="showElements(c,r,z)" ng-style="{'opacity': getOpacity(c,r)}">
-                  </tile>
-                </div>
-            </div>
-            <div ng-if="visType=='slider'">
-                <rzslider rz-slider-model="z" rz-slider-options="sliderOptions" ></rzslider>
-                <div ng-repeat="r in range(length)" class="row" tile-load-finished=''>
-                  <div ng-repeat="c in range(width)" class="slot">
-                    <tile tile="tiles[c+','+r+','+z]" ng-click="showElements(c,r,z)"></tile>
-                  </div>
-                </div>
-            </div>
-            <div ng-repeat="z in range(height)" style="float: left; border-left: 3px solid black;" ng-if="visType=='side'"   tile-load-finished=''>
-                <div ng-repeat="r in range(length)">
-                  <div ng-repeat="c in range(width)" class="slot">
-                    <tile tile="tiles[c+','+r+','+z]" ng-click="showElements(c,r,z)"></tile>
-                  </div>
-                </div>
-            </div>
+        <div class="hidden-sm-up">
+          <i class="fa fa-calculator fa-2x" aria-hidden="true"> : {{score}}
+            points</i>
         </div>
-    </div>
-    <div class="alert alert-success" style="margin:100 0 0 0;" role="alert">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="hidden-xs-down">
-                    <i class="fa fa-calculator fa-3x" aria-hidden="true"> : {{score}} points</i>
-                </div>
-                <div class="hidden-sm-up">
-                    <i class="fa fa-calculator fa-2x" aria-hidden="true"> : {{score}} points</i>
-                </div>
-            </div>
-            <div class="col-md-6" ng-if='!retired'>
-                <div class="hidden-xs-down">
-                    <i class="fa fa-clock-o fa-3x" aria-hidden="true"> : {{minutes}} min {{seconds}} sec</i>           
-                </div>
-                <div class="hidden-sm-up">
-                    <i class="fa fa-clock-o fa-2x" aria-hidden="true"> : {{minutes}} min {{seconds}} sec</i>
-                </div>
-            </div>
-            <div class="col-md-6" ng-if='retired'>
-                <div class="hidden-xs-down">
-                    <i class="fa fa-clock-o fa-3x" aria-hidden="true"> : Retire</i>           
-                </div>
-                <div class="hidden-sm-up">
-                    <i class="fa fa-clock-o fa-2x" aria-hidden="true"> : Retire</i>
-                </div>
-            </div>
+      </div>
+      <div class="col-md-6" ng-if='!retired'>
+        <div class="hidden-xs-down">
+          <i class="fa fa-clock-o fa-3x" aria-hidden="true"> : {{minutes}} min
+            {{seconds}} sec</i>
         </div>
-    </div>
-    <div class="row" style="margin:30 0 0 0;">
-        <div class="col-md-12">
-            <div id="sign" class="card">
-                  <h3 class="card-header"><i class="fa fa-key" aria-hidden="true"></i> Sign</h3>
-                  <div class="card-block">
-                      <p class="card-text  text-warning " ng-if="!retired">
-                          By wiritng a sign below, you accept that the 
-                          [Score：{{score}}]   
-                          [Time：{{minutes}} min {{seconds}} sec] 
-                          are correct.  
-                          Your team also further undertakes to not appeal the score at a later stage. 
-                      </p>
-                      <p class="card-text  text-warning " ng-if="retired">
-                          By wiritng a sign below, you accept that the 
-                          [Score：{{score}}]   
-                          [Time：Retire] 
-                          are correct.  
-                          Your team also further undertakes to not appeal the score at a later stage.  
-                      </p>
-                      <h2>Captain Sign</h2>
-                      <img ng-src="{{cap_sig}}" style="max-width: 100%;height: auto;"/>
-                      <hr>
-                      <h2>Referee Sign</h2>
-                      <img ng-src="{{ref_sig}}" style="max-width: 100%;height: auto;"/>
-                      <hr>
-                      <h2>Co-Referee Sign</h2>
-                      <img ng-src="{{refas_sig}}" style="max-width: 100%;height: auto;"/>
-                  </div>   
-              </div>
+        <div class="hidden-sm-up">
+          <i class="fa fa-clock-o fa-2x" aria-hidden="true"> : {{minutes}} min
+            {{seconds}} sec</i>
         </div>
+      </div>
+      <div class="col-md-6" ng-if='retired'>
+        <div class="hidden-xs-down">
+          <i class="fa fa-clock-o fa-3x" aria-hidden="true"> : Retire</i>
+        </div>
+        <div class="hidden-sm-up">
+          <i class="fa fa-clock-o fa-2x" aria-hidden="true"> : Retire</i>
+        </div>
+      </div>
     </div>
-    <div class="row" style="margin:100 0 100 0;">
-        <button type="button" class="btn btn-danger btn-lg btn-block" style="padding:30 0 30 0" ng-click="send_public()"><i class="fa fa-paper-plane fa-2x" aria-hidden="true" > Approval!</i></button>
+  </div>
+  <div class="row" style="margin:30 0 0 0;">
+    <div class="col-md-12">
+      <div id="sign" class="card">
+        <h3 class="card-header"><i class="fa fa-key" aria-hidden="true"></i>
+          Sign</h3>
+        <div class="card-block">
+          <p class="card-text  text-warning " ng-if="!retired">
+            By wiritng a sign below, you accept that the
+            [Score：{{score}}]
+            [Time：{{minutes}} min {{seconds}} sec]
+            are correct.
+            Your team also further undertakes to not appeal the score at a later
+            stage.
+          </p>
+          <p class="card-text  text-warning " ng-if="retired">
+            By wiritng a sign below, you accept that the
+            [Score：{{score}}]
+            [Time：Retire]
+            are correct.
+            Your team also further undertakes to not appeal the score at a later
+            stage.
+          </p>
+          <h2>Captain Sign</h2>
+          <img ng-src="{{cap_sig}}" style="max-width: 100%;height: auto;"/>
+          <hr>
+          <h2>Referee Sign</h2>
+          <img ng-src="{{ref_sig}}" style="max-width: 100%;height: auto;"/>
+          <hr>
+          <h2>Co-Referee Sign</h2>
+          <img ng-src="{{refas_sig}}" style="max-width: 100%;height: auto;"/>
+        </div>
+      </div>
     </div>
+  </div>
+  <div class="row" style="margin:100 0 100 0;">
+    <button type="button" class="btn btn-danger btn-lg btn-block"
+            style="padding:30 0 30 0" ng-click="send_public()"><i
+            class="fa fa-paper-plane fa-2x" aria-hidden="true"> Approval!</i>
+    </button>
+  </div>
 </div>
 
 

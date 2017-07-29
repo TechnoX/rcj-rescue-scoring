@@ -35,10 +35,10 @@ append css
     }
 
 block location
-    a.breadcrumb-item(onclick="location.href='/home'") Home
-    a.breadcrumb-item(onclick="location.href='/maze'") Maze
-    a.breadcrumb-item(ng-click='go("/maze/"+ competitionId )') {{competition.name}}
-    span.breadcrumb-item.active Score
+  a.breadcrumb-item(onclick="location.href='/home'") Home
+  a.breadcrumb-item(onclick="location.href='/maze'") Maze
+  a.breadcrumb-item(ng-click='go("/maze/"+ competitionId )') {{competition.name}}
+  span.breadcrumb-item.active Score
 
 block content
   .row

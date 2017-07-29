@@ -25,21 +25,21 @@ publicRouter.get('/leagues', function (req, res) {
 
 publicRouter.get('/:teamid', function (req, res, next) {
   var id = req.params.teamid
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
+  
   query.doIdQuery(req, res, id, "", competitiondb.team)
 })
 
 publicRouter.get('/:teamid/runs', function (req, res, next) {
   var id = req.params.teamid
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
+  
   competitiondb.run.find({team: id}, function (err, data) {
     if (err) {
       logger.error(err)
@@ -52,12 +52,12 @@ publicRouter.get('/:teamid/runs', function (req, res, next) {
 
 adminRouter.delete('/:teamid', function (req, res, next) {
   var id = req.params.teamid
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
-  competitiondb.team.remove({_id : id}, function (err) {
+  
+  competitiondb.team.remove({_id: id}, function (err) {
     if (err) {
       logger.error(err)
       res.status(400).send({msg: "Could not remove team", err: err.message})
@@ -69,13 +69,13 @@ adminRouter.delete('/:teamid', function (req, res, next) {
 
 adminRouter.post('/', function (req, res) {
   var team = req.body
-
+  
   var newTeam = new competitiondb.team({
-    name : team.name,
-    league : team.league,
-    competition : team.competition
+    name       : team.name,
+    league     : team.league,
+    competition: team.competition
   })
-
+  
   newTeam.save(function (err, data) {
     if (err) {
       logger.error(err)

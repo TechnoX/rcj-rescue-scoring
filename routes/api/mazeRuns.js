@@ -45,18 +45,18 @@ publicRouter.get('/', getMazeRuns)
 
 function getMazeRuns(req, res) {
   const competition = req.query.competition || req.params.competition
-
+  
   var query
   if (competition != null && competition.constructor === String) {
-    if (req.query['ended']=='false') {
-        query = mazeRun.find({
-            competition: competition,
-            status: {$lte: 1}
-        })
+    if (req.query['ended'] == 'false') {
+      query = mazeRun.find({
+        competition: competition,
+        status     : {$lte: 1}
+      })
     } else {
-        query = mazeRun.find({
-            competition: competition
-        })
+      query = mazeRun.find({
+        competition: competition
+      })
     }
   } else if (Array.isArray(competition)) {
     query = mazeRun.find({
@@ -67,14 +67,14 @@ function getMazeRuns(req, res) {
   } else {
     query = mazeRun.find({})
   }
-
-    if(req.query['minimum']){
-         query.select("competition round team field status started startTime")
-    }else{
-        query.select("competition round team field map score time status started comment startTime")
-    }
-
-
+  
+  if (req.query['minimum']) {
+    query.select("competition round team field status started startTime")
+  } else {
+    query.select("competition round team field map score time status started comment startTime")
+  }
+  
+  
   if (req.query['populate'] !== undefined && req.query['populate']) {
     query.populate([
       {
@@ -99,7 +99,7 @@ function getMazeRuns(req, res) {
       }
     ])
   }
-
+  
   query.lean().exec(function (err, dbRuns) {
     if (err) {
       logger.error(err)
@@ -107,7 +107,7 @@ function getMazeRuns(req, res) {
         msg: "Could not get runs",
         err: err.message
       })
-    } else if (dbRuns){
+    } else if (dbRuns) {
       // Hide map and field from public
       for (let i = 0; i < dbRuns.length; i++) {
         if (!auth.authViewRun(req.user, dbRuns[i], ACCESSLEVELS.NONE + 1)) {
@@ -130,7 +130,7 @@ function getLatestMazeRun(req, res) {
   const competition = req.query.competition || req.params.competition
   const field = req.query.field || req.params.field
   const fields = req.query.fields
-
+  
   var selection = {
     competition: competition,
     field      : field
@@ -141,26 +141,26 @@ function getLatestMazeRun(req, res) {
   if (selection.field == undefined) {
     delete selection.field
   }
-
+  
   if (fields != null) {
     selection.field = {
       $in: fields
     }
   }
-
+  
   var query = mazeRun.findOne(selection).sort("-updatedAt")
-
+  
   if (req.query['populate'] !== undefined && req.query['populate']) {
     query.populate(["round", "team", "field", "competition"])
   }
-
+  
   query.lean().exec(function (err, dbRun) {
     if (err) {
       logger.error(err)
       res.status(400).send({
         msg: "Could not get run"
       })
-    } else if (dbRun){
+    } else if (dbRun) {
       // Hide map and field from public
       if (!auth.authViewRun(req.user, dbRun, ACCESSLEVELS.NONE + 1)) {
         delete dbRun.map
@@ -244,17 +244,17 @@ publicRouter.get('/find/:competitionid/:field/:status', function (req, res, next
  */
 publicRouter.get('/:runid', function (req, res, next) {
   const id = req.params.runid
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
+  
   const query = mazeRun.findById(id, "-__v")
-
+  
   if (req.query['populate'] !== undefined && req.query['populate']) {
     query.populate(["round", "team", "field", "competition"])
   }
-
+  
   query.lean().exec(function (err, dbRun) {
     if (err) {
       logger.error(err)
@@ -282,7 +282,7 @@ publicRouter.get('/:runid', function (req, res, next) {
  * @apiVersion 1.0.0
  *
  * @apiParam {String} runid The run id
-
+ 
  * @apiParam {Object[]}     [tiles]
  * @apiParam {Boolean}      [tiles.isDropTile]
  * @apiParam {Object}       [tiles.scoredItems]
@@ -312,9 +312,9 @@ privateRouter.put('/:runid', function (req, res, next) {
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
+  
   const run = req.body
-
+  
   // Exclude fields that are not allowed to be publicly changed
   delete run._id
   delete run.__v
@@ -324,9 +324,9 @@ privateRouter.put('/:runid', function (req, res, next) {
   delete run.team
   delete run.field
   delete run.score
-
+  
   //logger.debug(run)
-
+  
   mazeRun.findById(id)
   //.select("-_id -__v -competition -round -team -field -score")
     .populate("map")
@@ -338,8 +338,8 @@ privateRouter.put('/:runid', function (req, res, next) {
           err: err.message
         })
       } else {
-
-
+        
+        
         // Recursively updates properties in "dbObj" from "obj"
         const copyProperties = function (obj, dbObj) {
           for (let prop in obj) {
@@ -347,7 +347,7 @@ privateRouter.put('/:runid', function (req, res, next) {
                                              dbObj.get(prop) !== undefined)) { // Mongoose objects don't have hasOwnProperty
               if (typeof obj[prop] == 'object' && dbObj[prop] != null) { // Catches object and array
                 copyProperties(obj[prop], dbObj[prop])
-
+                
                 if (dbObj.markModified !== undefined) {
                   dbObj.markModified(prop)
                 }
@@ -360,19 +360,19 @@ privateRouter.put('/:runid', function (req, res, next) {
             }
           }
         }
-
+        
         for (let i in run.tiles) {
           if (run.tiles.hasOwnProperty(i)) {
             let tile = run.tiles[i]
             delete tile.processing
-
+            
             if (isNaN(i)) {
               const coords = i.split(',')
               tile.x = Number(coords[0])
               tile.y = Number(coords[1])
               tile.z = Number(coords[2])
             }
-
+            
             let existing = false
             for (let j = 0; j < dbRun.tiles.length; j++) {
               let dbTile = dbRun.tiles[j]
@@ -399,7 +399,7 @@ privateRouter.put('/:runid', function (req, res, next) {
             }
           }
         }
-
+        
         delete run.tiles
         err = copyProperties(run, dbRun)
         if (err) {
@@ -409,16 +409,16 @@ privateRouter.put('/:runid', function (req, res, next) {
             msg: "Could not save run"
           })
         }
-
+        
         dbRun.score = scoreCalculator.calculateMazeScore(dbRun)
-
+        
         if (dbRun.score > 0 || dbRun.time.minutes != 0 ||
             dbRun.time.seconds != 0 || dbRun.status >= 2) {
           dbRun.started = true
         } else {
           dbRun.started = false
         }
-
+        
         dbRun.save(function (err) {
           if (err) {
             logger.error(err)
@@ -459,11 +459,11 @@ privateRouter.put('/:runid', function (req, res, next) {
  */
 adminRouter.delete('/:runid', function (req, res, next) {
   var id = req.params.runid
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
+  
   mazeRun.remove({
     _id: id
   }, function (err) {
@@ -500,7 +500,7 @@ adminRouter.delete('/:runid', function (req, res, next) {
  */
 adminRouter.post('/', function (req, res) {
   const run = req.body
-
+  
   new mazeRun({
     competition: run.competition,
     round      : run.round,

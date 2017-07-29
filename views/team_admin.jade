@@ -10,10 +10,10 @@ append scripts
   script(src='/javascripts/team_admin.js')
 
 block location
-    a.breadcrumb-item(href='/home') Home
-    a.breadcrumb-item(href='/admin') Admin
-    a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition.name}}
-    span.breadcrumb-item.active Teams
+  a.breadcrumb-item(href='/home') Home
+  a.breadcrumb-item(href='/admin') Admin
+  a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition.name}}
+  span.breadcrumb-item.active Teams
 
 
 block content
@@ -23,31 +23,31 @@ block content
       h1 {{competition.name}} - Teams
       table
         thead
-            tr
-                th Name
-                th League
-                th Action
+          tr
+            th Name
+            th League
+            th Action
         tbody
-            tr
-                td
-                    input(ng-model='teamName')
-                td
-                    select(ng-model='teamLeague' ng-options='league for league in leagues')
-                td
-                    button(ng-click='addTeam()') Add team
+          tr
+            td
+              input(ng-model='teamName')
+            td
+              select(ng-model='teamLeague' ng-options='league for league in leagues')
+            td
+              button(ng-click='addTeam()') Add team
       a(ng-href='/admin/{{competitionId}}/teams/bulk') Bulk Regstration
       br
       br
       table
         thead
-            tr
-              th Name
-              th League
-              th Operation
+          tr
+            th Name
+            th League
+            th Operation
         tbody
-            tr(ng-repeat='team in teams')
-              td(ng-bind='team.name')
-              td(ng-bind='team.league')
-              td
-                a(href="" ng-click='removeTeam(team)') Delete
+          tr(ng-repeat='team in teams')
+            td(ng-bind='team.name')
+            td(ng-bind='team.league')
+            td
+              a(href="" ng-click='removeTeam(team)') Delete
       

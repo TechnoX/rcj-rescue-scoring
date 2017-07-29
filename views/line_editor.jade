@@ -18,11 +18,11 @@ append css
   link(href="/stylesheets/fredrik.css" rel="stylesheet")
 
 block location
-    a.breadcrumb-item(href='/home') Home
-    a.breadcrumb-item(href='/admin') Admin
-    a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition}}
-    a.breadcrumb-item(ng-href='/admin/{{competitionId}}/line/maps') Line maps
-    span.breadcrumb-item.active Line editor
+  a.breadcrumb-item(href='/home') Home
+  a.breadcrumb-item(href='/admin') Admin
+  a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition}}
+  a.breadcrumb-item(ng-href='/admin/{{competitionId}}/line/maps') Line maps
+  span.breadcrumb-item.active Line editor
 
 block content
-    include line_editor.html
+  include line_editor.html

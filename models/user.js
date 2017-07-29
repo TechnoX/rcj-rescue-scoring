@@ -88,7 +88,7 @@ var userSchema = new Schema({
        }*/
     }
   }]
-
+  
 });
 
 /**
@@ -104,7 +104,7 @@ userSchema.pre('save', function (next) {
     crypto.generateHashWithSalt(user.password, function (err, hashedString, saltUsed) {
       user.salt = saltUsed;
       user.password = hashedString;
-
+      
       return next();
     })
   } else {
@@ -123,17 +123,17 @@ userSchema.pre('save', function (next) {
  */
 userSchema.methods.updatePassword = function (password, cb) {
   var user = this;
-
+  
   crypto.generateHashWithSalt(password, function (err, hashedString, saltUsed) {
     console.log(err);
     if (err) {
       return cb(err);
     }
-
+    
     user.salt = saltUsed;
     user.password = hashedString;
     user.save();
-
+    
     return cb(null);
   })
 }
@@ -184,9 +184,9 @@ User.findOne({username: testUser.username}, function (err, dbUser) {
     dbUser.admin = testUser.admin
     dbUser.superDuperAdmin = testUser.superDuperAdmin
     dbUser.competitions = testUser.competitions
-
+    
     //logger.debug(dbUser)
-
+    
     dbUser.save(function (err) {
       if (err) {
         logger.error(err)
@@ -210,7 +210,7 @@ User.findOne({username: testUser2.username}, function (err, dbUser) {
     dbUser.admin = testUser2.admin
     dbUser.superDuperAdmin = testUser2.superDuperAdmin
     dbUser.competitions = testUser2.competitions
-
+    
     dbUser.save(function (err) {
       if (err) {
         logger.error(err)

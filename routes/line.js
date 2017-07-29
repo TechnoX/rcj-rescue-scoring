@@ -12,17 +12,17 @@ publicRouter.get('/', function (req, res) {
 
 publicRouter.get('/:competitionid', function (req, res, next) {
   const id = req.params.competitionid
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
+  
   res.render('line_competition', {id: id, user: req.user})
 })
 
 publicRouter.get('/:competitionid/score', function (req, res, next) {
   const id = req.params.competitionid
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
@@ -33,22 +33,22 @@ publicRouter.get('/:competitionid/score', function (req, res, next) {
 
 publicRouter.get('/view/:roundid', function (req, res, next) {
   const id = req.params.roundid
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
+  
   res.render('line_view', {id: id})
 })
 publicRouter.get('/viewfield', function (req, res, next) {
   const ids = req.query.fields
-
+  
   res.render('line_view_field', {ids: ids})
 })
 
 publicRouter.get('/view/inline/:runid', function (req, res) {
   const id = req.params.runid
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
@@ -57,11 +57,11 @@ publicRouter.get('/view/inline/:runid', function (req, res) {
 
 publicRouter.get('/viewfield/:fieldid', function (req, res, next) {
   const id = req.params.fieldid
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
+  
   res.render('line_view_field', {id: id})
 })
 
@@ -83,11 +83,11 @@ privateRouter.get('/sign/:roundid', function (req, res) {
 
 adminRouter.get('/approval/:roundid', function (req, res) {
   const id = req.params.roundid
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
+  
   res.render('line_approval', {id: id})
 })
 
@@ -97,11 +97,11 @@ adminRouter.get('/editor', function (req, res) {
 
 adminRouter.get('/editor/:mapid', function (req, res, next) {
   const id = req.params.mapid
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
+  
   res.render('line_editor', {mapid: id})
 })
 

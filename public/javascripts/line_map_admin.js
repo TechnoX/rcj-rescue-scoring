@@ -1,8 +1,8 @@
 angular.module("MapAdmin", []).controller("MapAdminController", function ($scope, $http) {
   $scope.competitionId = competitionId
-
+  
   updateMapList()
-
+  
   $http.get("/api/competitions/" + competitionId).then(function (response) {
     $scope.competition = response.data
   })
@@ -16,7 +16,7 @@ angular.module("MapAdmin", []).controller("MapAdminController", function ($scope
       })
     }
   }
-
+  
   function updateMapList() {
     $http.get("/api/competitions/" + competitionId +
               "/line/maps").then(function (response) {

@@ -1,191 +1,275 @@
-<nav class="navbar" style="background-color: #e74c3c; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%">
-    <!-- Navbar content -->
-    <div class="row">
-        <div class="col-md-6 col-sm4 col-12">
-            <li class="navbar-brand" href="#"><i class="fa fa-spinner fa-pulse fa-fw"></i> {{team}}</li>
-        </div>
-        <div class="col-md-3 col-sm4 col-7">
-            <i class="fa fa-calculator fa-2x" aria-hidden="true"></i>
-            <li class="navbar-brand" href="#"> {{score}} points</li>
-        </div>
-        <div class="col-md-3 col-sm4 col-5">
-            <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
-            <li class="navbar-brand" href="#" ng-if="!retired"> {{time | date:'mm:ss'}}</li>
-            <li class="navbar-brand" href="#" ng-if="retired"> Retire</li>
-        </div>
+<nav class="navbar"
+     style="background-color: #e74c3c; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%">
+  <!-- Navbar content -->
+  <div class="row">
+    <div class="col-md-6 col-sm4 col-12">
+      <li class="navbar-brand" href="#"><i
+              class="fa fa-spinner fa-pulse fa-fw"></i> {{team}}
+      </li>
     </div>
+    <div class="col-md-3 col-sm4 col-7">
+      <i class="fa fa-calculator fa-2x" aria-hidden="true"></i>
+      <li class="navbar-brand" href="#"> {{score}} points</li>
+    </div>
+    <div class="col-md-3 col-sm4 col-5">
+      <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
+      <li class="navbar-brand" href="#" ng-if="!retired"> {{time |
+        date:'mm:ss'}}
+      </li>
+      <li class="navbar-brand" href="#" ng-if="retired"> Retire</li>
+    </div>
+  </div>
 </nav>
 <div class="container">
-    <div style="text-align: center;" ng-hide="checked">
-        <h4><i class="fa fa-check-circle-o" aria-hidden="true"></i>Before the start of the run record, please confirm that the following information is correct.</h4><br>
-        <div id="lops" class="card">
-            <h3 class="card-header"><i class="fa fa-info-circle" aria-hidden="true"></i>Basic Informations</h3>
+  <div style="text-align: center;" ng-hide="checked">
+    <h4><i class="fa fa-check-circle-o" aria-hidden="true"></i>Before the start
+      of the run record, please confirm that the following information is
+      correct.</h4><br>
+    <div id="lops" class="card">
+      <h3 class="card-header"><i class="fa fa-info-circle"
+                                 aria-hidden="true"></i>Basic Informations</h3>
             <pre>
-                        <ul class="list-group list-group-flush scrool" style="margin:0 0 0 0; padding:0;overflow: scroll;"><!--
+                        <ul class="list-group list-group-flush scrool"
+                            style="margin:0 0 0 0; padding:0;overflow: scroll;"><!--
                           --><li class="list-group-item">Competition : {{competition.name}}</li><!--
-                          --><li class="list-group-item">Round       : {{round}}</li><!--
-                          --><li class="list-group-item">Field       : {{field}}</li><!--
-                          --><li class="list-group-item">Team　　     : {{team}}</li><!--
-                          --><li class="list-group-item">League　　　 : {{league}}</li><!--
+                          --><li
+                                class="list-group-item">Round       : {{round}}</li><!--
+                          --><li
+                                class="list-group-item">Field       : {{field}}</li><!--
+                          --><li
+                                class="list-group-item">Team　　     : {{team}}</li><!--
+                          --><li
+                                class="list-group-item">League　　　 : {{league}}</li><!--
                           --></ul><!--
                       --></pre>
-        </div>
-        <br>
-        <br>
-        <button class="btn btn-success" type="button" ng-click="infochecked()"><i class="fa fa-check-circle fa-2x" aria-hidden="true"> I confirmed!</i></button>
     </div>
-    <div ng-show="checked">
-        <div class="row">
-            <div class="col-md-6">
-                <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleScoring()"><i class="fa fa-calculator" aria-hidden="true"> Run Record {{ startedScoring ? 'End' : 'Start' }}</i></button>
-                <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleTime()"><i class="fa fa-clock-o" aria-hidden="true"> {{ startedTime ? 'Stop' : 'Start' }}</i></button>
-                <button ng-show="!startedTime && time!=0" class="btn btn-warning" style="margin:0 10px 10px 0;" type="button" ng-click="TimeReset()"><i class="fa fa-clock-o" aria-hidden="true"> Reset</i></button>
-                <p ng-show="!startedScoring">Please select the evacuation level:</p>
-                <label class="switch-light" onclick="" ng-show="!startedScoring">
-              <input type="checkbox" ng-model="evacuationLevel" ng-change="changeLevel()" ng-show="!startedScoring" ng-true-value="2" ng-false-value="1">
+    <br>
+    <br>
+    <button class="btn btn-success" type="button" ng-click="infochecked()"><i
+            class="fa fa-check-circle fa-2x" aria-hidden="true"> I
+      confirmed!</i></button>
+  </div>
+  <div ng-show="checked">
+    <div class="row">
+      <div class="col-md-6">
+        <button class="btn btn-primary" style="margin:0 10px 10px 0;"
+                type="button" ng-click="toggleScoring()"><i
+                class="fa fa-calculator" aria-hidden="true"> Run Record {{
+          startedScoring ? 'End' : 'Start' }}</i></button>
+        <button class="btn btn-primary" style="margin:0 10px 10px 0;"
+                type="button" ng-click="toggleTime()"><i class="fa fa-clock-o"
+                                                         aria-hidden="true"> {{
+          startedTime ? 'Stop' : 'Start' }}</i></button>
+        <button ng-show="!startedTime && time!=0" class="btn btn-warning"
+                style="margin:0 10px 10px 0;" type="button"
+                ng-click="TimeReset()"><i class="fa fa-clock-o"
+                                          aria-hidden="true"> Reset</i></button>
+        <p ng-show="!startedScoring">Please select the evacuation level:</p>
+        <label class="switch-light" onclick="" ng-show="!startedScoring">
+          <input type="checkbox" ng-model="evacuationLevel"
+                 ng-change="changeLevel()" ng-show="!startedScoring"
+                 ng-true-value="2" ng-false-value="1">
               <span class="well" ng-show="!startedScoring">
                 <span style="border: solid 1px #000000;">Low</span>
                 <span style="border: solid 1px #000000;">High</span>
                 <a class="btn btn-info"></a>
               </span>
-            </label>
+        </label>
 
-                <div class="alert alert-info" role="alert" ng-show="numberOfDropTiles - placedDropTiles == 0 && !startedScoring">
-                    We are ready to start run recording!!<br><strong>Please push the "Run Record Start" button.</strong>
-                </div>
-                <div class="alert alert-warning" role="alert" ng-show="!startedScoring">
-                    Please tap the checkpoint tile selected by the team on the course map on the right.<br> Number of remaining checkpoints: <strong>{{numberOfDropTiles - placedDropTiles}}</strong>
-                </div>
-                <div class="alert alert-info" role="alert" ng-show="!startedTime && startedScoring">
-                    Please press the "Timer Start" button according to the cheif referee.
-                </div>
-                <div id="card_area" class="scrool" style="overflow: scroll;" ng-show="startedScoring">
-                    <div id="lops" class="card">
-                        <h3 class="card-header"><i class="fa fa-undo" aria-hidden="true"></i> LoPs</h3>
-                        <div class="card-block">
-
-                            <div ng-repeat="dropTile in range(actualUsedDropTiles+1) track by $index" ng-show="startedScoring">
-                                <p class="card-text">
-                                    <b>{{$index==0?'Start':('Checkpoint ' + ($index))}}</b> to <b>{{!$last?('Checkpoint ' + ($index+1)):'Evacuation zone'}}</b>:<br>
-                                    <div class="input-group" style="width:100%; height:35px;">
-                                        <span class="input-group-btn">
-                                            <button type="button" class="btn btn-danger"  ng-click="decrement($index,$last)">
-                                                <i class="fa fa-minus" aria-hidden="true"></i>
-                                            </button>
-                                        </span>
-                                        <div style="background-color: #F2F2F2; width:100px; text-align: center;">
-                                          <img src="/images/loader2.gif" alt="" ng-show="processing[$index] == true" style="height:100%; width:auto;">
-                                          <span class="count" ng-show="processing[$index] != true">{{LoPs[$index]?LoPs[$index]:0}}</span>
-                                        </div>
-                                        <span class="input-group-btn">
-                                            <button type="button" class="btn btn-success" ng-click="increment($index,$last)">
-                                                <i class="fa fa-plus" aria-hidden="true"></i>
-                                            </button>
-                                        </span>
-                                    </div>
-                                </p>
-                                <hr ng-show="!$last" />
-                            </div>
-
-                        </div>
-                    </div>
-                    <div id="resc" class="card">
-                        <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> Rescuing victims　<span class="badge badge-danger">{{evacuationLevel-1?"High":"Low"}} evacuation point</span></h3>
-                        <div class="card-block">
-                            <p class="card-text">【LIVE Victims】Number：　　 <span class="badge badge-info">{{30 + (evacuationLevel-1)*10}}　points /victim</span></p>
-                            <div class="input-group" style="width:100%; height:35px;">
-                                <span class="input-group-btn">
-                                    <button type="button" class="btn btn-danger"  ng-click="decVictims('live')">
-                                        <i class="fa fa-minus" aria-hidden="true"></i>
-                                    </button>
-                                </span>
-                                <div style="background-color: #F2F2F2; width:100px; text-align: center;">
-                                  <img src="/images/loader2.gif" alt="" ng-show="rlprocessing" style="height:100%; width:auto;">
-                                  <span class="count" ng-show="!rlprocessing">{{rescuedLiveVictims}}</span>
-                                </div>
-                                <span class="input-group-btn">
-                                    <button type="button" class="btn btn-success" ng-click="incVictims('live')">
-                                        <i class="fa fa-plus" aria-hidden="true"></i>
-                                    </button>
-                                </span>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="card-block">
-                            <p class="card-text">【DEAD Victims】Number： 　　<span class="badge badge-info">{{15 + (evacuationLevel-1)*5}} points /victim</span></p>
-
-                            <div class="input-group" style="width:100%; height:35px;">
-                                <span class="input-group-btn">
-                                    <button type="button" class="btn btn-danger"  ng-click="decVictims('dead')">
-                                        <i class="fa fa-minus" aria-hidden="true"></i>
-                                    </button>
-                                </span>
-                                <div style="background-color: #F2F2F2; width:100px; text-align: center;">
-                                  <img src="/images/loader2.gif" alt="" ng-show="rdprocessing" style="height:100%; width:auto;">
-                                  <span class="count" ng-show="!rdprocessing">{{rescuedDeadVictims}}</span>
-                                </div>
-                                <span class="input-group-btn">
-                                    <button type="button" class="btn btn-success" ng-click="incVictims('dead')">
-                                        <i class="fa fa-plus" aria-hidden="true"></i>
-                                    </button>
-                                </span>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="card-block">
-                            <p class="card-text">Robot exited the evacuation zone after touching at least one victim: <span class="badge badge-info">20　points</span></p>
-                            <input type="checkbox" ng-model="exitBonus" ng-change="changeExitBonus()" id="scoredrun"><label class="checkbox" for="scoredrun">Success</label><br>
-                        </div>
-                        <div class="card-block">
-                            <p class="card-text">Team did show up for start within their time: <span class="badge badge-info">3　points</span></p>
-                            <input type="checkbox" ng-model="showedUp" ng-change="changeShowedUp()" id="exitcheckbox"><label class="checkbox" for="exitcheckbox">Success</label><br>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            <div class="col-md-6 tilearea">
-                <div ng-show="height>1">
-                    <rzslider rz-slider-model="z" rz-slider-options="sliderOptions"></rzslider>
-                </div>
-                <div ng-repeat="r in range(length)" class="row">
-                    <div ng-repeat="c in range(width)" class="slot">
-                        <tile tile="mtiles[c+','+r+','+z]" ng-click="doScoring(c,r,z)" ng-if="showtile"></tile>
-                    </div>
-                </div>
-            </div>
+        <div class="alert alert-info" role="alert"
+             ng-show="numberOfDropTiles - placedDropTiles == 0 && !startedScoring">
+          We are ready to start run recording!!<br><strong>Please push the "Run
+          Record Start" button.</strong>
         </div>
+        <div class="alert alert-warning" role="alert" ng-show="!startedScoring">
+          Please tap the checkpoint tile selected by the team on the course map
+          on the right.<br> Number of remaining checkpoints: <strong>{{numberOfDropTiles
+          - placedDropTiles}}</strong>
+        </div>
+        <div class="alert alert-info" role="alert"
+             ng-show="!startedTime && startedScoring">
+          Please press the "Timer Start" button according to the cheif referee.
+        </div>
+        <div id="card_area" class="scrool" style="overflow: scroll;"
+             ng-show="startedScoring">
+          <div id="lops" class="card">
+            <h3 class="card-header"><i class="fa fa-undo"
+                                       aria-hidden="true"></i> LoPs</h3>
+            <div class="card-block">
 
-
-        <div class="row" style="margin:50 0 0 0;">
-            <div class="col-sm-12">
-
-                <p>
-                    <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleScoring()"><i class="fa fa-calculator" aria-hidden="true"> Run Record {{ startedScoring ? 'End' : 'Start' }}</i></button>
-                    <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleTime()"><i class="fa fa-clock-o" aria-hidden="true"> {{ startedTime ? 'Stop' : 'Start' }}</i></button>
-                    <!--<button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="retire()"><i class="fa fa-window-close" aria-hidden="true"> Retire!</i></button>-->
+              <div ng-repeat="dropTile in range(actualUsedDropTiles+1) track by $index"
+                   ng-show="startedScoring">
+                <p class="card-text">
+                  <b>{{$index==0?'Start':('Checkpoint ' + ($index))}}</b> to <b>{{!$last?('Checkpoint
+                  ' + ($index+1)):'Evacuation zone'}}</b>:<br>
+                <div class="input-group" style="width:100%; height:35px;">
+                                        <span class="input-group-btn">
+                                            <button type="button"
+                                                    class="btn btn-danger"
+                                                    ng-click="decrement($index,$last)">
+                                                <i class="fa fa-minus"
+                                                   aria-hidden="true"></i>
+                                            </button>
+                                        </span>
+                  <div style="background-color: #F2F2F2; width:100px; text-align: center;">
+                    <img src="/images/loader2.gif" alt=""
+                         ng-show="processing[$index] == true"
+                         style="height:100%; width:auto;">
+                    <span class="count" ng-show="processing[$index] != true">{{LoPs[$index]?LoPs[$index]:0}}</span>
+                  </div>
+                                        <span class="input-group-btn">
+                                            <button type="button"
+                                                    class="btn btn-success"
+                                                    ng-click="increment($index,$last)">
+                                                <i class="fa fa-plus"
+                                                   aria-hidden="true"></i>
+                                            </button>
+                                        </span>
+                </div>
                 </p>
-            </div>
-            <div class="col-md-12 confirmation">
-                <div ng-show="!retired">
-                    <strong>Adjust time: </strong><br>
-                    <label><input type="tel" min="0" max="8" ng-model="minutes">min  </label>
-                    <label><input type="tel" min="0" max="60" ng-model="seconds">sec</label><br>
-                </div>
+                <hr ng-show="!$last"/>
+              </div>
 
-                <strong>
-            Please press the button below and go to the score / time confirmation screen.
-          </strong>
-                <br>
-                <div style="text-align:center; margin: 10 10 10 10;">
-                    <button class="btn btn-danger" type="button" ng-click="confirm()"><i class="fa fa-arrow-right fa-2x" aria-hidden="true"> To confirmation screen</i></button>
-                </div>
             </div>
+          </div>
+          <div id="resc" class="card">
+            <h3 class="card-header"><i class="fa fa-ambulance"
+                                       aria-hidden="true"></i> Rescuing victims　<span
+                    class="badge badge-danger">{{evacuationLevel-1?"High":"Low"}} evacuation point</span>
+            </h3>
+            <div class="card-block">
+              <p class="card-text">【LIVE Victims】Number：　　 <span
+                      class="badge badge-info">{{30 + (evacuationLevel-1)*10}}　points /victim</span>
+              </p>
+              <div class="input-group" style="width:100%; height:35px;">
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-danger"
+                                            ng-click="decVictims('live')">
+                                        <i class="fa fa-minus"
+                                           aria-hidden="true"></i>
+                                    </button>
+                                </span>
+                <div style="background-color: #F2F2F2; width:100px; text-align: center;">
+                  <img src="/images/loader2.gif" alt="" ng-show="rlprocessing"
+                       style="height:100%; width:auto;">
+                  <span class="count" ng-show="!rlprocessing">{{rescuedLiveVictims}}</span>
+                </div>
+                                <span class="input-group-btn">
+                                    <button type="button"
+                                            class="btn btn-success"
+                                            ng-click="incVictims('live')">
+                                        <i class="fa fa-plus"
+                                           aria-hidden="true"></i>
+                                    </button>
+                                </span>
+              </div>
+            </div>
+            <hr>
+            <div class="card-block">
+              <p class="card-text">【DEAD Victims】Number： 　　<span
+                      class="badge badge-info">{{15 + (evacuationLevel-1)*5}} points /victim</span>
+              </p>
+
+              <div class="input-group" style="width:100%; height:35px;">
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-danger"
+                                            ng-click="decVictims('dead')">
+                                        <i class="fa fa-minus"
+                                           aria-hidden="true"></i>
+                                    </button>
+                                </span>
+                <div style="background-color: #F2F2F2; width:100px; text-align: center;">
+                  <img src="/images/loader2.gif" alt="" ng-show="rdprocessing"
+                       style="height:100%; width:auto;">
+                  <span class="count" ng-show="!rdprocessing">{{rescuedDeadVictims}}</span>
+                </div>
+                                <span class="input-group-btn">
+                                    <button type="button"
+                                            class="btn btn-success"
+                                            ng-click="incVictims('dead')">
+                                        <i class="fa fa-plus"
+                                           aria-hidden="true"></i>
+                                    </button>
+                                </span>
+              </div>
+            </div>
+            <hr>
+            <div class="card-block">
+              <p class="card-text">Robot exited the evacuation zone after
+                touching at least one victim: <span class="badge badge-info">20　points</span>
+              </p>
+              <input type="checkbox" ng-model="exitBonus"
+                     ng-change="changeExitBonus()" id="scoredrun"><label
+                    class="checkbox" for="scoredrun">Success</label><br>
+            </div>
+            <div class="card-block">
+              <p class="card-text">Team did show up for start within their time:
+                <span class="badge badge-info">3　points</span></p>
+              <input type="checkbox" ng-model="showedUp"
+                     ng-change="changeShowedUp()" id="exitcheckbox"><label
+                    class="checkbox" for="exitcheckbox">Success</label><br>
+            </div>
+          </div>
         </div>
-    </div>
-    <div class="row" style="margin:20 0 0 0;">
-        <div class="col-md12">
-            <button class="btn btn-secondary" style="margin:0 10px 10px 0;" type="button" ng-click="go('/line/' + competition._id)"><i class="fa fa-undo" aria-hidden="true"> Back</i></button>
+
+      </div>
+      <div class="col-md-6 tilearea">
+        <div ng-show="height>1">
+          <rzslider rz-slider-model="z"
+                    rz-slider-options="sliderOptions"></rzslider>
         </div>
+        <div ng-repeat="r in range(length)" class="row">
+          <div ng-repeat="c in range(width)" class="slot">
+            <tile tile="mtiles[c+','+r+','+z]" ng-click="doScoring(c,r,z)"
+                  ng-if="showtile"></tile>
+          </div>
+        </div>
+      </div>
     </div>
+
+
+    <div class="row" style="margin:50 0 0 0;">
+      <div class="col-sm-12">
+
+        <p>
+          <button class="btn btn-primary" style="margin:0 10px 10px 0;"
+                  type="button" ng-click="toggleScoring()"><i
+                  class="fa fa-calculator" aria-hidden="true"> Run Record {{
+            startedScoring ? 'End' : 'Start' }}</i></button>
+          <button class="btn btn-primary" style="margin:0 10px 10px 0;"
+                  type="button" ng-click="toggleTime()"><i class="fa fa-clock-o"
+                                                           aria-hidden="true">
+            {{ startedTime ? 'Stop' : 'Start' }}</i></button>
+          <!--<button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="retire()"><i class="fa fa-window-close" aria-hidden="true"> Retire!</i></button>-->
+        </p>
+      </div>
+      <div class="col-md-12 confirmation">
+        <div ng-show="!retired">
+          <strong>Adjust time: </strong><br>
+          <label><input type="tel" min="0" max="8" ng-model="minutes">min
+          </label>
+          <label><input type="tel" min="0" max="60"
+                        ng-model="seconds">sec</label><br>
+        </div>
+
+        <strong>
+          Please press the button below and go to the score / time confirmation
+          screen.
+        </strong>
+        <br>
+        <div style="text-align:center; margin: 10 10 10 10;">
+          <button class="btn btn-danger" type="button" ng-click="confirm()"><i
+                  class="fa fa-arrow-right fa-2x" aria-hidden="true"> To
+            confirmation screen</i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" style="margin:20 0 0 0;">
+    <div class="col-md12">
+      <button class="btn btn-secondary" style="margin:0 10px 10px 0;"
+              type="button" ng-click="go('/line/' + competition._id)"><i
+              class="fa fa-undo" aria-hidden="true"> Back</i></button>
+    </div>
+  </div>
 </div>

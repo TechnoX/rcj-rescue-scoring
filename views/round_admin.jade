@@ -10,10 +10,10 @@ append scripts
   script(src='/javascripts/round_admin.js')
 
 block location
-    a.breadcrumb-item(href='/home') Home
-    a.breadcrumb-item(href='/admin') Admin
-    a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition.name}}
-    span.breadcrumb-item.active Rounds
+  a.breadcrumb-item(href='/home') Home
+  a.breadcrumb-item(href='/admin') Admin
+  a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition.name}}
+  span.breadcrumb-item.active Rounds
 
 block content
   .row
@@ -22,31 +22,31 @@ block content
       h1 {{competition.name}} - Rounds
       table
         thead
-            tr
-                th Name
-                th League
-                th Action
+          tr
+            th Name
+            th League
+            th Action
         tbody
-            tr
-                td
-                    input(ng-model='roundName')
-                td
-                    select(ng-model='roundLeague' ng-options='league for league in leagues')
-                td
-                    button(ng-click='addRound()') Add round
-      
-      
+          tr
+            td
+              input(ng-model='roundName')
+            td
+              select(ng-model='roundLeague' ng-options='league for league in leagues')
+            td
+              button(ng-click='addRound()') Add round
+
+
       br
       br
       table
         thead
-            tr
-              th Name
-              th League
-              th Operation
+          tr
+            th Name
+            th League
+            th Operation
         tbody
-            tr(ng-repeat='round in rounds')
-              td(ng-bind='round.name')
-              td(ng-bind='round.league')
-              td
-                a(href="" ng-click='removeRound(round)') Delete      
+          tr(ng-repeat='round in rounds')
+            td(ng-bind='round.name')
+            td(ng-bind='round.league')
+            td
+              a(href="" ng-click='removeRound(round)') Delete

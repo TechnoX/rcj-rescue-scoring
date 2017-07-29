@@ -35,10 +35,10 @@ append css
     }
 
 block location
-    a.breadcrumb-item(onclick="location.href='/home'") Home
-    a.breadcrumb-item(onclick="location.href='/line'") Line
-    a.breadcrumb-item(ng-click='go("/line/"+ competitionId )') {{competition.name}}
-    span.breadcrumb-item.active Score
+  a.breadcrumb-item(onclick="location.href='/home'") Home
+  a.breadcrumb-item(onclick="location.href='/line'") Line
+  a.breadcrumb-item(ng-click='go("/line/"+ competitionId )') {{competition.name}}
+  span.breadcrumb-item.active Score
 
 block content
   .row
@@ -71,79 +71,79 @@ block content
             td.text-center(ng-bind='run.team.name' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
             td.text-center(ng-bind='run.score' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
             td.text-center(ng-if="!run.retired" ng-style="run.isplaying && {'background-color': '#ffffa8'}"){{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
-            td.text-center(ng-if="run.retired" ng-style="run.isplaying && {'background-color': '#ffffa8'}") R
-            td.text-center(ng-bind='run.rescuedVictims' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
-            td.text-center(ng-bind='run.LoPsNum' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
-  //
-    .col-lg-6
-      h3 Secondary - Rank
-      table(style="overflow: scroll;")
-        thead
-          tr
-            th.text-center Rank
-            th.text-center Team Name
-            th.text-center Score
-            th.text-center Time
-            th.text-center Rescued
-            th.text-center LoPs
-        tbody
-          tr(ng-repeat='run in secondaryRunsTop track by $index')
-            td.text-center(ng-bind='$index + 1')
-            td.text-center(ng-bind='run.team.name')
-            td.text-center(ng-bind='run.score')
-            td.text-center(ng-if="!run.retired"){{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
-            td.text-center(ng-if="run.retired") R
-            td.text-center(ng-bind='run.rescuedVictims')
-            td.text-center(ng-bind='run.LoPsNum')
-  .row
-    hr
-  .row#allRuns
-    //.col-lg-6
-    .col-lg-12
-      h3 Line - All runs
-      label Sort by round:
-        input(type="checkbox" style='display:inline;' ng-model="sortOrder" ng-true-value="'[startTime,round.name,field.name,team.name]'" ng-false-value="'-score'")
-      //span {{sortOrder}}
-      table(style="overflow: scroll;")
-        thead
-          tr
-            th.text-center Team Name
-            th.text-center Round
-            th.text-center Field
-            th.text-center Score
-            th.text-center Time
-            th.text-center Rescued
-            th.text-center LoPs
-        tbody
-          tr(ng-repeat='run in primaryRuns | orderBy:sortOrder')
-            td.text-center(ng-bind='run.team.name' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
-            td.text-center(ng-bind='run.round.name'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
-            td.text-center(ng-bind='run.field.name'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
-            td.text-center(ng-bind='run.score'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
-            td.text-center(ng-if="!run.retired"  ng-style="run.isplaying && {'background-color': '#ffffa8'}"){{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
-            td.text-center(ng-if="run.retired"  ng-style="run.isplaying && {'background-color': '#ffffa8'}") R
-            td.text-center(ng-bind='run.rescuedLiveVictims + run.rescuedDeadVictims'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
-            td.text-center(ng-bind='run.LoPsNum'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
-  //
-    .col-lg-6
-      h3 Secondary - All
-      table(style="overflow: scroll; width:100%;")
-        thead
-          tr
-            th.text-center Team Name
-            th.text-center Round
-            th.text-center Field
-            th.text-center Score
-            th.text-center Time
-            th.text-center Rescued
-            th.text-center LoPs
-        tbody
-          tr(ng-repeat='run in secondaryRuns')
-                td.text-center(ng-bind='run.team.name')
-                td.text-center(ng-bind='run.round.name')
-                td.text-center(ng-bind='run.field.name')
-                td.text-center(ng-bind='run.score')
-                td.text-center(ng-if="!run.retired"){{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
-                td.text-center(ng-if="run.retired") R
-                td.text-center(ng-bind='run.rescuedLiveVictims + run.rescuedDeadVictims')
-                td.text-center(ng-bind='run.LoPsNum')
+  td.text-center(ng-if="run.retired" ng-style="run.isplaying && {'background-color': '#ffffa8'}") R
+  td.text-center(ng-bind='run.rescuedVictims' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+  td.text-center(ng-bind='run.LoPsNum' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+//
+  .col-lg-6
+    h3 Secondary - Rank
+    table(style="overflow: scroll;")
+      thead
+        tr
+          th.text-center Rank
+          th.text-center Team Name
+          th.text-center Score
+          th.text-center Time
+          th.text-center Rescued
+          th.text-center LoPs
+      tbody
+        tr(ng-repeat='run in secondaryRunsTop track by $index')
+          td.text-center(ng-bind='$index + 1')
+          td.text-center(ng-bind='run.team.name')
+          td.text-center(ng-bind='run.score')
+          td.text-center(ng-if="!run.retired"){{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+          td.text-center(ng-if="run.retired") R
+          td.text-center(ng-bind='run.rescuedVictims')
+          td.text-center(ng-bind='run.LoPsNum')
+.row
+  hr
+.row#allRuns
+  //.col-lg-6
+  .col-lg-12
+    h3 Line - All runs
+    label Sort by round:
+      input(type="checkbox" style='display:inline;' ng-model="sortOrder" ng-true-value="'[startTime,round.name,field.name,team.name]'" ng-false-value="'-score'")
+    //span {{sortOrder}}
+    table(style="overflow: scroll;")
+      thead
+        tr
+          th.text-center Team Name
+          th.text-center Round
+          th.text-center Field
+          th.text-center Score
+          th.text-center Time
+          th.text-center Rescued
+          th.text-center LoPs
+      tbody
+        tr(ng-repeat='run in primaryRuns | orderBy:sortOrder')
+          td.text-center(ng-bind='run.team.name' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+          td.text-center(ng-bind='run.round.name'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+          td.text-center(ng-bind='run.field.name'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+          td.text-center(ng-bind='run.score'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+          td.text-center(ng-if="!run.retired"  ng-style="run.isplaying && {'background-color': '#ffffa8'}"){{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+  td.text-center(ng-if="run.retired"  ng-style="run.isplaying && {'background-color': '#ffffa8'}") R
+  td.text-center(ng-bind='run.rescuedLiveVictims + run.rescuedDeadVictims'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+  td.text-center(ng-bind='run.LoPsNum'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+//
+  .col-lg-6
+    h3 Secondary - All
+    table(style="overflow: scroll; width:100%;")
+      thead
+        tr
+          th.text-center Team Name
+          th.text-center Round
+          th.text-center Field
+          th.text-center Score
+          th.text-center Time
+          th.text-center Rescued
+          th.text-center LoPs
+      tbody
+        tr(ng-repeat='run in secondaryRuns')
+              td.text-center(ng-bind='run.team.name')
+              td.text-center(ng-bind='run.round.name')
+              td.text-center(ng-bind='run.field.name')
+              td.text-center(ng-bind='run.score')
+              td.text-center(ng-if="!run.retired"){{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+              td.text-center(ng-if="run.retired") R
+              td.text-center(ng-bind='run.rescuedLiveVictims + run.rescuedDeadVictims')
+              td.text-center(ng-bind='run.LoPsNum')

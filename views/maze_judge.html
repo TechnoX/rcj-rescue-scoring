@@ -1,150 +1,221 @@
-<nav class="navbar" style="background-color: #e74c3c; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%">
-    <!-- Navbar content -->
-    <div class="row">
-        <div class="col-md-6 col-sm4 col-12">
-            <li class="navbar-brand" href="#"><i class="fa fa-spinner fa-pulse fa-fw"></i> {{team}}</li>
-        </div>
-        <div class="col-md-3 col-sm4 col-7">
-            <i class="fa fa-calculator fa-2x" aria-hidden="true"></i>
-            <li class="navbar-brand" href="#"> {{score}} points</li>
-        </div>
-        <div class="col-md-3 col-sm4 col-5">
-            <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
-            <li class="navbar-brand" href="#" ng-if="!retired"> {{time | date:'mm:ss'}}</li>
-            <li class="navbar-brand" href="#" ng-if="retired"> Retire</li>
-        </div>
+<nav class="navbar"
+     style="background-color: #e74c3c; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%">
+  <!-- Navbar content -->
+  <div class="row">
+    <div class="col-md-6 col-sm4 col-12">
+      <li class="navbar-brand" href="#"><i
+              class="fa fa-spinner fa-pulse fa-fw"></i> {{team}}
+      </li>
     </div>
+    <div class="col-md-3 col-sm4 col-7">
+      <i class="fa fa-calculator fa-2x" aria-hidden="true"></i>
+      <li class="navbar-brand" href="#"> {{score}} points</li>
+    </div>
+    <div class="col-md-3 col-sm4 col-5">
+      <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
+      <li class="navbar-brand" href="#" ng-if="!retired"> {{time |
+        date:'mm:ss'}}
+      </li>
+      <li class="navbar-brand" href="#" ng-if="retired"> Retire</li>
+    </div>
+  </div>
 </nav>
 <div class="container">
-    <div style="text-align: center;" ng-hide="checked">
-        <h4><i class="fa fa-check-circle-o" aria-hidden="true"></i>Before the start of the run record, please confirm that the following information is correct.</h4><br>
-        <div id="lops" class="card">
-            <h3 class="card-header"><i class="fa fa-info-circle" aria-hidden="true"></i>Basic Informations</h3>
+  <div style="text-align: center;" ng-hide="checked">
+    <h4><i class="fa fa-check-circle-o" aria-hidden="true"></i>Before the start
+      of the run record, please confirm that the following information is
+      correct.</h4><br>
+    <div id="lops" class="card">
+      <h3 class="card-header"><i class="fa fa-info-circle"
+                                 aria-hidden="true"></i>Basic Informations</h3>
             <pre>
-                        <ul class="list-group list-group-flush scrool" style="margin:0 0 0 0; padding:0;overflow: scroll;"><!--
+                        <ul class="list-group list-group-flush scrool"
+                            style="margin:0 0 0 0; padding:0;overflow: scroll;"><!--
                           --><li class="list-group-item">Competition : {{competition.name}}</li><!--
-                          --><li class="list-group-item">Round       : {{round}}</li><!--
-                          --><li class="list-group-item">Field       : {{field}}</li><!--
-                          --><li class="list-group-item">Team　　     : {{team}}</li><!--
-                          --><li class="list-group-item">League　　　 : {{league}}</li><!--
+                          --><li
+                                class="list-group-item">Round       : {{round}}</li><!--
+                          --><li
+                                class="list-group-item">Field       : {{field}}</li><!--
+                          --><li
+                                class="list-group-item">Team　　     : {{team}}</li><!--
+                          --><li
+                                class="list-group-item">League　　　 : {{league}}</li><!--
                           --></ul><!--
                       --></pre>
-        </div>
-        <br>
-        <br>
-        <button class="btn btn-success" type="button" ng-click="infochecked()"><i class="fa fa-check-circle fa-2x" aria-hidden="true"> I confirmed!</i></button>
     </div>
-    <div ng-show="checked">
-        <div class="row">
-            <div class="col-md-6">
-                <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleTime()"><i class="fa fa-clock-o" aria-hidden="true"> {{ startedTime ? 'Stop' : 'Start' }}</i></button>
-                <button ng-show="!startedTime && time!=0" class="btn btn-warning" style="margin:0 10px 10px 0;" type="button" ng-click="timeReset()"><i class="fa fa-clock-o" aria-hidden="true"> Reset</i></button>
-                <div class="alert alert-info" role="alert" ng-show="!startedTime">
-                    Please press the "Timer Start" button according to the cheif referee.
-                </div>
-                <div id="card_area" class="scrool" style="overflow: scroll;">
-                  <div class="card">
-                    <h3 class="card-header"><i class="fa fa-undo" aria-hidden="true"></i> LoPs</h3>
-                    <div class="card-block">
-                      <p class="card-text">
-                        <b>Total number of LoPs:</b><br>
-                        <div class="input-group" style="width:100%; height:35px;">
+    <br>
+    <br>
+    <button class="btn btn-success" type="button" ng-click="infochecked()"><i
+            class="fa fa-check-circle fa-2x" aria-hidden="true"> I
+      confirmed!</i></button>
+  </div>
+  <div ng-show="checked">
+    <div class="row">
+      <div class="col-md-6">
+        <button class="btn btn-primary" style="margin:0 10px 10px 0;"
+                type="button" ng-click="toggleTime()"><i class="fa fa-clock-o"
+                                                         aria-hidden="true"> {{
+          startedTime ? 'Stop' : 'Start' }}</i></button>
+        <button ng-show="!startedTime && time!=0" class="btn btn-warning"
+                style="margin:0 10px 10px 0;" type="button"
+                ng-click="timeReset()"><i class="fa fa-clock-o"
+                                          aria-hidden="true"> Reset</i></button>
+        <div class="alert alert-info" role="alert" ng-show="!startedTime">
+          Please press the "Timer Start" button according to the cheif referee.
+        </div>
+        <div id="card_area" class="scrool" style="overflow: scroll;">
+          <div class="card">
+            <h3 class="card-header"><i class="fa fa-undo"
+                                       aria-hidden="true"></i> LoPs</h3>
+            <div class="card-block">
+              <p class="card-text">
+                <b>Total number of LoPs:</b><br>
+              <div class="input-group" style="width:100%; height:35px;">
                             <span class="input-group-btn">
-                                <button type="button" class="btn btn-danger"  ng-click="decrement()">
-                                    <i class="fa fa-minus" aria-hidden="true"></i>
+                                <button type="button" class="btn btn-danger"
+                                        ng-click="decrement()">
+                                    <i class="fa fa-minus"
+                                       aria-hidden="true"></i>
                                 </button>
                             </span>
-                            <div style="background-color: #F2F2F2; width:100px; text-align: center;">
-                              <img src="/images/loader2.gif" alt="" ng-show="lopProcessing" style="height:100%; width:auto;">
-                              <span class="count" ng-show="!lopProcessing">{{LoPs}}</span>
-                            </div>
+                <div style="background-color: #F2F2F2; width:100px; text-align: center;">
+                  <img src="/images/loader2.gif" alt="" ng-show="lopProcessing"
+                       style="height:100%; width:auto;">
+                  <span class="count" ng-show="!lopProcessing">{{LoPs}}</span>
+                </div>
                             <span class="input-group-btn">
-                                <button type="button" class="btn btn-success" ng-click="increment()">
-                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                <button type="button" class="btn btn-success"
+                                        ng-click="increment()">
+                                    <i class="fa fa-plus"
+                                       aria-hidden="true"></i>
                                 </button>
                             </span>
-                        </div>
+              </div>
 
-                      </p>
-                    </div>
-                    <h3 class="card-header"><i class="fa fa-home" aria-hidden="true"></i> Other</h3>
-                    <div class="card-block">
-      	              <input type="checkbox" ng-model="exitBonus" ng-change="changeExitBonus()" id="hasReturned">
-                      <label class="checkbox" for="hasReturned">Robot returned to starting tile for more than 10s</label>
-                    </div>
-                  </div>
-                </div>
+              </p>
             </div>
-            <div class="col-md-6 tilearea">
-                <div ng-show="height>1">
-                    <rzslider rz-slider-model="z" rz-slider-options="sliderOptions"></rzslider>
-                </div>
-                <table>
-	          <tr ng-repeat="r in range(2*length + 1)">
-	            <td ng-repeat="c in range(2*width + 1)" ng-class="{'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall, 'checkpoint': cells[c+','+r+','+z].tile.checkpoint, 'black': cells[c+','+r+','+z].tile.black, 'linear': cells[c+','+r+','+z].isLinear}"
-	                ng-click="cellClick(c, r, z, $odd != $parent.$odd, $odd && $parent.$odd)">
-	              <div class="tile-image-container" ng-show="cells[c+','+r+','+z].isTile">
-	                <img ng-src="/images/log.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.speedbump">
-	                <img ng-src="/images/elevator.png" class="tile-image" ng-show="!isUndefined(cells[c+','+r+','+z].tile.changeFloorTo) && cells[c+','+r+','+z].tile.changeFloorTo != z">
-	                <img ng-src="/images/start.png" class="tile-image" ng-show="startTile.x == c && startTile.y == r && startTile.z == z">
-	                <img ng-src="/images/ramp_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.rampTop">
-	                <img ng-src="/images/ramp_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.rampBottom">
-	                <img ng-src="/images/heated_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'Heated'">
-	                <img ng-src="/images/heated_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'Heated'">
-	                <img ng-src="/images/heated_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'Heated'">
-	                <img ng-src="/images/heated_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'Heated'">
-	                <img ng-src="/images/h_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'H'">
-	                <img ng-src="/images/h_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'H'">
-	                <img ng-src="/images/h_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'H'">
-	                <img ng-src="/images/h_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'H'">
-	                <img ng-src="/images/s_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'S'">
-	                <img ng-src="/images/s_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'S'">
-	                <img ng-src="/images/s_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'S'">
-	                <img ng-src="/images/s_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'S'">
-	                <img ng-src="/images/u_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'U'">
-	                <img ng-src="/images/u_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'U'">
-	                <img ng-src="/images/u_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'U'">
-	                <img ng-src="/images/u_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'U'">
-
-                  <i class="fa fa-check fa-fw tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'done'" style="padding-top:4px; color:#27ae60; opacity:0.9;"></i>
-                  <i class="fa fa-play fa-fw fa-rotate-270 tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'halfdone'" style="padding-top:4px; color:#f4d03f; opacity:0.9;"></i>
-                  <i class="fa fa-times fa-fw tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'undone'" style="padding-top:4px; color:#e74c3c; opacity:0.9;"></i>
-	                <img src="/images/loader2.gif" class="tile-image" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'processing'">
-	              </div>
-	            </td>
-	          </tr>
-                </table>
+            <h3 class="card-header"><i class="fa fa-home"
+                                       aria-hidden="true"></i> Other</h3>
+            <div class="card-block">
+              <input type="checkbox" ng-model="exitBonus"
+                     ng-change="changeExitBonus()" id="hasReturned">
+              <label class="checkbox" for="hasReturned">Robot returned to
+                starting tile for more than 10s</label>
             </div>
+          </div>
         </div>
-
-
-        <div class="row" style="margin:50 0 0 0;">
-            <div class="col-sm-12">
-
-                <p>
-                    <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleTime()"><i class="fa fa-clock-o" aria-hidden="true"> {{ startedTime ? 'Stop' : 'Start' }}</i></button>
-                </p>
-            </div>
-            <div class="col-md-12 confirmation">
-                <div ng-show="!retired">
-                    <strong>Adjust time: </strong><br>
-                    <label><input type="tel" min="0" max="8" ng-model="minutes">min  </label>
-                    <label><input type="tel" min="0" max="60" ng-model="seconds">sec</label><br>
-                </div>
-
-                <strong>
-            Please press the button below and go to the score / time confirmation screen.
-          </strong>
-                <br>
-                <div style="text-align:center; margin: 10 10 10 10;">
-                    <button class="btn btn-danger" type="button" ng-click="confirm()"><i class="fa fa-arrow-right fa-2x" aria-hidden="true"> To confirmation screen</i></button>
-                </div>
-            </div>
+      </div>
+      <div class="col-md-6 tilearea">
+        <div ng-show="height>1">
+          <rzslider rz-slider-model="z"
+                    rz-slider-options="sliderOptions"></rzslider>
         </div>
+        <table>
+          <tr ng-repeat="r in range(2*length + 1)">
+            <td ng-repeat="c in range(2*width + 1)"
+                ng-class="{'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall, 'checkpoint': cells[c+','+r+','+z].tile.checkpoint, 'black': cells[c+','+r+','+z].tile.black, 'linear': cells[c+','+r+','+z].isLinear}"
+                ng-click="cellClick(c, r, z, $odd != $parent.$odd, $odd && $parent.$odd)">
+              <div class="tile-image-container"
+                   ng-show="cells[c+','+r+','+z].isTile">
+                <img ng-src="/images/log.png" class="tile-image"
+                     ng-show="cells[c+','+r+','+z].tile.speedbump">
+                <img ng-src="/images/elevator.png" class="tile-image"
+                     ng-show="!isUndefined(cells[c+','+r+','+z].tile.changeFloorTo) && cells[c+','+r+','+z].tile.changeFloorTo != z">
+                <img ng-src="/images/start.png" class="tile-image"
+                     ng-show="startTile.x == c && startTile.y == r && startTile.z == z">
+                <img ng-src="/images/ramp_top.png" class="tile-image"
+                     ng-show="cells[c+','+r+','+z].tile.rampTop">
+                <img ng-src="/images/ramp_bottom.png" class="tile-image"
+                     ng-show="cells[c+','+r+','+z].tile.rampBottom">
+                <img ng-src="/images/heated_top.png" class="tile-image"
+                     ng-show="cells[c+','+r+','+z].tile.victims.top == 'Heated'">
+                <img ng-src="/images/heated_right.png" class="tile-image"
+                     ng-show="cells[c+','+r+','+z].tile.victims.right == 'Heated'">
+                <img ng-src="/images/heated_bottom.png" class="tile-image"
+                     ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'Heated'">
+                <img ng-src="/images/heated_left.png" class="tile-image"
+                     ng-show="cells[c+','+r+','+z].tile.victims.left == 'Heated'">
+                <img ng-src="/images/h_top.png" class="tile-image"
+                     ng-show="cells[c+','+r+','+z].tile.victims.top == 'H'">
+                <img ng-src="/images/h_right.png" class="tile-image"
+                     ng-show="cells[c+','+r+','+z].tile.victims.right == 'H'">
+                <img ng-src="/images/h_bottom.png" class="tile-image"
+                     ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'H'">
+                <img ng-src="/images/h_left.png" class="tile-image"
+                     ng-show="cells[c+','+r+','+z].tile.victims.left == 'H'">
+                <img ng-src="/images/s_top.png" class="tile-image"
+                     ng-show="cells[c+','+r+','+z].tile.victims.top == 'S'">
+                <img ng-src="/images/s_right.png" class="tile-image"
+                     ng-show="cells[c+','+r+','+z].tile.victims.right == 'S'">
+                <img ng-src="/images/s_bottom.png" class="tile-image"
+                     ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'S'">
+                <img ng-src="/images/s_left.png" class="tile-image"
+                     ng-show="cells[c+','+r+','+z].tile.victims.left == 'S'">
+                <img ng-src="/images/u_top.png" class="tile-image"
+                     ng-show="cells[c+','+r+','+z].tile.victims.top == 'U'">
+                <img ng-src="/images/u_right.png" class="tile-image"
+                     ng-show="cells[c+','+r+','+z].tile.victims.right == 'U'">
+                <img ng-src="/images/u_bottom.png" class="tile-image"
+                     ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'U'">
+                <img ng-src="/images/u_left.png" class="tile-image"
+                     ng-show="cells[c+','+r+','+z].tile.victims.left == 'U'">
+
+                <i class="fa fa-check fa-fw tile-image tile-font"
+                   ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'done'"
+                   style="padding-top:4px; color:#27ae60; opacity:0.9;"></i>
+                <i class="fa fa-play fa-fw fa-rotate-270 tile-image tile-font"
+                   ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'halfdone'"
+                   style="padding-top:4px; color:#f4d03f; opacity:0.9;"></i>
+                <i class="fa fa-times fa-fw tile-image tile-font"
+                   ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'undone'"
+                   style="padding-top:4px; color:#e74c3c; opacity:0.9;"></i>
+                <img src="/images/loader2.gif" class="tile-image"
+                     ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'processing'">
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
     </div>
-    <div class="row" style="margin:20 0 0 0;">
-        <div class="col-md12">
-            <button class="btn btn-secondary" style="margin:0 10px 10px 0;" type="button" ng-click="go('/maze/' + competition._id)"><i class="fa fa-undo" aria-hidden="true"> Back</i></button>
+
+
+    <div class="row" style="margin:50 0 0 0;">
+      <div class="col-sm-12">
+
+        <p>
+          <button class="btn btn-primary" style="margin:0 10px 10px 0;"
+                  type="button" ng-click="toggleTime()"><i class="fa fa-clock-o"
+                                                           aria-hidden="true">
+            {{ startedTime ? 'Stop' : 'Start' }}</i></button>
+        </p>
+      </div>
+      <div class="col-md-12 confirmation">
+        <div ng-show="!retired">
+          <strong>Adjust time: </strong><br>
+          <label><input type="tel" min="0" max="8" ng-model="minutes">min
+          </label>
+          <label><input type="tel" min="0" max="60"
+                        ng-model="seconds">sec</label><br>
         </div>
+
+        <strong>
+          Please press the button below and go to the score / time confirmation
+          screen.
+        </strong>
+        <br>
+        <div style="text-align:center; margin: 10 10 10 10;">
+          <button class="btn btn-danger" type="button" ng-click="confirm()"><i
+                  class="fa fa-arrow-right fa-2x" aria-hidden="true"> To
+            confirmation screen</i></button>
+        </div>
+      </div>
     </div>
+  </div>
+  <div class="row" style="margin:20 0 0 0;">
+    <div class="col-md12">
+      <button class="btn btn-secondary" style="margin:0 10px 10px 0;"
+              type="button" ng-click="go('/maze/' + competition._id)"><i
+              class="fa fa-undo" aria-hidden="true"> Back</i></button>
+    </div>
+  </div>
 </div>

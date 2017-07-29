@@ -4,17 +4,17 @@ doctype html
 - var ngInit = ""
 block vars
 html(style='height:100%; overflow-y:scroll;' ng-app='#{ngAppDef}' ng-init='#{ngInit}')
-    include ./head.jade
-    include ./navbar.jade
-    body(ng-controller='#{ngAppDef}Controller')
-        .container(style='padding:0px;min-height: 100%;overflow: hidden;')
-            .row
-                .col-md-1
-                .col-md-10
-                    nav.breadcrumb
-                        block location
-            br
-            block content
-        #footer(style="text-align:center;")
-            i.fa.fa-copyright(aria-hidden='true') &nbsp;2017 RoboCup Junior - Rescue Technical Committee&nbsp;-&nbsp;
-            i.fa.fa-code-fork(aria-hidden="true") &nbsp;RCJ Scoring System 2017 Edition
+  include ./head.jade
+  include ./navbar.jade
+  body(ng-controller='#{ngAppDef}Controller')
+    .container(style='padding:0px;min-height: 100%;overflow: hidden;')
+      .row
+        .col-md-1
+        .col-md-10
+          nav.breadcrumb
+            block location
+      br
+      block content
+    #footer(style="text-align:center;")
+      i.fa.fa-copyright(aria-hidden='true') &nbsp;2017 RoboCup Junior - Rescue Technical Committee&nbsp;-&nbsp;
+      i.fa.fa-code-fork(aria-hidden="true") &nbsp;RCJ Scoring System 2017 Edition
