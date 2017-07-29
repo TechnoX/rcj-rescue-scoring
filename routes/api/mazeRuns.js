@@ -69,7 +69,7 @@ function getMazeRuns(req, res) {
   }
 
     if(req.query['minimum']){
-         query.select("round team field status started startTime")
+         query.select("competition round team field status started startTime")
     }else{
         query.select("competition round team field map score time status started comment startTime")
     }
