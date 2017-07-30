@@ -25,10 +25,18 @@ angular.module("LineCompetition", []).controller("LineCompetitionController", fu
         var field = runs[i].field.name
 
         if (!rounds.hasOwnProperty(round)) {
-          rounds[round] = false
+          if ($scope.rounds.hasOwnProperty(round)) {
+            rounds[round] = $scope.rounds[round]
+          } else {
+            rounds[round] = false
+          }
         }
         if (!fields.hasOwnProperty(field)) {
-          fields[field] = false
+          if ($scope.fields.hasOwnProperty(field)) {
+            fields[field] = $scope.fields[field]
+          } else {
+            fields[field] = false
+          }
         }
       }
 
