@@ -1,6 +1,12 @@
 angular.module("LineCompetition", []).controller("LineCompetitionController", function ($scope, $http) {
   $scope.competitionId = competitionId
-  $scope.curTime = new Date().getTime()
+
+  function updateTime() {
+    $scope.curTime = new Date().getTime()
+    setTimeout(updateTime, 1000*60)
+  }
+  updateTime()
+
   $scope.show_ended = false
 
   var showAllRounds = true
