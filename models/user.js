@@ -180,7 +180,9 @@ var testUser2 = new User({
 
 User.findOne({username: testUser.username}, function (err, dbUser) {
   if (dbUser) {
-    dbUser.password = testUser.password
+    if (testUser.password != null) {
+      dbUser.password = testUser.password
+    }
     dbUser.admin = testUser.admin
     dbUser.superDuperAdmin = testUser.superDuperAdmin
     dbUser.competitions = testUser.competitions
@@ -206,7 +208,9 @@ User.findOne({username: testUser.username}, function (err, dbUser) {
 
 User.findOne({username: testUser2.username}, function (err, dbUser) {
   if (dbUser) {
-    dbUser.password = testUser2.password
+    if (testUser2.password != null) {
+      dbUser.password = testUser2.password
+    }
     dbUser.admin = testUser2.admin
     dbUser.superDuperAdmin = testUser2.superDuperAdmin
     dbUser.competitions = testUser2.competitions
