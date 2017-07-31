@@ -12,15 +12,15 @@ function authViewRun(user, run, level) {
   if (run == null) {
     return false
   }
-
+  
   if (user == null) {
     return run.started !== undefined && run.started
   }
-
+  
   if (user.superDuperAdmin) {
     return true
   }
-
+  
   if (run.competition != undefined && run.competition.constructor == String) {
     var competitionId = run.competition
   } else if (run.competition != undefined &&
@@ -38,11 +38,11 @@ function authJudgeRun(user, run, level) {
   if (user == null) {
     return false
   }
-
+  
   if (user.superDuperAdmin) {
     return true
   }
-
+  
   if (run.competition != undefined && run.competition.constructor == String) {
     var competitionId = run.competition
   } else if (run.competition != undefined &&
@@ -65,7 +65,7 @@ function authCompetition(user, competitionId, level) {
   if (user == null) {
     return false
   }
-
+  
   if (user.superDuperAdmin) {
     return true
   }

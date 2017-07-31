@@ -79,9 +79,9 @@ const mazeMapSchema = new Schema({
     isTile  : {type: Boolean, default: false},
     isWall  : {type: Boolean, default: false},
     isLinear: {type: Boolean, default: false},
-
+    
     tile: tileSchema
-
+    
   }],
   startTile  : {
     x: {
@@ -105,29 +105,29 @@ const mazeMapSchema = new Schema({
 
 mazeMapSchema.pre('save', function (next) {
   var self = this
-
+  
   for (let i = 0; i < self.cells.length; i++) {
     let cell = self.cells[i]
-
+    
     if (cell.x > self.width * 2 || cell.y > self.length * 2 ||
         cell.z >= self.height) {
       self.cells.splice(i, 1)
       continue
     }
-
+    
     if (isOdd(cell.x) && isOdd(cell.y)) {
       cell.isTile = true
       cell.isWall = false
-
+      
       if (cell.tile == null) {
         cell.tile = {}
       }
-
+      
       if (cell.x == self.startTile.x && cell.y == self.startTile.y &&
           cell.z == self.startTile.z) {
         cell.tile.checkpoint = true
       }
-
+      
       if (cell.tile.black) {
         if (cell.tile.checkpoint) {
           const err = new Error("Tile can't be both black and checkpoint at x: " +
@@ -135,40 +135,40 @@ mazeMapSchema.pre('save', function (next) {
                                 cell.y + ", z: " + cell.z + "!")
           return next(err)
         }
-
+        
         if (cell.tile.rampBottom) {
           const err = new Error("Tile can't be both black and ramp bottom at x: " +
                                 cell.x + ", y: " +
                                 cell.y + ", z: " + cell.z + "!")
           return next(err)
         }
-
+        
         if (cell.tile.rampTop) {
           const err = new Error("Tile can't be both black and ramp top at x: " +
                                 cell.x + ", y: " +
                                 cell.y + ", z: " + cell.z + "!")
           return next(err)
         }
-
+        
         if ((cell.tile.victims.top != null &&
              cell.tile.victims.top != "None") ||
-
+        
             (cell.tile.victims.right != null &&
              cell.tile.victims.right != "None") ||
-
+        
             (cell.tile.victims.bottom != null &&
              cell.tile.victims.bottom != "None") ||
-
+        
             (cell.tile.victims.left != null &&
              cell.tile.victims.left != "None")) {
-
+          
           const err = new Error("Can't have victims on black tile at x: " +
                                 cell.x + ", y: " +
                                 cell.y + ", z: " + cell.z + "!")
           return next(err)
         }
       }
-
+      
     } else if (isEven(cell.x) && isEven(cell.y)) {
       const err = new Error("Illegal cell placement at x: " + cell.x + ", y: " +
                             cell.y + ", z: " + cell.z + "!")
@@ -182,13 +182,13 @@ mazeMapSchema.pre('save', function (next) {
       }
     }
   }
-
+  
   if (self.finished) {
     mazeFill.floodFill(self)
     mazeFill.linearFill(self)
     //logger.debug(JSON.stringify(self))
   }
-
+  
   if (self.isNew || self.isModified("name")) {
     MazeMap.findOne({
       competition: self.competition,

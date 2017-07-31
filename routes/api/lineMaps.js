@@ -18,7 +18,7 @@ privateRouter.get('/', getLineMaps)
 
 function getLineMaps(req, res) {
   const competition = req.query.competition || req.params.competition
-
+  
   var query
   if (competition != null && competition.constructor === String) {
     query = lineMap.find({
@@ -33,9 +33,9 @@ function getLineMaps(req, res) {
   } else {
     query = lineMap.find({})
   }
-
+  
   query.select("competition name")
-
+  
   query.lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
@@ -51,23 +51,23 @@ module.exports.getLineMaps = getLineMaps
 
 adminRouter.post('/', function (req, res) {
   const map = req.body
-
+  
   //logger.debug(map)
-
+  
   const tiles = []
   for (let i in map.tiles) {
     if (map.tiles.hasOwnProperty(i)) {
       const tile = map.tiles[i]
-
+      
       if (isNaN(i)) {
         const coords = i.split(',')
         tile.x = coords[0]
         tile.y = coords[1]
         tile.z = coords[2]
       }
-
+      
       //logger.debug(tile)
-
+      
       const tileTypeId = typeof tile.tileType ===
                          'object' ? tile.tileType._id : tile.tileType
       tiles.push({
@@ -85,9 +85,9 @@ adminRouter.post('/', function (req, res) {
       })
     }
   }
-
+  
   //logger.debug(tiles)
-
+  
   const newMap = new lineMap({
     competition      : map.competition,
     name             : map.name,
@@ -103,9 +103,9 @@ adminRouter.post('/', function (req, res) {
     numberOfDropTiles: map.numberOfDropTiles,
     finished         : map.finished
   })
-
+  
   //logger.debug(newMap)
-
+  
   newMap.save(function (err, data) {
     if (err) {
       logger.error(err)
@@ -126,17 +126,17 @@ adminRouter.post('/', function (req, res) {
 
 privateRouter.get('/:map', function (req, res, next) {
   const id = req.params.map
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
+  
   const query = lineMap.findById(id)
   var populate
   if (req.query['populate'] !== undefined && req.query['populate']) {
     query.populate("tiles.tileType", "-paths -__v")
   }
-
+  
   query.lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
@@ -159,7 +159,7 @@ const copyProperties = function (obj, dbObj) {
           (dbObj.get !== undefined && dbObj.get(prop) !== undefined)))) { // Mongoose objects don't have hasOwnProperty
       if (typeof obj[prop] == 'object' && dbObj[prop] != null) { // Catches object and array
         copyProperties(obj[prop], dbObj[prop])
-
+        
         if (dbObj.markModified !== undefined) {
           dbObj.markModified(prop)
         }
@@ -175,19 +175,19 @@ const copyProperties = function (obj, dbObj) {
 
 adminRouter.put('/:map', function (req, res, next) {
   const id = req.params.map
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
+  
   const map = req.body
-
+  
   // Exclude fields that are not allowed to be publicly changed
   delete map._id
   delete map.__v
   delete map.competition
   delete map.indexCount
-
+  
   lineMap.findById(id, function (err, dbMap) {
     if (err) {
       logger.error(err)
@@ -196,7 +196,7 @@ adminRouter.put('/:map', function (req, res, next) {
         err: err.message
       })
     } else {
-
+      
       let tiles = []
       for (let i in map.tiles) {
         if (map.tiles.hasOwnProperty(i)) {
@@ -211,11 +211,11 @@ adminRouter.put('/:map', function (req, res, next) {
         }
       }
       map.tiles = tiles
-
+      
       //logger.debug(map)
       dbMap.tiles = []
       err = copyProperties(map, dbMap)
-
+      
       if (err) {
         logger.error(err)
         return res.status(400).send({
@@ -223,7 +223,7 @@ adminRouter.put('/:map', function (req, res, next) {
           msg: "Could not save map"
         })
       }
-
+      
       lineRun.findOne({
         map    : id,
         started: true
@@ -263,11 +263,11 @@ adminRouter.put('/:map', function (req, res, next) {
 
 adminRouter.delete('/:map', function (req, res, next) {
   const id = req.params.map
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
+  
   lineRun.findOne({map: id, started: true}, function (err, dbRun) {
     if (err) {
       logger.error(err)
@@ -302,17 +302,17 @@ publicRouter.get('/tiletypes', getTileTypes)
 
 publicRouter.get('/tiletypes/:tiletype', function (req, res, next) {
   const id = req.params.tiletype
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
+  
   return getTileTypes(req, res, next)
 })
 
 function getTileTypes(req, res) {
   const tileTypes = req.query.id || req.body.id || req.params.tiletype
-
+  
   var query
   if (tileTypes != null && tileTypes.constructor === String) {
     // String with single id
@@ -328,9 +328,9 @@ function getTileTypes(req, res) {
     // Get all
     query = tileType.find({})
   }
-
+  
   query.select("-paths -__v")
-
+  
   query.lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
@@ -347,18 +347,18 @@ function getTileTypes(req, res) {
 publicRouter.get('/tilesets', getTileSets)
 
 function getTileSets(req, res, next) {
-
+  
   // Get all
   const query = tileSet.find({})
-
+  
   query.select("__id name")
-
+  
   if (req.query['populate'] !== undefined && req.query['populate']) {
     query.select("tiles")
     query.populate("tiles", "-_id")
     query.populate("tiles.tileType", "-gaps -intersections -paths -__v")
   }
-
+  
   query.lean().exec(function (err, data) {
     if (err) {
       logger.error(err)
@@ -375,7 +375,7 @@ module.exports.getTileSets = getTileSets
 
 adminRouter.post('/tilesets', function (req, res, next) {
   const tileset = req.body
-
+  
   new tileSet({
     name: tileset.name
   }).save(function (err, data) {
@@ -397,11 +397,11 @@ adminRouter.post('/tilesets', function (req, res, next) {
 
 publicRouter.get('/tilesets/:tileset', function (req, res, next) {
   const id = req.params.tileset
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
+  
   tileSet.findById(id)
     .select("_id name tiles")
     .populate("tiles", "-_id")
@@ -422,13 +422,13 @@ publicRouter.get('/tilesets/:tileset', function (req, res, next) {
 
 adminRouter.put('/tilesets/:tileset', function (req, res, next) {
   const id = req.params.tileset
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
+  
   const _tileSet = req.body
-
+  
   tileSet.findById(id, (err, dbTileSet) => {
     if (err) {
       logger.error(err)
@@ -453,16 +453,16 @@ adminRouter.put('/tilesets/:tileset', function (req, res, next) {
       })
     }
   })
-
+  
 })
 
 adminRouter.delete('/tilesets/:tileset', function (req, res, next) {
   const id = req.params.tileset
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
+  
   tileSet.remove({
     _id: id
   }, (err) => {
@@ -483,7 +483,7 @@ adminRouter.delete('/tilesets/:tileset', function (req, res, next) {
 
 privateRouter.get('/name/:name', function (req, res, next) {
   var name = req.params.name
-
+  
   lineMap.find({
     "name": name
   }, function (err, data) {

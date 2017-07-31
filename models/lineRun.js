@@ -24,9 +24,9 @@ const lineRunSchema = new Schema({
   team       : {type: ObjectId, ref: 'Team', required: true, index: true},
   field      : {type: ObjectId, ref: 'Field', required: true, index: true},
   map        : {type: ObjectId, ref: 'LineMap', required: true, index: true},
-
+  
   judges: [{type: ObjectId, ref: 'User'}],
-
+  
   tiles             : [{
     isDropTile: {type: Boolean, default: false},
     scored    : {type: Boolean, default: false}
@@ -67,7 +67,7 @@ const lineRunSchema = new Schema({
 
 lineRunSchema.pre('save', function (next) {
   const self = this
-
+  
   self.populate('map', "name finished", function (err, populatedRun) {
     if (err) {
       return next(err)
@@ -75,7 +75,7 @@ lineRunSchema.pre('save', function (next) {
       err = new Error('Map "' + populatedRun.map.name + '" is not finished!')
       return next(err)
     } else {
-
+      
       if (self.isNew) {
         LineRun.findOne({
           round: self.round,
@@ -153,32 +153,32 @@ lineRunSchema.pre('save', function (next) {
                   return next(err)
                 } else {
                   const competitionId = results.competition.id
-
+                  
                   if (results.round.competition != competitionId) {
                     return next(new Error("Round does not match competition!"))
                   }
                   if (LINE_LEAGUES.indexOf(results.round.league) == -1) {
                     return next(new Error("Round does not match league!"))
                   }
-
+                  
                   if (results.team.competition != competitionId) {
                     return next(new Error("Team does not match competition!"))
                   }
                   if (LINE_LEAGUES.indexOf(results.team.league) == -1) {
                     return next(new Error("Team does not match league!"))
                   }
-
+                  
                   if (results.field.competition != competitionId) {
                     return next(new Error("Field does not match competition!"))
                   }
                   if (LINE_LEAGUES.indexOf(results.field.league) == -1) {
                     return next(new Error("Field does not match league!"))
                   }
-
+                  
                   if (results.map.competition != competitionId) {
                     return next(new Error("Map does not match competition!"))
                   }
-
+                  
                   self.LoPs = new Array(results.map.numberOfDropTiles).fill(0)
                   self.tiles = new Array(results.map.indexCount).fill({})
                   return next()

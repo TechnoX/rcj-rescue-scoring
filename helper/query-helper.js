@@ -74,12 +74,12 @@ var checkVariablesOk = function (variables, cb) {
   for (var i in variables) {
     var variable = variables[i][0];
     var regex = variables[i][1];
-
+    
     if (variable === undefined) {
       cb(true);
       return;
     }
-
+    
     if (variable.match(regex) != null) {
       cb(false);
       return;
@@ -89,25 +89,25 @@ var checkVariablesOk = function (variables, cb) {
 }
 
 var checkParams = function (req, okParams, cb) {
-
-
+  
+  
   for (var attr in req.query) {
-
+    
     // check to see the attribute is included as legal
     if (okParams[attr] !== undefined) {
       var isOkParam = okParams[attr][0];
-
+      
       if (!isOkParam) {
         return cb(apiMsg.illegalParams + attr);
       }
     }
-
+    
     // if the req.query contains unkowns params
     else {
       //return cb("Unkown param:" + attr);
     }
   }
-
+  
   // iterate over params to check if there is a missing required param
   for (var attr in okParams) {
     var isRequired = okParams[attr][1];
@@ -115,18 +115,18 @@ var checkParams = function (req, okParams, cb) {
       return cb(apiMsg.missingParams + attr);
     }
   }
-
+  
   return cb();
 }
 
 var checkForValidInput = function (req, okParams, cb) {
-
+  
   for (var attr in req.query) {
     if (okParams[attr] !== undefined) {
-
+      
       var validator = okParams[attr][2];
       var attrVal = req.query[attr];
-
+      
       // loop through if attrVal is array
       if (Array.isArray(attrVal)) {
         for (i in attrVal) {
@@ -135,14 +135,14 @@ var checkForValidInput = function (req, okParams, cb) {
           }
         }
       }
-
+      
       // otherwise check single input
       else if (!validator(attrVal)) {
         return cb(apiMsg.errorValidate + attr + " with value=" + attrVal);
       }
     }
   }
-
+  
   return cb();
 }
 
@@ -161,7 +161,7 @@ var parseValues = function (values, cb) {
     var valPair = values[i];
     var data = valPair[0];
     var type = valPair[1];
-
+    
     switch (type) {
       case QueryType.STRING:
         returnValues.push(data === undefined ? "" : data);
@@ -194,7 +194,7 @@ var parseValues = function (values, cb) {
  */
 var restQuery = function (result, find, sort, schema, populate, cb) {
   var query;
-
+  
   if (find === undefined) {
     query = schema.find({})
   } else {
@@ -264,7 +264,7 @@ var parseFindResultSort = function (req, cb) {
  */
 var doFindResultSortQuery = function (req, res, result_regex, populate, schema, find_function, res_function) {
   var parsedValues;
-
+  
   function parseValues(cb) {
     parseFindResultSort(req, function (err, values) {
       if (err) {
@@ -277,21 +277,22 @@ var doFindResultSortQuery = function (req, res, result_regex, populate, schema, 
       }
     })
   }
-
+  
   function execQuery(cb) {
     var find = parsedValues[0];
     if (find_function !== undefined) {
       find_function(find);
     }
-
+    
     var result = parsedValues[1];
     if (res_function !== undefined) {
       res_function(result);
     }
-
+    
     var sort = parsedValues[2];
-    checkVariablesOk([result_regex == null ? [] : [result, result_regex]], function (alrighty) {
-
+    checkVariablesOk([result_regex ==
+                      null ? [] : [result, result_regex]], function (alrighty) {
+      
       //do the rest query
       if (alrighty) {
         restQuery(result, find, sort, schema, populate, function (err, data) {
@@ -310,7 +311,7 @@ var doFindResultSortQuery = function (req, res, result_regex, populate, schema, 
       }
     })
   }
-
+  
   async.series([
     parseValues,
     execQuery
@@ -335,23 +336,23 @@ var doIdQuery = function (req, res, id, select_format, schema, populate) {
   if (mongoose.Types.ObjectId.isValid(id)) {
     var query;
     query = schema.findOne({_id: new ObjectId(id)})
-
+    
     if (populate !== undefined && populate) {
       query.populate(populate)
     }
-
+    
     query.exec(function (err, data) {
-
+      
       if (err) {
         logger.error(err)
         res.status(400).send({err: err})
       }
-
+      
       else {
         res.send(data);
       }
     })
-
+    
   } else {
     res.status(400).send({err: apiMsg.formatFault});
   }

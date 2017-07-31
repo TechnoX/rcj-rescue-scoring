@@ -21,21 +21,21 @@ publicRouter.get('/', function (req, res) {
 
 publicRouter.get('/:roundid', function (req, res, next) {
   var id = req.params.roundid
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
+  
   query.doIdQuery(req, res, id, "", competitiondb.team)
 })
 
 publicRouter.get('/:roundid/runs', function (req, res, next) {
   var id = req.params.roundid
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
+  
   competitiondb.run.find({round: id}, function (err, data) {
     if (err) {
       logger.error(err)
@@ -48,12 +48,12 @@ publicRouter.get('/:roundid/runs', function (req, res, next) {
 
 adminRouter.delete('/:roundid', function (req, res, next) {
   var id = req.params.roundid
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
-  competitiondb.round.remove({_id : id}, function (err) {
+  
+  competitiondb.round.remove({_id: id}, function (err) {
     if (err) {
       logger.error(err)
       res.status(400).send({msg: "Could not remove round", err: err.message})
@@ -65,13 +65,13 @@ adminRouter.delete('/:roundid', function (req, res, next) {
 
 adminRouter.post('/', function (req, res) {
   var round = req.body
-
+  
   var newRound = new competitiondb.round({
-    name : round.name,
-    competition : round.competition,
-    league : round.league
+    name       : round.name,
+    competition: round.competition,
+    league     : round.league
   })
-
+  
   newRound.save(function (err, data) {
     if (err) {
       logger.error(err)

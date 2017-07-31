@@ -4,10 +4,10 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
   $scope.go = function (path) {
     window.location = path
   }
-
+  
   var runListTimer = null;
   var runListChanged = false;
-
+  
   launchSocketIo()
   updateRunList(function () {
     setTimeout(function () {
@@ -19,24 +19,24 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
   if (get['autoscroll'] != undefined) {
     scrollpage()
   }
-
+  
   $http.get("/api/competitions/" + competitionId).then(function (response) {
     $scope.competition = response.data
   })
-
+  
   function updateRunList(callback) {
     $http.get("/api/competitions/" + competitionId +
               "/maze/runs?populate=true").then(function (response) {
       var runs = response.data
-
+      
       //console.log(runs)
-
+      
       $scope.mazeRuns = []
       var mazeTeamRuns = {}
-
+      
       for (var i in runs) {
         var run = runs[i]
-
+        
         if (run.status >= 2 || run.score != 0 || run.time.minutes != 0 ||
             run.time.seconds != 0) {
           $scope.mazeRuns.push(run)
@@ -54,7 +54,7 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
         }
       }
       $scope.mazeRuns.sort(sortRuns)
-
+      
       $scope.mazeRunsTop = []
       for (var i in mazeTeamRuns) {
         var teamRun = mazeTeamRuns[i]
@@ -65,16 +65,25 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
         })
       }
       $scope.mazeRunsTop.sort(sortRuns)
-
+      
       if (callback != null && callback.constructor == Function) {
         callback()
       }
     })
   }
-
+  
+  function timerUpdateRunList() {
+    if (runListChanged) {
+      updateRunList();
+      runListChanged = false;
+      runListTimer = setTimeout(timerUpdateRunList, 1000 * 15);
+    } else {
+      runListTimer = null
+    }
+  }
   function launchSocketIo() {
     // launch socket.io
-    var socket = io.connect(window.location.origin)
+    socket = io({transports: ['websocket']}).connect(window.location.origin)
     socket.on('connect', function () {
       socket.emit('subscribe', 'runs/maze')
     })
@@ -83,24 +92,18 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
       if (runListTimer == null) {
         updateRunList();
         runListChanged = false;
-        runListTimer = setTimeout(function () {
-          if (runListChanged) {
-            updateRunList();
-            runListChanged = false;
-          }
-          runListTimer = null
-        }, 1000 * 15)
+        runListTimer = setTimeout(timerUpdateRunList, 1000 * 15)
       }
     })
   }
-
+  
   function sumBest(runs) {
     if (runs.length == 1) {
       return runs[0]
     }
-
+    
     runs.sort(sortRuns)
-
+    
     let sum = {
       score: 0,
       time : {
@@ -108,16 +111,16 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
         seconds: 0
       }
     }
-
+    
     for (let i = 0; i < Math.min(8, runs.length); i++) {
       sum.score += runs[i].score
       sum.time.minutes += runs[i].time.minutes
       sum.time.seconds += runs[i].time.seconds
     }
-
+    
     return sum
   }
-
+  
   function sortRuns(a, b) {
     if (a.score == b.score) {
       if (a.time.minutes < b.time.minutes) {
@@ -142,7 +145,7 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
 // HAX
 function scrollpage() {
   var i = 1, status = 0, speed = 1, period = 15
-
+  
   function f() {
     window.scrollTo(0, window.scrollY +
                        document.getElementById("allRuns").getBoundingClientRect().top -
@@ -164,6 +167,6 @@ function scrollpage() {
     }
     setTimeout(f, period);
   }
-
+  
   f();
 }
