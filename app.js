@@ -43,6 +43,7 @@ var lineRoute = require('./routes/line')
 var mazeRoute = require('./routes/maze')
 var loginRoute = require('./routes/login')
 var adminRoute = require('./routes/admin')
+var localesRoute = require('./routes/locales')
 
 //========================================================================
 //                          Api routes
@@ -147,6 +148,7 @@ app.use('/logout', pass.ensureAuthenticated, function (req, res, next) {
     res.redirect('/home')
 })
 app.use('/home', homeRoute)
+app.use('/locales', localesRoute)
 
 app.use('/line', [lineRoute.public, pass.ensureAuthenticated, lineRoute.private, pass.ensureAdmin, lineRoute.admin])
 app.use('/maze', [mazeRoute.public, pass.ensureAuthenticated, mazeRoute.private, pass.ensureAdmin, mazeRoute.admin])
