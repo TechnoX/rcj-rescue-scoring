@@ -27,6 +27,9 @@ var passport = require('passport')
 var session = require('express-session')
 var connectMongo = require('connect-mongo')(session)
 
+//  i18n
+var i18n = require("i18n");
+
 //========================================================================
 //                          Routes require
 //========================================================================
