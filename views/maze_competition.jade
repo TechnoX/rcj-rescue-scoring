@@ -24,41 +24,44 @@ block content
       br
       button(ng-click="go('/maze/' + competition._id + '/score')" class='btn btn-outline-info btn-lg btn-block') Result (preliminary report ranking)
       br
-      .refine(style="visibility:hidden")
-        form
-          label Refine by round
-          .filter-round
-          label Refine by field
-          .filter-arena
+      .refine
+        h6 Refine by round
+        span(ng-repeat='(key, value) in rounds track by key')
+          input(type='checkbox' ng-model='rounds[key]' id="checkR_{{key}}")
+          label.checkbox(for="checkR_{{key}}") {{key}}
+        h6 Refine by field
+        span(ng-repeat='(key, value) in fields track by key')
+          input(type='checkbox' ng-model='fields[key]' id="checkF_{{key}}")
+          label.checkbox(for="checkF_{{key}}") {{key}}
       hr
-      input#showEnd(type='checkbox', ng-model='show_ended', ng-change='update_list()')
+      input#showEnd(type='checkbox' ng-model='show_ended' ng-change='update_list()')
       label.checkbox(for='showEnd') Display ended runs
       br
       center
-        .loader
+        .loader(ng-show="runs==null")
           img(src="/images/loader2.gif")
           p Now Loading...
       table(class="comp")
         thead
           tr
-            th Start Time
+            th StartTime
             th Round
             th Team
             th Field
             th
             th
         tbody
-          tr(ng-repeat='run in runs | orderBy:"[startTime,round.name,field.name,team.name]"' runs-read-finished='')
+          tr(ng-repeat='run in runs | filter:list_filter | orderBy:"[startTime,round.name,field.name,team.name]" ')
             td(ng-bind='run.startTime | date:"dd EEE HH:mm"' ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
             td(ng-bind='run.round.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
             td(ng-bind='run.team.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
             td(ng-bind='run.field.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
             td
-              button(ng-click="go('/maze/view/' + run._id)" class='btn btn-info') View
+              button(ng-click="go('/line/view/' + run._id)" class='btn btn-info') View
 
             td(ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
               button(ng-click="no_judge()" class='btn btn-danger' ng-if="run.status>=3" ) Judge
-              button(ng-click="go_judge('/maze/judge/' + run._id)" class='btn btn-danger' ng-if="run.status<3" ) Judge
+              button(ng-click="go_judge('/line/judge/' + run._id)" class='btn btn-danger' ng-if="run.status<3" ) Judge
       br
       br
       br
