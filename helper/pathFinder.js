@@ -7,10 +7,10 @@ module.exports.findPath = function (map) {
     tile.index = []
     tiles[tile.x + ',' + tile.y + ',' + tile.z] = tile
   }
-
+  
   var startTile = tiles[map.startTile.x + ',' + map.startTile.y + ',' +
                         map.startTile.z]
-
+  
   var startDir = ""
   var startPaths = startTile.tileType.paths
   Object.keys(startPaths).forEach(function (dir, index) {
@@ -19,7 +19,7 @@ module.exports.findPath = function (map) {
       startDir = dir
     }
   })
-
+  
   traverse(startTile, startDir, tiles, map, 0)
 }
 
@@ -33,14 +33,14 @@ module.exports.findPath = function (map) {
  */
 function traverse(curTile, entryDir, tiles, map, index) {
   curTile.index.push(index)
-
+  
   var nextTile = tiles[nextCoord(curTile, entryDir)]
-
+  
   if (nextTile === undefined) {
     map.indexCount = index + 1
     return
   }
-
+  
   traverse(nextTile, flipDir(exitDir(curTile, entryDir)), tiles, map, index + 1)
 }
 
@@ -67,7 +67,7 @@ function nextCoord(curTile, entryDir) {
       coord = (curTile.x - 1) + ',' + curTile.y
       break
   }
-
+  
   if (curTile.levelUp !== undefined && exit == curTile.levelUp) {
     coord += ',' + (curTile.z + 1)
   } else if (curTile.levelDown !== undefined && exit == curTile.levelDown) {
@@ -75,7 +75,7 @@ function nextCoord(curTile, entryDir) {
   } else {
     coord += ',' + curTile.z
   }
-
+  
   return coord
 }
 
@@ -83,7 +83,7 @@ function rotateDir(dir, rot) {
   switch (rot) {
     case 0:
       return dir
-
+    
     case -270:
     case 90:
       switch (dir) {
@@ -96,11 +96,11 @@ function rotateDir(dir, rot) {
         case "left":
           return "top"
       }
-
+    
     case -180:
     case 180:
       return flipDir(dir)
-
+    
     case -90:
     case 270:
       switch (dir) {

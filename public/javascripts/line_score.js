@@ -6,28 +6,37 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
   $scope.go = function (path) {
     window.location = path
   }
+  
+  var runListTimer = null;
+  var runListChanged = false;
   launchSocketIo()
-  updateRunList()
+  updateRunList(function () {
+    setTimeout(function () {
+      window.scrollTo(0, window.scrollY +
+                         document.getElementById("rank").getBoundingClientRect().top -
+                         50);
+    }, 200)
+  })
   if (get['autoscroll'] != undefined) {
     scrollpage()
   }
-
+  
   $http.get("/api/competitions/" + competitionId).then(function (response) {
     $scope.competition = response.data
   })
-
-  function updateRunList() {
+  
+  function updateRunList(callback) {
     $http.get("/api/competitions/" + competitionId +
               "/line/runs?populate=true").then(function (response) {
       var runs = response.data
-
-      console.log(runs)
-
+      
+      //console.log(runs)
+      
       $scope.primaryRuns = []
       var primaryTeamRuns = {}
       $scope.secondaryRuns = []
       var secondaryTeamRuns = {}
-
+      
       for (var i in runs) {
         var run = runs[i]
         run.LoPsNum = 0
@@ -37,13 +46,14 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
           }
           run.LoPsNum += run.LoPs[j]
         }
-
+        
         run.score = parseInt(run.score)
-
-        if (run.status >= 2 || run.score != 0 || run.time.minutes != 0 || run.time.seconds != 0) {
-          if (run.team.league == "Line") {
-
-
+        
+        if (run.status >= 2 || run.score != 0 || run.time.minutes != 0 ||
+            run.time.seconds != 0) {
+          if (true || run.team.league == "Line") {
+            
+            
             if (primaryTeamRuns[run.team._id] === undefined) {
               primaryTeamRuns[run.team._id] = {
                 team: {
@@ -61,11 +71,11 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
             primaryTeamRuns[run.team._id].sumLoPs = sum.lops
             primaryTeamRuns[run.team._id].retired = sum.retired
             if (run.status == 2 || run.status == 3) {
-              primaryTeamRuns[run.team._id].isplaying = true
-              run.isplaying = true
+              //primaryTeamRuns[run.team._id].isplaying = true
+              //run.isplaying = true
             }
             $scope.primaryRuns.push(run)
-
+            
           } else if (run.team.league == "Secondary") {
             $scope.secondaryRuns.push(run)
             if (secondaryTeamRuns[run.team._id] === undefined) {
@@ -89,7 +99,7 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
       }
       //$scope.primaryRuns.sort(sortRuns)
       //$scope.secondaryRuns.sort(sortRuns)
-
+      
       $scope.primaryRunsTop = []
       for (var i in primaryTeamRuns) {
         var teamRun = primaryTeamRuns[i]
@@ -106,7 +116,7 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
         })
       }
       $scope.primaryRunsTop.sort(sortRuns)
-
+      
       $scope.secondaryRunsTop = []
       for (var i in secondaryTeamRuns) {
         var teamRun = secondaryTeamRuns[i]
@@ -122,20 +132,39 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
         })
       }
       $scope.secondaryRunsTop.sort(sortRuns)
+      
+      if (callback != null && callback.constructor == Function) {
+        callback()
+      }
     })
   }
 
+
+  function timerUpdateRunList() {
+    if (runListChanged) {
+      updateRunList();
+      runListChanged = false;
+      runListTimer = setTimeout(timerUpdateRunList, 1000 * 15);
+    } else {
+      runListTimer = null
+    }
+  }
   function launchSocketIo() {
     // launch socket.io
-    socket = io.connect(window.location.origin)
+    socket = io({transports: ['websocket']}).connect(window.location.origin)
     socket.on('connect', function () {
       socket.emit('subscribe', 'runs/line')
     })
     socket.on('changed', function () {
-      updateRunList()
+      runListChanged = true;
+      if (runListTimer == null) {
+        updateRunList();
+        runListChanged = false;
+        runListTimer = setTimeout(timerUpdateRunList, 1000 * 15)
+      }
     })
   }
-
+  
   function sum_jpop(runs) {
     if (runs.length == 1) {
       return {
@@ -186,9 +215,9 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
     if (select[0].retired) result.retired = true;
     return result;
   }
-
+  
   function sumBest(runs) {
-    console.log(runs);
+    //console.log(runs);
     if (runs.length == 1) {
       return {
         score  : runs[0].score,
@@ -197,19 +226,19 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
         lops   : runs[0].LoPsNum
       }
     }
-
+    
     runs.sort(sortRuns)
-
+    
     let sum = {
-      score :0,
-      time : {
-        minutes :0,
-        seconds:0
+      score  : 0,
+      time   : {
+        minutes: 0,
+        seconds: 0
       },
-      rescued :0,
-      lops :0
+      rescued: 0,
+      lops   : 0
     }
-
+    
     for (let i = 0; i < Math.min(9, runs.length); i++) {
       sum.score += runs[i].score
       sum.time.minutes += runs[i].time.minutes
@@ -217,16 +246,16 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
       sum.rescued += runs[i].rescuedLiveVictims + runs[i].rescuedDeadVictims
       sum.lops += runs[i].LoPsNum
     }
-
+    
     return sum
   }
-
-
+  
+  
   function BestScore(runs) {
     if (runs.length == 1) {
       return runs[0]
     }
-
+    
     runs.sort(sortRuns)
     if (runs[0].score > runs[1].score) {
       return runs[0]
@@ -245,8 +274,8 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
         return runs[0]
       }
     }
-
-
+    
+    
     return {
       score: runs[0].score + runs[1].score,
       time : {
@@ -256,10 +285,10 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
       }
     }
   }
-
+  
   function sortRuns(a, b) {
-    console.log(a);
-    console.log(b);
+    //console.log(a);
+    //console.log(b);
     if (a.score == b.score) {
       if (a.retired && !b.retired) return 1
       else if (!a.retired && b.retired) return -1
@@ -289,20 +318,25 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
       return b.score - a.score
     }
   }
-
+  
   $scope.detail = function (row) {
-    console.log(row);
+    //console.log(row);
   }
 })
 
 // HAX
 function scrollpage() {
   var i = 1, status = 0, speed = 1, period = 15
+  
   function f() {
-    window.scrollTo(0, window.scrollY + document.getElementById("allRuns").getBoundingClientRect().top - 50 + i);
+    window.scrollTo(0, window.scrollY +
+                       document.getElementById("allRuns").getBoundingClientRect().top -
+                       50 + i);
     if (status == 0) {
       i = i + speed;
-      if (document.getElementById("allRuns").getBoundingClientRect().bottom < Math.max(document.documentElement.clientHeight, window.innerHeight || 0)) {
+      if (document.getElementById("allRuns").getBoundingClientRect().bottom <
+          Math.max(document.documentElement.clientHeight, window.innerHeight ||
+                                                          0)) {
         status = 1;
         return setTimeout(f, 1000);
       }
@@ -315,6 +349,7 @@ function scrollpage() {
     }
     setTimeout(f, period);
   }
+  
   f();
 }
 

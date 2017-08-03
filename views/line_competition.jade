@@ -11,8 +11,8 @@ append scripts
 
 
 block location
-  a.breadcrumb-item(onclick="location.href='/home'") Home
-  a.breadcrumb-item(onclick="location.href='/line'") Line
+  a.breadcrumb-item(href="/home") Home
+  a.breadcrumb-item(href="/line") Line
   span.breadcrumb-item.active {{competition.name}}
 
 
@@ -24,15 +24,21 @@ block content
       br
       button(ng-click="go('/line/' + competition._id + '/score')" class='btn btn-outline-info btn-lg btn-block') Result (preliminary report ranking)
       br
-      .refine(style="visibility:hidden")
-        form
-          label Refine by round
-          .filter-round
-          label Refine by field
-          .filter-arena
+      .refine
+        h6 Refine by round
+        span(ng-repeat='(key, value) in rounds track by key')
+          input(type='checkbox' ng-model='rounds[key]' id="check_{{key}}")
+          label.checkbox(for="check_{{key}}") {{key}}
+        h6 Refine by field
+        span(ng-repeat='(key, value) in fields track by key')
+          input(type='checkbox' ng-model='fields[key]' id="check_{{key}}")
+          label.checkbox(for="check_{{key}}") {{key}}
+      hr
+      input#showEnd(type='checkbox' ng-model='show_ended' ng-change='update_list()')
+      label.checkbox(for='showEnd') Display ended runs
       br
       center
-        .loader
+        .loader(ng-show="runs==null")
           img(src="/images/loader2.gif")
           p Now Loading...
       table(class="comp")
@@ -45,7 +51,7 @@ block content
             th
             th
         tbody
-          tr(ng-repeat='run in runs | orderBy:"[startTime,round.name,field.name,team.name]"' runs-read-finished='')
+          tr(ng-repeat='run in runs | filter:list_filter | orderBy:"[startTime,round.name,field.name,team.name]" ')
             td(ng-bind='run.startTime | date:"dd EEE HH:mm"' ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
             td(ng-bind='run.round.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
             td(ng-bind='run.team.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")

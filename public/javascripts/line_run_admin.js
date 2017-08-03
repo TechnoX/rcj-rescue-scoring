@@ -3,21 +3,39 @@ angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.datetimep
   $scope.competitionId = competitionId
   
   updateRunList();
-
-  (function launchSocketIo() {
-    // launch socket.io
-    socket = io.connect(window.location.origin);
-    socket.emit('subscribe', 'competition/' + competitionId);
-    socket.on('changed', function (data) {
+  launchSocketIo();
+  
+  var runListTimer = null;
+  var runListChanged = false;
+  
+  function timerUpdateRunList() {
+    if (runListChanged) {
       updateRunList();
-    });
-
-
-  })();
+      runListChanged = false;
+      runListTimer = setTimeout(timerUpdateRunList, 1000 * 15);
+    } else {
+      runListTimer = null
+    }
+  }
+  function launchSocketIo() {
+    // launch socket.io
+    socket = io({transports: ['websocket']}).connect(window.location.origin)
+    socket.on('connect', function () {
+      socket.emit('subscribe', 'runs/line')
+    })
+    socket.on('changed', function () {
+      runListChanged = true;
+      if (runListTimer == null) {
+        updateRunList();
+        runListChanged = false;
+        runListTimer = setTimeout(timerUpdateRunList, 1000 * 15)
+      }
+    })
+  }
   $http.get("/api/competitions/" + competitionId).then(function (response) {
     $scope.competition = response.data
   })
-
+  
   $http.get("/api/competitions/" + competitionId +
             "/Line/teams").then(function (response) {
     $scope.teams = response.data
@@ -34,7 +52,7 @@ angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.datetimep
             "/Line/maps").then(function (response) {
     $scope.maps = response.data
   })
-
+  
   $scope.addRun = function () {
     if ($scope.run === undefined ||
         $scope.run.round === undefined ||
@@ -43,18 +61,18 @@ angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.datetimep
         $scope.run.field === undefined) {
       return
     }
-
+    
     var run = {
       round      : $scope.run.round._id,
       team       : $scope.run.team._id,
       field      : $scope.run.field._id,
       map        : $scope.run.map._id,
       competition: competitionId,
-      startTime : $scope.startTime.getTime()
+      startTime  : $scope.startTime.getTime()
     }
-
+    
     console.log(run)
-
+    
     $http.post("/api/runs/line", run).then(function (response) {
       console.log(response)
       updateRunList()
@@ -63,7 +81,7 @@ angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.datetimep
       swal("Oops!", error.data.err, "error");
     })
   }
-
+  
   $scope.removeRun = function (run) {
     swal({
       title             : "Delete Run?",
@@ -81,14 +99,14 @@ angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.datetimep
       })
     });
   }
-
+  
   function updateRunList() {
     $http.get("/api/competitions/" + competitionId +
               "/line/runs?populate=true").then(function (response) {
       $scope.runs = response.data
     })
   }
-
+  
   $scope.go_sign = function (runid) {
     swal({
       title             : "Go sign page?",
@@ -101,7 +119,7 @@ angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.datetimep
       $scope.go('/line/sign/' + runid + '/');
     });
   }
-
+  
   $scope.go_judge = function (runid) {
     swal({
       title             : "Go judge page?",
@@ -114,7 +132,7 @@ angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.datetimep
       $scope.go('/line/judge/' + runid + '/');
     });
   }
-
+  
   $scope.go_approval = function (runid) {
     swal({
       title             : "Go approval page?",
@@ -127,23 +145,23 @@ angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.datetimep
       $scope.go('/admin/approval/' + runid + '/');
     });
   }
-
+  
   $scope.go = function (path) {
     window.location = path
   }
-
+  
   $scope.format = "yyyy-MM-dd"
-
-
+  
+  
   var start = new Date(Date.now() + 1000 * 60 * 5)
   start.setMinutes(start.getMinutes() - start.getMinutes() % 5)
   start.setSeconds(0)
   start.setMilliseconds(0)
-
-
+  
+  
   $scope.startTime = start
   $scope.startDate = start
-
+  
   $scope.startDatePopup = {
     opened: false
   }
@@ -156,13 +174,13 @@ angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.datetimep
     $scope.startTime.setDate($scope.startDate.getDate())
     $scope.startTime.setSeconds(0)
     $scope.startTime.setMilliseconds(0)
-
+    
     $scope.startDate.setHours($scope.startTime.getHours())
     $scope.startDate.setMinutes($scope.startTime.getMinutes())
     $scope.startDate.setSeconds(0)
     $scope.startDate.setMilliseconds(0)
   }
-
+  
 }])
   .directive("runsReadFinished", function ($timeout) {
     return function (scope, element, attrs) {

@@ -81,7 +81,7 @@ lineMapSchema.pre('save', function (next) {
     } else {
       self = populatedMap
       //logger.debug(self)
-
+      
       if (self.finished) {
         try {
           pathFinder.findPath(self)
