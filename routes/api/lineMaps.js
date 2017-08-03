@@ -124,7 +124,7 @@ adminRouter.post('/', function (req, res) {
 })
 
 
-privateRouter.get('/:map', function (req, res, next) {
+publicRouter.get('/:map', function (req, res, next) {
   const id = req.params.map
   
   if (!ObjectId.isValid(id)) {
