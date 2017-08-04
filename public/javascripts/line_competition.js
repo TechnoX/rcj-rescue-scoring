@@ -6,7 +6,6 @@ angular.module("LineCompetition", []).controller("LineCompetitionController", fu
         setTimeout(updateTime, 1000 * 60)
     }
     updateTime()
-
     $scope.show_ended = false
 
     var showAllRounds = true
@@ -27,16 +26,26 @@ angular.module("LineCompetition", []).controller("LineCompetitionController", fu
             var rounds = {}
             var fields = {}
             for (var i = 0; i < runs.length; i++) {
-                var round = runs[i].round.name
-                var field = runs[i].field.name
+                try {
+                    var round = runs[i].round.name
+                    if (!rounds.hasOwnProperty(round)) {
+                        rounds[round] = false
+                    }
+                } catch (e) {
 
-                if (!rounds.hasOwnProperty(round)) {
-                    rounds[round] = false
                 }
 
-                if (!fields.hasOwnProperty(field)) {
-                    fields[field] = false
+                try {
+                    var field = runs[i].field.name
+
+                    if (!fields.hasOwnProperty(field)) {
+                        fields[field] = false
+                    }
+                } catch (e) {
+
                 }
+
+
             }
 
             $scope.rounds = rounds
@@ -48,7 +57,7 @@ angular.module("LineCompetition", []).controller("LineCompetitionController", fu
 
     $scope.$watch('rounds', function (newValue, oldValue) {
         showAllRounds = true
-        console.log(newValue)
+        //console.log(newValue)
         for (let round in newValue) {
             if (newValue.hasOwnProperty(round)) {
                 if (newValue[round]) {
@@ -59,7 +68,7 @@ angular.module("LineCompetition", []).controller("LineCompetitionController", fu
         }
     }, true)
     $scope.$watch('fields', function (newValue, oldValue) {
-        console.log(newValue)
+        //console.log(newValue)
         showAllFields = true
         for (let field in newValue) {
             if (newValue.hasOwnProperty(field)) {
@@ -74,9 +83,13 @@ angular.module("LineCompetition", []).controller("LineCompetitionController", fu
     $scope.update_list()
 
     $scope.list_filter = function (value, index, array) {
+        if (!value.field) {
+            return (showAllRounds || $scope.rounds[value.round.name]) && showAllFields
+        }
         return (showAllRounds || $scope.rounds[value.round.name]) &&
             (showAllFields || $scope.fields[value.field.name])
     }
+
 
     $scope.go = function (path) {
         window.location = path
