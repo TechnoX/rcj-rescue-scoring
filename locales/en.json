@@ -1,0 +1,53 @@
+{
+	"home": {
+		"line_description": "This is TEST",
+		"maze_description": "This is TEST2",
+		"access_level": "The you logged in account, [%s], does not have permission to access Competition Management."
+	},
+	"common": {
+		"loading": "Now loading...",
+		"starttime": "StartTime",
+		"field": "Field",
+		"team": "Team",
+		"round": "Round",
+		"view": "View",
+		"judge": "Judge"
+	},
+	"line": {
+		"home": {
+			"title": "Line - Competitions"
+		},
+		"competition": {
+			"title": "Line runs",
+			"result": "Result (preliminary report ranking)",
+			"refine": {
+				"round": "Refine by round",
+				"field": "Refine by field"
+			},
+			"endedrun": "Display ended runs"
+		}
+	},
+	"maze": {
+		"home": {
+			"title": "Maze - Competitions"
+		},
+		"competition": {
+			"title": "Maze runs",
+			"result": "Result (preliminary report ranking)",
+			"refine": {
+				"round": "Refine by round",
+				"field": "Refine by field"
+			},
+			"endedrun": "Display ended runs"
+		}
+	},
+	"common": {
+		"loading": "common.loading",
+		"starttime": "common.starttime",
+		"round": "common.round",
+		"team": "common.team",
+		"field": "common.field",
+		"view": "common.view",
+		"judge": "common.judge"
+	}
+}

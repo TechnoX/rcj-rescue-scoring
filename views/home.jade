@@ -36,7 +36,7 @@ block content
               .card-block
                 h4.card-title Rescue Line
                 p.card-text
-                  | Put in a description of Rescue Line
+                  | #{__("home.line_description")}
                 button(onclick="location.href='/line'" class='btn btn-primary btn-lg btn-block') Go Line
         .col-sm-6
             .card(style='width: 100%;')
@@ -45,7 +45,7 @@ block content
               .card-block
                 h4.card-title Rescue Maze
                 p.card-text
-                  | Put in a description of Rescue Maze
+                   | #{__('home.maze_description')}
                 button(onclick="location.href='/maze'" class='btn btn-primary btn-lg btn-block') Go Maze
       br 
       br
@@ -55,7 +55,7 @@ block content
             button(onclick="location.href='/admin'" class='button-s button-bb') Competition Management
         else
             button(onclick="location.href='/'" class='button-s button-bb' disabled) Competition Management
-            p ※ The you logged in account, [#{user.username}], does not have permission to access Competition Management.
+            p ※ #{__('home.access_level',user.username)}
       br
       br
       br

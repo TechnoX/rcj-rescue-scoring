@@ -1,2 +1,1 @@
-angular.module("Home", []).controller("HomeController", function ($scope, $http) {
-})
+angular.module("Home", []).controller("HomeController", function ($scope, $http) {})
