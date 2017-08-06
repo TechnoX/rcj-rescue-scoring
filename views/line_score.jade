@@ -44,7 +44,7 @@ block content
   .row
   .col-md12
     button.btn.btn-secondary(style='margin:0 10px 10px 0;', type='button', ng-click="go('/line/' + competitionId)")
-      i.fa.fa-undo(aria-hidden='true')  Back
+      i.fa.fa-undo(aria-hidden='true') !{__('common.back')}
   //.row
     .col-12
       .alert.alert-info(role='alert')
@@ -54,17 +54,16 @@ block content
   .row#rank
     //.col-lg-6
     .col-lg-12
-      h3 Line - Rank
-      h6 Showing sum of the 9 best rounds
+      h3 !{__('line.score.rank')}
       table(style="overflow: scroll;")
         thead
           tr
-            th.text-center Rank
-            th.text-center Team Name
-            th.text-center Score
-            th.text-center Time
-            th.text-center Rescued
-            th.text-center LoPs
+            th.text-center !{__('common.rank')}
+            th.text-center !{__('common.team')}
+            th.text-center !{__('common.score')}
+            th.text-center !{__('common.time')}
+            th.text-center !{__('common.rescued')}
+            th.text-center !{__('common.lops')}
         tbody
           tr(ng-repeat='run in primaryRunsTop track by $index')
             td.text-center(ng-bind='$index + 1' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
@@ -100,20 +99,20 @@ block content
   .row#allRuns
     //.col-lg-6
     .col-lg-12
-      h3 Line - All runs
-      label Sort by round:
+      h3 !{__('line.score.all')}
+      label !{__('line.score.sort')}
         input(type="checkbox" style='display:inline;' ng-model="sortOrder" ng-true-value="'[startTime,round.name,field.name,team.name]'" ng-false-value="'-score'")
       //span {{sortOrder}}
       table(style="overflow: scroll;")
         thead
           tr
-            th.text-center Team Name
-            th.text-center Round
-            th.text-center Field
-            th.text-center Score
-            th.text-center Time
-            th.text-center Rescued
-            th.text-center LoPs
+            th.text-center !{__('common.team')}
+            th.text-center !{__('common.round')}
+            th.text-center !{__('common.field')}
+            th.text-center !{__('common.score')}
+            th.text-center !{__('common.time')}
+            th.text-center !{__('common.rescued')}
+            th.text-center !{__('common.lops')}
         tbody
           tr(ng-repeat='run in primaryRuns | orderBy:sortOrder')
             td.text-center(ng-bind='run.team.name' ng-style="run.isplaying && {'background-color': '#ffffa8'}")

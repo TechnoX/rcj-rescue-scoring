@@ -2,43 +2,70 @@
 	"home": {
 		"line_description": "様々な障害を乗り越えながらライントレースを行い，最後に被災者を模した球体を所定の場所に運んで救出する競技．",
 		"maze_description": "壁で囲まれた空間をロボットが自律走行し，熱を発する被災者を発見，レスキューキットを配布する競技．",
-    "access_level":"ログイン中のアカウント， [%s] は，Competition Managementにアクセスする権限がありません."
+		"access_level": "ログイン中のアカウント， [%s] は，Competition Managementにアクセスする権限がありません."
 	},
 	"common": {
+		"back": "戻る",
 		"loading": "読み込み中...",
 		"starttime": "開始時間",
 		"field": "フィールド",
 		"team": "チーム名",
 		"round": "ラウンド",
+		"rank": "順位",
+		"score": "得点",
+		"time": "時間",
+		"rescued": "救助",
+		"lops": "進行停止",
 		"view": "表示",
-		"judge": "審判"
+		"judge": "審判",
+		"yes": "はい",
+		"no": "いいえ",
+		"cancel": "キャンセル"
 	},
-  "line": {
-    "home":{
-      "title": "Line - 大会選択"
-    },
-    "competition":{
-      "title": "Line 競技選択",
+	"line": {
+		"home": {
+			"title": "Line - 大会選択"
+		},
+		"competition": {
+			"title": "Line 競技選択",
 			"result": "競技結果・速報順位",
-      "refine":{
-        "round": "ラウンド絞り込み",
-        "field": "フィールド絞り込み"
-      },
-      "endedrun":"終了した競技を表示"
-    }
-  },
-  "maze": {
-    "home":{
-      "title": "Maze - 大会選択"
-    },
-    "competition":{
-      "title": "Maze 競技選択",
+			"refine": {
+				"round": "ラウンド絞り込み",
+				"field": "フィールド絞り込み"
+			},
+			"endedrun": "終了した競技を表示",
+			"js": {
+				"go_judge": "審判ページに移動しますか？",
+				"no_judge": "選択した競技は，既に終了しています．この競技を編集する必要がある場合は，OCまでご連絡ください．"
+			}
+		},
+		"score": {
+			"rank": "Line - 順位",
+			"all": "Line - All 全競技",
+			"sort": "ラウンドでソート"
+		}
+	},
+	"maze": {
+		"home": {
+			"title": "Maze - 大会選択"
+		},
+		"competition": {
+			"title": "Maze 競技選択",
 			"result": "競技結果・速報順位",
-      "refine":{
-        "round": "ラウンド絞り込み",
-        "field": "フィールド絞り込み"
-      },
-      "endedrun":"終了した競技を表示"
-    }
-  }
+			"refine": {
+				"round": "ラウンド絞り込み",
+				"field": "フィールド絞り込み"
+			},
+			"endedrun": "終了した競技を表示",
+			"js": {
+				"go_judge": "審判ページに移動しますか？",
+				"no_judge": "選択した競技は，既に終了しています．この競技を編集する必要がある場合は，OCまでご連絡ください．"
+			}
+		},
+		"score": {
+			"rank": "Maze - 順位",
+			"all": "Maze - All 全競技",
+			"sort": "ラウンドでソート"
+		}
+	}
 }

@@ -95,10 +95,10 @@ angular.module("LineCompetition", []).controller("LineCompetitionController", fu
         window.location = path
     }
 
-    $scope.go_judge = function (path) {
+    $scope.go_judge = function (path, team_name) {
         swal({
-            title: "Judge?",
-            text: "Are you sure to move Judge Page?",
+            title: team_name,
+            text: lmes.go_judge,
             type: "warning",
             showCancelButton: true,
             confirmButtonText: "Yes",
@@ -110,6 +110,6 @@ angular.module("LineCompetition", []).controller("LineCompetitionController", fu
     }
 
     $scope.no_judge = function () {
-        swal("Oops!", "The run you selected was already ended! If you need to edit, please contact OC.", "error");
+        swal("Oops!", lmes.no_judge, "error");
     }
 })

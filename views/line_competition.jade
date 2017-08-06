@@ -8,6 +8,10 @@ append scripts
   script.
     var competitionId = "#{id}"
   script(src='/javascripts/line_competition.js')
+  script.
+    var lmes={};
+    lmes.go_judge = "!{__('line.competition.js.go_judge')}";
+    lmes.no_judge = "!{__('line.competition.js.no_judge')}";
 
 
 block location
@@ -61,7 +65,7 @@ block content
 
             td(ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
               button(ng-click="no_judge()" class='btn btn-danger' ng-if="run.status>=3" ) !{__('common.judge')}
-              button(ng-click="go_judge('/line/judge/' + run._id)" class='btn btn-danger' ng-if="run.status<3" ) !{__('common.judge')}
+              button(ng-click="go_judge('/line/judge/' + run._id , run.team.name)" class='btn btn-danger' ng-if="run.status<3" ) !{__('common.judge')}
       br
       br
       br

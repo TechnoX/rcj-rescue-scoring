@@ -5,13 +5,25 @@
 		"access_level": "The you logged in account, [%s], does not have permission to access Competition Management."
 	},
 	"common": {
+		"back":"Back",
 		"loading": "Now loading...",
 		"starttime": "StartTime",
 		"field": "Field",
 		"team": "Team",
 		"round": "Round",
+		"rank": "Rank",
+		"score": "Score",
+		"time": "Time",
+		"rescued": "Rescued",
+		"lops": "LoPs",
 		"view": "View",
-		"judge": "Judge"
+		"judge": "Judge",
+		"point":"points",
+		"league":"League",
+		"competition":"Competition",
+		"yes": "Yes",
+		"no": "No",
+		"cancel": "Cancel"
 	},
 	"line": {
 		"home": {
@@ -24,7 +36,24 @@
 				"round": "Refine by round",
 				"field": "Refine by field"
 			},
-			"endedrun": "Display ended runs"
+			"endedrun": "Display ended runs",
+			"js": {
+				"go_judge": "Are you sure to move Judge Page?",
+				"no_judge": "The run you selected was already ended! If you need to edit, please contact OC."
+			}
+		},
+		"score": {
+			"rank": "Line - Rank",
+			"all": "Line - All runs",
+			"sort": "Sort by round"
+		},
+		"view": {
+			"info": "Basic Informations",
+			"comment": "Comment",
+			"sign": "Sign",
+			"cap_sign": "Captain Sign",
+			"ref_sign": "Referee Sign",
+			"cref_sign": "Co-Referee Sign"
 		}
 	},
 	"maze": {
@@ -38,7 +67,16 @@
 				"round": "Refine by round",
 				"field": "Refine by field"
 			},
-			"endedrun": "Display ended runs"
+			"endedrun": "Display ended runs",
+			"js": {
+				"go_judge": "Are you sure to move Judge Page?",
+				"no_judge": "The run you selected was already ended! If you need to edit, please contact OC."
+			}
+		},
+		"score": {
+			"rank": "Maze - Rank",
+			"all": "Maze - All runs",
+			"sort": "Sort by round"
 		}
 	},
 	"common": {

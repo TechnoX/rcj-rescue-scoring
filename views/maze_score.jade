@@ -42,19 +42,21 @@ block location
 
 block content
   .row
-    .col-md-1
-    .col-md-10
+  .col-md12
+    button.btn.btn-secondary(style='margin:0 10px 10px 0;', type='button', ng-click="go('/line/' + competitionId)")
+      i.fa.fa-undo(aria-hidden='true') !{__('common.back')}
+  .row
+    .col-md-12
       .row#rank
         .col-md-12
-          h3 Maze - Rank
-          h6 Showing sum of the 8 best rounds
+          h3 !{__('maze.score.rank')}
           table
             thead
               tr
-                th.text-center Rank
-                th.text-center Team
-                th.text-center Score sum
-                th.text-center Total time
+                th.text-center !{__('common.rank')}
+                th.text-center !{__('common.team')}
+                th.text-center !{__('common.score')}
+                th.text-center !{__('common.time')}
             tbody
               tr(ng-repeat='run in mazeRunsTop track by $index')
                 td.text-center(ng-bind='$index + 1')
@@ -65,18 +67,18 @@ block content
         hr
       .row#allRuns
         .col-md-12
-          h3 Maze - All rounds
-          label Sort by round:
+          h3 !{__('maze.score.all')}
+          label !{__('maze.score.sort')}
             input(type="checkbox" style='display:inline;' ng-model="sortOrder" ng-true-value="'[startTime,round.name,field.name,team.name]'" ng-false-value="'-score'")
           //span {{sortOrder}}
           table
             thead
               tr
-                th.text-center Team
-                th.text-center Round
-                th.text-center Field
-                th.text-center Score
-                th.text-center Time
+                th.text-center !{__('common.team')}
+                th.text-center !{__('common.round')}
+                th.text-center !{__('common.field')}
+                th.text-center !{__('common.score')}
+                th.text-center !{__('common.time')}
             tbody
               tr(ng-repeat='run in mazeRuns | orderBy:sortOrder')
                 td.text-center(ng-bind='run.team.name')
