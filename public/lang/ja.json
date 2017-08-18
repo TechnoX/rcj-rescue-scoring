@@ -74,7 +74,9 @@
             "cap_sign": "キャプテンサイン",
             "ref_sign": "主審サイン",
             "cref_sign": "副審サイン",
-            "checkpoint": "チェックポイント"
+            "checkpoint": "チェックポイント",
+            "m_score": "得点した方向",
+            "m_score_d": "ロボットが得点した方向（進んだ方向）のタイルをタップしてください．"
         },
         "judge": {
             "before": "次の画面に進む前に，以下の情報を『主審と一緒に』もう一度確認してください．",
@@ -104,6 +106,8 @@
             "adjust": "記録時間調整:",
             "confirm_text": "下のボタンを押して，記録・タイム確認画面に進みます ",
             "confirm": "確認画面",
+            "m_score": "@:line.view.m_score",
+            "m_score_d": "@:line.view.m_score_d",
             "js": {
                 "score_element": "チェックポイントマーカーは，得点項目のあるタイルには設置できません． (ルール 3.3.5)",
                 "cantvisit": "ロボットの通ることのできないタイルをチェックポイントに指定することはできません．",
@@ -119,6 +123,30 @@
                     "content": "８分が経過しました．"
                 }
             }
+        },
+        "sign": {
+            "to_judge": "修正する",
+            "start": "@:line.view.start",
+            "evacuation": "@:line.view.evacuation",
+            "rescue": "@:line.view.rescue",
+            "high": "@:line.view.high",
+            "low": "@:line.view.low",
+            "live": "@:line.view.live",
+            "dead": "@:line.view.dead",
+            "exit": "@:line.view.exit",
+            "comment": "@:line.view.comment",
+            "comment_e": "@:line.view.comment_e",
+            "sign": "@:line.view.sign",
+            "sign_e": "@:line.view.sign_e",
+            "cap_sign": "@:line.view.cap_sign",
+            "ref_sign": "@:line.view.ref_sign",
+            "cref_sign": "@:line.view.cref_sign",
+            "checkpoint": "@:line.view.checkpoint",
+            "submit": "競技データを送信",
+            "no_sign": "競技データを送信する前に，全ての署名を行なってください．",
+            "confirm": "'YES'をタップすると，競技データが確定されます．これ以降の修正はできません．",
+            "complete": "競技データを送信しました．以上で競技は終了です．お疲れ様でした．"
+
         }
     },
     "maze": {

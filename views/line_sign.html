@@ -18,12 +18,11 @@
         </div>
         <div class="col-md-3 col-sm4 col-7">
             <i class="fa fa-calculator fa-2x" aria-hidden="true"></i>
-            <li class="navbar-brand" href="#"> {{score}} points</li>
+            <li class="navbar-brand" href="#"> {{score}} {{'common.point' | translate}}</li>
         </div>
         <div class="col-md-3 col-sm4 col-5">
             <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
-            <li class="navbar-brand" href="#" ng-if="!retired"> {{minutes*60*1000+seconds*1000 | date:'mm:ss'}}</li>
-            <li class="navbar-brand" href="#" ng-if="retired"> Retire</li>
+            <li class="navbar-brand" href="#"> {{minutes*60*1000+seconds*1000 | date:'m:ss'}}</li>
         </div>
     </div>
 
@@ -32,7 +31,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md12">
-            <button class="btn btn-secondary" style="margin:0 10px 10px 0;" type="button" ng-click="go('/line/judge/' + runId)"><i class="fa fa-arrow-left" aria-hidden="true"> Back</i></button>
+            <button class="btn btn-secondary" style="margin:0 10px 10px 0;" type="button" ng-click="go('/line/judge/' + runId)"><i class="fa fa-pencil-square-o" aria-hidden="true"> {{'line.sign.to_judge' | translate}}</i></button>
         </div>
     </div>
     <br>
@@ -40,44 +39,45 @@
     <div class="row">
         <div class="col-md-6">
             <div id="card_area" class="scrool" style="overflow: scroll;">
-                <!--<div class="card">
-                  <h3 class="card-header"><i class="fa fa-play-circle" aria-hidden="true"></i> Start Scoring Run</h3>
-                  <div class="card-block">
-                      <p class="card-text">Please check a box at the start of scoring run.</p>
-                      <input type="checkbox" ng-model="showedUp" ng-change="changeShowedUp()" id="scoredrun"><label class="checkbox" for="scoredrun" style="background-color: #ffe6e8;">Start Scoring Run</label><br>
-                  </div>
-              </div>-->
                 <div id="lops" class="card">
-                    <h3 class="card-header"><i class="fa fa-undo" aria-hidden="true"></i> LoPs</h3>
+                    <h3 class="card-header"><i class="fa fa-undo" aria-hidden="true"></i> {{'common.lops' | translate}}</h3>
                     <div class="card-block">
                         <div ng-repeat="dropTile in range(actualUsedDropTiles+1) track by $index">
-                            <p class="card-text">
-                                <b>{{$index==0?'Start':('Checkpoint ' + ($index))}}</b> to <b>{{!$last?('Checkpoint ' + ($index+1)):'Evacuation zone'}}</b><br>
-                                <div class="input-group" style="width:100%; height:35px;">
-                                    <span class="input-group-btn">
+                            <div style="display:flex;" class="card-text">
+                                <div style="width:40%;font-size:10px;" align="center">
+                                    {{$index==0?'line.sign.start':'line.sign.checkpoint'|translate}}
+                                    <b style="font-size:15px;color:#FF8300;">{{$index==0?'':$index}}</b>
+                                    <br>
+                                    <i class="fa fa-forward fa-rotate-90" aria-hidden="true"></i>
+                                    <br> {{!$last?'line.sign.checkpoint':'line.sign.evacuation' | translate}}
+                                    <b style="font-size:15px;color:#FF8300;">{{!$last?$index+1:''}}</b>
+
+                                </div>
+                                <div style="width:60%;position: relative;">
+                                    <div class="input-group" style="width:100%; height:35px;position:absolute;top: 0;bottom: 0;margin: auto;">
+                                        <span class="input-group-btn">
                                         <button type="button" class="btn btn-danger" disabled>
                                             <i class="fa fa-minus" aria-hidden="true"></i>
                                         </button>
                                     </span>
-                                    <div style="background-color: #F2F2F2; width:100px; text-align: center;">
-                                      <span class="count">{{LoPs[$index]?LoPs[$index]:0}}</span>
-                                    </div>
-                                    <span class="input-group-btn">
+                                        <div style="background-color: #F2F2F2; width:100px; text-align: center;">
+                                            <span class="count">{{LoPs[$index]?LoPs[$index]:0}}</span>
+                                        </div>
+                                        <span class="input-group-btn">
                                         <button type="button" class="btn btn-success" disabled>
                                             <i class="fa fa-plus" aria-hidden="true"></i>
                                         </button>
                                     </span>
+                                    </div>
                                 </div>
-                            </p>
+                            </div>
                             <hr ng-show="!$last" />
                         </div>
 
                     </div>
-                </div>
-                <div id="resc" class="card">
-                    <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> Rescuing victims　<span class="badge badge-danger">{{evacuationLevel-1?"High":"Low"}} evacuation point</span></h3>
+                    <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> {{'line.sign.rescue' | translate}}　<span class="badge badge-danger">{{evacuationLevel-1?'line.sign.high':'line.sign.low' | translate}}</span></h3>
                     <div class="card-block">
-                        <p class="card-text">【LIVE Victims】Number：　　 <span class="badge badge-info">{{30 + (evacuationLevel-1)*10}}　points /victim</span></p>
+                        <p class="card-text">{{'line.sign.live' | translate}}<span class="badge badge-info">{{30 + (evacuationLevel-1)*10}}　points /victim</span></p>
                         <div class="input-group" style="width:100%; height:35px;">
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-danger" disabled>
@@ -85,7 +85,7 @@
                                 </button>
                             </span>
                             <div style="background-color: #F2F2F2; width:100px; text-align: center;">
-                              <span class="count">{{rescuedLiveVictims}}</span>
+                                <span class="count">{{rescuedLiveVictims}}</span>
                             </div>
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-success" disabled>
@@ -96,7 +96,7 @@
                     </div>
                     <hr>
                     <div class="card-block">
-                        <p class="card-text">【DEAD Victims】Number： 　　　　<span class="badge badge-info">{{15 + (evacuationLevel-1)*5}} points /victim</span></p>
+                        <p class="card-text">{{'line.sign.dead' | translate}}<span class="badge badge-info">{{15 + (evacuationLevel-1)*5}} points /victim</span></p>
                         <div class="input-group" style="width:100%; height:35px;">
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-danger" disabled>
@@ -104,7 +104,7 @@
                                 </button>
                             </span>
                             <div style="background-color: #F2F2F2; width:100px; text-align: center;">
-                              <span class="count">{{rescuedDeadVictims}}</span>
+                                <span class="count">{{rescuedDeadVictims}}</span>
                             </div>
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-success" disabled>
@@ -112,14 +112,15 @@
                                 </button>
                             </span>
                         </div>
+                    </div>
+                    <hr>
+                    <div class="card-block">
+                        <p class="card-text">{{'line.sign.exit' | translate}}<span class="badge badge-info">20 points</span></p>
+                        <input type="checkbox" ng-model="exitBonus" ng-change="changeExitBonus()" id="scoredrun" disabled><label class="checkbox" for="scoredrun">{{'common.sucess' | translate}}</label><br>
+                    </div>
+                </div>
 
-                    </div>
-                    <hr>
-                    <div class="card-block">
-                        <p class="card-text">Robot exited the evacuation zone after touching at least one victim: <span class="badge badge-info">20 points</span></p>
-                        <input type="checkbox" ng-model="exitBonus" ng-change="changeExitBonus()" id="scoredrun" disabled><label class="checkbox" for="scoredrun">Success</label><br>
-                    </div>
-                </div>
+
             </div>
         </div>
 
@@ -156,26 +157,18 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="hidden-xs-down">
-                    <i class="fa fa-calculator fa-3x" aria-hidden="true"> : {{score}} points</i>
+                    <i class="fa fa-calculator fa-3x" aria-hidden="true"> : {{score}} {{'common.point' | translate}}</i>
                 </div>
                 <div class="hidden-sm-up">
-                    <i class="fa fa-calculator fa-2x" aria-hidden="true"> : {{score}} points</i>
+                    <i class="fa fa-calculator fa-2x" aria-hidden="true"> : {{score}} {{'common.point' | translate}}</i>
                 </div>
             </div>
-            <div class="col-md-6" ng-if='!retired'>
+            <div class="col-md-6">
                 <div class="hidden-xs-down">
-                    <i class="fa fa-clock-o fa-3x" aria-hidden="true"> : {{minutes}} min {{seconds}} sec</i>
+                    <i class="fa fa-clock-o fa-3x" aria-hidden="true"> : {{minutes}} {{'common.min' | translate}} {{seconds}} {{'common.sec' | translate}}</i>
                 </div>
                 <div class="hidden-sm-up">
-                    <i class="fa fa-clock-o fa-2x" aria-hidden="true"> : {{minutes}} min {{seconds}} sec</i>
-                </div>
-            </div>
-            <div class="col-md-6" ng-if='retired'>
-                <div class="hidden-xs-down">
-                    <i class="fa fa-clock-o fa-3x" aria-hidden="true"> : Retire</i>
-                </div>
-                <div class="hidden-sm-up">
-                    <i class="fa fa-clock-o fa-2x" aria-hidden="true"> : Retire</i>
+                    <i class="fa fa-clock-o fa-2x" aria-hidden="true"> : {{minutes}} {{'common.min' | translate}} {{seconds}} {{'common.sec' | translate}}</i>
                 </div>
             </div>
         </div>
@@ -185,44 +178,31 @@
         <div class="col-md-12">
 
             <div id="sign" class="card">
-              <h3 class="card-header"><i class="fa fa-commenting-o" aria-hidden="true"></i> Comment</h3>
-              <div class="card-block">
-                  <p class="card-text  text-info ">
-                      If you have any comments about the run, please write in the box below.
-                  </p>
-                  <div class="form-group">
-                    <textarea class="form-control" ng-model="comment" rows="3"></textarea>
-                  </div>
-              </div>
-                <h3 class="card-header"><i class="fa fa-key" aria-hidden="true"></i> Sign</h3>
+                <h3 class="card-header"><i class="fa fa-commenting-o" aria-hidden="true"></i>{{'line.sign.comment' | translate}}</h3>
+                <div class="card-block">
+                    <p class="card-text  text-info ">
+                        {{'line.sign.comment_e' | translate}}
+                    </p>
+                    <div class="form-group">
+                        <textarea class="form-control" ng-model="comment" rows="3"></textarea>
+                    </div>
+                </div>
+                <h3 class="card-header"><i class="fa fa-key" aria-hidden="true"></i> {{'line.sign.sign' | translate}}</h3>
                 <div class="card-block"><strong>
-                      <p class="card-text  text-warning " ng-if="!retired">
-                          By wiritng a sign below, you accept that the
-                          [Score：{{score}}]
-                          [Time：{{minutes}} min {{seconds}} sec]
-                          are correct.
-                          Your team also further undertakes to not appeal the score at a later stage.
-                      </p>
-                      <p class="card-text  text-warning " ng-if="retired">
-                          By wiritng a sign below, you accept that the
-                          [Score：{{score}}]
-                          [Time：Retire]
-                          are correct.
-                          Your team also further undertakes to not appeal the score at a later stage.
-                      </p></strong>
-                    <h2>Captain Sign</h2>
+                      <p class="card-text  text-warning" translate="line.sign.sign_e"></strong>
+                    <h2 translate="line.sign.cap_sign"></h2>
                     <div id="cap_sig" class="confirmation"></div>
                     <br>
-                    <h2>Referee Sign</h2>
+                    <h2 translate="line.sign.ref_sign"></h2>
                     <div id="ref_sig" class="confirmation"></div>
                     <br>
-                    <h2>Co-Referee Sign</h2>
+                    <h2 translate="line.sign.cref_sign"></h2>
                     <div id="refas_sig" class="confirmation"></div>
                 </div>
             </div>
         </div>
     </div>
     <div class="row" style="margin:100 0 100 0;">
-        <button type="button" class="btn btn-danger btn-lg btn-block" style="padding:30 0 30 0" ng-click="send_sign()"><i class="fa fa-paper-plane fa-2x" aria-hidden="true" > Submit Run Data</i></button>
+        <button type="button" class="btn btn-danger btn-lg btn-block" style="padding:30 0 30 0" ng-click="send_sign()"><i class="fa fa-paper-plane fa-2x" aria-hidden="true" > {{'line.sign.submit' | translate}}</i></button>
     </div>
 </div>

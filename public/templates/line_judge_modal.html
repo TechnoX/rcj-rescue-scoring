@@ -1,15 +1,95 @@
 <div class="modal-header">
-  <h3 class="modal-title">Score Items</h3>
+    <h3 class="modal-title">{{'line.judge.m_score' | translate}}</h3>
 </div>
 <div class="modal-body">
-  <label>Passed (note this is not attempts!):</label>
-  <ul>
-    <li ng-repeat="pass in mtile.index track by $index">
-      <input type="checkbox" ng-model="stiles[pass].scored" id="{{ 'passed-' + $index }}"><label class="checkbox" for="{{ 'passed-' + $index }}">Passed {{words[$index]}} time</label>
-    </li>
-  </ul>
+    <label>{{'line.judge.m_score_d' | translate}}</label>
+    <table style="padding: 0px;" align="center" 　bgcolor="#D8D8D8">
+        <tr>
+            <td width="100px" style="padding: 0px;">
+                <img src="/images/tiles/tile-empty.png" width="100%" height="auto" ng-if="!nineTile[0]">
+                <img ng-src="/images/tiles/{{nineTile[0].tileType.image}}" width="100%" height="auto" class="rot{{nineTile[0].rot}}">
+            </td>
+            <td width="100px" style="padding: 0px;position: relative;" ng-click="toggle_scored(next.top)">
+                <img src="/images/tiles/tile-empty.png" width="100%" height="auto" ng-if="!nineTile[1]">
+                <img ng-src="/images/tiles/{{nineTile[1].tileType.image}}" style="position:absolute;left: 0px; top: 0px;" width="100%" height="auto" class="rot{{nineTile[1].rot}}">
+                <div ng-if="next.top">
+                    <div ng-show="stiles[next.top].scored">
+                        <img src="/images/next-robot-done.png" style="position:absolute;left: 0px; top: 0px; " width="100%" height="auto">
+                        <i class="fa fa-check fa-fw fa-3x" style="padding-top:4px; color:#27ae60; opacity:0.9;position:absolute;top:0px;left:0px;"></i>
+                    </div>
+                    <div ng-show="!stiles[next.top].scored">
+                        <img src="/images/next-robot-undone.png" style="position:absolute;left: 0px; top: 0px;opacity:0.5;" width="100%" height="auto">
+                        <i class="fa fa-times fa-fw fa-3x" style="padding-top:4px; color:#e74c3c; opacity:0.9;position:absolute;top:0px;left:0px;"></i>
+                    </div>
+                </div>
+            </td>
+            <td width="100px" style="padding: 0px;">
+                <img src="/images/tiles/tile-empty.png" width="100%" height="auto" ng-if="!nineTile[2]">
+                <img ng-src="/images/tiles/{{nineTile[2].tileType.image}}" width="100%" height="auto" class="rot{{nineTile[2].rot}}">
+            </td>
+        </tr>
+        <tr>
+            <td width="100px" style="padding: 0px;position: relative;" ng-click="toggle_scored(next.left)">
+                <img src="/images/tiles/tile-empty.png" width="100%" height="auto" ng-if="!nineTile[3]">
+                <img ng-src="/images/tiles/{{nineTile[3].tileType.image}}" style="position:absolute;left: 0px; top: 0px;" width="100%" height="auto" class="rot{{nineTile[3].rot}}">
+                <div ng-if="next.left">
+                    <div ng-show="stiles[next.left].scored">
+                        <img src="/images/next-robot-done.png" style="position:absolute;left: 0px; top: 0px; " width="100%" height="auto" class="rot270">
+                        <i class="fa fa-check fa-fw fa-3x" style="padding-top:4px; color:#27ae60; opacity:0.9;position:absolute;bottom:0px;left:0px;"></i>
+                    </div>
+                    <div ng-show="!stiles[next.left].scored">
+                        <img src="/images/next-robot-undone.png" style="position:absolute;left: 0px; top: 0px;opacity:0.5;" width="100%" height="auto" class="rot270">
+                        <i class="fa fa-times fa-fw fa-3x" style="padding-top:4px; color:#e74c3c; opacity:0.9;position:absolute;bottom:0px;left:0px;"></i>
+                    </div>
+                </div>
+            </td>
+            <td width="100px" style="padding: 0px;">
+
+                <img src="/images/tiles/tile-empty.png" width="100%" height="auto" ng-if="!nineTile[4]">
+                <img ng-src="/images/tiles/{{nineTile[4].tileType.image}}" width="100%" height="auto" class="rot{{nineTile[4].rot}}">
+            </td>
+            <td width="100px" style="padding: 0px;position: relative;" ng-click="toggle_scored(next.right)">
+                <img src="/images/tiles/tile-empty.png" width="100%" height="auto" ng-if="!nineTile[5]">
+                <img ng-src="/images/tiles/{{nineTile[5].tileType.image}}" style="position:absolute;left: 0px; top: 0px;" width="100%" height="auto" class="rot{{nineTile[5].rot}}">
+                <div ng-if="next.right">
+                    <div ng-show="stiles[next.right].scored">
+                        <img src="/images/next-robot-done.png" style="position:absolute;left: 0px; top: 0px; " width="100%" height="auto" class="rot90">
+                        <i class="fa fa-check fa-fw fa-3x" style="padding-top:4px; color:#27ae60; opacity:0.9;position:absolute;top:0px;right:0px;"></i>
+                    </div>
+                    <div ng-show="!stiles[next.right].scored">
+                        <img src="/images/next-robot-undone.png" style="position:absolute;left: 0px; top: 0px;opacity:0.5;" width="100%" height="auto" class="rot90">
+                        <i class="fa fa-times fa-fw fa-3x" style="padding-top:4px; color:#e74c3c; opacity:0.9;position:absolute;top:0px;right:0px;"></i>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td width="100px" style="padding: 0px;">
+                <img src="/images/tiles/tile-empty.png" width="100%" height="auto" ng-if="!nineTile[6]">
+                <img ng-src="/images/tiles/{{nineTile[6].tileType.image}}" width="100%" height="auto" class="rot{{nineTile[6].rot}}">
+            </td>
+            <td width="100px" style="padding: 0px;position: relative;" ng-click="toggle_scored(next.bottom)">
+                <img src="/images/tiles/tile-empty.png" width="100%" height="auto" ng-if="!nineTile[7]">
+                <img ng-src="/images/tiles/{{nineTile[7].tileType.image}}" style="position:absolute;left: 0px; top: 0px;" width="100%" height="auto" class="rot{{nineTile[7].rot}}">
+                <div ng-if="next.bottom">
+                    <div ng-show="stiles[next.bottom].scored">
+                        <img src="/images/next-robot-done.png" style="position:absolute;left: 0px; top: 0px; " width="100%" height="auto" class="rot180">
+                        <i class="fa fa-check fa-fw fa-3x" style="padding-top:4px; color:#27ae60; opacity:0.9;position:absolute;bottom:0px;right:0px;"></i>
+                    </div>
+                    <div ng-show="!stiles[next.bottom].scored">
+                        <img src="/images/next-robot-undone.png" style="position:absolute;left: 0px; top: 0px;opacity:0.5;" width="100%" height="auto" class="rot180">
+                        <i class="fa fa-times fa-fw fa-3x" style="padding-top:4px; color:#e74c3c; opacity:0.9;position:absolute;bottom:0px;right:0px;"></i>
+                    </div>
+                </div>
+            </td>
+            <td width="100px" style="padding: 0px;">
+                <img src="/images/tiles/tile-empty.png" width="100%" height="auto" ng-if="!nineTile[8]">
+                <img ng-src="/images/tiles/{{nineTile[8].tileType.image}}" width="100%" height="auto" class="rot{{nineTile[8].rot}}">
+            </td>
+        </tr>
+    </table>
 </div>
 
 <div class="modal-footer">
-  <button class="btn btn-success btn-lg btn-block" type="button" ng-click="ok()">OK</button>
+    <button class="btn btn-info btn-lg btn-block" type="button" ng-click="ok()">OK</button>
 </div>

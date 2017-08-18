@@ -74,7 +74,9 @@
             "cap_sign": "Captain Sign",
             "ref_sign": "Referee Sign",
             "cref_sign": "Co-Referee Sign",
-            "checkpoint": "Checkpoint"
+            "checkpoint": "Checkpoint",
+            "m_score": "Direction scored",
+            "m_score_d": "Please tap the tile of the direction the team scored."
         },
         "judge": {
             "before": "Before the start of the run record, please confirm that the following information is correct.",
@@ -105,6 +107,8 @@
             "adjust": "Adjust time:",
             "confirm_text": "Please press the button below and go to the score / time confirmation screen. ",
             "confirm": "To confirmation screen",
+            "m_score": "@:line.view.m_score",
+            "m_score_d": "@:line.view.m_score_d",
             "js": {
                 "score_element": "Place checkpoint markers on tiles without scoring elements (rule 3.3.5)",
                 "cantvisit": "Cannot place checkpoint markers on tile that robot can't visit.",
@@ -121,6 +125,30 @@
                 }
 
             }
+        },
+        "sign": {
+            "to_judge": "To correct",
+            "start": "@:line.view.start",
+            "evacuation": "@:line.view.evacuation",
+            "rescue": "@:line.view.rescue",
+            "high": "@:line.view.high",
+            "low": "@:line.view.low",
+            "live": "@:line.view.live",
+            "dead": "@:line.view.dead",
+            "exit": "@:line.view.exit",
+            "comment": "@:line.view.comment",
+            "comment_e": "@:line.view.comment_e",
+            "sign": "@:line.view.sign",
+            "sign_e": "@:line.view.sign_e",
+            "cap_sign": "@:line.view.cap_sign",
+            "ref_sign": "@:line.view.ref_sign",
+            "cref_sign": "@:line.view.cref_sign",
+            "checkpoint": "@:line.view.checkpoint",
+            "submit": "Subit Run Data",
+            "no_sign": "Please write it before submit run data.",
+            "confirm": "If you click 'YES', the run data will record.  After that you cannot change the run.",
+            "complete": "Recording succeeded"
+
         }
     },
     "maze": {

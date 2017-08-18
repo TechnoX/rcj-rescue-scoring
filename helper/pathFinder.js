@@ -5,6 +5,7 @@ module.exports.findPath = function (map) {
   for (var i = 0; i < map.tiles.length; i++) {
     var tile = map.tiles[i]
     tile.index = []
+    tile.next = []
     tiles[tile.x + ',' + tile.y + ',' + tile.z] = tile
   }
   
@@ -33,8 +34,10 @@ module.exports.findPath = function (map) {
  */
 function traverse(curTile, entryDir, tiles, map, index) {
   curTile.index.push(index)
+  var next_Coord = nextCoord(curTile, entryDir)
+  curTile.next.push(next_Coord)
+  var nextTile = tiles[next_Coord]
   
-  var nextTile = tiles[nextCoord(curTile, entryDir)]
   
   if (nextTile === undefined) {
     map.indexCount = index + 1
