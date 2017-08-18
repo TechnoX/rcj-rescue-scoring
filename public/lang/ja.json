@@ -1,0 +1,155 @@
+{
+    "home": {
+        "line": "Rescue Line",
+        "maze": "Rescue Maze",
+        "login": "ログイン",
+        "logout": "ログアウト",
+        "line_description": "様々な障害を乗り越えながらライントレースを行い，最後に被災者を模した球体を所定の場所に運んで救出する競技．",
+        "maze_description": "壁で囲まれた空間をロボットが自律走行し，熱を発する被災者を発見，レスキューキットを配布する競技．",
+        "go_line": "Go Line",
+        "go_maze": "Go Maze",
+        "management": "大会管理",
+        "access_level": "ログイン中のアカウント， {{account}} は，Competition Managementにアクセスする権限がありません."
+    },
+    "common": {
+        "back": "戻る",
+        "loading": "読み込み中...",
+        "starttime": "開始時間",
+        "field": "フィールド",
+        "team": "チーム名",
+        "round": "ラウンド",
+        "rank": "順位",
+        "score": "得点",
+        "time": "時間",
+        "rescued": "救助",
+        "lops": "進行停止",
+        "view": "表示",
+        "judge": "審判",
+        "point": "点",
+        "league": "リーグ",
+        "competition": "大会名",
+        "min": "分",
+        "sec": "秒",
+        "sucess": "成功",
+        "yes": "はい",
+        "no": "いいえ",
+        "cancel": "キャンセル"
+    },
+    "line": {
+        "home": {
+            "title": "Line - 大会選択"
+        },
+        "competition": {
+            "title": "Line 競技選択",
+            "result": "競技結果・速報順位",
+            "refine": {
+                "round": "ラウンド絞り込み",
+                "field": "フィールド絞り込み"
+            },
+            "endedrun": "終了した競技を表示",
+            "js": {
+                "go_judge": "審判ページに移動しますか？",
+                "no_judge": "選択した競技は，既に終了しています．この競技を編集する必要がある場合は，OCまでお問い合わせください．"
+            }
+        },
+        "score": {
+            "rank": "Line - 順位",
+            "all": "Line - All 全競技",
+            "sort": "ラウンドでソート"
+        },
+        "view": {
+            "info": "基本情報",
+            "start": "スタート",
+            "evacuation": "避難ゾーン",
+            "rescue": "被災者救助",
+            "high": "救助レベル1",
+            "low": "救助レベル2",
+            "live": "生きている被災者：",
+            "dead": "死んでいる被災者：",
+            "exit": "少なくとも１つの被災者に触れたのち，避難ゾーンを脱出した：",
+            "comment": "コメント",
+            "comment_e": "この競技についてコメントがある場合，以下に記入してください",
+            "sign": "署名",
+            "sign_e": "下の署名を書くことで，ここまでの記録内容が正しいことを認めることになります．競技の後でこれらの記録に対して，いかなる意見も行わないことを確認します．",
+            "cap_sign": "キャプテンサイン",
+            "ref_sign": "主審サイン",
+            "cref_sign": "副審サイン",
+            "checkpoint": "チェックポイント"
+        },
+        "judge": {
+            "before": "次の画面に進む前に，以下の情報を『主審と一緒に』もう一度確認してください．",
+            "info": "@:line.view.info",
+            "confirm": "確認しました",
+            "run_start": "記録【開始】",
+            "run_end": "記録【終了】",
+            "tim_start": "スタート",
+            "tim_stop": "ストップ",
+            "tim_reset": "リセット",
+            "select_elevel": "被災者救助レベルを設定してください：",
+            "high": "@:line.view.high",
+            "low": "@:line.view.low",
+            "ready": "得点記録を開始する準備が整いました！",
+            "push_start": "記録【開始】 ボタンを押してください．",
+            "tap_tile": "チームが選択したチェックポイントの場所を，右側のマップ図上でタップしてください．",
+            "remaining": "設置すべき残りチェックポイント数：",
+            "push_timer": "主審に従って【タイマースタート】ボタンを押してください! ",
+            "show_up": "チームが時間内に得点走行を開始した：",
+            "live": "@:line.view.live",
+            "dead": "@:line.view.dead",
+            "exit": "@:line.view.exit",
+            "evacuation": "@:line.view.evacuation",
+            "rescue": "@:line.view.rescue",
+            "start": "@:line.view.start",
+            "checkpoint": "@:line.view.checkpoint",
+            "adjust": "記録時間調整:",
+            "confirm_text": "下のボタンを押して，記録・タイム確認画面に進みます ",
+            "confirm": "確認画面",
+            "js": {
+                "score_element": "チェックポイントマーカーは，得点項目のあるタイルには設置できません． (ルール 3.3.5)",
+                "cantvisit": "ロボットの通ることのできないタイルをチェックポイントに指定することはできません．",
+                "start": "スタートタイルをチェックポイントに重複指定することはできません． (rule 3.3.6)",
+                "lops": {
+                    "title": "進行停止回数 ＞ 3",
+                    "content": "チームは次のチェックポイントへスキップすること『も』できます．"
+                },
+                "not_yet": "まだ，チェックポイントが所定個数設置されていません．",
+                "implicit": "暗黙のチェックポイントのクリア登録を忘れています．",
+                "timeup": {
+                    "title": "競技終了！",
+                    "content": "８分が経過しました．"
+                }
+            }
+        }
+    },
+    "maze": {
+        "home": {
+            "title": "Maze - 大会選択"
+        },
+        "competition": {
+            "title": "Maze 競技選択",
+            "result": "競技結果・速報順位",
+            "refine": {
+                "round": "ラウンド絞り込み",
+                "field": "フィールド絞り込み"
+            },
+            "endedrun": "終了した競技を表示",
+            "js": {
+                "go_judge": "審判ページに移動しますか？",
+                "no_judge": "選択した競技は，既に終了しています．この競技を編集する必要がある場合は，OCまでご連絡ください．"
+            }
+        },
+        "score": {
+            "rank": "Maze - 順位",
+            "all": "Maze - All 全競技",
+            "sort": "ラウンドでソート"
+        },
+        "view": {
+            "info": "基本情報",
+            "comment": "コメント",
+            "sign": "署名",
+            "cap_sign": "キャプテンサイン",
+            "ref_sign": "主審サイン",
+            "cref_sign": "副審サイン"
+        }
+    }
+}

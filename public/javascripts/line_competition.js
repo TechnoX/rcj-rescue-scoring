@@ -1,5 +1,18 @@
-angular.module("LineCompetition", []).controller("LineCompetitionController", function ($scope, $http) {
+var app = angular.module("LineCompetition", ['pascalprecht.translate', 'ngCookies']);
+app.controller("LineCompetitionController", ['$scope', '$http', '$translate', function ($scope, $http, $translate) {
     $scope.competitionId = competitionId
+    var val_go_judge, val_no_judge;
+    $translate('line.competition.js.go_judge').then(function (val) {
+        val_go_judge = val;
+    }, function (translationId) {
+        // = translationId;
+    });
+    $translate('line.competition.js.no_judge').then(function (val) {
+        val_no_judge = val;
+    }, function (translationId) {
+        // = translationId;
+    });
+
 
     function updateTime() {
         $scope.curTime = new Date().getTime()
@@ -98,7 +111,7 @@ angular.module("LineCompetition", []).controller("LineCompetitionController", fu
     $scope.go_judge = function (path, team_name) {
         swal({
             title: team_name,
-            text: lmes.go_judge,
+            text: val_go_judge,
             type: "warning",
             showCancelButton: true,
             confirmButtonText: "Yes",
@@ -110,6 +123,8 @@ angular.module("LineCompetition", []).controller("LineCompetitionController", fu
     }
 
     $scope.no_judge = function () {
-        swal("Oops!", lmes.no_judge, "error");
+        swal("Oops!", val_no_judge, "error");
     }
-})
+}]);
+
+document.write("<script type='text/javascript' src='/javascripts/translate_config.js'></script>");

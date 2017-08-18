@@ -6,93 +6,105 @@
         </div>
         <div class="col-md-3 col-sm4 col-7">
             <i class="fa fa-calculator fa-2x" aria-hidden="true"></i>
-            <li class="navbar-brand" href="#"> {{score}} points</li>
+            <li class="navbar-brand" href="#"> {{score}} {{'common.point' | translate}}</li>
         </div>
         <div class="col-md-3 col-sm4 col-5">
             <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
-            <li class="navbar-brand" href="#" ng-if="!retired"> {{time | date:'mm:ss'}}</li>
-            <li class="navbar-brand" href="#" ng-if="retired"> Retire</li>
+            <li class="navbar-brand" href="#"> {{time | date:'mm:ss'}}</li>
         </div>
     </div>
 </nav>
 <div class="container">
     <div style="text-align: center;" ng-hide="checked">
-        <h4><i class="fa fa-check-circle-o" aria-hidden="true"></i>Before the start of the run record, please confirm that the following information is correct.</h4><br>
+        <h4><i class="fa fa-check-circle-o" aria-hidden="true"></i>{{'line.judge.before' | translate}}</h4><br>
         <div id="lops" class="card">
-            <h3 class="card-header"><i class="fa fa-info-circle" aria-hidden="true"></i>Basic Informations</h3>
-            <pre>
-                        <ul class="list-group list-group-flush scrool" style="margin:0 0 0 0; padding:0;overflow: scroll;"><!--
-                          --><li class="list-group-item">Competition : {{competition.name}}</li><!--
-                          --><li class="list-group-item">Round       : {{round}}</li><!--
-                          --><li class="list-group-item">Field       : {{field}}</li><!--
-                          --><li class="list-group-item">Team　　     : {{team}}</li><!--
-                          --><li class="list-group-item">League　　　 : {{league}}</li><!--
-                          --></ul><!--
-                      --></pre>
+            <h3 class="card-header"><i class="fa fa-info-circle" aria-hidden="true"></i>{{'line.judge.info' | translate}}</h3>
+            <ul class="list-group list-group-flush scrool" style="margin:0 0 0 0; padding:0;overflow: scroll;">
+                <li class="list-group-item">
+                    <div style="width:100px;">{{'common.competition' | translate}} </div>: {{competition.name}}</li>
+                <li class="list-group-item">
+                    <div style="width:100px;">{{'common.round' | translate}} </div>: {{round}}</li>
+                <li class="list-group-item">
+                    <div style="width:100px;">{{'common.field' | translate}} </div>: {{field}}</li>
+                <li class="list-group-item">
+                    <div style="width:100px;">{{'common.team' | translate}} </div>: {{team}}</li>
+                <li class="list-group-item">
+                    <div style="width:100px;">{{'common.league' | translate}} </div>: {{league}}</li>
+            </ul>
+
         </div>
         <br>
         <br>
-        <button class="btn btn-success" type="button" ng-click="infochecked()"><i class="fa fa-check-circle fa-2x" aria-hidden="true"> I confirmed!</i></button>
+        <button class="btn btn-success" type="button" ng-click="infochecked()"><i class="fa fa-check-circle fa-2x" aria-hidden="true"> {{'line.judge.confirm' | translate}}</i></button>
     </div>
     <div ng-show="checked">
         <div class="row">
             <div class="col-md-6">
-                <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleScoring()"><i class="fa fa-calculator" aria-hidden="true"> Run Record {{ startedScoring ? 'End' : 'Start' }}</i></button>
-                <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleTime()"><i class="fa fa-clock-o" aria-hidden="true"> {{ startedTime ? 'Stop' : 'Start' }}</i></button>
-                <button ng-show="!startedTime && time!=0" class="btn btn-warning" style="margin:0 10px 10px 0;" type="button" ng-click="TimeReset()"><i class="fa fa-clock-o" aria-hidden="true"> Reset</i></button>
-                <p ng-show="!startedScoring">Please select the evacuation level:</p>
+                <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleScoring()"><i class="fa fa-calculator" aria-hidden="true"> {{ startedScoring ? 'line.judge.run_end' : 'line.judge.run_start' | translate }}</i></button>
+                <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleTime()"><i class="fa fa-clock-o" aria-hidden="true"> {{ startedTime ? 'line.judge.tim_stop' : 'line.judge.tim_start' |translate }}</i></button>
+                <button ng-show="!startedTime && time!=0" class="btn btn-warning" style="margin:0 10px 10px 0;" type="button" ng-click="TimeReset()"><i class="fa fa-clock-o" aria-hidden="true"> {{'line.judge.tim_reset' | translate}}</i></button>
+                <p ng-show="!startedScoring">{{'line.judge.select_elevel' | translate}}</p>
                 <label class="switch-light" onclick="" ng-show="!startedScoring">
               <input type="checkbox" ng-model="evacuationLevel" ng-change="changeLevel()" ng-show="!startedScoring" ng-true-value="2" ng-false-value="1">
               <span class="well" ng-show="!startedScoring">
-                <span style="border: solid 1px #000000;">Low</span>
-                <span style="border: solid 1px #000000;">High</span>
+                <span style="border: solid 1px #000000;">{{'line.judge.low' | translate}}</span>
+                <span style="border: solid 1px #000000;">{{'line.judge.high' | translate}}</span>
                 <a class="btn btn-info"></a>
               </span>
             </label>
 
                 <div class="alert alert-info" role="alert" ng-show="numberOfDropTiles - placedDropTiles == 0 && !startedScoring">
-                    We are ready to start run recording!!<br><strong>Please push the "Run Record Start" button.</strong>
+                    {{'line.judge.ready' | translate}}<br><strong>{{'line.judge.push_start' | translate}}</strong>
                 </div>
                 <div class="alert alert-warning" role="alert" ng-show="!startedScoring">
-                    Please tap the checkpoint tile selected by the team on the course map on the right.<br> Number of remaining checkpoints: <strong>{{numberOfDropTiles - placedDropTiles}}</strong>
+                    {{'line.judge.tap_tile' |translate}}<br> {{'line.judge.remaining' | translate}} <strong>{{numberOfDropTiles - placedDropTiles}}</strong>
                 </div>
-                <div class="alert alert-info" role="alert" ng-show="!startedTime && startedScoring">
-                    Please press the "Timer Start" button according to the cheif referee.
+                <div class="alert alert-info blink" role="alert" ng-show="!startedTime && startedScoring && minutes < 8">
+                    {{'line.judge.push_timer' | translate}}
                 </div>
                 <div id="card_area" class="scrool" style="overflow: scroll;" ng-show="startedScoring">
                     <div id="lops" class="card">
-                        <h3 class="card-header"><i class="fa fa-undo" aria-hidden="true"></i> LoPs</h3>
+                        <h3 class="card-header"><i class="fa fa-undo" aria-hidden="true"></i>{{'common.lops' | translate}}</h3>
                         <div class="card-block">
 
                             <div ng-repeat="dropTile in range(actualUsedDropTiles+1) track by $index" ng-show="startedScoring">
-                                <p class="card-text">
-                                    <b>{{$index==0?'Start':('Checkpoint ' + ($index))}}</b> to <b>{{!$last?('Checkpoint ' + ($index+1)):'Evacuation zone'}}</b>:<br>
-                                    <div class="input-group" style="width:100%; height:35px;">
-                                        <span class="input-group-btn">
-                                            <button type="button" class="btn btn-danger"  ng-click="decrement($index,$last)">
-                                                <i class="fa fa-minus" aria-hidden="true"></i>
-                                            </button>
-                                        </span>
-                                        <div style="background-color: #F2F2F2; width:100px; text-align: center;">
-                                          <img src="/images/loader2.gif" alt="" ng-show="processing[$index] == true" style="height:100%; width:auto;">
-                                          <span class="count" ng-show="processing[$index] != true">{{LoPs[$index]?LoPs[$index]:0}}</span>
-                                        </div>
-                                        <span class="input-group-btn">
-                                            <button type="button" class="btn btn-success" ng-click="increment($index,$last)">
-                                                <i class="fa fa-plus" aria-hidden="true"></i>
-                                            </button>
-                                        </span>
+                                <div style="display:flex;" class="card-text">
+                                    <div style="width:40%;font-size:10px;" align="center">
+                                        {{$index==0?'line.judge.start':'line.judge.checkpoint'|translate}}
+                                        <b style="font-size:15px;color:#FF8300;">{{$index==0?'':$index}}</b>
+                                        <br>
+                                        <i class="fa fa-forward fa-rotate-90" aria-hidden="true"></i>
+                                        <br> {{!$last?'line.judge.checkpoint':'line.judge.evacuation' | translate}}
+                                        <b style="font-size:15px;color:#FF8300;">{{!$last?$index+1:''}}</b>
+
                                     </div>
-                                </p>
+                                    <div style="width:60%;position: relative;">
+                                        <div class="input-group" style="width:100%; height:35px;position:absolute;top: 0;bottom: 0;margin: auto;">
+                                            <span class="input-group-btn">
+                                        <button type="button" class="btn btn-danger" ng-click="decrement($index,$last)">
+                                            <i class="fa fa-minus" aria-hidden="true"></i>
+                                        </button>
+                                    </span>
+                                            <div style="background-color: #F2F2F2; width:100px; text-align: center;">
+                                                <img src="/images/loader2.gif" alt="" ng-show="processing[$index] == true" style="height:100%; width:auto;">
+                                                <span class="count" ng-show="processing[$index] != true">{{LoPs[$index]?LoPs[$index]:0}}</span>
+                                            </div>
+                                            <span class="input-group-btn">
+                                        <button type="button" class="btn btn-success" ng-click="increment($index,$last)">
+                                            <i class="fa fa-plus" aria-hidden="true"></i>
+                                        </button>
+                                    </span>
+                                        </div>
+                                    </div>
+                                </div>
                                 <hr ng-show="!$last" />
                             </div>
 
                         </div>
-                    </div>
-                    <div id="resc" class="card">
-                        <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> Rescuing victims　<span class="badge badge-danger">{{evacuationLevel-1?"High":"Low"}} evacuation point</span></h3>
+
+                        <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> {{'line.judge.rescue' | translate}}　<span class="badge badge-danger">{{evacuationLevel-1?'line.judge.high':'line.judge.low' | translate}}</span></h3>
                         <div class="card-block">
-                            <p class="card-text">【LIVE Victims】Number：　　 <span class="badge badge-info">{{30 + (evacuationLevel-1)*10}}　points /victim</span></p>
+                            <p class="card-text">{{'line.judge.live' | translate}}<span class="badge badge-info">{{30 + (evacuationLevel-1)*10}}　points /victim</span></p>
                             <div class="input-group" style="width:100%; height:35px;">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-danger"  ng-click="decVictims('live')">
@@ -100,8 +112,8 @@
                                     </button>
                                 </span>
                                 <div style="background-color: #F2F2F2; width:100px; text-align: center;">
-                                  <img src="/images/loader2.gif" alt="" ng-show="rlprocessing" style="height:100%; width:auto;">
-                                  <span class="count" ng-show="!rlprocessing">{{rescuedLiveVictims}}</span>
+                                    <img src="/images/loader2.gif" alt="" ng-show="rlprocessing" style="height:100%; width:auto;">
+                                    <span class="count" ng-show="!rlprocessing">{{rescuedLiveVictims}}</span>
                                 </div>
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-success" ng-click="incVictims('live')">
@@ -112,7 +124,7 @@
                         </div>
                         <hr>
                         <div class="card-block">
-                            <p class="card-text">【DEAD Victims】Number： 　　<span class="badge badge-info">{{15 + (evacuationLevel-1)*5}} points /victim</span></p>
+                            <p class="card-text">{{'line.judge.dead' | translate}}<span class="badge badge-info">{{15 + (evacuationLevel-1)*5}} points /victim</span></p>
 
                             <div class="input-group" style="width:100%; height:35px;">
                                 <span class="input-group-btn">
@@ -121,8 +133,8 @@
                                     </button>
                                 </span>
                                 <div style="background-color: #F2F2F2; width:100px; text-align: center;">
-                                  <img src="/images/loader2.gif" alt="" ng-show="rdprocessing" style="height:100%; width:auto;">
-                                  <span class="count" ng-show="!rdprocessing">{{rescuedDeadVictims}}</span>
+                                    <img src="/images/loader2.gif" alt="" ng-show="rdprocessing" style="height:100%; width:auto;">
+                                    <span class="count" ng-show="!rdprocessing">{{rescuedDeadVictims}}</span>
                                 </div>
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-success" ng-click="incVictims('dead')">
@@ -133,14 +145,18 @@
                         </div>
                         <hr>
                         <div class="card-block">
-                            <p class="card-text">Robot exited the evacuation zone after touching at least one victim: <span class="badge badge-info">20　points</span></p>
-                            <input type="checkbox" ng-model="exitBonus" ng-change="changeExitBonus()" id="scoredrun"><label class="checkbox" for="scoredrun">Success</label><br>
+                            <p class="card-text">{{'line.judge.exit' | translate}}<span class="badge badge-info">20　points</span></p>
+                            <input type="checkbox" ng-model="exitBonus" ng-change="changeExitBonus()" id="scoredrun"><label class="checkbox" for="scoredrun">{{'common.sucess' | translate}}</label><br>
                         </div>
                         <div class="card-block">
-                            <p class="card-text">Team did show up for start within their time: <span class="badge badge-info">3　points</span></p>
-                            <input type="checkbox" ng-model="showedUp" ng-change="changeShowedUp()" id="exitcheckbox"><label class="checkbox" for="exitcheckbox">Success</label><br>
+                            <p class="card-text">{{'line.judge.show_up' | translate}} <span class="badge badge-info">3　points</span></p>
+                            <input type="checkbox" ng-model="showedUp" ng-change="changeShowedUp()" id="exitcheckbox"><label class="checkbox" for="exitcheckbox">{{'common.sucess' | translate}}</label><br>
                         </div>
+
                     </div>
+
+
+
                 </div>
 
             </div>
@@ -161,31 +177,31 @@
             <div class="col-sm-12">
 
                 <p>
-                    <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleScoring()"><i class="fa fa-calculator" aria-hidden="true"> Run Record {{ startedScoring ? 'End' : 'Start' }}</i></button>
-                    <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleTime()"><i class="fa fa-clock-o" aria-hidden="true"> {{ startedTime ? 'Stop' : 'Start' }}</i></button>
+                    <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleScoring()"><i class="fa fa-calculator" aria-hidden="true"> {{ startedScoring ? 'line.judge.run_end' : 'line.judge.run_start' | translate }}</i></button>
+                    <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleTime()"><i class="fa fa-clock-o" aria-hidden="true"> {{ startedTime ? 'line.judge.tim_stop' : 'line.judge.tim_start' |translate }}</i></button>
                     <!--<button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="retire()"><i class="fa fa-window-close" aria-hidden="true"> Retire!</i></button>-->
                 </p>
             </div>
             <div class="col-md-12 confirmation">
                 <div ng-show="!retired">
-                    <strong>Adjust time: </strong><br>
-                    <label><input type="tel" min="0" max="8" ng-model="minutes">min  </label>
-                    <label><input type="tel" min="0" max="60" ng-model="seconds">sec</label><br>
+                    <strong>{{'line.judge.adjust'| translate}}</strong><br>
+                    <label><input type="tel" min="0" max="8" ng-model="minutes">{{'common.min' | translate}}  </label>
+                    <label><input type="tel" min="0" max="60" ng-model="seconds">{{'common.sec' | translate}}</label><br>
                 </div>
 
                 <strong>
-            Please press the button below and go to the score / time confirmation screen.
+            {{'line.judge.confirm_text'| translate}}
           </strong>
                 <br>
                 <div style="text-align:center; margin: 10 10 10 10;">
-                    <button class="btn btn-danger" type="button" ng-click="confirm()"><i class="fa fa-arrow-right fa-2x" aria-hidden="true"> To confirmation screen</i></button>
+                    <button class="btn btn-danger" type="button" ng-click="confirm()"><i class="fa fa-arrow-right fa-2x" aria-hidden="true"> {{'line.judge.confirm'| translate}}</i></button>
                 </div>
             </div>
         </div>
     </div>
     <div class="row" style="margin:20 0 0 0;">
         <div class="col-md12">
-            <button class="btn btn-secondary" style="margin:0 10px 10px 0;" type="button" ng-click="go('/line/' + competition._id)"><i class="fa fa-undo" aria-hidden="true"> Back</i></button>
+            <button class="btn btn-secondary" style="margin:0 10px 10px 0;" type="button" ng-click="go('/line/' + competition._id)"><i class="fa fa-undo" aria-hidden="true"> {{'common.back' | translate}}</i></button>
         </div>
     </div>
 </div>

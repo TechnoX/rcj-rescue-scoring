@@ -1,0 +1,149 @@
+{
+    "home": {
+        "line": "Rescue Line",
+        "maze": "Rescue Maze",
+        "login": "Login",
+        "logout": "Logout",
+        "line_description": "This is TEST",
+        "maze_description": "This is TEST2",
+        "go_line": "Go Line",
+        "go_maze": "Go Maze",
+        "management": "Competition Management",
+        "access_level": "The you logged in account, {{account}}}, does not have permission to access Competition Management."
+    },
+    "common": {
+        "back": "Back",
+        "loading": "Loading...",
+        "starttime": "Start Time",
+        "field": "Field",
+        "team": "Team",
+        "round": "Round",
+        "rank": "Rank",
+        "score": "Score",
+        "time": "Time",
+        "rescued": "Rescued",
+        "lops": "LoPs",
+        "view": "View",
+        "judge": "Judge",
+        "point": "points",
+        "league": "League",
+        "competition": "Competiton",
+        "min": "min",
+        "sec": "sec",
+        "yes": "Yes",
+        "no": "No",
+        "cancel": "Cancel"
+    },
+    "line": {
+        "home": {
+            "title": "Line - Competitions"
+        },
+        "competition": {
+            "title": "Line runs",
+            "result": "Result (preliminary report ranking)",
+            "refine": {
+                "round": "Refine by round",
+                "field": "Refine by field"
+            },
+            "endedrun": "Display ended runs",
+            "js": {
+                "go_judge": "Are you sure to move Judge Page?",
+                "no_judge": "The run you selected was already ended! If you need to edit, please contact OC."
+            }
+        },
+        "score": {
+            "rank": "Line - Rank",
+            "all": "Line - All runs",
+            "sort": "Sort by round"
+        },
+        "view": {
+            "info": "Basic Information",
+            "to": "to",
+            "start": "Start",
+            "evacuation": "Evacuation Zone",
+            "rescue": "Rescue",
+            "high": "High Evacuation Level",
+            "low": "Low Evacuation Level",
+            "live": "【LIVE】Victims",
+            "dead": "【DEAD】Victims",
+            "exit": "Robot exited the evacuation zone after touching at least one victim:",
+            "comment": "Commnet",
+            "comment_e": "If you have any comments about the run, please write in the box below. ",
+            "sign": "Sign",
+            "sign_e": "By wiritng a sign below, you accept that the record are correct. Your team also further undertakes to not appeal the score at a later stage. ",
+            "cap_sign": "Captain Sign",
+            "ref_sign": "Referee Sign",
+            "cref_sign": "Co-Referee Sign",
+            "checkpoint": "Checkpoint"
+        },
+        "judge": {
+            "before": "Before the start of the run record, please confirm that the following information is correct.",
+            "info": "@:line.view.info",
+            "to": "@:line.view.to",
+            "confirm": "I confirmed!!",
+            "run_start": "Run Record Start",
+            "run_end": "Run Record End",
+            "tim_start": "Start",
+            "tim_stop": "Stop",
+            "tim_reset": "Reset",
+            "select_elevel": "Please select the evacuation level:",
+            "high": "@:line.view.high",
+            "low": "@:line.view.low",
+            "ready": "We are ready to start run recording!!",
+            "push_start": "Please push the 【Run Record Start】 button.",
+            "tap_tile": "Please tap the checkpoint tile selected by the team on the course map on the right.",
+            "remaining": "Number of remaining checkpoints: ",
+            "push_timer": "Please press the 【Timer Start】 button according to the referee! ",
+            "show_up": "Team did show up for start within their time: ",
+            "live": "@:line.view.live",
+            "dead": "@:line.view.dead",
+            "exit": "@:line.view.exit",
+            "evacuation": "@:line.view.evacuation",
+            "rescue": "@:line.view.rescue",
+            "start": "@:line.view.start",
+            "checkpoint": "@:line.view.checkpoint",
+            "adjust": "Adjust time:",
+            "confirm_text": "Please press the button below and go to the score / time confirmation screen. ",
+            "confirm": "To confirmation screen",
+            "js": {
+                "score_element": "Place checkpoint markers on tiles without scoring elements (rule 3.3.5)",
+                "cantvisit": "Cannot place checkpoint markers on tile that robot can't visit.",
+                "start": "Not allowed to place checkpoint markers on start tile (rule 3.3.6)",
+                "lops": {
+                    "title": "LoPs Count ＞ 3",
+                    "content": "The team *may* move to next checkpoint tile now."
+                },
+                "not_yet": "All checkpoints are not yet placed.",
+                "implicit": "You may have forgot to clear implicit checkpoint",
+                "timeup": {
+                    "title": "Time Up!",
+                    "content": "8 minutes has passed"
+                }
+
+            }
+        }
+    },
+    "maze": {
+        "home": {
+            "title": "Maze - Competitions"
+        },
+        "competition": {
+            "title": "Maze runs",
+            "result": "Result (preliminary report ranking)",
+            "refine": {
+                "round": "Refine by round",
+                "field": "Refine by field"
+            },
+            "endedrun": "Display ended runs",
+            "js": {
+                "go_judge": "Are you sure to move Judge Page?",
+                "no_judge": "The run you selected was already ended! If you need to edit, please contact OC."
+            }
+        },
+        "score": {
+            "rank": "Maze - Rank",
+            "all": "Maze - All runs",
+            "sort": "Sort by round"
+        }
+    }
+}

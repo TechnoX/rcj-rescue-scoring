@@ -21,10 +21,10 @@ block content
       
       if typeof(user) == "undefined"
         button(onclick="location.href='/login'" class='btn btn-warning btn-lg btn-block')
-            i.fa.fa-sign-in(aria-hidden='true') &nbsp;Login
+            i.fa.fa-sign-in(aria-hidden='true') &nbsp; {{'home.login' | translate}}
       else
         button(onclick="location.href='/logout'" class='btn btn-outline-danger btn-lg btn-block')
-            i.fa.fa-sign-out(aria-hidden='true') &nbsp;Logout
+            i.fa.fa-sign-out(aria-hidden='true') &nbsp; {{'home.logout' | translate}}
       br
       br
       
@@ -34,28 +34,26 @@ block content
               a(onclick="location.href='/line'")
                 img.card-img-top(src='/images/line.png', alt='Card image cap' style="width:100%; height=auto;")
               .card-block
-                h4.card-title Rescue Line
-                p.card-text
-                  | #{__("home.line_description")}
-                button(onclick="location.href='/line'" class='btn btn-primary btn-lg btn-block') Go Line
+                h4.card-title {{'home.line' | translate}}
+                p.card-text(translate="home.line_description")
+                button(onclick="location.href='/line'" class='btn btn-primary btn-lg btn-block') {{'home.go_line' | translate}}
         .col-sm-6
             .card(style='width: 100%;')
               a(onclick="location.href='/maze'")
                 img.card-img-top(src='/images/maze.png', alt='Card image cap' style="width:100%; height=auto;")
               .card-block
-                h4.card-title Rescue Maze
-                p.card-text
-                   | #{__('home.maze_description')}
-                button(onclick="location.href='/maze'" class='btn btn-primary btn-lg btn-block') Go Maze
+                h4.card-title {{'home.maze' | translate}}
+                p.card-text(translate="home.maze_description")
+                button(onclick="location.href='/maze'" class='btn btn-primary btn-lg btn-block') {{'home.go_maze' | translate}}
       br 
       br
       br
       if typeof(user) != "undefined"
         if user.admin
-            button(onclick="location.href='/admin'" class='button-s button-bb') Competition Management
+            button(onclick="location.href='/admin'" class='button-s button-bb') {{'home.management' | translate}}
         else
-            button(onclick="location.href='/'" class='button-s button-bb' disabled) Competition Management
-            p ※ #{__('home.access_level',user.username)}
+            button(onclick="location.href='/'" class='button-s button-bb' disabled) {{'home.management' | translate}}
+            p(translate="home.access_level", translate-values='{account: "'+ user.username + '"}')
       br
       br
       br
