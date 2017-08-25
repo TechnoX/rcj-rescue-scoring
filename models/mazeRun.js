@@ -7,6 +7,7 @@ const ObjectId = Schema.Types.ObjectId
 const async = require('async')
 
 const competitiondb = require('./competition')
+const rundb = require('./run')
 const mazeMapdb = require('./mazeMap')
 
 const logger = require('../config/logger').mainLogger
@@ -21,15 +22,6 @@ function isEven(n) {
 }
 
 const mazeRunSchema = new Schema({
-  competition: {
-    type    : ObjectId,
-    ref     : 'Competition',
-    required: true,
-    index   : true
-  },
-  round      : {type: ObjectId, ref: 'Round', required: true, index: true},
-  team       : {type: ObjectId, ref: 'Team', required: true, index: true},
-  field      : {type: ObjectId, ref: 'Field', required: true, index: true},
   map        : {type: ObjectId, ref: 'MazeMap', required: true, index: true},
   
   tiles    : [{
@@ -55,22 +47,7 @@ const mazeRunSchema = new Schema({
       }
     }
   }],
-  LoPs     : {type: Number, min: 0, default: 0},
   exitBonus: {type: Boolean, default: false},
-  score    : {type: Number, min: 0, default: 0},
-  time     : {
-    minutes: {type: Number, min: 0, max: 8, default: 0},
-    seconds: {type: Number, min: 0, max: 59, default: 0}
-  },
-  status   : {type: Number, min: 0, default: 0},
-  sign     : {
-    captain   : {type: String, default: ""},
-    referee   : {type: String, default: ""},
-    referee_as: {type: String, default: ""}
-  },
-  started  : {type: Boolean, default: false, index: true},
-  comment  : {type: String, default: ""},
-  startTime: {type: Number, default: 0}
 })
 
 mazeRunSchema.pre('save', function (next) {
@@ -199,9 +176,7 @@ mazeRunSchema.pre('save', function (next) {
   })
 })
 
-mazeRunSchema.plugin(timestamps)
-
-const MazeRun = mongoose.model('MazeRun', mazeRunSchema)
+const MazeRun = rundb.run.discriminator('MazeRun', mazeRunSchema, rundb.options)
 
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
 module.exports.mazeRun = MazeRun

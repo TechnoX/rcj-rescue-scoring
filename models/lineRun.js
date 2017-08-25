@@ -7,6 +7,7 @@ const ObjectId = Schema.Types.ObjectId
 const async = require('async')
 
 const competitiondb = require('./competition')
+const rundb = require('./run')
 const lineMapdb = require('./lineMap')
 
 const logger = require('../config/logger').mainLogger
@@ -14,31 +15,12 @@ const logger = require('../config/logger').mainLogger
 const LINE_LEAGUES = require("./competition").LINE_LEAGUES
 
 const lineRunSchema = new Schema({
-  competition: {
-    type    : ObjectId,
-    ref     : 'Competition',
-    required: true,
-    index   : true
-  },
-  round      : {type: ObjectId, ref: 'Round', required: true, index: true},
-  team       : {type: ObjectId, ref: 'Team', required: true, index: true},
-  field      : {type: ObjectId, ref: 'Field', required: true, index: true},
-  map        : {type: ObjectId, ref: 'LineMap', required: true, index: true},
-  
-  judges: [{type: ObjectId, ref: 'User'}],
+  map: {type: ObjectId, ref: 'LineMap', required: true, index: true},
   
   tiles             : [{
     isDropTile: {type: Boolean, default: false},
     scored    : {type: Boolean, default: false}
-    /*scoredItems: {
-     obstacles   : {type: Boolean, default: false},
-     speedbumps  : {type: Boolean, default: false},
-     intersection: {type: Boolean, default: false},
-     gaps        : {type: Boolean, default: false},
-     dropTile    : {type: Boolean, default: false}
-     }*/
   }],
-  LoPs              : {type: [Number], min: 0},
   evacuationLevel   : {
     type: Number, default: 1, validate: function (l) {
       return l == 1 || l == 2
@@ -46,23 +28,7 @@ const lineRunSchema = new Schema({
   },
   exitBonus         : {type: Boolean, default: false},
   rescuedLiveVictims: {type: Number, min: 0, default: 0},
-  rescuedDeadVictims: {type: Number, min: 0, default: 0},
-  score             : {type: Number, min: 0, default: 0},
-  showedUp          : {type: Boolean, default: false},
-  time              : {
-    minutes: {type: Number, min: 0, max: 8, default: 0},
-    seconds: {type: Number, min: 0, max: 59, default: 0}
-  },
-  status            : {type: Number, min: 0, default: 0},
-  retired           : {type: Boolean, default: false},
-  sign              : {
-    captain   : {type: String, default: ""},
-    referee   : {type: String, default: ""},
-    referee_as: {type: String, default: ""}
-  },
-  started           : {type: Boolean, default: false, index: true},
-  comment           : {type: String, default: ""},
-  startTime         : {type: Number, default: 0}
+  rescuedDeadVictims: {type: Number, min: 0, default: 0}
 })
 
 lineRunSchema.pre('save', function (next) {
@@ -193,9 +159,7 @@ lineRunSchema.pre('save', function (next) {
   })
 })
 
-lineRunSchema.plugin(timestamps)
-
-const LineRun = mongoose.model('LineRun', lineRunSchema)
+const LineRun = rundb.run.discriminator('LineRun', lineRunSchema, rundb.options)
 
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
 module.exports.lineRun = LineRun
