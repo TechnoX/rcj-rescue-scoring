@@ -27,8 +27,6 @@ var passport = require('passport')
 var session = require('express-session')
 var connectMongo = require('connect-mongo')(session)
 
-//  i18n
-var i18n = require("i18n");
 
 //========================================================================
 //                          Routes require
@@ -102,22 +100,6 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 
-
-// i18nの設定
-i18n.configure({
-    locales: ['ja', 'en'],
-    defaultLocale: 'en',
-    directory: __dirname + "/locales",
-    objectNotation: true
-});
-
-app.use(i18n.init);
-app.use(function (req, res, next) {
-    if (req.session.locale) {
-        i18n.setLocale(req, req.session.locale);
-    }
-    next();
-});
 
 
 //========================================================================
