@@ -5,7 +5,7 @@ const logger = require('../config/logger').mainLogger
 const line = require('./lineRun')
 const maze = require('./mazeRun')
 
-const scoreCalculator = require('../../helper/scoreCalculator')
+const scoreCalculator = require('../helper/scoreCalculator')
 
 const LINE = {
   name  : line.NAME,

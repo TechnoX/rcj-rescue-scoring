@@ -53,8 +53,6 @@ const apiTeamsRoute = require('./routes/api/teams')
 const apiRoundsRoute = require('./routes/api/rounds')
 const apiFieldsRoute = require('./routes/api/fields')
 const apiRunsRoute = require('./routes/api/runs')
-const apiLineRunsRoute = require('./routes/api/lineRuns')
-const apiMazeRunsRoute = require('./routes/api/mazeRuns')
 const apiCompetitionsRoute = require('./routes/api/competitions')
 
 //========================================================================
@@ -116,8 +114,6 @@ app.use('/api/teams', [apiTeamsRoute.public, pass.ensureLoginApi, apiTeamsRoute.
 app.use('/api/rounds', [apiRoundsRoute.public, pass.ensureLoginApi, apiRoundsRoute.private, pass.ensureAdminApi, apiRoundsRoute.admin])
 app.use('/api/fields', [apiFieldsRoute.public, pass.ensureLoginApi, apiFieldsRoute.private, pass.ensureAdminApi, apiFieldsRoute.admin])
 app.use('/api/runs', [apiRunsRoute.public, pass.ensureLoginApi, apiRunsRoute.private, pass.ensureAdminApi, apiRunsRoute.admin])
-app.use('/api/runs/line', [apiLineRunsRoute.public, pass.ensureLoginApi, apiLineRunsRoute.private, pass.ensureAdminApi, apiLineRunsRoute.admin])
-app.use('/api/runs/maze', [apiMazeRunsRoute.public, pass.ensureLoginApi, apiMazeRunsRoute.private, pass.ensureAdminApi, apiMazeRunsRoute.admin])
 app.use('/api/competitions', [apiCompetitionsRoute.public, pass.ensureLoginApi, apiCompetitionsRoute.private, pass.ensureAdminApi, apiCompetitionsRoute.admin])
 
 //========================================================================

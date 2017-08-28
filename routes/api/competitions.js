@@ -8,20 +8,11 @@ const privateRouter = express.Router()
 const adminRouter = express.Router()
 const competitiondb = require('../../models/competition')
 const lineMapsApi = require('./lineMaps')
-const lineRunsApi = require('./lineRuns')
 const mazeMapsApi = require('./mazeMaps')
-const mazeRunsApi = require('./mazeRuns')
-const query = require('../../helper/query-helper')
-const validator = require('validator')
 const async = require('async')
 const ObjectId = require('mongoose').Types.ObjectId
 const logger = require('../../config/logger').mainLogger
 const fs = require('fs')
-
-const LINE_LEAGUES = competitiondb.LINE_LEAGUES
-const MAZE_LEAGUES = competitiondb.MAZE_LEAGUES
-const LEAGUES = competitiondb.LEAGUES
-
 
 publicRouter.get('/', function (req, res) {
   competitiondb.competition.find({}).lean().exec(function (err, data) {
