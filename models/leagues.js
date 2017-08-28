@@ -5,6 +5,8 @@ const logger = require('../config/logger').mainLogger
 const line = require('./lineRun')
 const maze = require('./mazeRun')
 
+const scoreCalculator = require('../../helper/scoreCalculator')
+
 const LINE = {
   name  : line.NAME,
   create: function (run) {
@@ -16,7 +18,9 @@ const LINE = {
       startTime  : run.startTime,
       map        : run.map
     })
-  }
+  },
+  model : line.model,
+  scoreCalculator : scoreCalculator.calculateLineScore
 }
 module.exports.LINE = LINE
 
@@ -31,7 +35,9 @@ const MAZE = {
       startTime  : run.startTime,
       map        : run.map
     })
-  }
+  },
+  model : maze.model,
+  scoreCalculator : scoreCalculator.calculateMazeScore
 }
 module.exports.MAZE = MAZE
 

@@ -2,6 +2,7 @@
 const NAME = "Line"
 module.exports.NAME = NAME
 
+const _ = require('underscore')
 const mongoose = require('mongoose')
 const timestamps = require('mongoose-timestamp')
 const validator = require('validator')
@@ -72,3 +73,26 @@ const LineRun = rundb.run.discriminator(NAME, lineRunSchema, rundb.options)
 
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
 module.exports.lineRun = LineRun
+
+// What is allowed to be changed
+module.exports.model = _.extend(rundb.model, {
+  tiles             : {
+    type      : Array,
+    extendable: true,
+    child     : {
+      type : Object,
+      child: {
+        isDropTile: {
+          type: Boolean
+        },
+        scored    : {
+          type: Boolean
+        }
+      }
+    }
+  },
+  evacuationLevel   : {type: Number},
+  exitBonus         : {type: Boolean},
+  rescuedLiveVictims: {type: Number},
+  rescuedDeadVictims: {type: Number}
+})

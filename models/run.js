@@ -156,3 +156,34 @@ const Run = mongoose.model('Run', runSchema)
 
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
 module.exports.run = Run
+
+// What is allowed to be changed
+module.exports.model = {
+  judges: {type: Array, child: {type: String}, extendable: true},
+
+  LoPs: {type: Array, child: {type: Number}, extendable: true},
+
+  showedUp : {type: Boolean},
+  time     : {
+    type : Object,
+    child: {
+      minutes: {type: Number},
+      seconds: {type: Number}
+    }
+  },
+  status   : {type: Number},
+  sign     : {
+    type : Object,
+    child: {
+      captain   : {type: String},
+      referee   : {type: String},
+      referee_as: {type: String}
+    }
+  },
+  started  : {type: Boolean},
+  comment  : {type: String},
+  startTime: {type: Number},
+
+  score: {type: Number} // Delete this in submodels to calculate score on backend
+}
+

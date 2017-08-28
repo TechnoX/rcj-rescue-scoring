@@ -9,11 +9,11 @@ const ObjectId = require('mongoose').Types.ObjectId
 const logger = require('../../config/logger').mainLogger
 const fs = require('fs')
 const pathFinder = require('../../helper/pathFinder')
-const scoreCalculator = require('../../helper/scoreCalculator')
 const auth = require('../../helper/authLevels')
 const ACCESSLEVELS = require('../../models/user').ACCESSLEVELS
 
 const run = require('../../models/run').run
+const baseModel = require('../../models/run').model
 const lineRun = require('../../models/lineRun').lineRun
 const leagues = require('../../models/leagues')
 
@@ -291,117 +291,124 @@ privateRouter.put('/:runid', function (req, res, next) {
 
   const run = req.body
 
-  // Exclude fields that are not allowed to be publicly changed
-  delete run._id
-  delete run.__v
-  delete run.map
-  delete run.competition
-  delete run.round
-  delete run.team
-  delete run.field
-  delete run.score
+  let model
+  let scoreCalculator
+  if (run.league != null) {
+    if (leagues.isLeague(run.league)) {
+      model = leagues.leagues[run.league].model
+      scoreCalculator = leagues.leagues[run.league].scoreCalculator
+    } else {
+      const err = new Error('Invalid league "' + run.league + '"').message
+
+      logger.error(err)
+
+      return res.status(400).send({
+        msg: "Error saving run in db",
+        err: err.message
+      })
+    }
+  }
+  if (model == null) {
+    model = baseModel
+  }
 
   //logger.debug(run)
 
-  lineRun.findById(id)
-  //.select("-_id -__v -competition -round -team -field -score")
-    .populate({
-      path    : 'map',
-      populate: {
-        path: 'tiles.tileType'
-      }
-    })
-    .exec(function (err, dbRun) {
-      if (err) {
-        logger.error(err)
-        res.status(400).send({
-          msg: "Could not get run",
-          err: err.message
-        })
-      } else if (dbRun) {
-        if (run.tiles != null && run.tiles.constructor === Object) { // Handle dict as "sparse" array
-          const tiles = run.tiles
-          run.tiles = []
-          Object.keys(tiles).forEach(function (key) {
-            if (!isNaN(key)) {
-              run.tiles[key] = tiles[key]
-            }
-          })
-        }
+  run.findById(id).exec(function (err, dbRun) {
+    if (err) {
+      logger.error(err)
+      res.status(400).send({
+        msg: "Could not get run",
+        err: err.message
+      })
+    } else if (dbRun) {
 
-        if (run.LoPs != null && run.LoPs.length != dbRun.LoPs.length) {
-          dbRun.LoPs.length = run.LoPs.length
-        }
+      // Recursively updates properties in "dbObj" from "obj"
+      const copyProperties = function (obj, dbObj, model) {
+        for (let prop in obj) {
+          if (obj.hasOwnProperty(prop)) {
+            if (model.hasOwnProperty(prop)) {
+              if (model.type == Object && obj[prop].constructor == Object) {
+                copyProperties(obj[prop], dbObj[prop], model[prop].child)
+              } else if (model.type == Array) {
 
-        // Recursively updates properties in "dbObj" from "obj"
-        const copyProperties = function (obj, dbObj) {
-          for (let prop in obj) {
-            if (obj.constructor == Array ||
-                (obj.hasOwnProperty(prop) &&
-                 (dbObj.hasOwnProperty(prop) ||
-                  (dbObj.get !== undefined &&
-                   dbObj.get(prop) !== undefined)))) { // Mongoose objects don't have hasOwnProperty
-              if (typeof obj[prop] == 'object' && dbObj[prop] != null) { // Catches object and array
-                copyProperties(obj[prop], dbObj[prop])
-
-                if (dbObj.markModified !== undefined) {
-                  dbObj.markModified(prop)
+                // Handle object with only numeric keys as "sparse" array
+                if (obj[prop].constructor == Object &&
+                    Object.keys(obj[prop]).every((key) => Number.isInteger(Number(key)))) {
+                  const tmp = obj[prop]
+                  obj[prop] = []
+                  Object.keys(tmp).forEach(function (key) {
+                    obj[prop][key] = tmp[key]
+                  })
                 }
-              } else if (obj[prop] !== undefined) {
-                //logger.debug("copy " + prop)
+
+                if (obj[prop].length > dbObj[prop].length &&
+                    !model.extendable) {
+                  return new Error(prop + " cannot be extended!")
+                }
+
+                Object.keys(obj[prop]).forEach(function (key) {
+                  if (obj[prop][key] !== undefined) {
+                    dbObj[prop][key] = obj[prop][key]
+                  }
+                })
+              } else {
                 dbObj[prop] = obj[prop]
               }
-            } else {
-              return new Error("Illegal key: " + prop)
+
+              if (dbObj.markModified !== undefined) {
+                dbObj.markModified(prop)
+              }
             }
           }
         }
+      }
 
-        err = copyProperties(run, dbRun)
+      err = copyProperties(run, dbRun, model)
 
+      if (err) {
+        logger.error(err)
+        return res.status(400).send({
+          err: err.message,
+          msg: "Could not save run"
+        })
+      }
+
+      if (scoreCalculator != null && scoreCalculator.constructor == Function) {
+        dbRun.score = scoreCalculator(dbRun)
+      }
+
+      if (dbRun.score != 0 || dbRun.time.minutes != 0 ||
+          dbRun.time.seconds != 0) {
+        dbRun.started = true
+      }
+
+      dbRun.save(function (err) {
         if (err) {
           logger.error(err)
           return res.status(400).send({
             err: err.message,
             msg: "Could not save run"
           })
-        }
-
-        dbRun.score = scoreCalculator.calculateLineScore(dbRun)
-
-        if (dbRun.score > 0 || dbRun.time.minutes != 0 ||
-            dbRun.time.seconds != 0 || dbRun.status >= 2) {
-          dbRun.started = true
         } else {
-          dbRun.started = false
-        }
-
-        dbRun.save(function (err) {
-          if (err) {
-            logger.error(err)
-            return res.status(400).send({
-              err: err.message,
-              msg: "Could not save run"
-            })
-          } else {
-            if (socketIo !== undefined) {
-              socketIo.sockets.in('runs/line').emit('changed')
-              socketIo.sockets.in('competition/' +
-                                  dbRun.competition).emit('changed')
-              socketIo.sockets.in('runs/' + dbRun._id).emit('data', dbRun)
-              socketIo.sockets.in('fields/' +
-                                  dbRun.field).emit('data', {
-                newRun: dbRun._id
-              })
-            }
-            return res.status(200).send({
-              msg  : "Saved run",
-              score: dbRun.score
+          if (socketIo !== undefined) {
+            socketIo.sockets.in('runs/line').emit('changed')
+            socketIo.sockets.in('competition/' +
+                                dbRun.competition).emit('changed')
+            socketIo.sockets.in('runs/' + dbRun._id).emit('data', dbRun)
+            socketIo.sockets.in('fields/' +
+                                dbRun.field).emit('data', {
+              newRun: dbRun._id
             })
           }
-        })
-      }
-    })
+          return res.status(200).send({
+            msg  : "Saved run",
+            score: dbRun.score
+          })
+        }
+      })
+    }
+  })
 })
 
 /**
