@@ -1,3 +1,5 @@
+"use strict"
+const _ = require('underscore')
 const mongoose = require('mongoose')
 const validator = require('validator')
 const Schema = mongoose.Schema
@@ -5,14 +7,7 @@ const ObjectId = Schema.Types.ObjectId
 
 const logger = require('../config/logger').mainLogger
 
-const LINE_LEAGUES = ["Line"]
-const MAZE_LEAGUES = ["Maze"]
-
-const LEAGUES = [].concat(LINE_LEAGUES, MAZE_LEAGUES)
-
-module.exports.LINE_LEAGUES = LINE_LEAGUES
-module.exports.MAZE_LEAGUES = MAZE_LEAGUES
-module.exports.LEAGUES = LEAGUES
+const leagues = require("./leagues")
 
 
 /**
@@ -38,7 +33,7 @@ const roundSchema = new Schema({
     index   : true
   },
   name       : {type: String, required: true},
-  league     : {type: String, enum: LEAGUES, required: true, index: true}
+  league     : {type: String, enum: leagues.names, required: true, index: true}
 })
 
 roundSchema.pre('save', function (next) {
@@ -71,7 +66,7 @@ const teamSchema = new Schema({
     index   : true
   },
   name       : {type: String, required: true},
-  league     : {type: String, enum: LEAGUES, required: true, index: true}
+  league     : {type: String, enum: leagues.names, required: true, index: true}
 })
 
 teamSchema.pre('save', function (next) {
@@ -104,7 +99,7 @@ const fieldSchema = new Schema({
     index   : true
   },
   name       : {type: String, required: true},
-  league     : {type: String, enum: LEAGUES, required: true, index: true}
+  league     : {type: String, enum: leagues.names, required: true, index: true}
 })
 
 fieldSchema.pre('save', function (next) {

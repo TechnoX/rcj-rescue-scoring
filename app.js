@@ -1,4 +1,5 @@
 // -*- tab-width: 2 -*-
+"use strict"
 //========================================================================
 //                          Libraries
 //========================================================================
@@ -35,25 +36,26 @@ var connectMongo = require('connect-mongo')(session)
 //                          Static routes
 //========================================================================
 
-var homeRoute = require('./routes/home')
-var lineRoute = require('./routes/line')
-var mazeRoute = require('./routes/maze')
-var loginRoute = require('./routes/login')
-var adminRoute = require('./routes/admin')
+const homeRoute = require('./routes/home')
+const lineRoute = require('./routes/line')
+const mazeRoute = require('./routes/maze')
+const loginRoute = require('./routes/login')
+const adminRoute = require('./routes/admin')
 
 //========================================================================
 //                          Api routes
 //========================================================================
 
-var apiAuthRoute = require('./routes/api/auth')
-var apiLineMapsRoute = require('./routes/api/lineMaps')
-var apiMazeMapsRoute = require('./routes/api/mazeMaps')
-var apiTeamsRoute = require('./routes/api/teams')
-var apiRoundsRoute = require('./routes/api/rounds')
-var apiFieldsRoute = require('./routes/api/fields')
-var apiLineRunsRoute = require('./routes/api/lineRuns')
-var apiMazeRunsRoute = require('./routes/api/mazeRuns')
-var apiCompetitionsRoute = require('./routes/api/competitions')
+const apiAuthRoute = require('./routes/api/auth')
+const apiLineMapsRoute = require('./routes/api/lineMaps')
+const apiMazeMapsRoute = require('./routes/api/mazeMaps')
+const apiTeamsRoute = require('./routes/api/teams')
+const apiRoundsRoute = require('./routes/api/rounds')
+const apiFieldsRoute = require('./routes/api/fields')
+const apiRunsRoute = require('./routes/api/runs')
+const apiLineRunsRoute = require('./routes/api/lineRuns')
+const apiMazeRunsRoute = require('./routes/api/mazeRuns')
+const apiCompetitionsRoute = require('./routes/api/competitions')
 
 //========================================================================
 //                          Configuration
@@ -113,6 +115,7 @@ app.use('/api/maps/maze', [apiMazeMapsRoute.public, pass.ensureLoginApi, apiMaze
 app.use('/api/teams', [apiTeamsRoute.public, pass.ensureLoginApi, apiTeamsRoute.private, pass.ensureAdminApi, apiTeamsRoute.admin])
 app.use('/api/rounds', [apiRoundsRoute.public, pass.ensureLoginApi, apiRoundsRoute.private, pass.ensureAdminApi, apiRoundsRoute.admin])
 app.use('/api/fields', [apiFieldsRoute.public, pass.ensureLoginApi, apiFieldsRoute.private, pass.ensureAdminApi, apiFieldsRoute.admin])
+app.use('/api/runs', [apiRunsRoute.public, pass.ensureLoginApi, apiRunsRoute.private, pass.ensureAdminApi, apiRunsRoute.admin])
 app.use('/api/runs/line', [apiLineRunsRoute.public, pass.ensureLoginApi, apiLineRunsRoute.private, pass.ensureAdminApi, apiLineRunsRoute.admin])
 app.use('/api/runs/maze', [apiMazeRunsRoute.public, pass.ensureLoginApi, apiMazeRunsRoute.private, pass.ensureAdminApi, apiMazeRunsRoute.admin])
 app.use('/api/competitions', [apiCompetitionsRoute.public, pass.ensureLoginApi, apiCompetitionsRoute.private, pass.ensureAdminApi, apiCompetitionsRoute.admin])

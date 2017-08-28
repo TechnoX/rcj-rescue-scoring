@@ -117,30 +117,29 @@ runSchema.pre('save', function (next) {
               if (results.round.competition != competitionId) {
                 return next(new Error("Round does not match competition!"))
               }
-              if (LINE_LEAGUES.indexOf(results.round.league) == -1) {
-                return next(new Error("Round does not match league!"))
-              }
 
               if (results.team.competition != competitionId) {
                 return next(new Error("Team does not match competition!"))
-              }
-              if (LINE_LEAGUES.indexOf(results.team.league) == -1) {
-                return next(new Error("Team does not match league!"))
               }
 
               if (results.field.competition != competitionId) {
                 return next(new Error("Field does not match competition!"))
               }
-              if (LINE_LEAGUES.indexOf(results.field.league) == -1) {
-                return next(new Error("Field does not match league!"))
+
+              if (self.league != null) {
+                if (results.round.league != self.league) {
+                  return next(new Error("Round does not match league!"))
+                }
+
+                if (results.team.league != self.league) {
+                  return next(new Error("Team does not match league!"))
+                }
+
+                if (results.field.league != self.league) {
+                  return next(new Error("Field does not match league!"))
+                }
               }
 
-              if (results.map.competition != competitionId) {
-                return next(new Error("Map does not match competition!"))
-              }
-
-              self.LoPs = new Array(results.map.numberOfDropTiles).fill(0)
-              self.tiles = new Array(results.map.indexCount).fill({})
               return next()
             }
           })
