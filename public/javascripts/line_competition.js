@@ -18,7 +18,7 @@ angular.module("LineCompetition", []).controller("LineCompetitionController", fu
   
   $scope.update_list = function () {
     $http.get("/api/competitions/" + competitionId +
-              "/line/runs?populate=true&minimum=true&ended=" +
+              "/Line/runs?populate=true&minimum=true&ended=" +
               $scope.show_ended).then(function (response) {
       var runs = response.data
       $scope.runs = runs

@@ -20,10 +20,10 @@ block content
       br
       
       if typeof(user) == "undefined"
-        button(onclick="location.href='/login'" class='btn btn-warning btn-lg btn-block')
+        a.btn.btn-warning.btn-lg.btn-block(href='/login')
             i.fa.fa-sign-in(aria-hidden='true') &nbsp;Login
       else
-        button(onclick="location.href='/logout'" class='btn btn-outline-danger btn-lg btn-block')
+        a.btn.btn-outline-danger.btn-lg.btn-block(href='/logout')
             i.fa.fa-sign-out(aria-hidden='true') &nbsp;Logout
       br
       br
@@ -31,30 +31,30 @@ block content
       .row
         .col-sm-6
           .card(style='width: 100%;')
-              a(onclick="location.href='/line'")
+              a(href='/line')
                 img.card-img-top(src='/images/line.png', alt='Card image cap' style="width:100%; height=auto;")
               .card-block
                 h4.card-title Rescue Line
                 p.card-text
                   | Put in a description of Rescue Line
-                button(onclick="location.href='/line'" class='btn btn-primary btn-lg btn-block') Go Line
+                a.btn.btn-primary.btn-lg.btn-block(href='/line') Go Line
         .col-sm-6
             .card(style='width: 100%;')
-              a(onclick="location.href='/maze'")
+              a(href='/maze')
                 img.card-img-top(src='/images/maze.png', alt='Card image cap' style="width:100%; height=auto;")
               .card-block
                 h4.card-title Rescue Maze
                 p.card-text
                   | Put in a description of Rescue Maze
-                button(onclick="location.href='/maze'" class='btn btn-primary btn-lg btn-block') Go Maze
+                a.btn.btn-primary.btn-lg.btn-block(href='/maze') Go Maze
       br 
       br
       br
       if typeof(user) != "undefined"
         if user.admin
-            button(onclick="location.href='/admin'" class='button-s button-bb') Competition Management
+            a.button-s.button-bb(href='/admin') Competition Management
         else
-            button(onclick="location.href='/'" class='button-s button-bb' disabled) Competition Management
+            a.button-s.button-bb(href='/' disabled) Competition Management
             p ※ The you logged in account, [#{user.username}], does not have permission to access Competition Management.
       br
       br

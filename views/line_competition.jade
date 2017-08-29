@@ -9,6 +9,15 @@ append scripts
     var competitionId = "#{id}"
   script(src='/javascripts/line_competition.js')
 
+append css
+  style(type='text/css').
+    .started {
+      background-color: #ecf0f1;
+    }
+
+    .passed {
+      opacity: 0.5;
+    }
 
 block location
   a.breadcrumb-item(href="/home") Home
@@ -22,7 +31,7 @@ block content
     .col-md-10
       h1 Line runs - {{competition.name}}
       br
-      button(ng-click="go('/line/' + competition._id + '/score')" class='btn btn-outline-info btn-lg btn-block') Result (preliminary report ranking)
+      a.btn.btn-outline-info.btn-lg.btn-block(ng-href='/line/{{competition._id}}/score') Result (preliminary report ranking)
       br
       .refine
         h6 Refine by round
@@ -51,15 +60,16 @@ block content
             th
             th
         tbody
+          - var tdClass = "{started : run.status>=3, passed : run.startTime<curTime}"
           tr(ng-repeat='run in runs | filter:list_filter | orderBy:"[startTime,round.name,field.name,team.name]" ')
-            td(ng-bind='run.startTime | date:"dd EEE HH:mm"' ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
-            td(ng-bind='run.round.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
-            td(ng-bind='run.team.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
-            td(ng-bind='run.field.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
+            td(ng-bind='run.startTime | date:"dd EEE HH:mm"' ng-class='#{tdClass}')
+            td(ng-bind='run.round.name' ng-class='#{tdClass}')
+            td(ng-bind='run.team.name' ng-class='#{tdClass}')
+            td(ng-bind='run.field.name' ng-class='#{tdClass}')
             td
-              button(ng-click="go('/line/view/' + run._id)" class='btn btn-info') View
+              a.btn.btn-info(ng-href='/line/view/{{run._id}}') View
 
-            td(ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
+            td(ng-class='#{tdClass}')
               button(ng-click="no_judge()" class='btn btn-danger' ng-if="run.status>=3" ) Judge
               button(ng-click="go_judge('/line/judge/' + run._id)" class='btn btn-danger' ng-if="run.status<3" ) Judge
       br

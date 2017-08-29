@@ -7,6 +7,7 @@ const publicRouter = express.Router()
 const privateRouter = express.Router()
 const adminRouter = express.Router()
 const competitiondb = require('../../models/competition')
+const runsApi = require('./runs')
 const lineMapsApi = require('./lineMaps')
 const mazeMapsApi = require('./mazeMaps')
 const async = require('async')
@@ -123,13 +124,13 @@ publicRouter.get('/:competitionid/teams/:league/:name', function (req, res, next
   })
 })
 
-publicRouter.get('/:competition/line/runs', function (req, res, next) {
+publicRouter.get('/:competition/:league/runs', function (req, res, next) {
   var id = req.params.competition
   
   if (!ObjectId.isValid(id)) {
     return next()
   }
-  return lineRunsApi.getLineRuns(req, res, next)
+  return runsApi.getRuns(req, res, next)
 })
 
 publicRouter.get('/:competition/line/latestrun', function (req, res, next) {

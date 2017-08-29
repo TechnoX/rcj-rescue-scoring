@@ -19,7 +19,7 @@ block content
   .row
     .col-md-offset-2.col-md-8
       h1 Line maps
-      button(onclick="location.href='/admin/'+competitionId+'/line/editor'" class='btn btn-primary') Create a new map layout
+      a.btn.btn-primary(ng-href='/admin/{{competitionId}}/line/editor') Create a new map layout
       br
       br
       table

@@ -1,0 +1,134 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'RunAdmin'
+
+append scripts
+  script.
+    var competitionId = "#{id}"
+    var league = "#{league}"
+  script(src = '/components/angular-bootstrap/ui-bootstrap.min.js')
+  script(src = '/components/angular-bootstrap/ui-bootstrap-tpls.min.js')
+  script(src = '/components/angular-bootstrap-datetimepicker/src/js/datetimepicker.js')
+  script(src = '/components/angular-bootstrap-datetimepicker/src/js/datetimepicker.templates.js')
+  script(src='/javascripts/line_run_admin.js')
+
+append css
+  link(rel='stylesheet' href='/components/angular-bootstrap/ui-bootstrap-csp.css')
+  link(rel='stylesheet' href='/components/angular-bootstrap-datetimepicker/src/css/datetimepicker.css')
+
+  style(type='text/css').
+    .uib-time input {
+      padding-left: 0;
+      padding-right: 0;
+      width: 2.5em;
+      margin-right: 0;
+    }
+
+    .uib-timepicker .btn {
+      padding-left: 6px;
+      padding-right: 6px;
+    }
+
+block location
+  a.breadcrumb-item(href='/home') Home
+  a.breadcrumb-item(href='/admin') Admin
+  a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition.name}}
+  span.breadcrumb-item.active #{league} runs
+
+block content
+  .row
+    .col-md-1
+    .col-md-10
+      h1 {{competition.name}} - #{league} runs
+      table
+        thead
+          tr
+            th Round
+            th Team Name
+            th Map Name
+            th Field Name
+            th Start Time
+            th Action
+        tbody
+          tr
+            td
+              select(ng-model='run.round' ng-options='round as round.name for round in rounds')
+            td
+              select(ng-model='run.team' ng-options='team as team.name for team in teams')
+            td
+              select(ng-model='run.map' ng-options='map as map.name for map in maps')
+            td
+              select(ng-model='run.field' ng-options='field as field.name for field in fields')
+            td
+              p.input-group
+                span.input-group-btn
+                  button.btn.btn-info(type="button" ng-click="openStartDate()")
+                    i.fa.fa-calendar(aria-hidden='true')
+                input.form-control(type="text" uib-datepicker-popup ng-model="startDate" ng-change="updateStartTime()" is-open="startDatePopup.opened" datepicker-options="startDateOptions" close-text="Close")
+              div(uib-timepicker ng-model="startTime" ng-change="updateStartTime()" hour-step="1" minute-step="5" show-meridian="false" show-spinners='true')
+            td
+              button(ng-click='addRun()') Add Run
+      a(ng-href='/admin/{{competitionId}}/line/runs/bulk') Bulk Registration
+      br
+      br
+      a(ng-href='/admin/{{competitionId}}/line/runs/monitor') Runs Monitor
+      center
+        .loader
+          img(src="/images/loader2.gif")
+          p Now Loading...
+      table(class="comp")
+        thead
+          tr
+            th Start Time
+            th Round
+            th Team
+            th Field
+            th Score
+            th Time
+            th Status
+            th Comment
+            th
+            th
+            th
+            //th
+            th Operation
+        tbody
+          tr(ng-repeat='run in runs | orderBy:"[startTime,round.name,field.name,team.name]"' runs-read-finished='')
+            td(ng-style="{'background-color':run.status==5?'#bdafdb':''}" )
+              span {{run.startTime | date:"dd EEE HH:mm"}}
+              //button(uib-popover-template="'myPopoverTemplate.html'" popover-trigger="'outsideClick'" type="button" class="btn btn-default") Edit
+              //script(type="text/ng-template" id="myPopoverTemplate.html")
+              //  div.form-group
+              //    p.input-group
+              //      span.input-group-btn
+              //        button.btn.btn-info(type="button" ng-click="openStartDate()")
+              //          i.fa.fa-calendar(aria-hidden='true')
+              //      input.form-control(type="text" uib-datepicker-popup ng-model="startDate" ng-change="updateStartTime()" is-open="startDatePopup.opened" datepicker-options="startDateOptions" close-text="Close")
+              //    div(uib-timepicker ng-model="startTime" ng-change="updateStartTime()" hour-step="1" minute-step="5" show-meridian="false" show-spinners='true')
+
+            td(ng-bind='run.round.name' ng-style="{'background-color':run.status==5?'#bdafdb':''}" )
+            td(ng-bind='run.team.name' ng-style="{'background-color':run.status==5?'#bdafdb':''}")
+            td(ng-bind='run.field.name' ng-style="{'background-color':run.status==5?'#bdafdb':''}")
+            td(ng-bind='run.score' ng-style="{'background-color':run.status==5?'#bdafdb':''}")
+            td(ng-bind="run.time.minutes*60*1000+run.time.seconds*1000 | date:'mm:ss'" ng-style="{'background-color':run.status==5?'#bdafdb':''}")
+            td(ng-style="{'background-color':run.status==4?'#ffadad':''}")
+              span(ng-if="run.status==0") 0.Before run
+              span(ng-if="run.status==1") 1.Display judge page
+              span(ng-if="run.status==2") 2.Timer start
+              span(ng-if="run.status==3") 3.Record checking
+              span(ng-if="run.status==4") 4.Finished
+              span(ng-if="run.status==5") 5.Approved
+            td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
+              button(uib-popover="{{run.comment}}" popover-trigger="'outsideClick'"  type="button" class="btn btn-default" ng-disabled="run.comment==''") Comment
+            td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
+              button(ng-click="go('/line/view/' + run._id)" class='btn btn-info') View
+            td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
+              button(ng-click="go_sign(run._id)" class='btn btn-warning') Sign
+            td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
+              button(ng-click="go_judge(run._id)" class='btn btn-danger') Judge
+            //td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
+              button(ng-click="go_approval(run._id)" class='btn btn-secondary') Approval
+            td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
+              a(href="" ng-click='removeRun(run)') Delete
