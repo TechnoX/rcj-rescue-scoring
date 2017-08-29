@@ -7,7 +7,7 @@ const ObjectId = Schema.Types.ObjectId
 
 const logger = require('../config/logger').mainLogger
 
-const leagues = require("./leagues")
+const leagues = require("./../leagues")
 
 
 /**

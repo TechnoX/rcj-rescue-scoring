@@ -15,7 +15,7 @@ const ACCESSLEVELS = require('../../models/user').ACCESSLEVELS
 const run = require('../../models/run').run
 const baseModel = require('../../models/run').model
 const lineRun = require('../../models/lineRun').lineRun
-const leagues = require('../../models/leagues')
+const leagues = require('../../leagues')
 
 var socketIo
 

@@ -10,7 +10,10 @@ const logger = require('../config/logger').mainLogger
 
 const pathFinder = require('../helper/pathFinder')
 
+const options = require('./run').options
+const mapdb = require('./map')
 const LineRun = require('./lineRun').lineRun
+const NAME = require('./lineRun').NAME
 
 /**
  *
@@ -22,13 +25,6 @@ const LineRun = require('./lineRun').lineRun
  * @param {Boolean} admin - If the user is admin or not
  */
 const lineMapSchema = new Schema({
-  competition      : {
-    type    : ObjectId,
-    ref     : 'Competition',
-    required: true,
-    index   : true
-  },
-  name             : {type: String, required: true},
   height           : {type: Number, integer: true, required: true, min: 1},
   width            : {type: Number, integer: true, required: true, min: 1},
   length           : {type: Number, integer: true, required: true, min: 1},
@@ -68,8 +64,7 @@ const lineMapSchema = new Schema({
     y: {type: Number, integer: true, required: true, min: 0},
     z: {type: Number, integer: true, required: true, min: 0}
   },
-  numberOfDropTiles: {type: Number, required: true, min: 0},
-  finished         : {type: Boolean, default: false}
+  numberOfDropTiles: {type: Number, required: true, min: 0}
 })
 
 lineMapSchema.pre('save', function (next) {
@@ -159,11 +154,10 @@ const tileTypeSchema = new Schema({
   }
 })
 
-lineMapSchema.plugin(mongooseInteger)
 tileSetSchema.plugin(mongooseInteger)
 tileTypeSchema.plugin(mongooseInteger)
 
-const LineMap = mongoose.model('LineMap', lineMapSchema)
+const LineMap = mapdb.map.discriminator(NAME, lineMapSchema, options)
 const TileSet = mongoose.model('TileSet', tileSetSchema)
 const TileType = mongoose.model('TileType', tileTypeSchema)
 
