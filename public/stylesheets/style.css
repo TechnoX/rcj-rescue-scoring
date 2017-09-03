@@ -230,31 +230,86 @@ a {
 }
 
 table {
-    width: auto;
-    border: 1px solid #B0C4DE;
-    border-collapse: collapse;
+    border-top: 1px solid #4f4d47;
+    border-right: 1px solid #4f4d47;
+    width: 100%;
     border-spacing: 0;
+    margin: 0 auto;
+}
+
+th,
+td {
+    border-bottom: 1px solid #4f4d47;
+    border-left: 1px solid #4f4d47;
+    text-align: center;
+    padding: 5px;
 }
 
 th {
+    background-color: #61c5bb;
     color: #fff;
-    padding: 5px;
-    border-bottom: 1px solid #B0C4DE;
-    border-left: 1px solid #B0C4DE;
-    background: #4682B4;
-    font-weight: bold;
-    line-height: 120%;
-    text-align: center;
-}
-
-td {
-    padding: 5px;
-    border-bottom: 1px solid #B0C4DE;
-    border-left: 1px solid #B0C4DE;
 }
 
 tr:nth-child(2n+1) {
-    background: #F0FFFF;
+    background: #f5f3ec;
+}
+
+@media screen and (max-width: 768px) {
+    #compe table {
+        width: 100%;
+        border: none;
+        padding: 10px;
+    }
+    #compe thead {
+        display: none;
+    }
+    #compe tr {
+        border-top: 1px solid #4f4d47;
+        display: block;
+        margin-bottom: 20px;
+    }
+    #compe td {
+        border-right: 1px solid #4f4d47;
+        border-bottom: none;
+        display: block;
+        padding: 0;
+    }
+    #compe td:nth-of-type(1) {
+        background-color: #61c5bb;
+        color: #fff;
+        padding: 3px;
+    }
+    #compe td.delay:nth-of-type(1) {
+        background-color: #EB9532;
+        color: #fff;
+        padding: 3px;
+    }
+    #compe td.end:nth-of-type(1) {
+        background-color: #EC644B;
+        color: #fff;
+        padding: 3px;
+    }
+    #compe td:last-child {
+        border-bottom: 1px solid #4f4d47;
+    }
+    #compe td:before {
+        background-color: #f5f3ec;
+        color: #4f4d47;
+        display: block;
+        font-size: 10px;
+    }
+    #compe td:nth-of-type(2):before {
+        content: attr(data-content);
+    }
+    #compe td:nth-of-type(3):before {
+        content: attr(data-content);
+    }
+    #compe td:nth-of-type(4):before {
+        content: attr(data-content);
+    }
+    tr:nth-child(2n+1) {
+        background: initial;
+    }
 }
 
 input[type=radio],
