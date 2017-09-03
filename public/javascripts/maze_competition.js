@@ -1,4 +1,6 @@
-angular.module("MazeCompetition", []).controller("MazeCompetitionController", function ($scope, $http) {
+document.write("<script type='text/javascript' src='/javascripts/translate_config.js'></script>");
+var app = angular.module("MazeCompetition", ['pascalprecht.translate', 'ngCookies']);
+app.controller("MazeCompetitionController", ['$scope', '$http', '$translate', function ($scope, $http, $translate) {
         $scope.competitionId = competitionId
 
         function updateTime() {
@@ -118,7 +120,7 @@ angular.module("MazeCompetition", []).controller("MazeCompetitionController", fu
         $scope.no_judge = function () {
             swal("Oops!", lmes.no_judge, "error");
         }
-    })
+    }])
     .directive("runsReadFinished", function ($timeout) {
         return function (scope, element, attrs) {
             if (scope.$last) {

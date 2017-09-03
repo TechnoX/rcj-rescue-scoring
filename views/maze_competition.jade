@@ -9,10 +9,6 @@ append scripts
     var competitionId = "#{id}"
 
   script(src='/javascripts/maze_competition.js')
-  script.
-    var lmes={};
-    lmes.go_judge = "!{__('line.competition.js.go_judge')}";
-    lmes.no_judge = "!{__('line.competition.js.no_judge')}";
 
 
 block location
@@ -25,34 +21,34 @@ block content
   .row
     .col-md-1
     .col-md-10
-      h1 !{__('maze.competition.title')} - {{competition.name}}
+      h1 {{'maze.competition.title' | translate}} - {{competition.name}}
       br
-      button(ng-click="go('/maze/' + competition._id + '/score')" class='btn btn-outline-info btn-lg btn-block') !{__('line.competition.result')}
+      button(ng-click="go('/maze/' + competition._id + '/score')" class='btn btn-outline-info btn-lg btn-block') {{'maze.competition.result' | translate}}
       br
       .refine
-        h6 !{__('maze.competition.refine.round')}
+        h6 {{'maze.competition.refine.round' | translate}}
         span(ng-repeat='(key, value) in rounds track by key')
           input(type='checkbox' ng-model='rounds[key]' id="checkR_{{key}}")
           label.checkbox(for="checkR_{{key}}") {{key}}
-        h6 !{__('maze.competition.refine.field')}
+        h6 {{'maze.competition.refine.field' | translate}}
         span(ng-repeat='(key, value) in fields track by key')
           input(type='checkbox' ng-model='fields[key]' id="checkF_{{key}}")
           label.checkbox(for="checkF_{{key}}") {{key}}
       hr
       input#showEnd(type='checkbox' ng-model='show_ended' ng-change='update_list()')
-      label.checkbox(for='showEnd') !{__('maze.competition.endedrun')}
+      label.checkbox(for='showEnd') {{'line.competition.endedrun' | translate}}
       br
       center
         .loader(ng-show="runs==null")
           img(src="/images/loader2.gif")
-          p !{__('common.loading')}
+          p {{'common.loading' | translate}}
       table(class="comp")
         thead
           tr
-            th !{__('common.starttime')}
-            th !{__('common.round')}
-            th !{__('common.team')}
-            th !{__('common.field')}
+            th {{'common.starttime' | translate}}
+            th {{'common.round' | translate}}
+            th {{'common.team' | translate}}
+            th {{'common.field' | translate}}
             th
             th
         tbody
@@ -62,11 +58,11 @@ block content
             td(ng-bind='run.team.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
             td(ng-bind='run.field.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
             td
-              button(ng-click="go('/line/view/' + run._id)" class='btn btn-info') !{__('common.view')}
+              button(ng-click="go('/line/view/' + run._id)" class='btn btn-info')  {{'common.view' | translate}}
 
             td(ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
-              button(ng-click="no_judge()" class='btn btn-danger' ng-if="run.status>=3" ) !{__('common.judge')}
-              button(ng-click="go_judge('/line/judge/' + run._id , run.team.name)" class='btn btn-danger' ng-if="run.status<3" ) !{__('common.judge')}
+              button(ng-click="no_judge()" class='btn btn-danger' ng-if="run.status>=3" ) {{'common.judge' | translate}}
+              button(ng-click="go_judge('/line/judge/' + run._id , run.team.name)" class='btn btn-danger' ng-if="run.status<3" ) {{'common.judge' | translate}}
       br
       br
       br

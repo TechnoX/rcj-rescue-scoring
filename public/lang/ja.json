@@ -155,21 +155,21 @@
         },
         "competition": {
             "title": "Maze 競技選択",
-            "result": "競技結果・速報順位",
+            "result": "@:line.competition.result",
             "refine": {
-                "round": "ラウンド絞り込み",
-                "field": "フィールド絞り込み"
+                "round": "@:line.competition.refine.round",
+                "field": "@:line.competition.refine.field"
             },
-            "endedrun": "終了した競技を表示",
+            "endedrun": "@:line.competition.endedrun",
             "js": {
-                "go_judge": "審判ページに移動しますか？",
-                "no_judge": "選択した競技は，既に終了しています．この競技を編集する必要がある場合は，OCまでご連絡ください．"
+                "go_judge": "@:line.competition.js.go_judge",
+                "no_judge": "@:line.competition.js.no_judge"
             }
         },
         "score": {
             "rank": "Maze - 順位",
             "all": "Maze - All 全競技",
-            "sort": "ラウンドでソート"
+            "sort": "@:line.score.sort"
         },
         "view": {
             "info": "基本情報",
