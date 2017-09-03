@@ -2,6 +2,18 @@ table {
     border-collapse: collapse;
 }
 
+table th {
+    font-weight: bold;
+    vertical-align: top;
+    border: 1px solid #ccc;
+}
+
+table td {
+    padding: 5px;
+    vertical-align: top;
+    border: 1px solid #ccc;
+}
+
 td {
     border: 1px solid grey;
 }
@@ -25,10 +37,6 @@ table tr:nth-child(even) {
     width: 40px;
 }*/
 
-td {
-    padding: 0px!important;
-}
-
 .wall {
     background-color: navy;
     padding: 5px!important;
@@ -40,6 +48,7 @@ td {
 
 .tile {
     background-color: LightSeaGreen;
+    padding: 0px!important;
 }
 
 .tile.linear {
