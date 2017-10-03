@@ -45,7 +45,7 @@ block content
 
 
       #compe
-          table(class="comp")
+          table(class="custom")
             thead
               tr
                 th {{'common.team' | translate}}
@@ -55,11 +55,11 @@ block content
                 th
             tbody
               tr(ng-repeat='run in runs | filter:list_filter | orderBy:"[startTime,round.name,field.name,team.name]" ')
-                td(ng-bind='run.team.name' ng-class="{'end' : run.status>=3,'delay' : run.startTime<curTime}" ng-style="'opacity':run.startTime<curTime?'0.5':''}")
+                td(ng-bind='run.team.name' ng-class="{'end' : run.status>=3,'delay' : run.startTime<curTime}")
                 td(ng-bind='run.startTime | date:"dd EEE HH:mm"' data-content="{{'common.starttime' | translate}}")
                 td(ng-bind='run.round.name' data-content="{{'common.round' | translate}}")
                 td(ng-bind='run.field.name' data-content="{{'common.field' | translate}}")
-                td(ng-style="{'opacity':run.startTime<curTime?'0.5':''}")
+                td
                   button(ng-click="go('/line/view/' + run._id)" class='btn btn-info' style="width:45%; margin-right:5px;") {{'common.view' | translate}}
                   //button(ng-click="no_judge()" class='btn btn-danger' ng-if="run.status>=3"  style="width:45%;") {{'common.judge' | translate}}
                   button(ng-click="go_judge('/line/judge/' + run._id , run.team.name)" class='btn btn-danger' ng-if="run.status<3"  style="width:45%;") {{'common.judge' | translate}}

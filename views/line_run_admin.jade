@@ -7,14 +7,11 @@ block vars
 append scripts
   script.
     var competitionId = "#{id}"
-  script(src = '/components/angular-bootstrap/ui-bootstrap.min.js')
-  script(src = '/components/angular-bootstrap/ui-bootstrap-tpls.min.js')
   script(src = '/components/angular-bootstrap-datetimepicker/src/js/datetimepicker.js')
   script(src = '/components/angular-bootstrap-datetimepicker/src/js/datetimepicker.templates.js')
   script(src='/javascripts/line_run_admin.js')
 
 append css
-  link(rel='stylesheet' href='/components/angular-bootstrap/ui-bootstrap-csp.css')
   link(rel='stylesheet' href='/components/angular-bootstrap-datetimepicker/src/css/datetimepicker.css')
 
   style(type='text/css').
@@ -41,7 +38,7 @@ block content
     .col-md-1
     .col-md-10
       h1 {{competition.name}} - Line runs
-      table
+      table(class="custom")
         thead
           tr
             th Round
@@ -77,7 +74,7 @@ block content
         .loader
           img(src="/images/loader2.gif")
           p Now Loading...
-      table(class="comp")
+      table(class="custom")
         thead
           tr
             th Start Time

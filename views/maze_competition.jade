@@ -42,27 +42,25 @@ block content
         .loader(ng-show="runs==null")
           img(src="/images/loader2.gif")
           p {{'common.loading' | translate}}
-      table(class="comp")
-        thead
-          tr
-            th {{'common.starttime' | translate}}
-            th {{'common.round' | translate}}
-            th {{'common.team' | translate}}
-            th {{'common.field' | translate}}
-            th
-            th
-        tbody
-          tr(ng-repeat='run in runs | filter:list_filter | orderBy:"[startTime,round.name,field.name,team.name]" ')
-            td(ng-bind='run.startTime | date:"dd EEE HH:mm"' ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
-            td(ng-bind='run.round.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
-            td(ng-bind='run.team.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
-            td(ng-bind='run.field.name' ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
-            td
-              button(ng-click="go('/line/view/' + run._id)" class='btn btn-info')  {{'common.view' | translate}}
-
-            td(ng-style="{'background-color':run.status>=3?'#ecf0f1':'', 'opacity':run.startTime<curTime?'0.5':''}")
-              button(ng-click="no_judge()" class='btn btn-danger' ng-if="run.status>=3" ) {{'common.judge' | translate}}
-              button(ng-click="go_judge('/line/judge/' + run._id , run.team.name)" class='btn btn-danger' ng-if="run.status<3" ) {{'common.judge' | translate}}
+      #compe
+          table(class="custom")
+            thead
+              tr
+                th {{'common.team' | translate}}
+                th {{'common.starttime' | translate}}
+                th {{'common.round' | translate}}
+                th {{'common.field' | translate}}
+                th
+            tbody
+              tr(ng-repeat='run in runs | filter:list_filter | orderBy:"[startTime,round.name,field.name,team.name]" ')
+                td(ng-bind='run.team.name' ng-class="{'end' : run.status>=3,'delay' : run.startTime<curTime}")
+                td(ng-bind='run.startTime | date:"dd EEE HH:mm"' data-content="{{'common.starttime' | translate}}")
+                td(ng-bind='run.round.name' data-content="{{'common.round' | translate}}")
+                td(ng-bind='run.field.name' data-content="{{'common.field' | translate}}")
+                td
+                  button(ng-click="go('/maze/view/' + run._id)" class='btn btn-info' style="width:45%; margin-right:5px;") {{'common.view' | translate}}
+                  //button(ng-click="no_judge()" class='btn btn-danger' ng-if="run.status>=3"  style="width:45%;") {{'common.judge' | translate}}
+                  button(ng-click="go_judge('/maze/judge/' + run._id , run.team.name)" class='btn btn-danger' ng-if="run.status<3"  style="width:45%;") {{'common.judge' | translate}}
       br
       br
       br
