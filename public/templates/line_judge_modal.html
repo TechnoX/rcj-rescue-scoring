@@ -4,7 +4,7 @@
 <div class="modal-body">
     <label>{{'line.judge.m_score_d' | translate}}</label>
     <table style="padding: 0px;max-width:300px;background-color:#585858;border-collapse:separate;border-spacing:0.1px;" align="center">
-        <tr>
+        <tr style="height:100px;">
             <td width="100px" style="padding: 0px;background-color: #e6e6e6;">
                 <img ng-src="/images/tiles/{{nineTile[0].tileType.image}}" width="100%" height="auto" class="rot{{nineTile[0].rot}}">
             </td>
@@ -25,7 +25,7 @@
                 <img ng-src="/images/tiles/{{nineTile[2].tileType.image}}" width="100%" height="auto" class="rot{{nineTile[2].rot}}">
             </td>
         </tr>
-        <tr>
+        <tr style="height:100px;">
             <td width="100px" style="padding: 0px;position: relative;background-color: #e6e6e6;" ng-click="toggle_scored(next.left)">
                 <img ng-src="/images/tiles/{{nineTile[3].tileType.image}}" style="position:absolute;left: 0px; top: 0px;" width="100%" height="auto" class="rot{{nineTile[3].rot}}">
                 <div ng-if="next.left">
@@ -56,7 +56,7 @@
                 </div>
             </td>
         </tr>
-        <tr>
+        <tr style="height:100px;">
             <td width="100px" style="padding: 0px;background-color: #e6e6e6;">
                 <img ng-src="/images/tiles/{{nineTile[6].tileType.image}}" width="100%" height="auto" class="rot{{nineTile[6].rot}}">
             </td>
