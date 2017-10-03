@@ -4,20 +4,18 @@ html(ng-app="ddApp")
     script.
       var runId = "#{id}"
 
-    script(src="/components/jquery/dist/jquery.min.js")
-    script(src="/components/angular/angular.min.js")
-    script(src="/components/angular-animate/angular-animate.js")
-    script(src="/components/angular-bootstrap/ui-bootstrap-tpls.min.js")
-    script(src="/components/angularjs-slider/dist/rzslider.min.js")
-    script(src="/components/socket.io-client/socket.io.js")
-    link(href="/components/bootstrap/dist/css/bootstrap.css" rel="stylesheet")
-    link(href="/components/angularjs-slider/dist/rzslider.min.css" rel="stylesheet")
 
+    include ./includes/common_component.jade
+    script(src="/components/angularjs-slider/dist/rzslider.min.js")
     script(src="/javascripts/maze_view.js")
+    script(src="/javascripts/translate_config.js")
+    link(href="/components/angularjs-slider/dist/rzslider.min.css" rel="stylesheet")
+    link(href="/stylesheets/fredrik.css" rel="stylesheet")
+
     link(href="/stylesheets/maze.css" rel="stylesheet")
-    link(href="/stylesheets/style.css" rel="stylesheet")
-    link(href="/components/font-awesome/css/font-awesome.min.css" rel="stylesheet")
+
     meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0")
 
   body(ng-controller="ddController")
     include maze_view.html
+    include ./includes/footer.jade
