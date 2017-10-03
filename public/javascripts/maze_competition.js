@@ -3,6 +3,18 @@ var app = angular.module("MazeCompetition", ['pascalprecht.translate', 'ngCookie
 app.controller("MazeCompetitionController", ['$scope', '$http', '$translate', function ($scope, $http, $translate) {
         $scope.competitionId = competitionId
 
+        var val_go_judge, val_no_judge;
+        $translate('maze.competition.js.go_judge').then(function (val) {
+            val_go_judge = val;
+        }, function (translationId) {
+            // = translationId;
+        });
+        $translate('maze.competition.js.no_judge').then(function (val) {
+            val_no_judge = val;
+        }, function (translationId) {
+            // = translationId;
+        });
+
         function updateTime() {
             $scope.curTime = new Date().getTime()
             setTimeout(updateTime, 1000 * 60)
@@ -106,7 +118,7 @@ app.controller("MazeCompetitionController", ['$scope', '$http', '$translate', fu
         $scope.go_judge = function (path, team_name) {
             swal({
                 title: team_name,
-                text: lmes.go_judge,
+                text: val_go_judge,
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonText: "Yes",
@@ -118,7 +130,7 @@ app.controller("MazeCompetitionController", ['$scope', '$http', '$translate', fu
         }
 
         $scope.no_judge = function () {
-            swal("Oops!", lmes.no_judge, "error");
+            swal("Oops!", val_no_judge, "error");
         }
     }])
     .directive("runsReadFinished", function ($timeout) {
