@@ -1,4 +1,6 @@
 {
+    "language_name": "English",
+    "select_lang": "Choose a Language",
     "home": {
         "line": "Rescue Line",
         "maze": "Rescue Maze",
