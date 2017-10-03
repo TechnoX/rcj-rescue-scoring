@@ -601,7 +601,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
 }]);
 
-document.write("<script type='text/javascript' src='/javascripts/translate_config.js'></script>");
 
 
 // Please note that $uibModalInstance represents a modal window (instance) dependency.
@@ -639,7 +638,12 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, 
     }
 
     $scope.toggle_scored = function (num) {
-        $scope.stiles[num].scored = !$scope.stiles[num].scored;
+        try {
+            $scope.stiles[num].scored = !$scope.stiles[num].scored;
+        } catch (e) {
+
+        }
+
     }
 
     $scope.ok = function () {

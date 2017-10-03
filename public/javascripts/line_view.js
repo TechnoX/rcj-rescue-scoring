@@ -240,7 +240,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 });
 
-document.write("<script type='text/javascript' src='/javascripts/translate_config.js'></script>");
 
 app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, stiles, nineTile) {
     $scope.mtile = mtile;

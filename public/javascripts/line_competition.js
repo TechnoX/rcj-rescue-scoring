@@ -126,5 +126,3 @@ app.controller("LineCompetitionController", ['$scope', '$http', '$translate', fu
         swal("Oops!", val_no_judge, "error");
     }
 }]);
-
-document.write("<script type='text/javascript' src='/javascripts/translate_config.js'></script>");

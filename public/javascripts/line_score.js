@@ -327,7 +327,6 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
     }
 });
 
-document.write("<script type='text/javascript' src='/javascripts/translate_config.js'></script>");
 
 
 // HAX

@@ -348,7 +348,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 });
 
-document.write("<script type='text/javascript' src='/javascripts/translate_config.js'></script>");
 
 app.directive('tile', function () {
     return {

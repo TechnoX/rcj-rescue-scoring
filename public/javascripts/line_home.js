@@ -11,5 +11,3 @@ app.controller("LineHomeController", function ($scope, $http) {
         window.location = path
     }
 });
-
-document.write("<script type='text/javascript' src='/javascripts/translate_config.js'></script>");
