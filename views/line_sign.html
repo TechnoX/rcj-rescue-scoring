@@ -12,18 +12,16 @@
 </script>
 <nav class="navbar" style="background-color: #e67e22; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%">
     <!-- Navbar content -->
-    <div class="row">
-        <div class="col-md-6 col-sm4 col-12">
-            <li class="navbar-brand" href="#"><i class="fa fa-spinner fa-pulse fa-fw"></i> {{team}}</li>
-        </div>
-        <div class="col-md-3 col-sm4 col-7">
-            <i class="fa fa-calculator fa-2x" aria-hidden="true"></i>
-            <li class="navbar-brand" href="#"> {{score}} {{'common.point' | translate}}</li>
-        </div>
-        <div class="col-md-3 col-sm4 col-5">
-            <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
-            <li class="navbar-brand" href="#"> {{minutes*60*1000+seconds*1000 | date:'m:ss'}}</li>
-        </div>
+    <div class="col-md-6 col-sm4 col-12">
+        <li class="navbar-brand" href="#"><i class="fa fa-spinner fa-pulse fa-fw"></i> {{team}}</li>
+    </div>
+    <div class="col-md-3 col-sm4 col-7">
+        <i class="fa fa-calculator fa-2x" aria-hidden="true"></i>
+        <li class="navbar-brand" href="#"> {{score}} {{'common.point' | translate}}</li>
+    </div>
+    <div class="col-md-3 col-sm4 col-5">
+        <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
+        <li class="navbar-brand" href="#"> {{minutes*60*1000+seconds*1000 | date:'m:ss'}}</li>
     </div>
 
 
@@ -41,7 +39,7 @@
             <div id="card_area" class="scrool" style="overflow: scroll;">
                 <div id="lops" class="card">
                     <h3 class="card-header"><i class="fa fa-undo" aria-hidden="true"></i> {{'common.lops' | translate}}</h3>
-                    <div class="card-block">
+                    <div class="card-body">
                         <div ng-repeat="dropTile in range(actualUsedDropTiles+1) track by $index">
                             <div style="display:flex;" class="card-text">
                                 <div style="width:40%;font-size:10px;" align="center">
@@ -76,7 +74,7 @@
 
                     </div>
                     <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> {{'line.sign.rescue' | translate}}　<span class="badge badge-danger">{{evacuationLevel-1?'line.sign.high':'line.sign.low' | translate}}</span></h3>
-                    <div class="card-block">
+                    <div class="card-body">
                         <p class="card-text">{{'line.sign.live' | translate}}<span class="badge badge-info">{{30 + (evacuationLevel-1)*10}}　points /victim</span></p>
                         <div class="input-group" style="width:100%; height:35px;">
                             <span class="input-group-btn">
@@ -95,7 +93,7 @@
                         </div>
                     </div>
                     <hr>
-                    <div class="card-block">
+                    <div class="card-body">
                         <p class="card-text">{{'line.sign.dead' | translate}}<span class="badge badge-info">{{15 + (evacuationLevel-1)*5}} points /victim</span></p>
                         <div class="input-group" style="width:100%; height:35px;">
                             <span class="input-group-btn">
@@ -114,7 +112,7 @@
                         </div>
                     </div>
                     <hr>
-                    <div class="card-block">
+                    <div class="card-body">
                         <p class="card-text">{{'line.sign.exit' | translate}}<span class="badge badge-info">20 points</span></p>
                         <input type="checkbox" ng-model="exitBonus" ng-change="changeExitBonus()" id="scoredrun" disabled><label class="checkbox" for="scoredrun">{{'common.sucess' | translate}}</label><br>
                     </div>
@@ -156,18 +154,18 @@
     <div class="alert alert-success" style="margin:100 0 0 0;" role="alert">
         <div class="row">
             <div class="col-md-6">
-                <div class="hidden-xs-down">
+                <div class="d-none d-sm-block">
                     <i class="fa fa-calculator fa-3x" aria-hidden="true"> : {{score}} {{'common.point' | translate}}</i>
                 </div>
-                <div class="hidden-sm-up">
+                <div class="d-sm-none">
                     <i class="fa fa-calculator fa-2x" aria-hidden="true"> : {{score}} {{'common.point' | translate}}</i>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="hidden-xs-down">
+                <div class="d-none d-sm-block">
                     <i class="fa fa-clock-o fa-3x" aria-hidden="true"> : {{minutes}} {{'common.min' | translate}} {{seconds}} {{'common.sec' | translate}}</i>
                 </div>
-                <div class="hidden-sm-up">
+                <div class="d-sm-none">
                     <i class="fa fa-clock-o fa-2x" aria-hidden="true"> : {{minutes}} {{'common.min' | translate}} {{seconds}} {{'common.sec' | translate}}</i>
                 </div>
             </div>
@@ -179,7 +177,7 @@
 
             <div id="sign" class="card">
                 <h3 class="card-header"><i class="fa fa-commenting-o" aria-hidden="true"></i>{{'line.sign.comment' | translate}}</h3>
-                <div class="card-block">
+                <div class="card-body">
                     <p class="card-text  text-info ">
                         {{'line.sign.comment_e' | translate}}
                     </p>
@@ -188,7 +186,7 @@
                     </div>
                 </div>
                 <h3 class="card-header"><i class="fa fa-key" aria-hidden="true"></i> {{'line.sign.sign' | translate}}</h3>
-                <div class="card-block"><strong>
+                <div class="card-body"><strong>
                       <p class="card-text  text-warning" translate="line.sign.sign_e"></strong>
                     <h2 translate="line.sign.cap_sign"></h2>
                     <div id="cap_sig" class="confirmation"></div>

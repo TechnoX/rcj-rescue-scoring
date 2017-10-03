@@ -1,37 +1,68 @@
 <nav class="navbar" style="background-color: #e74c3c; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%">
     <!-- Navbar content -->
-    <div class="row">
-        <div class="col-md-6 col-sm4 col-12">
-            <li class="navbar-brand" href="#"><i class="fa fa-spinner fa-pulse fa-fw"></i> {{team}}</li>
-        </div>
-        <div class="col-md-3 col-sm4 col-7">
-            <i class="fa fa-calculator fa-2x" aria-hidden="true"></i>
-            <li class="navbar-brand" href="#"> {{score}} {{'common.point' | translate}}</li>
-        </div>
-        <div class="col-md-3 col-sm4 col-5">
-            <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
-            <li class="navbar-brand" href="#"> {{time | date:'mm:ss'}}</li>
-        </div>
+
+    <div class="col-md-6 col-sm4 col-12">
+        <li class="navbar-brand" href="#"><i class="fa fa-spinner fa-pulse fa-fw"></i> {{team}}</li>
     </div>
+    <div class="col-md-3 col-sm4 col-7">
+        <i class="fa fa-calculator fa-2x" aria-hidden="true"></i>
+        <li class="navbar-brand" href="#"> {{score}} {{'common.point' | translate}}</li>
+    </div>
+    <div class="col-md-3 col-sm4 col-5">
+        <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
+        <li class="navbar-brand" href="#"> {{time | date:'mm:ss'}}</li>
+    </div>
+
 </nav>
 <div class="container">
     <div style="text-align: center;" ng-hide="checked">
         <h4><i class="fa fa-check-circle-o" aria-hidden="true"></i>{{'line.judge.before' | translate}}</h4><br>
         <div id="lops" class="card">
-            <h3 class="card-header"><i class="fa fa-info-circle" aria-hidden="true"></i>{{'line.judge.info' | translate}}</h3>
-            <ul class="list-group list-group-flush scrool" style="margin:0 0 0 0; padding:0;overflow: scroll;">
-                <li class="list-group-item">
-                    <div style="width:100px;">{{'common.competition' | translate}} </div>: {{competition.name}}</li>
-                <li class="list-group-item">
-                    <div style="width:100px;">{{'common.round' | translate}} </div>: {{round}}</li>
-                <li class="list-group-item">
-                    <div style="width:100px;">{{'common.field' | translate}} </div>: {{field}}</li>
-                <li class="list-group-item">
-                    <div style="width:100px;">{{'common.team' | translate}} </div>: {{team}}</li>
-                <li class="list-group-item">
-                    <div style="width:100px;">{{'common.league' | translate}} </div>: {{league}}</li>
-            </ul>
-
+            <h3 class="card-header"><i class="fa fa-info-circle" aria-hidden="true"></i> {{'line.view.info' | translate}}</h3>
+            <table class="table" style="margin-bottom:0;">
+                <tbody>
+                    <tr>
+                        <th>
+                            {{'common.competition' | translate}}
+                        </th>
+                        <td>
+                            {{competition.name}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{'common.round' | translate}}
+                        </th>
+                        <td>
+                            {{round}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{'common.field' | translate}}
+                        </th>
+                        <td>
+                            {{field}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{'common.team' | translate}}
+                        </th>
+                        <td>
+                            {{team}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{'common.league' | translate}}
+                        </th>
+                        <td>
+                            {{league}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <br>
         <br>
@@ -65,7 +96,7 @@
                 <div id="card_area" class="scrool" style="overflow: scroll;" ng-show="startedScoring">
                     <div id="lops" class="card">
                         <h3 class="card-header"><i class="fa fa-undo" aria-hidden="true"></i>{{'common.lops' | translate}}</h3>
-                        <div class="card-block">
+                        <div class="card-body">
 
                             <div ng-repeat="dropTile in range(actualUsedDropTiles+1) track by $index" ng-show="startedScoring">
                                 <div style="display:flex;" class="card-text">
@@ -103,7 +134,7 @@
                         </div>
 
                         <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> {{'line.judge.rescue' | translate}}　<span class="badge badge-danger">{{evacuationLevel-1?'line.judge.high':'line.judge.low' | translate}}</span></h3>
-                        <div class="card-block">
+                        <div class="card-body">
                             <p class="card-text">{{'line.judge.live' | translate}}<span class="badge badge-info">{{30 + (evacuationLevel-1)*10}}　points /victim</span></p>
                             <div class="input-group" style="width:100%; height:35px;">
                                 <span class="input-group-btn">
@@ -123,7 +154,7 @@
                             </div>
                         </div>
                         <hr>
-                        <div class="card-block">
+                        <div class="card-body">
                             <p class="card-text">{{'line.judge.dead' | translate}}<span class="badge badge-info">{{15 + (evacuationLevel-1)*5}} points /victim</span></p>
 
                             <div class="input-group" style="width:100%; height:35px;">
@@ -144,11 +175,11 @@
                             </div>
                         </div>
                         <hr>
-                        <div class="card-block">
+                        <div class="card-body">
                             <p class="card-text">{{'line.judge.exit' | translate}}<span class="badge badge-info">20　points</span></p>
                             <input type="checkbox" ng-model="exitBonus" ng-change="changeExitBonus()" id="scoredrun"><label class="checkbox" for="scoredrun">{{'common.sucess' | translate}}</label><br>
                         </div>
-                        <div class="card-block">
+                        <div class="card-body">
                             <p class="card-text">{{'line.judge.show_up' | translate}} <span class="badge badge-info">3　points</span></p>
                             <input type="checkbox" ng-model="showedUp" ng-change="changeShowedUp()" id="exitcheckbox"><label class="checkbox" for="exitcheckbox">{{'common.sucess' | translate}}</label><br>
                         </div>
