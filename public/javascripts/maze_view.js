@@ -1,11 +1,11 @@
 // register the directive with your app module
-var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'rzModule']);
+var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'rzModule', 'pascalprecht.translate', 'ngCookies']);
 var socket;
 // function referenced by the drop target
 app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', function ($scope, $uibModal, $log, $timeout, $http) {
-  
+
   $scope.z = 0;
-  
+
   $scope.visType = "slider";
   $scope.countWords = ["Bottom", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Ninth"];
   $scope.sliderOptions = {
@@ -14,14 +14,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     showSelectionBar: true,
     showTicksValues : true
   };
-  
+
   $scope.cells = {};
   $scope.tiles = {};
-  
+
   if (typeof runId !== 'undefined') {
     loadNewRun();
   }
-  
+
   (function launchSocketIo() {
     // launch socket.io
     socket = io(window.location.origin, {
@@ -34,11 +34,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.exitBonus = data.exitBonus;
         $scope.score = data.score;
         $scope.LoPs = data.LoPs;
-        
+
         // Verified time by timekeeper
         $scope.minutes = data.time.minutes;
         $scope.seconds = data.time.seconds;
-        
+
         // Scoring elements of the tiles
         for (var i = 0; i < data.tiles.length; i++) {
           $scope.tiles[data.tiles[i].x + ',' +
@@ -59,19 +59,19 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         loadNewRun();
         //                }
       });
-      
-      
+
+
     } else {
       console.log("No fieldId provided");
     }
-    
+
   })();
-  
-  
+
+
   function loadNewRun() {
     $http.get("/api/runs/maze/" + runId +
               "?populate=true").then(function (response) {
-      
+
       console.log(response.data);
       $scope.exitBonus = response.data.exitBonus;
       $scope.field = response.data.field.name;
@@ -82,24 +82,24 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
       $scope.competition = response.data.competition.name;
       $scope.competition_id = response.data.competition._id;
       $scope.LoPs = response.data.LoPs;
-      
+
       // Verified time by timekeeper
       $scope.minutes = response.data.time.minutes;
       $scope.seconds = response.data.time.seconds;
-      
+
       $scope.cap_sig = response.data.sign.captain;
       $scope.ref_sig = response.data.sign.referee;
       $scope.refas_sig = response.data.sign.referee_as;
-      
+
       $scope.comment = response.data.comment;
-      
+
       // Scoring elements of the tiles
       for (var i = 0; i < response.data.tiles.length; i++) {
         $scope.tiles[response.data.tiles[i].x + ',' +
                      response.data.tiles[i].y + ',' +
                      response.data.tiles[i].z] = response.data.tiles[i];
       }
-      
+
       // Get the map
       $http.get("/api/maps/maze/" + response.data.map +
                 "?populate=true").then(function (response) {
@@ -109,25 +109,25 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.sliderOptions.ceil = $scope.height - 1;
         $scope.width = response.data.width;
         $scope.length = response.data.length;
-        
+
         for (var i = 0; i < response.data.cells.length; i++) {
           $scope.cells[response.data.cells[i].x + ',' +
                        response.data.cells[i].y + ',' +
                        response.data.cells[i].z] = response.data.cells[i];
         }
-        
+
         width = response.data.width;
         length = response.data.length;
-        
+
       }, function (response) {
         console.log("Error: " + response.statusText);
       });
-      
+
     }, function (response) {
       console.log("Error: " + response.statusText);
     });
   }
-  
+
   $scope.range = function (n) {
     arr = [];
     for (var i = 0; i < n; i++) {
@@ -135,13 +135,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
     return arr;
   }
-  
-  
+
+
   $scope.isUndefined = function (thing) {
     return (typeof thing === "undefined");
   }
-  
-  
+
+
   $scope.tileStatus = function (x, y, z, isTile) {
     // If this is a non-existent tile
     var cell = $scope.cells[x + ',' + y + ',' + z];
@@ -149,7 +149,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
       return;
     if (!isTile)
       return;
-    
+
     if (!$scope.tiles[x + ',' + y + ',' + z]) {
       $scope.tiles[x + ',' + y + ',' + z] = {
         scoredItems: {
@@ -173,13 +173,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
       };
     }
     var tile = $scope.tiles[x + ',' + y + ',' + z];
-    
+
     // Current "score" for this tile
     var current = 0;
     // Max "score" for this tile. Score is added 1 for every passed mission
     var possible = 0;
-    
-    
+
+
     if (cell.tile.speedbump) {
       possible++;
       if (tile.scoredItems.speedbump) {
@@ -316,8 +316,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                    tile.scoredItems.rescueKits.left > 0;
         break;
     }
-    
-    
+
+
     if (current > 0 && current == possible)
       return "done";
     else if (current > 0)
@@ -327,36 +327,36 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     else
       return "";
   }
-  
+
   $scope.cellClick = function (x, y, z, isWall, isTile) {
     var cell = $scope.cells[x + ',' + y + ',' + z];
     if (!cell)
       return;
     if (!isTile)
       return;
-    
+
     var hasVictims = (cell.tile.victims.top != "None") ||
                      (cell.tile.victims.right != "None") ||
                      (cell.tile.victims.bottom != "None") ||
                      (cell.tile.victims.left != "None");
-    
+
     // Total number of scorable things on this tile
     var total = !!cell.tile.speedbump + !!cell.tile.checkpoint +
                 !!cell.tile.rampBottom + !!cell.tile.rampTop +
                 hasVictims;
-    
+
     if (total > 1 || hasVictims) {
       // Open modal for multi-select
       $scope.open(x, y, z);
     }
-    
+
   }
-  
+
   $scope.go = function (path) {
     socket.emit('unsubscribe', 'runs/' + runId);
     window.location = path
   }
-  
+
   $scope.open = function (x, y, z) {
     var modalInstance = $uibModal.open({
       animation  : true,
@@ -375,8 +375,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
       console.log("Closed modal");
     });
   };
-  
-  
+
+
 }]);
 
 
@@ -387,7 +387,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, cell, t
                       (cell.tile.victims.right != "None") ||
                       (cell.tile.victims.bottom != "None") ||
                       (cell.tile.victims.left != "None");
-  
+
   $scope.ok = function () {
     $uibModalInstance.close();
   };
@@ -406,7 +406,7 @@ function tile_size() {
       console.log('tilesize_h:' + tilesize_h);
       if (tilesize_h > tilesize_w) var tilesize = tilesize_w;
       else var tilesize = tilesize_h;
-      
+
       $('.tile-image-container').css('height', tilesize);
       $('.tile-image-container').css('width', tilesize);
       $('.tile-image').css('height', tilesize);
@@ -416,8 +416,8 @@ function tile_size() {
     } catch (e) {
       setTimeout("tile_size()", 500);
     }
-    
-    
+
+
   });
 }
 
@@ -435,7 +435,7 @@ $(window).on('load resize', function () {
   var height = $('.navbar').height();
   $('body').css('padding-top', height + 40);
   tile_size();
-  
+
 });
 
 let lastTouch = 0;
