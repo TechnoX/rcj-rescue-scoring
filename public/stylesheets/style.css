@@ -1,3 +1,8 @@
+html {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
 body {
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
@@ -229,7 +234,7 @@ a {
     border-style: dashed;
 }
 
-table {
+table.custom {
     border-top: 1px solid #4f4d47;
     border-right: 1px solid #4f4d47;
     width: 100%;
@@ -237,77 +242,77 @@ table {
     margin: 0 auto;
 }
 
-th,
-td {
+table.custom th,
+table.custom td {
     border-bottom: 1px solid #4f4d47;
     border-left: 1px solid #4f4d47;
     text-align: center;
     padding: 5px;
 }
 
-th {
+table.custom th {
     background-color: #61c5bb;
     color: #fff;
 }
 
-tr:nth-child(2n+1) {
+table.custom tr:nth-child(2n+1) {
     background: #f5f3ec;
 }
 
-@media screen and (max-width: 768px) {
-    #compe table {
+@media screen and (max-width: 767px) {
+    #compe table.custom {
         width: 100%;
         border: none;
         padding: 10px;
     }
-    #compe thead {
+    #compe table.custom thead {
         display: none;
     }
-    #compe tr {
+    #compe table.custom tr {
         border-top: 1px solid #4f4d47;
         display: block;
         margin-bottom: 20px;
     }
-    #compe td {
+    #compe table.custom td {
         border-right: 1px solid #4f4d47;
         border-bottom: none;
         display: block;
         padding: 0;
     }
-    #compe td:nth-of-type(1) {
+    #compe table.custom td:nth-of-type(1) {
         background-color: #61c5bb;
         color: #fff;
         padding: 3px;
     }
-    #compe td.delay:nth-of-type(1) {
+    #compe table.custom td.delay:nth-of-type(1) {
         background-color: #EB9532;
         color: #fff;
         padding: 3px;
     }
-    #compe td.end:nth-of-type(1) {
+    #compe table.custom td.end:nth-of-type(1) {
         background-color: #EC644B;
         color: #fff;
         padding: 3px;
     }
-    #compe td:last-child {
+    #compe table.custom td:last-child {
         border-bottom: 1px solid #4f4d47;
     }
-    #compe td:before {
+    #compe table.custom td:before {
         background-color: #f5f3ec;
         color: #4f4d47;
         display: block;
         font-size: 10px;
     }
-    #compe td:nth-of-type(2):before {
+    #compe table.custom td:nth-of-type(2):before {
         content: attr(data-content);
     }
-    #compe td:nth-of-type(3):before {
+    #compe table.custom td:nth-of-type(3):before {
         content: attr(data-content);
     }
-    #compe td:nth-of-type(4):before {
+    #compe table.custom td:nth-of-type(4):before {
         content: attr(data-content);
     }
-    tr:nth-child(2n+1) {
+    table.custom tr:nth-child(2n+1) {
         background: initial;
     }
 }
@@ -518,5 +523,60 @@ input[type=checkbox]:checked+.checkbox:before {
     }
     100% {
         opacity: 1;
+    }
+}
+
+.sign-box-cap {
+    border: solid 3px #e74c3c;
+}
+
+.sign-box-cap .sign-box-title-cap {
+    background: #e74c3c;
+}
+
+.sign-box-ref {
+    border: solid 3px #34495e;
+}
+
+.sign-box-ref .sign-box-title-ref {
+    background: #34495e;
+}
+
+.sign-box {
+    position: relative;
+    margin: 2em 0;
+    padding: 0.5em 1em;
+}
+
+.sign-box .sign-box-title {
+    position: absolute;
+    display: inline-block;
+    top: -27px;
+    left: -3px;
+    padding: 0 9px;
+    height: 25px;
+    line-height: 25px;
+    vertical-align: middle;
+    font-size: 17px;
+    color: #ffffff;
+    font-weight: bold;
+    border-radius: 5px 5px 0 0;
+}
+
+footer {
+    background-color: #2c3e50;
+    color: #ffffff;
+    width: 100%;
+    height: 2rem;
+    -moz-box-shadow: 0px -1px 2px #555;
+    /* Firefox用 */
+    -webkit-box-shadow: 0px -1px 2px #555;
+    /* Safari,Google Chrome用 */
+}
+
+.footer-text {
+    font-size: 1vw;
+    @media screen and (min-width: 769px) {
+        font-size: 1rem!important;
     }
 }
