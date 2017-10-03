@@ -2,29 +2,8 @@
 head
     title RoboCup Junior Scoring
 
-    block scripts
-        script(src='/components/jquery/dist/jquery.min.js')
-        script(src='/components/tether/dist/js/tether.min.js')
-        script(src='/components/popper.js/index.js')
-        script(src='/components/bootstrap/dist/js/bootstrap.js')
-        script(src='/components/angular/angular.min.js')
-        script(src="/components/angular-animate/angular-animate.js")
-        script(src='/components/alertifyjs/dist/js/ngAlertify.js')
-        script(src="/components/sweetalert/dist/sweetalert.min.js")
-        script(src="/components/footerFixed/index.js")
-        script(src="/components/socket.io-client/socket.io.js")
-        script(src="/components/angular-bootstrap/ui-bootstrap-tpls.min.js")
-        script(src="/components/angular-translate/angular-translate.min.js")
-        script(src="/components/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js")
-        script(src="/components/angular-translate-storage-local/angular-translate-storage-local.min.js")
-        script(src="/components/angular-translate-storage-cookie/angular-translate-storage-cookie.min.js")
-        script(src="/components/angular-translate-handler-log/angular-translate-handler-log.min.js")
-        script(src="/components/angular-cookies/angular-cookies.min.js")
-    block css
-        link(rel='stylesheet',href='/components/bootstrap/dist/css/bootstrap.css')
-        link(rel='stylesheet',href='/stylesheets/style.css')
-        link(href="/components/sweetalert/dist/sweetalert.css" rel="stylesheet")
-        link(href="/components/font-awesome/css/font-awesome.min.css" rel="stylesheet")
+    include ./common_component.jade
+    script(src="/javascripts/translate_config.js")
 
     meta(name='viewport', content='width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no')
     meta(name="apple-mobile-web-app-capable" content="yes")
