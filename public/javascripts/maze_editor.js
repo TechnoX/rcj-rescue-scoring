@@ -1,5 +1,5 @@
 // register the directive with your app module
-var app = angular.module('MazeEditor', ['ngAnimate', 'ui.bootstrap', 'rzModule']);
+var app = angular.module('MazeEditor', ['ngAnimate', 'ui.bootstrap', 'rzModule', 'pascalprecht.translate', 'ngCookies']);
 
 // function referenced by the drop target
 app.controller('MazeEditorController', ['$scope', '$uibModal', '$log', '$http', function ($scope, $uibModal, $log, $http) {

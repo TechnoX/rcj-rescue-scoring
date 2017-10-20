@@ -1,16 +1,16 @@
-<h1>Rescue Maze map editor</h1>
-<p>Press the walls to create a new layout</p>
+<h1>{{"admin.mazeMapEditor.title" | translate}}</h1>
+<p>{{"admin.mazeMapEditor.desc" | translate}}</p>
 
 <div style="margin-top:50px;">
   <div class="row">
     <div class="col-md-12">
-      <button class="btn btn-primary" type="button" ng-click="saveMap()">Save map</button> <button class="btn btn-primary" type="button" ng-click="saveMapAs()">Save map as: </button> <input type="text" ng-model="saveasname"><br>
-      <label>Name of design: <input type="text" ng-model="name"></label><br>
-      <label>Max height: <input type="number" ng-model="height" ng-change="sliderOptions.ceil = height - 1" min="1"></label><br>
-      <label>Max width: <input type="number" ng-model="width" min="1" ></label><br>
-      <label>Max length: <input type="number" ng-model="length" min="1" ></label><br>
-      <input type="checkbox" ng-model="finished" id="isFinished"><label class="checkbox" for="isFinished">Finished for using in runs</label><br>
-      <div class="error" ng-show="startNotSet()">No start tile is defined!</div>
+      <button class="btn btn-primary" type="button" ng-click="saveMap()">{{"admin.mazeMapEditor.save" | translate}}</button> <button class="btn btn-primary" type="button" ng-click="saveMapAs()">{{"admin.mazeMapEditor.saveAs" | translate}}</button> <input type="text" ng-model="saveasname"><br>
+      <label>{{"admin.mazeMapEditor.name" | translate}} <input type="text" ng-model="name"></label><br>
+      <label>{{"admin.mazeMapEditor.height" | translate}}<input type="number" ng-model="height" ng-change="sliderOptions.ceil = height - 1" min="1"></label><br>
+      <label>{{"admin.mazeMapEditor.width" | translate}} <input type="number" ng-model="width" min="1" ></label><br>
+      <label>{{"admin.mazeMapEditor.length" | translate}}<input type="number" ng-model="length" min="1" ></label><br>
+      <input type="checkbox" ng-model="finished" id="isFinished"><label class="checkbox" for="isFinished">{{"admin.mazeMapEditor.finished" | translate}}</label><br>
+      <div class="error" ng-show="startNotSet()">{{"admin.mazeMapEditor.noStart" | translate}}</div>
     </div>
   </div>
   <div class="row">

@@ -1,36 +1,36 @@
 <div class="modal-header">
-  <h3 class="modal-title">Change items</h3>
+  <h3 class="modal-title">{{"admin.mazeMapEditor.item" | translate}}</h3>
 </div>
 <div class="modal-body">
   <ul>
     <li>
-      <input type="checkbox" ng-model="cell.tile.speedbump" id="hasSpeedbumps"><label class="checkbox" for="hasSpeedbumps">Has speedbumps</label>
+      <input type="checkbox" ng-model="cell.tile.speedbump" id="hasSpeedbumps"><label class="checkbox" for="hasSpeedbumps">{{"admin.mazeMapEditor.bump" | translate}}</label>
     </li>
     <li>
-      <input type="checkbox" ng-model="cell.tile.checkpoint" id="isCheckpoint"><label class="checkbox" for="isCheckpoint">Checkpoint</label>
+      <input type="checkbox" ng-model="cell.tile.checkpoint" id="isCheckpoint"><label class="checkbox" for="isCheckpoint">{{"admin.mazeMapEditor.cp" | translate}}</label>
     </li>
     <li>
-      <input type="checkbox" ng-model="cell.tile.black" id="isBlack"><label class="checkbox" for="isBlack">Black</label>
+      <input type="checkbox" ng-model="cell.tile.black" id="isBlack"><label class="checkbox" for="isBlack">{{"admin.mazeMapEditor.black" | translate}}</label>
     </li>
     <li>
-      <input type="checkbox" ng-model="cell.tile.rampTop" id="isTopHorizontal"><label class="checkbox" for="isTopHorizontal">Top horizontal tile at ramp</label>
+      <input type="checkbox" ng-model="cell.tile.rampTop" id="isTopHorizontal"><label class="checkbox" for="isTopHorizontal">{{"admin.mazeMapEditor.down" | translate}}</label>
     </li>
     <li>
-      <input type="checkbox" ng-model="cell.tile.rampBottom" id="isBottomHorizontal"><label class="checkbox" for="isBottomHorizontal">Bottom horizontal tile at ramp</label>
+      <input type="checkbox" ng-model="cell.tile.rampBottom" id="isBottomHorizontal"><label class="checkbox" for="isBottomHorizontal">{{"admin.mazeMapEditor.up" | translate}}</label>
     </li>
     <li ng-show="height > 1">
-      <label>Change floor to</label><br>
+      <label>{{"admin.mazeMapEditor.changeF" | translate}}</label><br>
       <ul>
 	<li ng-repeat="h in range(height)">
-	  <input type="radio" ng-model="cell.tile.changeFloorTo" ng-value="h" ng-change="elevatorChanged(cell.tile.changeFloorTo)" id="{{ 'elevator-' + h }}"><label class="radio" for="{{ 'elevator-' + h }}">{{h}}<span ng-show="h == z"> (No elevator)</span></label>
+	  <input type="radio" ng-model="cell.tile.changeFloorTo" ng-value="h" ng-change="elevatorChanged(cell.tile.changeFloorTo)" id="{{ 'elevator-' + h }}"><label class="radio" for="{{ 'elevator-' + h }}">{{h}}<span ng-show="h == z"> {{"admin.mazeMapEditor.noEle" | translate}}</span></label>
 	</li>
       </ul>
     </li>
   </ul>
 
-  <input type="checkbox" ng-model="isStart" ng-disabled="isStart" ng-change="startChanged()" id="isStart"><label class="checkbox" for="isStart">Is start</label>
+  <input type="checkbox" ng-model="isStart" ng-disabled="isStart" ng-change="startChanged()" id="isStart"><label class="checkbox" for="isStart">{{"admin.mazeMapEditor.start" | translate}}</label>
 
-  <h5>Placement of victims:</h5>
+  <h5>{{"admin.mazeMapEditor.placement" | translate}}</h5>
   <table>
     <tr>
       <th width="20%">&nbsp;</th>
@@ -41,7 +41,7 @@
       <th width="12%">U</th>
     </tr>
     <tr>
-      <th class="col">Top</th>
+      <th class="col">{{"admin.mazeMapEditor.top" | translate}}</th>
       <td><input type="radio" ng-model="cell.tile.victims.top" value="None" style="display: block;"></td>
       <td><input type="radio" ng-model="cell.tile.victims.top" value="Heated" style="display: block;"></td>
       <td><input type="radio" ng-model="cell.tile.victims.top" value="H" style="display: block;"></td>
@@ -49,7 +49,7 @@
       <td><input type="radio" ng-model="cell.tile.victims.top" value="U" style="display: block;"></td>
     </tr>
     <tr>
-      <th class="col">Bottom</th>
+      <th class="col">{{"admin.mazeMapEditor.bottom" | translate}}</th>
       <td><input type="radio" ng-model="cell.tile.victims.bottom" value="None" style="display: block;"></td>
       <td><input type="radio" ng-model="cell.tile.victims.bottom" value="Heated" style="display: block;"></td>
       <td><input type="radio" ng-model="cell.tile.victims.bottom" value="H" style="display: block;"></td>
@@ -57,7 +57,7 @@
       <td><input type="radio" ng-model="cell.tile.victims.bottom" value="U" style="display: block;"></td>
     </tr>
     <tr>
-      <th class="col">Left</th>
+      <th class="col">{{"admin.mazeMapEditor.left" | translate}}</th>
       <td><input type="radio" ng-model="cell.tile.victims.left" value="None" style="display: block;"></td>
       <td><input type="radio" ng-model="cell.tile.victims.left" value="Heated" style="display: block;"></td>
       <td><input type="radio" ng-model="cell.tile.victims.left" value="H" style="display: block;"></td>
@@ -65,7 +65,7 @@
       <td><input type="radio" ng-model="cell.tile.victims.left" value="U" style="display: block;"></td>
     </tr>
     <tr>
-      <th class="col">Right</th>
+      <th class="col">{{"admin.mazeMapEditor.right" | translate}}</th>
       <td><input type="radio" ng-model="cell.tile.victims.right" value="None" style="display: block;"></td>
       <td><input type="radio" ng-model="cell.tile.victims.right" value="Heated" style="display: block;"></td>
       <td><input type="radio" ng-model="cell.tile.victims.right" value="H" style="display: block;"></td>
