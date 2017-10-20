@@ -20,34 +20,34 @@ block content
   .row
     .col-md-1
     .col-md-10
-      h1 {{competition.name}} - Teams
-      table
+      h1 {{competition.name}} - {{"admin.teams.title" | translate}}
+      table.custom
         thead
             tr
-                th Name
-                th League
-                th Action
+                th {{"common.team" | translate}}
+                th {{"common.league" | translate}}
+                th {{"common.operation" | translate}}
         tbody
             tr
                 td
-                    input(ng-model='teamName')
+                    input(ng-model='teamName' style="width:100%;")
                 td
-                    select(ng-model='teamLeague' ng-options='league for league in leagues')
+                    select(ng-model='teamLeague' ng-options='league for league in leagues' style="width:100%;")
                 td
-                    button(ng-click='addTeam()') Add team
-      a(ng-href='/admin/{{competitionId}}/teams/bulk') Bulk Regstration
+                    button(ng-click='addTeam()' style="width:100%;") {{"admin.teams.add" | translate}}
+      a(ng-href='/admin/{{competitionId}}/teams/bulk') {{"admin.teams.bulk" | translate}}
       br
       br
-      table
+      table.custom
         thead
             tr
-              th Name
-              th League
-              th Operation
+              th {{"common.team" | translate}}
+              th {{"common.league" | translate}}
+              th {{"common.operation" | translate}}
         tbody
             tr(ng-repeat='team in teams')
               td(ng-bind='team.name')
               td(ng-bind='team.league')
               td
-                a(href="" ng-click='removeTeam(team)') Delete
+                a(href="" ng-click='removeTeam(team)') {{"common.delete" | translate}}
       
