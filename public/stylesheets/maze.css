@@ -1,26 +1,23 @@
-table {
+table.map {
     border-collapse: collapse;
     width: initial !important;
 }
 
-table th {
+table.map th {
     font-weight: bold;
     vertical-align: top;
     border: 1px solid #ccc;
 }
 
-table td {
+table.map td {
     padding: 5px;
     vertical-align: top;
     border: 1px solid #ccc;
     text-align: left;
-}
-
-td {
     border: 1px solid grey;
 }
 
-tr:nth-child(2n+1) {
+table.map tr:nth-child(2n+1) {
     background: initial;
 }
 
