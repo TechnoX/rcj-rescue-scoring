@@ -19,34 +19,35 @@ block content
   .row
     .col-md-1
     .col-md-10
-      h1 {{competition.name}} - Rounds
-      table
+      h1 {{competition.name}} - {{"admin.rounds.title" | translate}}
+      table.custom
         thead
             tr
-                th Name
-                th League
-                th Action
+                th {{"common.name" | translate}}
+                th {{"common.league" | translate}}
+                th {{"common.operation" | translate}}
         tbody
             tr
                 td
-                    input(ng-model='roundName')
+                    input(ng-model='roundName' style="width:100%;")
                 td
-                    select(ng-model='roundLeague' ng-options='league for league in leagues')
+                    select(ng-model='roundLeague' ng-options='league for league in leagues' style="width:100%;")
                 td
-                    button(ng-click='addRound()') Add round
+                    button(ng-click='addRound()' style="width:100%;") {{"admin.rounds.add" | translate}}
       
       
       br
+      hr
       br
-      table
+      table.custom
         thead
             tr
-              th Name
-              th League
-              th Operation
+              th {{"common.name" | translate}}
+              th {{"common.league" | translate}}
+              th {{"common.operation" | translate}}
         tbody
             tr(ng-repeat='round in rounds')
               td(ng-bind='round.name')
               td(ng-bind='round.league')
               td
-                a(href="" ng-click='removeRound(round)') Delete      
+                a(href="" ng-click='removeRound(round)') {{"common.delete" | translate}}
