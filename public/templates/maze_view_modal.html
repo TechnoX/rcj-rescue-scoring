@@ -1,23 +1,23 @@
 <div class="modal-header">
-    <h3 class="modal-title">Score items</h3>
+    <h3 class="modal-title">{{"maze.view.m_score" | translate}}</h3>
 </div>
 <div class="modal-body">
     <ul>
         <li ng-show="cell.tile.checkpoint">
-            <input type="checkbox" ng-model="tile.scoredItems.checkpoint" id="hasCheckpoint" disabled="disabled"><label for="hasCheckpoint" class="checkbox">Reach checkpoint</label>
+            <input type="checkbox" ng-model="tile.scoredItems.checkpoint" id="hasCheckpoint" disabled="disabled"><label for="hasCheckpoint" class="checkbox">{{"maze.view.m_reach" | translate}}</label>
         </li>
         <li ng-show="cell.tile.speedbump">
-            <input type="checkbox" ng-model="tile.scoredItems.speedbump" id="hasSpeedbumps" disabled="disabled"><label class="checkbox" for="hasSpeedbumps">Speedbumps</label>
+            <input type="checkbox" ng-model="tile.scoredItems.speedbump" id="hasSpeedbumps" disabled="disabled"><label class="checkbox" for="hasSpeedbumps">{{"maze.view.m_bump" | translate}}</label>
         </li>
         <li ng-show="cell.tile.rampBottom">
-            <input type="checkbox" ng-model="tile.scoredItems.rampBottom" id="hasRampBottom" disabled="disabled"><label class="checkbox" for="hasRampBottom">Ramp bottom</label>
+            <input type="checkbox" ng-model="tile.scoredItems.rampBottom" id="hasRampBottom" disabled="disabled"><label class="checkbox" for="hasRampBottom">{{"maze.view.m_rampb" | translate}}</label>
         </li>
         <li ng-show="cell.tile.rampTop">
-            <input type="checkbox" ng-model="tile.scoredItems.rampTop" id="hasRampTop" disabled="disabled"><label class="checkbox" for="hasRampTop">Ramp top</label>
+            <input type="checkbox" ng-model="tile.scoredItems.rampTop" id="hasRampTop" disabled="disabled"><label class="checkbox" for="hasRampTop">{{"maze.view.m_rampt" | translate}}</label>
         </li>
 
         <li ng-show="hasVictims">
-            <label>Flash within 15cm from victim:</label>
+            <label>{{"maze.view.m_flash" | translate}}</label>
             <ul>
                 <li ng-repeat="(direction, type) in cell.tile.victims track by $index" ng-show="type != 'None'">
                     <input type="checkbox" ng-model="tile.scoredItems.victims[direction]" id="{{ 'victim-' + $index }}" disabled="disabled"><label class="checkbox" for="{{ 'victim-' + $index }}">Victim {{direction}}</label>
@@ -25,7 +25,7 @@
             </ul>
         </li>
         <li ng-show="hasVictims">
-            <label>Delivered rescue kits:</label>
+            <label>{{"maze.view.m_kit" | translate}}</label>
             <ul>
                 <li ng-repeat="(direction, type) in cell.tile.victims" ng-show="type != 'None'">
                     <strong>{{ tile.scoredItems.rescueKits[direction] }} Victim {{direction}}</strong>
