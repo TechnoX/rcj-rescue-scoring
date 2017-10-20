@@ -19,16 +19,21 @@ block content
   .row
     .col-md-1
     .col-md-10
-      h1 Admin Console - {{competition.name}}
-      button(ng-click="go('/admin/' + competitionId + '/teams')" class='btn btn-outline-info btn-lg btn-block') Teams
-      button(ng-click="go('/admin/' + competitionId + '/rounds')" class='btn btn-outline-info btn-lg btn-block') Rounds
-      button(ng-click="go('/admin/' + competitionId + '/fields')" class='btn btn-outline-info btn-lg btn-block') Fields
-      
-      h3 Line
-      button(ng-click="go('/admin/' + competitionId + '/line/maps')" class='btn btn-outline-info btn-lg btn-block') Maps
-      button(ng-click="go('/admin/' + competitionId + '/line/runs')" class='btn btn-outline-info btn-lg btn-block') Runs
-
-      h3 Maze
-      button(ng-click="go('/admin/' + competitionId + '/maze/maps')" class='btn btn-outline-info btn-lg btn-block') Maps
-      button(ng-click="go('/admin/' + competitionId + '/maze/runs')" class='btn btn-outline-info btn-lg btn-block') Runs
+      h1 {{"admin.competition.title" | translate}} - {{competition.name}}
+      hr
+      h3 {{"admin.competition.common" | translate}}
+      button(ng-click="go('/admin/' + competitionId + '/teams')" class='btn btn-outline-dark btn-lg btn-block') {{"admin.competition.teams" | translate}}
+      button(ng-click="go('/admin/' + competitionId + '/rounds')" class='btn btn-outline-dark btn-lg btn-block') {{"admin.competition.rounds" | translate}}
+      button(ng-click="go('/admin/' + competitionId + '/fields')" class='btn btn-outline-dark btn-lg btn-block') {{"admin.competition.fields" | translate}}
+      hr
+      h3 {{"admin.competition.line" | translate}}
+      button(ng-click="go('/admin/' + competitionId + '/line/maps')" class='btn btn-outline-primary btn-lg btn-block') {{"admin.competition.maps" | translate}}
+      button(ng-click="go('/admin/' + competitionId + '/line/runs')" class='btn btn-outline-primary btn-lg btn-block') {{"admin.competition.runs" | translate}}
+      hr
+      h3 {{"admin.competition.maze" | translate}}
+      button(ng-click="go('/admin/' + competitionId + '/maze/maps')" class='btn btn-outline-success btn-lg btn-block') {{"admin.competition.maps" | translate}}
+      button(ng-click="go('/admin/' + competitionId + '/maze/runs')" class='btn btn-outline-success btn-lg btn-block') {{"admin.competition.runs" | translate}}
+      hr
+      br
+      br
 
