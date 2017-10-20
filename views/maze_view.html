@@ -1,40 +1,75 @@
 <nav class="navbar" style="background-color: #3498db; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%">
     <!-- Navbar content -->
-    <div class="row">
-        <div class="col-md-6 col-sm4 col-12">
-            <li class="navbar-brand" href="#"><i class="fa fa-spinner fa-pulse fa-fw"></i> {{team}}</li>
-        </div>
-        <div class="col-md-3 col-sm4 col-7">
-            <i class="fa fa-calculator fa-2x" aria-hidden="true"></i>
-            <li class="navbar-brand" href="#"> {{score}} points</li>
-        </div>
-        <div class="col-md-3 col-sm4 col-5">
-            <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
-            <li class="navbar-brand" href="#"> {{minutes*60*1000+seconds*1000 | date:'mm:ss'}}</li>
-        </div>
-    </div>
+
+      <div class="col-md-6 col-sm4 col-12">
+          <li class="navbar-brand" href="#"><i class="fa fa-spinner fa-pulse fa-fw"></i> {{team}}</li>
+      </div>
+      <div class="col-md-3 col-sm4 col-7">
+          <i class="fa fa-calculator fa-2x" aria-hidden="true"></i>
+          <li class="navbar-brand" href="#"> {{score}} points</li>
+      </div>
+      <div class="col-md-3 col-sm4 col-5">
+          <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
+          <li class="navbar-brand" href="#"> {{minutes*60*1000+seconds*1000 | date:'mm:ss'}}</li>
+      </div>
 
 </nav>
 <div class="container">
     <div class="row">
         <div class="col-md12">
-            <button class="btn btn-secondary" style="margin:0 10px 10px 0;" type="button" ng-click="go('/maze/' + competition_id)"><i class="fa fa-undo" aria-hidden="true"> Back</i></button>
+            <button class="btn btn-secondary" style="margin:0 10px 10px 0;" type="button" ng-click="go('/maze/' + competition_id)"><i class="fa fa-undo" aria-hidden="true"> {{'common.back' | translate}}</i></button>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div id="lops" class="card">
-                <h3 class="card-header"><i class="fa fa-info-circle" aria-hidden="true"></i> Basic Informations</h3>
-                <pre>
-          <ul class="list-group list-group-flush scrool" style="margin:0 0 0 0; padding:0;overflow: scroll;"><!--
-         --><li class="list-group-item">Competition : {{competition}}</li><!--
-         --><li class="list-group-item">Round       : {{round}}</li><!--
-         --><li class="list-group-item">Field       : {{field}}</li><!--
-         --><li class="list-group-item">Team　　     : {{team}}</li><!--
-         --><li class="list-group-item">League　　　 : {{league}}</li><!--
-       --></ul><!--
-     --></pre>
-            </div>
+          <div id="lops" class="card">
+              <h3 class="card-header"><i class="fa fa-info-circle" aria-hidden="true"></i> {{'maze.view.info' | translate}}</h3>
+              <table class="table info" style="margin-bottom:0;">
+                  <tbody>
+                      <tr>
+                          <th class="info">
+                              {{'common.competition' | translate}}
+                          </th>
+                          <td class="info">
+                              {{competition}}
+                          </td>
+                      </tr>
+                      <tr>
+                          <th class="info">
+                              {{'common.round' | translate}}
+                          </th>
+                          <td class="info">
+                              {{round}}
+                          </td>
+                      </tr>
+                      <tr>
+                          <th class="info">
+                              {{'common.field' | translate}}
+                          </th>
+                          <td class="info">
+                              {{field}}
+                          </td>
+                      </tr>
+                      <tr>
+                          <th class="info">
+                              {{'common.team' | translate}}
+                          </th>
+                          <td class="info">
+                              {{team}}
+                          </td>
+                      </tr>
+                      <tr>
+                          <th class="info">
+                              {{'common.league' | translate}}
+                          </th>
+                          <td class="info">
+                              {{league}}
+                          </td>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+
 
         </div>
     </div>
@@ -43,10 +78,10 @@
         <div class="col-md-6">
             <div id="card_area" class="scrool" style="overflow: scroll;">
                 <div class="card">
-                    <h3 class="card-header"><i class="fa fa-undo" aria-hidden="true"></i> LoPs</h3>
-                    <div class="card-block">
+                    <h3 class="card-header"><i class="fa fa-undo" aria-hidden="true"></i> {{'common.lops' | translate}}</h3>
+                    <div class="card-body">
                         <p class="card-text">
-                            <b>Total number of LoPs:</b><br>
+                            <b>{{'maze.view.total_lops' | translate}}</b><br>
                             <div class="input-group" style="width:100%; height:35px;">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-danger" disabled="disabled">
@@ -64,22 +99,22 @@
                             </div>
                         </p>
                     </div>
-                    <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> Other</h3>
-                    <div class="card-block">
+                    <h3 class="card-header"><i class="fa fa-home" aria-hidden="true"></i> {{'common.other' | translate}}</h3>
+                    <div class="card-body">
                         <input type="checkbox" ng-model="exitBonus" id="hasReturned" disabled="disabled">
-                        <label class="checkbox" for="hasReturned">Robot returned to starting tile for more than 10s</label>
+                        <label class="checkbox" for="hasReturned">{{'maze.view.return' | translate}}</label>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6  tilearea">
+        <div id="maze_map" class="col-md-6  tilearea">
 
 
             <div class="row" ng-show="visType=='slider'">
                 <div class="col-md-12">
                     <div>
                         <rzslider rz-slider-model="z" rz-slider-options="sliderOptions" ng-show="height>1"></rzslider>
-                        <table>
+                        <table class="map">
                             <tr ng-repeat="r in range(2*length + 1)">
                                 <td ng-repeat="c in range(2*width + 1)" ng-class="{'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall, 'checkpoint': cells[c+','+r+','+z].tile.checkpoint, 'black': cells[c+','+r+','+z].tile.black, 'linear': cells[c+','+r+','+z].isLinear}" ng-click="cellClick(c, r, z, $odd != $parent.$odd, $odd && $parent.$odd)">
                                     <div class="tile-image-container" ng-show="cells[c+','+r+','+z].isTile">
@@ -166,53 +201,58 @@
     <div class="alert alert-success" style="margin:100 0 0 0;" role="alert">
         <div class="row">
             <div class="col-md-6">
-                <div class="hidden-xs-down">
-                    <i class="fa fa-calculator fa-3x" aria-hidden="true"> : {{score}} points</i>
+                <div class="d-none d-sm-block">
+                    <i class="fa fa-calculator fa-3x" aria-hidden="true"> : {{score}} {{'common.point' | translate}}</i>
                 </div>
-                <div class="hidden-sm-up">
-                    <i class="fa fa-calculator fa-2x" aria-hidden="true"> : {{score}} points</i>
+                <div class="d-sm-none">
+                    <i class="fa fa-calculator fa-2x" aria-hidden="true"> : {{score}} {{'common.point' | translate}}</i>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="hidden-xs-down">
-                    <i class="fa fa-clock-o fa-3x" aria-hidden="true"> : {{minutes}} min {{seconds}} sec</i>
+                <div class="d-none d-sm-block">
+                    <i class="fa fa-clock-o fa-3x" aria-hidden="true"> : {{minutes}} {{'common.min' | translate}} {{seconds}} {{'common.sec' | translate}}</i>
                 </div>
-                <div class="hidden-sm-up">
-                    <i class="fa fa-clock-o fa-2x" aria-hidden="true"> : {{minutes}} min {{seconds}} sec</i>
+                <div class="d-sm-none">
+                    <i class="fa fa-clock-o fa-2x" aria-hidden="true"> : {{minutes}} {{'common.min' | translate}} {{seconds}} {{'common.sec' | translate}}</i>
                 </div>
             </div>
         </div>
     </div>
-    <!--
-    <div class="row" style="margin:30 0 0 0;">
+    <div class="row" style="margin:30 0 30 0;">
         <div class="col-md-12">
             <div id="sign" class="card">
-                <h3 class="card-header"><i class="fa fa-commenting-o" aria-hidden="true"></i> Comment</h3>
-                <div class="card-block">
+                <h3 class="card-header"><i class="fa fa-commenting-o" aria-hidden="true"></i> {{'maze.view.comment' | translate}}</h3>
+                <div class="card-body">
                     <p class="card-text  text-info ">
-                        If you have any comments about the run, please write in the box below.
+                        {{'maze.view.comment_e' | translate}}
                     </p>
                     <div class="form-group">
-                      <textarea class="form-control" ng-model="comment" rows="3" disabled></textarea>
+                        <textarea class="form-control" ng-model="comment" rows="3" disabled></textarea>
                     </div>
                 </div>
-                <h3 class="card-header"><i class="fa fa-key" aria-hidden="true"></i> Sign</h3>
-                <div class="card-block">
-                    <p class="card-text  text-warning ">
-                        By wiritng a sign below, you accept that the [Score：{{score}}] [Time：{{minutes}} min {{seconds}} sec] are correct. Your team also further undertakes to not appeal the score at a later stage.
+                <h3 class="card-header"><i class="fa fa-key" aria-hidden="true"></i> {{'maze.view.sign' | translate}}</h3>
+                <div class="card-body">
+                    <p class="card-text  text-warning" translate="maze.view.sign_e">
                     </p>
-                    <h2>Captain Sign</h2>
-                    <img ng-src="{{cap_sig}}" style="max-width: 100%;height: auto;" />
+                    <div class="sign-box sign-box-cap">
+                        <p class="sign-box-title sign-box-title-cap" translate="maze.view.cap_sign">
+                        </p>
+                        <img ng-src="{{cap_sig}}" style="max-width: 100%;height: auto;" />
+                    </div>
                     <hr>
-                    <h2>Referee Sign</h2>
-                    <img ng-src="{{ref_sig}}" style="max-width: 100%;height: auto;" />
+                    <div class="sign-box sign-box-ref">
+                        <p class="sign-box-title sign-box-title-ref" translate="maze.view.ref_sign">
+                        </p>
+                        <img ng-src="{{ref_sig}}" style="max-width: 100%;height: auto;" />
+                    </div>
                     <hr>
-                    <h2>Co-Referee Sign</h2>
-                    <img ng-src="{{refas_sig}}" style="max-width: 100%;height: auto;" />
+                    <div class="sign-box sign-box-ref">
+                        <p class="sign-box-title sign-box-title-ref" translate="maze.view.cref_sign">
+                        </p>
+                        <img ng-src="{{refas_sig}}" style="max-width: 100%;height: auto;" />
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    -->
-    <div class="row"></div>
 </div>
