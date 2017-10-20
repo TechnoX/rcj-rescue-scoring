@@ -13,26 +13,6 @@ append scripts
   script(src="/components/socket.io-client/socket.io.js")
   script(src='/javascripts/maze_score.js')
 
-append css
-  link(rel='stylesheet', href='/components/datatables/media/css/jquery.dataTables.min.css')
-  style(type='text/css').
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    table td {
-      padding: 7px;
-      border: #4e95a4 1px solid;
-    }
-
-    table thead {
-      background: #a8d1f3;
-    }
-
-    table tbody tr:hover {
-      background: #A0A0FF;
-    }
 
 block location
     a.breadcrumb-item(onclick="location.href='/home'") Home
@@ -44,19 +24,19 @@ block content
   .row
   .col-md12
     button.btn.btn-secondary(style='margin:0 10px 10px 0;', type='button', ng-click="go('/line/' + competitionId)")
-      i.fa.fa-undo(aria-hidden='true') !{__('common.back')}
+      i.fa.fa-undo(aria-hidden='true') {{'common.back' | translate}}
   .row
     .col-md-12
       .row#rank
         .col-md-12
-          h3 !{__('maze.score.rank')}
-          table
+          h3 {{'maze.score.rank' | translate}}
+          table.custom(style="overflow: scroll;")
             thead
               tr
-                th.text-center !{__('common.rank')}
-                th.text-center !{__('common.team')}
-                th.text-center !{__('common.score')}
-                th.text-center !{__('common.time')}
+                th.text-center {{'common.rank' | translate}}
+                th.text-center {{'common.team' | translate}}
+                th.text-center {{'common.score' | translate}}
+                th.text-center {{'common.time' | translate}}
             tbody
               tr(ng-repeat='run in mazeRunsTop track by $index')
                 td.text-center(ng-bind='$index + 1')
@@ -67,18 +47,18 @@ block content
         hr
       .row#allRuns
         .col-md-12
-          h3 !{__('maze.score.all')}
-          label !{__('maze.score.sort')}
+          h3 {{'maze.score.all' | translate}}
+          label {{'maze.score.sort' | translate}}
             input(type="checkbox" style='display:inline;' ng-model="sortOrder" ng-true-value="'[startTime,round.name,field.name,team.name]'" ng-false-value="'-score'")
           //span {{sortOrder}}
-          table
+          table.custom(style="overflow: scroll;")
             thead
               tr
-                th.text-center !{__('common.team')}
-                th.text-center !{__('common.round')}
-                th.text-center !{__('common.field')}
-                th.text-center !{__('common.score')}
-                th.text-center !{__('common.time')}
+                th.text-center {{'common.team' | translate}}
+                th.text-center {{'common.round' | translate}}
+                th.text-center {{'common.field' | translate}}
+                th.text-center {{'common.score' | translate}}
+                th.text-center {{'common.time' | translate}}
             tbody
               tr(ng-repeat='run in mazeRuns | orderBy:sortOrder')
                 td.text-center(ng-bind='run.team.name')
