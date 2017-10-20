@@ -11,21 +11,24 @@
         "go_line": "Go Line",
         "go_maze": "Go Maze",
         "management": "大会管理",
-        "access_level": "ログイン中のアカウント， {{account}} は，Competition Managementにアクセスする権限がありません."
+        "access_level": "ログイン中のアカウント， {{account}} は，「大会管理」にアクセスする権限がありません."
     },
     "common": {
         "back": "戻る",
+        "other": "その他",
         "loading": "読み込み中...",
         "starttime": "開始時間",
         "field": "フィールド",
         "team": "チーム名",
         "round": "ラウンド",
+        "map": "マップ",
         "rank": "順位",
         "score": "得点",
         "time": "時間",
         "rescued": "救助",
         "lops": "進行停止",
         "view": "表示",
+        "sign": "署名",
         "judge": "審判",
         "point": "点",
         "league": "リーグ",
@@ -35,7 +38,13 @@
         "sucess": "成功",
         "yes": "はい",
         "no": "いいえ",
-        "cancel": "キャンセル"
+        "cancel": "キャンセル",
+        "name": "名前",
+        "delete": "削除",
+        "operation": "操作",
+        "create": "作成",
+        "save": "保存",
+        "comment": "コメント"
     },
     "line": {
         "home": {
@@ -69,7 +78,7 @@
             "live": "生きている被災者：",
             "dead": "死んでいる被災者：",
             "exit": "少なくとも１つの被災者に触れたのち，避難ゾーンを脱出した：",
-            "comment": "コメント",
+            "comment": "@:common.comment",
             "comment_e": "この競技についてコメントがある場合，以下に記入してください",
             "sign": "署名",
             "sign_e": "下の署名を書くことで，ここまでの記録内容が正しいことを認めることになります．競技の後でこれらの記録に対して，いかなる意見も行わないことを確認します．",
@@ -170,16 +179,188 @@
         },
         "score": {
             "rank": "Maze - 順位",
-            "all": "Maze - All 全競技",
+            "all": "Maze - 全競技",
             "sort": "@:line.score.sort"
         },
         "view": {
-            "info": "基本情報",
-            "comment": "コメント",
-            "sign": "署名",
-            "cap_sign": "キャプテンサイン",
-            "ref_sign": "主審サイン",
-            "cref_sign": "副審サイン"
+            "info": "@:line.view.info",
+            "total_lops": "進行停止の合計数",
+            "return": "10秒以上を残して，スタートタイルに戻った",
+            "comment": "@:line.view.comment",
+            "comment_e": "@:line.view.comment_e",
+            "sign": "@:line.view.sign",
+            "sign_e": "@:line.view.sign_e",
+            "cap_sign": "@:line.view.cap_sign",
+            "ref_sign": "@:line.view.ref_sign",
+            "cref_sign": "@:line.view.cref_sign",
+            "m_score": "得点項目",
+            "m_reach": "チェックポイントに到達",
+            "m_bump": "スピードバンプ",
+            "m_rampb": "坂（下）",
+            "m_rampt": "坂（上）",
+            "m_flash": "被災者から15cm以内でランプを点滅",
+            "m_kit": "レスキューキットを配布"
+        },
+        "judge": {
+            "before": "@:line.judge.before",
+            "info": "@:line.view.info",
+            "confirm": "@:line.judge.confirm",
+            "push_timer": "@:line.judge.push_timer",
+            "tim_start": "@:line.judge.tim_start",
+            "tim_stop": "@:line.judge.tim_stop",
+            "tim_reset": "@:line.judge.tim_reset",
+            "ready": "@:line.judge.ready",
+            "total_lops": "@:maze.view.total_lops",
+            "return": "@:maze.view.return",
+            "adjust": "@:line.judge.adjust",
+            "confirm_text": "@:line.judge.confirm_text",
+            "confirm": "@:line.judge.confirm",
+            "m_score": "@:maze.view.m_score",
+            "m_reach": "@:maze.view.m_reach",
+            "m_bump": "@:maze.view.m_bump",
+            "m_rampb": "@:maze.view.m_rampb",
+            "m_rampt": "@:maze.view.m_rampt",
+            "m_flash": "@:maze.view.m_flash",
+            "m_kit": "@:maze.view.m_kit"
+        },
+        "sign": {
+            "total_lops": "@:maze.view.total_lops",
+            "return": "@:maze.view.return",
+            "comment": "@:line.view.comment",
+            "comment_e": "@:line.view.comment_e",
+            "sign": "@:line.view.sign",
+            "sign_e": "@:line.view.sign_e",
+            "cap_sign": "@:line.view.cap_sign",
+            "ref_sign": "@:line.view.ref_sign",
+            "cref_sign": "@:line.view.cref_sign",
+            "submit": "@:line.sign.submit",
+            "to_judge": "@:line.sign.to_judge",
+            "no_sign": "@:line.sign.no_sign",
+            "confirm": "@:line.sign.confirm",
+            "complete": "@:line.sign.complete"
+        }
+    },
+    "admin": {
+        "home": {
+            "competitions": "大会",
+            "c_item": "共通項目",
+            "line_tSet": "ライン タイルセット",
+            "add_c": "大会を追加"
+        },
+        "line_tSet": {
+            "new_tSet": "新しいタイルセット: ",
+            "tSet": "タイルセット: ",
+            "available": "使用可能タイル",
+            "tIn": "{{setName}}のタイル"
+        },
+        "competition": {
+            "title": "管理画面トップ",
+            "common": "共通設定項目",
+            "teams": "チーム管理",
+            "rounds": "ラウンド管理",
+            "fields": "フィールド管理",
+            "line": "Line",
+            "maze": "Maze",
+            "maps": "マップ（フィールドレイアウト）管理",
+            "runs": "競技管理"
+        },
+        "teams": {
+            "title": "チーム管理",
+            "add": "チームを追加",
+            "bulk": "一括登録(CSVインポート)"
+        },
+        "rounds": {
+            "title": "ラウンド管理",
+            "add": "ラウンドを追加"
+        },
+        "fields": {
+            "title": "フィールド管理",
+            "add": "フィールドを追加"
+        },
+        "lineMapAdmin": {
+            "title": "Line マップ（フィールドレイアウト）管理",
+            "create": "新しいマップを作る"
+        },
+        "lineRun": {
+            "title": "Line 競技管理",
+            "add": "競技を追加",
+            "bulk": "@:admin.teams.bulk",
+            "monitor": "競技モニター",
+            "status": "ステータス",
+            "st0": "0.競技開始前",
+            "st1": "1.審判ページ表示",
+            "st2": "2.タイマースタート",
+            "st3": "3.記録確認中",
+            "st4": "4.競技終了済み",
+            "st5": "5.記録承認済み"
+        },
+        "lineMapEditor": {
+            "title": "Line マップエディター",
+            "desc": "タイルを左から右にドラッグアンドドロップしてマップを作成します．右側においたタイルの上で右クリックをすると，スコアアイテムを設定できます．",
+            "save": "マップを（上書き）保存",
+            "saveAs": "マップを別名で保存：",
+            "name": "デザイン名：",
+            "height": "最大高さ：",
+            "width": "最大幅（横）：",
+            "length": "最大長さ（縦）：",
+            "check": "チェックポイントマーカーの数：",
+            "finished": "マップが完成した（競技で使用する準備が整った）",
+            "tileset": "タイルセットを選択",
+            "item": "各種項目",
+            "bump": "スピードバンプ：",
+            "obstacle": "障害物：",
+            "down": "坂道で下がる方向",
+            "up": "坂道で上がる方向",
+            "top": "上",
+            "right": "右",
+            "left": "左",
+            "bottom": "下",
+            "nothing": "なし",
+            "noStart": "スタートタイルが設定されていません",
+            "start": "ここは，スタートタイル？"
+        },
+        "teamBulk": {
+            "title": "チーム一括登録",
+            "s1T": "STEP1 テンプレートファイルをダウンロードする",
+            "s1D": "下のリンクから，テンプレートファイルをダウンロードします．",
+            "s2T": "STEP2 ファイルを編集",
+            "s2D1": "CSVファイルを，Excel等で開いて情報を埋めてください．",
+            "s2D2": "リーグは，次の中から一つ選んで記入してください : ",
+            "s3T": "STEP3 ファイルをアップロード",
+            "s3D": "ファイルを選択したら，下に表示される登録内容が正しいかを確認して，よろしければ，『実行』ボタンを押してください．",
+            "exe": "実行",
+            "inpro": "処理中...",
+            "compelete": "件登録完了"
+        },
+        "mazeMapAdmin": {
+            "title": "Maze マップ（フィールドレイアウト）管理",
+            "create": "@:admin.lineMapAdmin.create"
+        },
+        "mazeMapEditor": {
+            "title": "Maze マップエディター",
+            "desc": "壁の部分を押して，迷路を作成します．迷路の床部分をクリックすると，被災者やチェックポイント，バンプなどの項目が設定できます．",
+            "save": "@:admin.lineMapEditor.save",
+            "saveAs": "@:admin.lineMapEditor.saveAs",
+            "name": "@:admin.lineMapEditor.name",
+            "height": "@:admin.lineMapEditor.height",
+            "width": "@:admin.lineMapEditor.width",
+            "length": "@:admin.lineMapEditor.length",
+            "finished": "@:admin.lineMapEditor.finished",
+            "item": "@:admin.lineMapEditor.item",
+            "bump": "@:admin.lineMapEditor.bump",
+            "cp" : "チェックポイント",
+            "black" : "黒タイル",
+            "down": "坂の下の水平なタイル",
+            "up": "坂の上の水平なタイル",
+            "top": "@:admin.lineMapEditor.top",
+            "right": "@:admin.lineMapEditor.right",
+            "left": "@:admin.lineMapEditor.left",
+            "bottom": "@:admin.lineMapEditor.bottom",
+            "noStart": "@:admin.lineMapEditor.noStart",
+            "start": "@:admin.lineMapEditor.start",
+            "placement" : "被災者の配置:",
+            "changeF": "次の階層に移動: ",
+            "noEle": "（エレベーターがありません）"
         }
     }
 }

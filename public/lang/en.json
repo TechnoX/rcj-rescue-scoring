@@ -6,26 +6,29 @@
         "maze": "Rescue Maze",
         "login": "Login",
         "logout": "Logout",
-        "line_description": "This is TEST",
-        "maze_description": "This is TEST2",
+        "line_description": "The robot must be durable and intelligent enough to navigate through treacherous terrain with hills, uneven land and rubble without getting stuck. When the robot finally finds the victims, it has to gently and carefully transport the victims to the safe evacuation point where humans can take over the rescue. After the victim rescue, the robot should be able to find its way out of the dangerous area. ",
+        "maze_description": "The robot must be durable and intelligent enough to navigate through treacherous terrain with hills, uneven land and rubble without getting stuck. The robot must search for victims, dispense rescue kits, and signal the position of the victims so the humans can take over. ",
         "go_line": "Go Line",
         "go_maze": "Go Maze",
         "management": "Competition Management",
-        "access_level": "The you logged in account, {{account}}}, does not have permission to access Competition Management."
+        "access_level": "The you logged in account, {{account}}, does not have permission to access Competition Management."
     },
     "common": {
         "back": "Back",
+        "other": "Other",
         "loading": "Loading...",
         "starttime": "Start Time",
         "field": "Field",
         "team": "Team",
         "round": "Round",
+        "map": "Map",
         "rank": "Rank",
         "score": "Score",
         "time": "Time",
         "rescued": "Rescued",
         "lops": "LoPs",
         "view": "View",
+        "sign": "Sign",
         "judge": "Judge",
         "point": "points",
         "league": "League",
@@ -35,7 +38,13 @@
         "sucess": "Sucess",
         "yes": "Yes",
         "no": "No",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "name": "Name",
+        "delete": "Delete",
+        "operation": "Operation",
+        "create": "Create",
+        "save": "Save",
+        "comment": "Comment"
     },
     "line": {
         "home": {
@@ -70,7 +79,7 @@
             "live": "【LIVE】Victims",
             "dead": "【DEAD】Victims",
             "exit": "Robot exited the evacuation zone after touching at least one victim:",
-            "comment": "Commnet",
+            "comment": "@:common.comment",
             "comment_e": "If you have any comments about the run, please write in the box below. ",
             "sign": "Sign",
             "sign_e": "By wiritng a sign below, you accept that the record are correct. Your team also further undertakes to not appeal the score at a later stage. ",
@@ -175,6 +184,170 @@
             "rank": "Maze - Rank",
             "all": "Maze - All runs",
             "sort": "@:line.score.sort"
+        },
+        "view": {
+            "info": "@:line.view.info",
+            "total_lops": "Total number of LoPs",
+            "return": "Robot returned to starting tile for more than 10s",
+            "comment": "@:line.view.comment",
+            "comment_e": "@:line.view.comment_e",
+            "sign": "@:line.view.sign",
+            "sign_e": "@:line.view.sign_e",
+            "cap_sign": "@:line.view.cap_sign",
+            "ref_sign": "@:line.view.ref_sign",
+            "cref_sign": "@:line.view.cref_sign",
+            "m_score": "Score items",
+            "m_reach": "Reach checkpoint",
+            "m_bump": "Speedbumps",
+            "m_rampb": "Ramp bottom",
+            "m_rampt": "Ramp top",
+            "m_flash": "Flash within 15cm from victim:",
+            "m_kit": "Delivered rescue kits:"
+        },
+        "judge": {
+            "before": "@:line.judge.before",
+            "info": "@:line.view.info",
+            "confirm": "@:line.judge.confirm",
+            "push_timer": "@:line.judge.push_timer",
+            "tim_start": "@:line.judge.tim_start",
+            "tim_stop": "@:line.judge.tim_stop",
+            "tim_reset": "@:line.judge.tim_reset",
+            "ready": "@:line.judge.ready",
+            "total_lops": "@:maze.view.total_lops",
+            "return": "@:maze.view.return",
+            "adjust": "@:line.judge.adjust",
+            "confirm_text": "@:line.judge.confirm_text",
+            "confirm": "@:line.judge.confirm",
+            "m_score": "@:maze.view.m_score",
+            "m_reach": "@:maze.view.m_reach",
+            "m_bump": "@:maze.view.m_bump",
+            "m_rampb": "@:maze.view.m_rampb",
+            "m_rampt": "@:maze.view.m_rampt",
+            "m_flash": "@:maze.view.m_flash",
+            "m_kit": "@:maze.view.m_kit"
+        }
+    },
+    "admin": {
+        "home": {
+            "competitions": "Competitions",
+            "c_item": "Common items",
+            "line_tSet": "Line tilesets",
+            "add_c": "Add competition"
+        },
+        "line_tSet": {
+            "new_tSet": "New tileset: ",
+            "tSet": "Tileset: ",
+            "available": "Available tiles",
+            "tIn": "Tiles in {{setName}}"
+        },
+        "competition": {
+            "title": "Admin console",
+            "common": "Common",
+            "teams": "Teams",
+            "rounds": "Rounds",
+            "fields": "Fields",
+            "line": "Line",
+            "maze": "Maze",
+            "maps": "Maps(Field layout)",
+            "runs": "Runs"
+        },
+        "teams": {
+            "title": "Teams",
+            "add": "Add team",
+            "bulk": "Bulk registration"
+        },
+        "rounds": {
+            "title": "Rounds",
+            "add": "Add round"
+        },
+        "fields": {
+            "title": "Fields",
+            "add": "Add field"
+        },
+        "lineMapAdmin": {
+            "title": "Line Map(Field layout)",
+            "create": "Create a new map"
+        },
+        "lineRun": {
+            "title": "Line Runs",
+            "add": "Add run",
+            "bulk": "@:admin.teams.bulk",
+            "monitor": "Runs monitor",
+            "status": "Status",
+            "st0": "0.Before run",
+            "st1": "1.Display judge page",
+            "st2": "2.Timer start",
+            "st3": "3.Record checking",
+            "st4": "4.Finished",
+            "st5": "5.Approved"
+        },
+        "lineMapEditor": {
+            "title": "Rescue Line map editor",
+            "desc": "Draw the tiles to the field to create a new layout",
+            "save": "Save map",
+            "saveAs": "Save map as:",
+            "name": "Name of design: ",
+            "height": "Max height: ",
+            "width": "Max width: ",
+            "length": "Max length",
+            "check": "Number of checkpoint markers:",
+            "finished": "Finished for using in runs",
+            "tileset": "Select tile set",
+            "item": "Change items",
+            "bump": "Speedbumps: ",
+            "obstacle": "Obstacles",
+            "down": "Direction if ramp down:",
+            "up": "Direction if ramp up:",
+            "top": "Top",
+            "right": "Right",
+            "left": "Left",
+            "bottom": "Bottom",
+            "nothing": "Nothing",
+            "noStart": "No start tile is defined!",
+            "start": "Is start"
+        },
+        "teamBulk": {
+            "title": "Teams Bulk Registration",
+            "s1T": "STEP1 Download the template file",
+            "s1D": "Download the template file from the link below.",
+            "s2T": "STEP2 Edit the file",
+            "s2D1": "Open the csv format of Excel etc. with editable software and fill the information.",
+            "s2D2": "For league, choose one of the next : ",
+            "s3T": "STEP3 Upload the file",
+            "s3D": "After selecting the file, please check the contents displayed below.",
+            "exe": "Execution",
+            "inpro": "Registration in progress ...",
+            "compelete": "Registration completed"
+        },
+        "mazeMapAdmin": {
+            "title": "Maze Map(Field layout)",
+            "create": "@:admin.lineMapAdmin.create"
+        },
+        "mazeMapEditor": {
+            "title": "Rescue Maze map editor",
+            "desc": "Press the walls to create a new layout",
+            "save": "@:admin.lineMapEditor.save",
+            "saveAs": "@:admin.lineMapEditor.saveAs",
+            "name": "@:admin.lineMapEditor.name",
+            "height": "@:admin.lineMapEditor.height",
+            "width": "@:admin.lineMapEditor.width",
+            "length": "@:admin.lineMapEditor.length",
+            "finished": "Finished for using in runs",
+            "item": "@:admin.lineMapEditor.item",
+            "bump": "@:admin.lineMapEditor.bump",
+            "cp" : "Check point",
+            "black" : "Black tile",
+            "down": "Bottom horizontal tile at ramp",
+            "up": "Top horizontal tile at ramp",
+            "top": "@:admin.lineMapEditor.top",
+            "right": "@:admin.lineMapEditor.right",
+            "left": "@:admin.lineMapEditor.left",
+            "bottom": "@:admin.lineMapEditor.bottom",
+            "noStart": "@:admin.lineMapEditor.noStart",
+            "start": "@:admin.lineMapEditor.start",
+            "placement" : "Placement of victims:",
+            "changeF": "Change floor to",
+            "noEle": "(No elevator)"
         }
     }
 }
