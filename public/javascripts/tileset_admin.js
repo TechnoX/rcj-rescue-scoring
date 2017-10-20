@@ -4,14 +4,30 @@ var app = angular.module("TilesetAdmin", ['pascalprecht.translate', 'ngCookies']
         $http.get("/api/maps/line/tilesets?populate=true").then((response) => {
             $scope.tileSets = response.data
             $scope.tileSet = $scope.tileSets[0]
+            $scope.translationData = {
+                setName: $scope.tileSet.name
+            };
 
             if (callback != null) {
                 callback()
             }
         })
     }
-
     updateTileSetList()
+    
+    $scope.$watch('tileSet.name', function(newValue, oldValue, scope) {
+        try{
+        scope.translationData = {
+                setName: scope.tileSet.name
+            };
+        }
+        catch(e){
+            
+        }
+    });
+
+    
+
 
     $http.get("/api/maps/line/tiletypes").then((response) => {
         $scope.tileTypes = response.data
