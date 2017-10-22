@@ -348,6 +348,19 @@
             "placement" : "Placement of victims:",
             "changeF": "Change floor to",
             "noEle": "(No elevator)"
+        },
+        "mazeRun": {
+            "title": "Maze Runs",
+            "add": "@:admin.lineRun.add",
+            "bulk": "@:admin.teams.bulk",
+            "monitor": "@:admin.lineRun.monitor",
+            "status": "@:admin.lineRun.status",
+            "st0": "@:admin.lineRun.st0",
+            "st1": "@:admin.lineRun.st1",
+            "st2": "@:admin.lineRun.st2",
+            "st3": "@:admin.lineRun.st3",
+            "st4": "@:admin.lineRun.st4",
+            "st5": "@:admin.lineRun.st5"
         }
     }
 }

@@ -361,6 +361,19 @@
             "placement" : "被災者の配置:",
             "changeF": "次の階層に移動: ",
             "noEle": "（エレベーターがありません）"
+        },
+        "mazeRun": {
+            "title": "Maze 競技管理",
+            "add": "@:admin.lineRun.add",
+            "bulk": "@:admin.teams.bulk",
+            "monitor": "@:admin.lineRun.monitor",
+            "status": "@:admin.lineRun.status",
+            "st0": "@:admin.lineRun.st0",
+            "st1": "@:admin.lineRun.st1",
+            "st2": "@:admin.lineRun.st2",
+            "st3": "@:admin.lineRun.st3",
+            "st4": "@:admin.lineRun.st4",
+            "st5": "@:admin.lineRun.st5"
         }
     }
 }
