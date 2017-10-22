@@ -7,14 +7,11 @@ block vars
 append scripts
   script.
     var competitionId = "#{id}"
-  script(src = '/components/angular-bootstrap/ui-bootstrap.min.js')
-  script(src = '/components/angular-bootstrap/ui-bootstrap-tpls.min.js')
   script(src = '/components/angular-bootstrap-datetimepicker/src/js/datetimepicker.js')
   script(src = '/components/angular-bootstrap-datetimepicker/src/js/datetimepicker.templates.js')
   script(src='/javascripts/maze_run_admin.js')
 
 append css
-  link(rel='stylesheet' href='/components/angular-bootstrap/ui-bootstrap-csp.css')
   link(rel='stylesheet' href='/components/angular-bootstrap-datetimepicker/src/css/datetimepicker.css')
 
   style(type='text/css').
@@ -40,16 +37,16 @@ block content
   .row
     .col-md-1
     .col-md-10
-      h1 {{competition.name}} - Maze runs
-      table
+      h1 {{competition.name}} - {{"admin.mazeRun.title" | translate}}
+      table.custom
         thead
           tr
-            th Round
-            th Team Name
-            th Map Name
-            th Field Name
-            th Start Time
-            th Action
+            th {{"common.round" | translate}}
+            th {{"common.team" | translate}}
+            th {{"common.map" | translate}}
+            th {{"common.field" | translate}}
+            th {{"common.starttime" | translate}}
+            th {{"common.operation" | translate}}
         tbody
           tr
             td
@@ -63,36 +60,36 @@ block content
             td
               p.input-group
                 span.input-group-btn
-                  button.btn.btn-default(type="button" ng-click="openStartDate()")
-                    i.glyphicon.glyphicon-calendar
+                  button.btn.btn-info(type="button" ng-click="openStartDate()")
+                    i.fa.fa-calendar(aria-hidden='true')
                 input.form-control(type="text" uib-datepicker-popup ng-model="startDate" ng-change="updateStartTime()" is-open="startDatePopup.opened" datepicker-options="startDateOptions" close-text="Close")
               div(uib-timepicker ng-model="startTime" ng-change="updateStartTime()" hour-step="1" minute-step="5" show-meridian="false" show-spinners='true')
             td
-              button(ng-click='addRun()') Add Run
-      a(ng-href='/admin/{{competitionId}}/maze/runs/bulk') Bulk Regstration
+              button(ng-click='addRun()') {{"admin.mazeRun.add" | translate}}
+      a(ng-href='/admin/{{competitionId}}/maze/runs/bulk') {{"admin.mazeRun.bulk" | translate}}
       br
       br
-      a(ng-href='/admin/{{competitionId}}/maze/runs/monitor') Runs Monitor
+      a(ng-href='/admin/{{competitionId}}/maze/runs/monitor') {{"admin.mazeRun.monitor" | translate}}
       center
         .loader
           img(src="/images/loader2.gif")
           p Now Loading...
-      table(class="comp")
+      table.custom
         thead
           tr
-            th Start Time
-            th Round
-            th Team
-            th Field
-            th Score
-            th Time
-            th Status
-            th Comment
+            th {{"common.starttime" | translate}}
+            th {{"common.round" | translate}}
+            th {{"common.team" | translate}}
+            th {{"common.field" | translate}}
+            th {{"common.score" | translate}}
+            th {{"common.time" | translate}}
+            th {{"admin.mazeRun.status" | translate}}
+            th {{"common.comment" | translate}}
             th
             th
             th
             //th
-            th Operation
+            th {{"common.operation" | translate}}
         tbody
           tr(ng-repeat='run in runs | orderBy:"[startTime,round.name,field.name,team.name]"' runs-read-finished='')
             td(ng-bind='run.startTime | date:"dd EEE HH:mm"' ng-style="{'background-color':run.status==5?'#bdafdb':''}" )
@@ -102,21 +99,22 @@ block content
             td(ng-bind='run.score' ng-style="{'background-color':run.status==5?'#bdafdb':''}")
             td(ng-bind="run.time.minutes*60*1000+run.time.seconds*1000 | date:'mm:ss'" ng-style="{'background-color':run.status==5?'#bdafdb':''}")
             td(ng-style="{'background-color':run.status==4?'#ffadad':''}")
-              span(ng-if="run.status==0") 0.Before run
-              span(ng-if="run.status==1") 1.Display judge page
-              span(ng-if="run.status==2") 2.Timer start
-              span(ng-if="run.status==3") 3.Record checking
-              span(ng-if="run.status==4") 4.Finished
-              span(ng-if="run.status==5") 5.Approved
+              span(ng-if="run.status==0") {{"admin.mazeRun.st0" | translate}}
+              span(ng-if="run.status==1") {{"admin.mazeRun.st1" | translate}}
+              span(ng-if="run.status==2") {{"admin.mazeRun.st2" | translate}}
+              span(ng-if="run.status==3") {{"admin.mazeRun.st3" | translate}}
+              span(ng-if="run.status==4") {{"admin.mazeRun.st4" | translate}}
+              span(ng-if="run.status==5") {{"admin.mazeRun.st5" | translate}}
             td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
-              button(uib-popover="{{run.comment}}" popover-trigger="'outsideClick'" type="button" class="btn btn-default" ng-disabled="run.comment==''") Comment
+              button(uib-popover="{{run.comment}}" popover-trigger="'outsideClick'" type="button" class="btn btn-default" ng-disabled="run.comment==''") {{"common.comment" | translate}}
             td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
-              button(ng-click="go('/maze/view/' + run._id)" class='btn btn-info') View
+              button(ng-click="go('/maze/view/' + run._id)" class='btn btn-info') {{"common.view" | translate}}
             td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
-              button(ng-click="go_sign(run._id)" class='btn btn-warning') Sign
+              button(ng-click="go_sign(run._id)" class='btn btn-warning') {{"common.sign" | translate}}
             td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
-              button(ng-click="go_judge(run._id)" class='btn btn-danger') Judge
+              button(ng-click="go_judge(run._id)" class='btn btn-danger') {{"common.judge" | translate}}
             //td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
               button(ng-click="go_approval(run._id)" class='btn btn-secondary') Approval
             td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
-              a(href="" ng-click='removeRun(run)') Delete
+              a(href="" ng-click='removeRun(run)') {{"common.delete" | translate}}
+

@@ -1,6 +1,6 @@
 var xmlHttp;
 
-angular.module("RunAdmin", []).controller("RunAdminController", function ($scope, $http) {
+var app = angular.module("RunAdmin", ['pascalprecht.translate', 'ngCookies']).controller("RunAdminController", function ($scope, $http) {
   $scope.competitionId = competitionId
   
   $http.get("/api/competitions/" + competitionId).then(function (response) {
