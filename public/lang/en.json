@@ -232,7 +232,10 @@
             "competitions": "Competitions",
             "c_item": "Common items",
             "line_tSet": "Line tilesets",
-            "add_c": "Add competition"
+            "add_c": "Add competition",
+            "user": "User management",
+            "access_level": "The you logged in account, {{account}}, does not have permission to access Account management."
+
         },
         "line_tSet": {
             "new_tSet": "New tileset: ",

@@ -8,6 +8,10 @@ router.get('/', function (req, res) {
   res.render('admin_home', {user: req.user})
 })
 
+router.get('/user', function (req, res) {
+  res.render('admin_user', {user: req.user})
+})
+
 router.get('/:competitionid', function (req, res, next) {
   const id = req.params.competitionid
   

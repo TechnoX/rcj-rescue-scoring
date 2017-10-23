@@ -245,13 +245,26 @@
             "competitions": "大会",
             "c_item": "共通項目",
             "line_tSet": "ライン タイルセット",
-            "add_c": "大会を追加"
+            "add_c": "大会を追加",
+            "user": "ユーザー管理",
+            "access_level": "ログイン中のアカウント， {{account}} は，「アカウント管理」にアクセスする権限がありません."
         },
         "line_tSet": {
             "new_tSet": "新しいタイルセット: ",
             "tSet": "タイルセット: ",
             "available": "使用可能タイル",
             "tIn": "{{setName}}のタイル"
+        },
+        "users":{
+            "title": "ユーザー管理",
+            "name": "ユーザー名",
+            "super": "特権管理権限",
+            "admin": "管理権限",
+            "password": "パスワード",
+            "authoritySuper": "特別管理権限付与",
+            "authorityAdmin": "一般管理権限付与",
+            "authorization": "付与",
+            "add": "ユーザーを追加"
         },
         "competition": {
             "title": "管理画面トップ",
