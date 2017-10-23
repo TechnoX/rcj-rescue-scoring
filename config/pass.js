@@ -97,6 +97,16 @@ exports.ensureAdminApi = function ensureAdminApi(req, res, next) {
     res.status(400).send("You need to be admin to do this");
 }
 
+// Check for super
+exports.ensureSuper = function ensureSuper(req, res, next) {
+  if (req.user && req.user.superDuperAdmin === true) {
+    next();
+  } else {
+    now_access = req.originalUrl;
+    res.redirect('/login?page=' + now_access);
+  }
+}
+
 // Check for super, json resp for api calls
 exports.ensureSuperApi = function ensureSuperApi(req, res, next) {
   if (req.user && req.user.superDuperAdmin === true)
