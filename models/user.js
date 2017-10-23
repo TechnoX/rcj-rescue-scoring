@@ -50,6 +50,7 @@ const ACCESSLEVELS = {
   SUPERADMIN: 15,
   ADMIN     : 10,
   JUDGE     : 5,
+  VIEW      : 1,
   NONE      : 0
 }
 module.exports.ACCESSLEVELS = ACCESSLEVELS
@@ -153,7 +154,7 @@ userSchema.methods.comparePassword = function (candidatePassword, cb) {
 }
 
 userSchema.plugin(timestamps);
-var User = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
 
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
 module.exports.user = User;
@@ -169,6 +170,7 @@ var testUser = new User({
 var testUser2 = new User({
   username    : "judge",
   password    : "judgepass",
+  admin          : true,
   competitions: [{
     id         : "5976b89445524f1e629f63f5",
     accessLevel: ACCESSLEVELS.JUDGE

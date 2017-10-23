@@ -96,3 +96,11 @@ exports.ensureAdminApi = function ensureAdminApi(req, res, next) {
   else
     res.status(400).send("You need to be admin to do this");
 }
+
+// Check for super, json resp for api calls
+exports.ensureSuperApi = function ensureSuperApi(req, res, next) {
+  if (req.user && req.user.superDuperAdmin === true)
+    next();
+  else
+    res.status(400).send("You need to be 'superDuperAdmin' to do this");
+}

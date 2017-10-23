@@ -57,6 +57,7 @@ var apiFieldsRoute = require('./routes/api/fields')
 var apiLineRunsRoute = require('./routes/api/lineRuns')
 var apiMazeRunsRoute = require('./routes/api/mazeRuns')
 var apiCompetitionsRoute = require('./routes/api/competitions')
+var apiUserRoute = require('./routes/api/users')
 
 //========================================================================
 //                          Configuration
@@ -120,6 +121,7 @@ app.use('/api/fields', [apiFieldsRoute.public, pass.ensureLoginApi, apiFieldsRou
 app.use('/api/runs/line', [apiLineRunsRoute.public, pass.ensureLoginApi, apiLineRunsRoute.private, pass.ensureAdminApi, apiLineRunsRoute.admin])
 app.use('/api/runs/maze', [apiMazeRunsRoute.public, pass.ensureLoginApi, apiMazeRunsRoute.private, pass.ensureAdminApi, apiMazeRunsRoute.admin])
 app.use('/api/competitions', [apiCompetitionsRoute.public, pass.ensureLoginApi, apiCompetitionsRoute.private, pass.ensureAdminApi, apiCompetitionsRoute.admin])
+app.use('/api/users', [pass.ensureAdminApi, apiUserRoute.admin , pass.ensureSuperApi , apiUserRoute.super])
 
 //========================================================================
 //                          Website static pages(ish)
