@@ -15,41 +15,94 @@ const fs = require('fs')
 
 
 superRouter.get('/', function (req, res) {
-  userdb.user.find({}).lean().exec(function (err, data) {
-    if (err) {
-      logger.error(err)
-      res.status(400).send({
-        msg: "Could not get users",
-        err: err.message
-      })
-    } else {
-      res.status(200).send(data)
-    }
-  })
+    userdb.user.find({}).lean().exec(function (err, data) {
+        if (err) {
+            logger.error(err)
+            res.status(400).send({
+                msg: "Could not get users",
+                err: err.message
+            })
+        } else {
+            res.status(200).send(data)
+        }
+    })
 })
 
-superRouter.get('/:userid', function (req, res, next) {
-  var id = req.params.userid
+superRouter.delete('/:userid', function (req, res, next) {
+    var id = req.params.userid
 
-  if (!ObjectId.isValid(id)) {
-    return next()
-  }
-
-  userdb.user.remove({
-    _id: id
-  }, function (err) {
-    if (err) {
-      logger.error(err)
-      res.status(400).send({
-        msg: "Could not remove user",
-        err: err.message
-      })
-    } else {
-      res.status(200).send({
-        msg: "User has been removed!"
-      })
+    if (!ObjectId.isValid(id)) {
+        return next()
     }
-  })
+
+    userdb.user.remove({
+        _id: id
+    }, function (err) {
+        if (err) {
+            logger.error(err)
+            res.status(400).send({
+                msg: "Could not remove user",
+                err: err.message
+            })
+        } else {
+            res.status(200).send({
+                msg: "User has been removed!"
+            })
+        }
+    })
+})
+
+superRouter.post('/', function (req, res) {
+    var user = req.body
+
+    var newUser = new userdb.user({
+        username: user.username,
+        password: user.password,
+        admin: user.admin,
+        superDuperAdmin: user.superDuperAdmin,
+        competitions: user.competitions
+    })
+
+    userdb.user.findOne({
+        username: newUser.username
+    }, function (err, dbUser) {
+        if (dbUser) {
+            if (newUser.password != null) {
+                dbUser.password = newUser.password
+            }
+            dbUser.admin = newUser.admin
+            dbUser.superDuperAdmin = newUser.superDuperAdmin
+            dbUser.competitions = newUser.competitions
+
+            logger.debug(dbUser)
+
+            dbUser.save(function (err) {
+                if (err) {
+                    logger.error(err)
+                    res.status(400).send({
+                        msg: "Could not regist user :("
+                    })
+                }
+                res.status(200).send({
+                    msg: "User has been registerd!"
+                })
+            })
+        } else {
+            newUser.save(function (err) {
+                if (err) {
+                    logger.error(err)
+                    res.status(400).send({
+                        msg: "Could not regist user :("
+                    })
+                } else {
+                    res.status(200).send({
+                    msg: "User has been registerd!"
+                })
+                }
+            });
+        }
+
+    })
 })
 /*
 publicRouter.get('/:competition', function (req, res, next) {
