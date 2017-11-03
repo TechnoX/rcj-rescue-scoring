@@ -149,10 +149,16 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
         }, function (response) {
             console.log("Error: " + response.statusText);
+            if (response.status == 401) {
+                $scope.go('/home/access_denied');
+            }
         });
 
     }, function (response) {
         console.log("Error: " + response.statusText);
+        if (response.status == 401) {
+            $scope.go('/home/access_denied');
+        }
     });
 
 

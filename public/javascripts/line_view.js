@@ -72,70 +72,75 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
 
     function loadNewRun() {
-        $http.get("/api/runs/line/" + runId +
-            "?populate=true").then(function (response) {
-            console.log(response.data);
-            $scope.LoPs = response.data.LoPs;
-            $scope.evacuationLevel = response.data.evacuationLevel;
-            $scope.exitBonus = response.data.exitBonus;
-            $scope.field = response.data.field.name;
-            $scope.rescuedDeadVictims = response.data.rescuedDeadVictims;
-            $scope.rescuedLiveVictims = response.data.rescuedLiveVictims;
-            $scope.score = response.data.score;
-            $scope.showedUp = response.data.showedUp;
-            $scope.started = response.data.started;
-            $scope.round = response.data.round.name;
-            $scope.team = response.data.team.name;
-            $scope.league = response.data.team.league;
-            $scope.competition = response.data.competition.name;
-            $scope.competition_id = response.data.competition._id;
-            $scope.retired = response.data.retired;
-            // Verified time by timekeeper
-            $scope.minutes = response.data.time.minutes;
-            $scope.seconds = response.data.time.seconds;
-
-            $scope.cap_sig = response.data.sign.captain;
-            $scope.ref_sig = response.data.sign.referee;
-            $scope.refas_sig = response.data.sign.referee_as;
-
-            $scope.comment = response.data.comment;
-
-            // Scoring elements of the tiles
-            $scope.stiles = response.data.tiles;
-
-            for (var i = 0; i < response.data.tiles.length; i++) {
-                if (response.data.tiles[i].isDropTile) {
-                    $scope.actualUsedDropTiles++;
-                    marker[i] = true;
-                }
-            }
-
-            // Get the map
-            $http.get("/api/maps/line/" + response.data.map +
+        
+            $http.get("/api/runs/line/" + runId +
                 "?populate=true").then(function (response) {
-                console.log(response.data);
+                //console.log(response.data);
+                $scope.LoPs = response.data.LoPs;
+                $scope.evacuationLevel = response.data.evacuationLevel;
+                $scope.exitBonus = response.data.exitBonus;
+                $scope.field = response.data.field.name;
+                $scope.rescuedDeadVictims = response.data.rescuedDeadVictims;
+                $scope.rescuedLiveVictims = response.data.rescuedLiveVictims;
+                $scope.score = response.data.score;
+                $scope.showedUp = response.data.showedUp;
+                $scope.started = response.data.started;
+                $scope.round = response.data.round.name;
+                $scope.team = response.data.team.name;
+                $scope.league = response.data.team.league;
+                $scope.competition = response.data.competition.name;
+                $scope.competition_id = response.data.competition._id;
+                $scope.retired = response.data.retired;
+                // Verified time by timekeeper
+                $scope.minutes = response.data.time.minutes;
+                $scope.seconds = response.data.time.seconds;
+                
+                try{
+                    $scope.cap_sig = response.data.sign.captain;
+                    $scope.ref_sig = response.data.sign.referee;
+                    $scope.refas_sig = response.data.sign.referee_as;
 
-                $scope.height = response.data.height;
-                $scope.sliderOptions.ceil = $scope.height - 1;
-                $scope.width = response.data.width;
-                $scope.length = response.data.length;
-                width = response.data.width;
-                length = response.data.length;
-                $scope.startTile = response.data.startTile;
-                $scope.numberOfDropTiles = response.data.numberOfDropTiles;;
-                $scope.mtiles = {};
+                    $scope.comment = response.data.comment;
+                }catch(err){}
+                // Scoring elements of the tiles
+                $scope.stiles = response.data.tiles;
+
                 for (var i = 0; i < response.data.tiles.length; i++) {
-                    $scope.mtiles[response.data.tiles[i].x + ',' +
-                        response.data.tiles[i].y + ',' +
-                        response.data.tiles[i].z] = response.data.tiles[i];
+                    if (response.data.tiles[i].isDropTile) {
+                        $scope.actualUsedDropTiles++;
+                        marker[i] = true;
+                    }
                 }
 
+                // Get the map
+                $http.get("/api/maps/line/" + response.data.map +
+                    "?populate=true").then(function (response) {
+                    console.log(response.data);
+
+                    $scope.height = response.data.height;
+                    $scope.sliderOptions.ceil = $scope.height - 1;
+                    $scope.width = response.data.width;
+                    $scope.length = response.data.length;
+                    width = response.data.width;
+                    length = response.data.length;
+                    $scope.startTile = response.data.startTile;
+                    $scope.numberOfDropTiles = response.data.numberOfDropTiles;;
+                    $scope.mtiles = {};
+                    for (var i = 0; i < response.data.tiles.length; i++) {
+                        $scope.mtiles[response.data.tiles[i].x + ',' +
+                            response.data.tiles[i].y + ',' +
+                            response.data.tiles[i].z] = response.data.tiles[i];
+                    }
+
+                }, function (response) {
+                    console.log("Error: " + response.statusText);
+                });
             }, function (response) {
                 console.log("Error: " + response.statusText);
+                if (response.status == 401) {
+                    $scope.go('/home/access_denied');
+                }
             });
-        }, function (response) {
-            console.log("Error: " + response.statusText);
-        });
     }
 
 
