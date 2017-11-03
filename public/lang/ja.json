@@ -46,6 +46,11 @@
         "save": "保存",
         "comment": "コメント"
     },
+    "accessDenied":{
+        "title" : "アクセス拒絶",
+        "description1" : "このページにアクセスする権限がありません．権限のあるアカウントでログインしてください．",
+        "description2" : "この画面が不具合によって表示されていると疑われる場合は，システム管理者にお問い合わせください．"
+    },
     "line": {
         "home": {
             "title": "Line - 大会選択"
@@ -54,8 +59,10 @@
             "title": "Line 競技選択",
             "result": "競技結果・速報順位",
             "refine": {
-                "round": "ラウンド絞り込み",
-                "field": "フィールド絞り込み"
+                "filter": "競技絞り込み",
+                "round": "ラウンド",
+                "field": "フィールド",
+                "team" : "チーム名"
             },
             "endedrun": "終了した競技を表示",
             "js": {
@@ -168,8 +175,10 @@
             "title": "Maze 競技選択",
             "result": "@:line.competition.result",
             "refine": {
+                "filter": "@:line.competition.refine.filter",
                 "round": "@:line.competition.refine.round",
-                "field": "@:line.competition.refine.field"
+                "field": "@:line.competition.refine.field",
+                "team": "@:line.competition.refine.team"
             },
             "endedrun": "@:line.competition.endedrun",
             "js": {
@@ -272,6 +281,7 @@
             "teams": "チーム管理",
             "rounds": "ラウンド管理",
             "fields": "フィールド管理",
+            "authority": "権限設定",
             "line": "Line",
             "maze": "Maze",
             "maps": "マップ（フィールドレイアウト）管理",
@@ -387,6 +397,20 @@
             "st3": "@:admin.lineRun.st3",
             "st4": "@:admin.lineRun.st4",
             "st5": "@:admin.lineRun.st5"
+        },
+        "authority": {
+            "title": "権限設定",
+            "description": "この競技に対するユーザーの権限（役割）を設定できます．",
+            "name": "ユーザー名",
+            "nowLevel": "現在の権限レベル",
+            "level0": "アクセス権なし",
+            "level1": "閲覧",
+            "level5": "審判",
+            "level10": "管理",
+            "doLevel0": "【アクセス権なし】に設定",
+            "doLevel1": "【閲覧】に設定",
+            "doLevel5": "【審判】に設定",
+            "doLevel10": "【管理】に設定"
         }
     }
 }
