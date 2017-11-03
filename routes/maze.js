@@ -4,6 +4,8 @@ var publicRouter = express.Router()
 var privateRouter = express.Router()
 var adminRouter = express.Router()
 var ObjectId = require('mongoose').Types.ObjectId
+const auth = require('../helper/authLevels')
+const ACCESSLEVELS = require('../models/user').ACCESSLEVELS
 
 /* GET home page. */
 publicRouter.get('/', function (req, res) {
@@ -17,11 +19,8 @@ publicRouter.get('/:competitionid', function (req, res, next) {
     if (!ObjectId.isValid(id)) {
         return next()
     }
-
-    res.render('maze_competition', {
-        id: id,
-        user: req.user
-    })
+    if(auth.authCompetition(req.user,id,ACCESSLEVELS.JUDGE)) res.render('maze_competition', {id: id, user: req.user, judge: 1})
+    else res.render('maze_competition', {id: id, user: req.user, judge: 0})
 })
 
 publicRouter.get('/:competitionid/score', function (req, res, next) {

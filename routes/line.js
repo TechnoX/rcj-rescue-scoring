@@ -3,7 +3,10 @@ var express = require('express')
 var publicRouter = express.Router()
 var privateRouter = express.Router()
 var adminRouter = express.Router()
+const logger = require('../config/logger').mainLogger
 var ObjectId = require('mongoose').Types.ObjectId
+const auth = require('../helper/authLevels')
+const ACCESSLEVELS = require('../models/user').ACCESSLEVELS
 
 /* GET home page. */
 publicRouter.get('/', function (req, res) {
@@ -16,8 +19,8 @@ publicRouter.get('/:competitionid', function (req, res, next) {
   if (!ObjectId.isValid(id)) {
     return next()
   }
-  
-  res.render('line_competition', {id: id, user: req.user})
+  if(auth.authCompetition(req.user,id,ACCESSLEVELS.JUDGE)) res.render('line_competition', {id: id, user: req.user, judge: 1})
+  else res.render('line_competition', {id: id, user: req.user, judge: 0})
 })
 
 publicRouter.get('/:competitionid/score', function (req, res, next) {
@@ -31,13 +34,12 @@ publicRouter.get('/:competitionid/score', function (req, res, next) {
 })
 
 
-publicRouter.get('/view/:roundid', function (req, res, next) {
-  const id = req.params.roundid
+publicRouter.get('/view/:runid', function (req, res, next) {
+  const id = req.params.runid
   
   if (!ObjectId.isValid(id)) {
     return next()
   }
-  
   res.render('line_view', {id: id})
 })
 publicRouter.get('/viewfield', function (req, res, next) {
@@ -69,11 +71,12 @@ publicRouter.get('/viewcurrent', function (req, res) {
   res.render('line_view_current')
 })
 
-privateRouter.get('/judge/:roundid', function (req, res, next) {
-  const id = req.params.roundid
+privateRouter.get('/judge/:runid', function (req, res, next) {
+  const id = req.params.runid
   if (!ObjectId.isValid(id)) {
     return next()
   }
+  logger.debug(req)
   res.render('line_judge', {id: id})
 })
 
