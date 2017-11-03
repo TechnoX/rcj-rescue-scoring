@@ -1,4 +1,5 @@
 "use strict"
+var mongoose = require('mongoose');
 const logger = require('../config/logger').mainLogger
 
 const ACCESSLEVELS = require('../models/user').ACCESSLEVELS
@@ -10,15 +11,18 @@ const ACCESSLEVELS = require('../models/user').ACCESSLEVELS
  */
 function authViewRun(user, run, level) {
   if (run == null) {
-    return false
+    return 0
   }
   
   if (user == null) {
-    return run.started !== undefined && run.started
+    if(run.sign.captain != ""){
+        return 2
+    }
+    return 0
   }
   
   if (user.superDuperAdmin) {
-    return true
+    return 1
   }
   
   if (run.competition != undefined && run.competition.constructor == String) {
@@ -28,13 +32,20 @@ function authViewRun(user, run, level) {
     var competitionId = run.competition._id
   }
   if (authCompetition(user, competitionId, level)) {
-    return true
+    return 1
   }
-  return false
+  if(run.sign.captain != ""){
+        return 2
+  }
+  return 0
 }
 module.exports.authViewRun = authViewRun
 
 function authJudgeRun(user, run, level) {
+    
+  if (run == null) {
+    return false
+  }
   if (user == null) {
     return false
   }
@@ -42,7 +53,6 @@ function authJudgeRun(user, run, level) {
   if (user.superDuperAdmin) {
     return true
   }
-  
   if (run.competition != undefined && run.competition.constructor == String) {
     var competitionId = run.competition
   } else if (run.competition != undefined &&
@@ -50,12 +60,7 @@ function authJudgeRun(user, run, level) {
     var competitionId = run.competition._id
   }
   if (authCompetition(user, competitionId, level)) {
-    for (let i = 0; i < run.judges.length; i++) {
-      const comp = user.competitions[i]
-      if (comp[i].id == competitionId && comp[i].accessLevel >= authLevels) {
-        return true
-      }
-    }
+    return true
   }
   return false
 }
