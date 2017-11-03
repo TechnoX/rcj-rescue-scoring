@@ -46,11 +46,6 @@
         "save": "Save",
         "comment": "Comment"
     },
-    "accessDenied":{
-        "title" : "Access denied",
-        "description1" : "You do not have permission to access this page. Please login with authorized account.",
-        "description2" : "If you suspect this screen is displayed due to any problem, please contact system administrator."
-    },
     "line": {
         "home": {
             "title": "Line - Competitions"
@@ -59,10 +54,8 @@
             "title": "Line runs",
             "result": "Result (preliminary report ranking)",
             "refine": {
-                "filter": "Filter",
-                "round": "Round",
-                "field": "Field",
-                "team" : "Team name"
+                "round": "Refine by round",
+                "field": "Refine by field"
             },
             "endedrun": "Display ended runs",
             "js": {
@@ -178,10 +171,8 @@
             "title": "Maze runs",
             "result": "@:line.competition.result",
             "refine": {
-                "filter": "@:line.competition.refine.filter",
                 "round": "@:line.competition.refine.round",
-                "field": "@:line.competition.refine.field",
-                "team": "@:line.competition.refine.team"
+                "field": "@:line.competition.refine.field"
             },
             "endedrun": "@:line.competition.endedrun",
             "js": {
@@ -252,24 +243,12 @@
             "available": "Available tiles",
             "tIn": "Tiles in {{setName}}"
         },
-        "users":{
-            "title": "User management",
-            "name": "User name",
-            "super": "Super Admin role",
-            "admin": "Admin role",
-            "password": "Password",
-            "authoritySuper": "Grant Super Admin role",
-            "authorityAdmin": "Grant Admin role",
-            "authorization": "Grant",
-            "add": "Add User"
-        },
         "competition": {
             "title": "Admin console",
             "common": "Common",
             "teams": "Teams",
             "rounds": "Rounds",
             "fields": "Fields",
-            "authority": "Authority",
             "line": "Line",
             "maze": "Maze",
             "maps": "Maps(Field layout)",
@@ -385,20 +364,6 @@
             "st3": "@:admin.lineRun.st3",
             "st4": "@:admin.lineRun.st4",
             "st5": "@:admin.lineRun.st5"
-        },
-        "authority": {
-            "title": "Authority",
-            "description": "You can set the user's authority (role) for this competition.",
-            "name": "User name",
-            "nowLevel": "Current authority level",
-            "level0": "No access",
-            "level1": "View",
-            "level5": "Judge",
-            "level10": "Admin",
-            "doLevel0": "Set【No access】",
-            "doLevel1": "Set【View】",
-            "doLevel5": "Set【Judge】",
-            "doLevel10": "Set【Admin】"
         }
     }
 }
