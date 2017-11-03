@@ -31,16 +31,17 @@
                     <div class="input-group" style="width:100%;">
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-danger"  ng-click="decKits(direction)">
-                                <i class="fa fa-minus" aria-hidden="true"></i>
+                                <i class="fa fa-2x fa-minus" aria-hidden="true"></i>
                             </button>
                         </span>
-                        <input type="text" name="quant[2]" class="form-control input-number" ng-model="tile.scoredItems.rescueKits[direction] +' '+direction" min="1" max="12" readonly="readonly">
+                        <input type="text" name="quant[2]" class="form-control input-number" ng-model="tile.scoredItems.rescueKits[direction] +' '+direction" min="1" max="12" readonly="readonly" style="font-size:25px;">
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-success" ng-click="incKits(direction)">
-                                <i class="fa fa-plus" aria-hidden="true"></i>
+                                <i class="fa fa-2x fa-plus" aria-hidden="true"></i>
                             </button>
                         </span>
                     </div>
+                    <br>
                 </li>
 
             </ul>
