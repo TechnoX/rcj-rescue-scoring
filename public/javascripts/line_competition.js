@@ -1,6 +1,10 @@
 var app = angular.module("LineCompetition", ['pascalprecht.translate', 'ngCookies']);
 app.controller("LineCompetitionController", ['$scope', '$http', '$translate', function ($scope, $http, $translate) {
     $scope.competitionId = competitionId
+    $scope.isJudge = isJudge
+    if(isJudge == 0) $scope.show_ended = true
+    else $scope.show_ended = false
+    
     var val_go_judge, val_no_judge;
     $translate('line.competition.js.go_judge').then(function (val) {
         val_go_judge = val;
@@ -19,10 +23,12 @@ app.controller("LineCompetitionController", ['$scope', '$http', '$translate', fu
         setTimeout(updateTime, 1000 * 60)
     }
     updateTime()
-    $scope.show_ended = false
+
 
     var showAllRounds = true
     var showAllFields = true
+    var showAllTeams = true
+    $scope.teamName = ""
 
     $http.get("/api/competitions/" + competitionId).then(function (response) {
         $scope.competition = response.data
@@ -92,15 +98,20 @@ app.controller("LineCompetitionController", ['$scope', '$http', '$translate', fu
             }
         }
     }, true)
+    $scope.$watch('teamName', function (newValue, oldValue) {
+        if(newValue == '') showAllTeams = true
+        else showAllTeams = false
+        return
+    }, true)
 
     $scope.update_list()
 
     $scope.list_filter = function (value, index, array) {
         if (!value.field) {
-            return (showAllRounds || $scope.rounds[value.round.name]) && showAllFields
+            return (showAllRounds || $scope.rounds[value.round.name]) && showAllFields &&(~value.team.name.indexOf($scope.teamName) || showAllTeams)
         }
         return (showAllRounds || $scope.rounds[value.round.name]) &&
-            (showAllFields || $scope.fields[value.field.name])
+            (showAllFields || $scope.fields[value.field.name])  && (showAllTeams || ~value.team.name.indexOf($scope.teamName))
     }
 
 

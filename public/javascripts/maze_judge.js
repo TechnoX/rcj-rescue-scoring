@@ -75,10 +75,16 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
         }, function (response) {
             console.log("Error: " + response.statusText);
+            if (response.status == 401) {
+                $scope.go('/home/access_denied');
+            }
         });
 
     }, function (response) {
         console.log("Error: " + response.statusText);
+        if (response.status == 401) {
+            $scope.go('/home/access_denied');
+        }
     });
 
 
@@ -456,7 +462,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             animation: true,
             templateUrl: '/templates/maze_judge_modal.html',
             controller: 'ModalInstanceCtrl',
-            size: 'sm',
+            size: 'lm',
             resolve: {
                 cell: function () {
                     return $scope.cells[x + ',' + y + ',' + z];
