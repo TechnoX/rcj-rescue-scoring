@@ -69,9 +69,9 @@ function getMazeRuns(req, res) {
   }
   
   if (req.query['minimum']) {
-    query.select("competition round team field status started startTime")
+    query.select("competition round team field status started startTime sign")
   } else {
-    query.select("competition round team field map score time status started comment startTime")
+    query.select("competition round team field map score time status started comment startTime sign")
   }
   
   
@@ -110,9 +110,14 @@ function getMazeRuns(req, res) {
     } else if (dbRuns) {
       // Hide map and field from public
       for (let i = 0; i < dbRuns.length; i++) {
-        if (!auth.authViewRun(req.user, dbRuns[i], ACCESSLEVELS.NONE + 1)) {
+        var authResult = auth.authViewRun(req.user, dbRuns[i], ACCESSLEVELS.VIEW)
+        if (authResult == 0) {
           delete dbRuns[i].map
           delete dbRuns[i].field
+          delete dbRuns[i].comment
+          delete dbRuns[i].sign
+        }
+        else if(authResult ==2){
           delete dbRuns[i].comment
           delete dbRuns[i].sign
         }
@@ -264,12 +269,17 @@ publicRouter.get('/:runid', function (req, res, next) {
       })
     } else {
       // Hide map and field from public
-      if (!auth.authViewRun(req.user, dbRun, ACCESSLEVELS.NONE + 1)) {
-        delete dbRun.map
-        delete dbRun.field
-        delete dbRun.comment
-        delete dbRun.sign
-      }
+      // Hide map and field from public
+      var authResult = auth.authViewRun(req.user, dbRun, ACCESSLEVELS.VIEW)
+      if (authResult == 0) {
+          return res.status(401).send({
+                                msg: "You have no authority to access this api!!"
+              })
+        }
+        else if(authResult ==2){
+          delete dbRun.comment
+          delete dbRun.sign
+        }
       return res.status(200).send(dbRun)
     }
   })
@@ -338,7 +348,11 @@ privateRouter.put('/:runid', function (req, res, next) {
           err: err.message
         })
       } else {
-        
+        if(!auth.authCompetition(req.user , dbRun.competition , ACCESSLEVELS.JUDGE)){
+              return res.status(401).send({
+                                msg: "You have no authority to access this api!!"
+              })
+          }
         
         // Recursively updates properties in "dbObj" from "obj"
         const copyProperties = function (obj, dbObj) {
@@ -464,6 +478,24 @@ adminRouter.delete('/:runid', function (req, res, next) {
     return next()
   }
   
+  mazeRun.findById(id)
+    .select("competition")
+    .exec(function (err, dbRun) {
+      if (err) {
+        logger.error(err)
+        res.status(400).send({
+          msg: "Could not get run",
+          err: err.message
+        })
+      } else if (dbRun) {
+          if(!auth.authCompetition(req.user , dbRun.competition , ACCESSLEVELS.ADMIN)){
+              return res.status(401).send({
+                                msg: "You have no authority to access this api"
+              })
+          }
+      }
+    })
+    
   mazeRun.remove({
     _id: id
   }, function (err) {
@@ -501,6 +533,11 @@ adminRouter.delete('/:runid', function (req, res, next) {
 adminRouter.post('/', function (req, res) {
   const run = req.body
   
+  if(!auth.authCompetition(req.user , run.competition._id , ACCESSLEVELS.ADMIN)){
+      return res.status(401).send({
+                        msg: "You have no authority to access this api"
+      })
+  }
   new mazeRun({
     competition: run.competition,
     round      : run.round,
