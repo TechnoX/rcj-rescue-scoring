@@ -7,13 +7,14 @@ block vars
 append scripts
   script.
     var competitionId = "#{id}"
+    var isJudge = "#{judge}"
 
   script(src='/javascripts/maze_competition.js')
 
 
 block location
-  a.breadcrumb-item(onclick="location.href='/home'") Home
-  a.breadcrumb-item(onclick="location.href='/maze'") Maze
+  a.breadcrumb-item(href='/home') Home
+  a.breadcrumb-item(href='/maze') Maze
   span.breadcrumb-item.active {{competition.name}}
 
 
@@ -23,20 +24,34 @@ block content
     .col-md-10
       h1 {{'maze.competition.title' | translate}} - {{competition.name}}
       br
-      button(ng-click="go('/maze/' + competition._id + '/score')" class='btn btn-outline-info btn-lg btn-block') {{'maze.competition.result' | translate}}
+      button(ng-click="go('/maze/' + competition._id + '/score')" class='btn btn-outline-info btn-lg btn-block')
+        i.fa.fa-trophy(aria-hidden='true')  {{'maze.competition.result' | translate}}
       br
       .refine
-        h6 {{'maze.competition.refine.round' | translate}}
-        span(ng-repeat='(key, value) in rounds track by key')
-          input(type='checkbox' ng-model='rounds[key]' id="checkR_{{key}}")
-          label.checkbox(for="checkR_{{key}}") {{key}}
-        h6 {{'maze.competition.refine.field' | translate}}
-        span(ng-repeat='(key, value) in fields track by key')
-          input(type='checkbox' ng-model='fields[key]' id="checkF_{{key}}")
-          label.checkbox(for="checkF_{{key}}") {{key}}
+        .card.border-dark.mb-3(style='width:100%;')
+          .card-header.bg-transparent.border-dark
+            i.fa.fa-2x.fa-search(aria-hidden='true') {{'maze.competition.refine.filter' | translate}}
+          .card-body.text-dark
+            h6.card-title
+                {{'maze.competition.refine.round' | translate}}
+            span(ng-repeat='(key, value) in rounds track by key')
+              input(type='checkbox' ng-model='rounds[key]' id="checkR_{{key}}")
+              label.checkbox(for="checkR_{{key}}") {{key}}
+            hr
+            h6.card-title
+                {{'maze.competition.refine.field' | translate}}
+            span(ng-repeat='(key, value) in fields track by key')
+              input(type='checkbox' ng-model='fields[key]' id="checkF_{{key}}")
+              label.checkbox(for="checkF_{{key}}") {{key}}
+            hr
+            h6.card-title {{'maze.competition.refine.team' | translate}}
+            .input-group
+              span#basic-addon1.input-group-addon
+                i.fa.fa-users(aria-hidden='true')
+              input.form-control(type='text', placeholder='Team name', aria-label='Username', aria-describedby='basic-addon1' ng-model='teamName')
       hr
       input#showEnd(type='checkbox' ng-model='show_ended' ng-change='update_list()')
-      label.checkbox(for='showEnd') {{'line.competition.endedrun' | translate}}
+      label.checkbox(for='showEnd') {{'maze.competition.endedrun' | translate}}
       br
       center
         .loader(ng-show="runs==null")
@@ -58,9 +73,9 @@ block content
                 td(ng-bind='run.round.name' data-content="{{'common.round' | translate}}")
                 td(ng-bind='run.field.name' data-content="{{'common.field' | translate}}")
                 td
-                  button(ng-click="go('/maze/view/' + run._id)" class='btn btn-info' style="width:45%; margin-right:5px;") {{'common.view' | translate}}
+                  button(ng-if= "run.field != null" ng-click="go('/maze/view/' + run._id)" class='btn btn-info' style="width:45%; margin-right:5px;") {{'common.view' | translate}}
+                  button(ng-if= "run.field == null" ng-click="go('/home/access_denied')" class='btn btn-info' style="width:45%; margin-right:5px;") {{'common.view' | translate}}
                   //button(ng-click="no_judge()" class='btn btn-danger' ng-if="run.status>=3"  style="width:45%;") {{'common.judge' | translate}}
-                  button(ng-click="go_judge('/maze/judge/' + run._id , run.team.name)" class='btn btn-danger' ng-if="run.status<3"  style="width:45%;") {{'common.judge' | translate}}
-      br
+                  button(ng-click="go_judge('/maze/judge/' + run._id , run.team.name)" class='btn btn-danger' ng-if="run.status<3 && isJudge == 1"  style="width:45%;") {{'common.judge' | translate}}
       br
       br
