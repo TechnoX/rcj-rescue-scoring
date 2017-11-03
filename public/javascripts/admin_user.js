@@ -9,7 +9,7 @@ var app = angular.module("AdminUser", ['pascalprecht.translate', 'ngCookies']).c
             password: $scope.userPass,
             admin: $scope.userAuthAdmin,
             superDuperAdmin: $scope.userAuthSuper,
-            competitions: ""
+            competitions: []
         }
         console.log(newUser)
         $http.post("/api/users", newUser).then(function (response) {
