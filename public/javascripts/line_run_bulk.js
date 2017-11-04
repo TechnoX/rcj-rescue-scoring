@@ -42,7 +42,7 @@ var app = angular.module("RunAdmin", ['pascalprecht.translate', 'ngCookies']).co
 
     get_round = function () {
         $http.get("/api/competitions/" + competitionId +
-            "/rounds/Line/" + obj[$scope.now][0]).then(function (response) {
+            "/rounds/" + obj[$scope.now][0]).then(function (response) {
             $scope.now_round = response.data;
             setTimeout(get_team, 100);
         }, function (error) {
@@ -52,7 +52,7 @@ var app = angular.module("RunAdmin", ['pascalprecht.translate', 'ngCookies']).co
 
     get_team = function () {
         $http.get("/api/competitions/" + competitionId +
-            "/teams/Line/" + obj[$scope.now][1]).then(function (response) {
+            "/teams/" + obj[$scope.now][1]).then(function (response) {
             $scope.now_team = response.data;
             setTimeout(get_field, 100);
         }, function (error) {
@@ -62,7 +62,7 @@ var app = angular.module("RunAdmin", ['pascalprecht.translate', 'ngCookies']).co
 
     get_field = function () {
         $http.get("/api/competitions/" + competitionId +
-            "/fields/Line/" + obj[$scope.now][3]).then(function (response) {
+            "/fields/" + obj[$scope.now][3]).then(function (response) {
             $scope.now_field = response.data;
             setTimeout(get_map, 100);
         }, function (error) {
@@ -71,7 +71,7 @@ var app = angular.module("RunAdmin", ['pascalprecht.translate', 'ngCookies']).co
     }
 
     get_map = function () {
-        $http.get("/api/maps/line/name/" +
+        $http.get("/api/maps/line/name/" + competitionId + "/" +
             obj[$scope.now][2]).then(function (response) {
             $scope.now_map = response.data;
             setTimeout(exe, 100);

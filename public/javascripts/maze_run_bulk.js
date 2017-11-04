@@ -63,7 +63,7 @@ var app = angular.module("RunAdmin", ['pascalprecht.translate', 'ngCookies']).co
   }
   
   get_map = function () {
-    $http.get("/api/maps/maze/name/" +
+    $http.get("/api/maps/maze/name/" + competitionId + "/" +
               obj[$scope.now][2]).then(function (response) {
       $scope.now_map = response.data;
       setTimeout(exe, 100);
