@@ -13,6 +13,13 @@
         "management": "大会管理",
         "access_level": "ログイン中のアカウント， {{account}} は，「大会管理」にアクセスする権限がありません."
     },
+    "login": {
+        "title" : "Staff Login",
+        "description": "競技管理者から通知された，ユーザー名とパスワードを入力してログインしてください．",
+        "login" : "ログイン",
+        "failed" : "ユーザー名，パスワードが一致しません．もう一度ご確認ください．",
+        "return" : "ログインに成功すると，元のアクセスページに戻ります．"
+    },
     "common": {
         "back": "戻る",
         "other": "その他",
@@ -105,7 +112,7 @@
             "tim_start": "スタート",
             "tim_stop": "ストップ",
             "tim_reset": "リセット",
-            "select_elevel": "被災者救助レベルを設定してください：",
+            "select_elevel": "被災者救助レベル選択",
             "high": "@:line.view.high",
             "low": "@:line.view.low",
             "ready": "得点記録を開始する準備が整いました！",
@@ -317,11 +324,28 @@
             "st4": "4.競技終了済み",
             "st5": "5.記録承認済み"
         },
+        "lineRunBulk": {
+            "title": "Line 競技一括登録",
+            "s1T": "STEP1 テンプレートファイルをダウンロードする",
+            "s1D": "下のリンクから，テンプレートファイルをダウンロードします．",
+            "s2T": "STEP2 ファイルを編集",
+            "s2D1": "CSVファイルを，Excel等で開いて情報を埋めてください．",
+            "s2D2": "ラウンドは，次の中から一つ選んで記入してください : ",
+            "s2D3": "チーム名は，次の中から一つ選んで記入してください : ",
+            "s2D4": "マップ名は，次の中から一つ選んで記入してください : ",
+            "s2D5": "フィールド名は，次の中から一つ選んで記入してください : ",
+            "s2D6": "スタート時間は，次のフォーマットに従って入力してください ",
+            "s3T": "STEP3 ファイルをアップロード",
+            "s3D": "ファイルを選択したら，下に表示される登録内容が正しいかを確認して，よろしければ，『実行』ボタンを押してください．",
+            "exe": "実行",
+            "inpro": "処理中...",
+            "compelete": "件登録完了"
+        },
         "lineMapEditor": {
             "title": "Line マップエディター",
             "desc": "タイルを左から右にドラッグアンドドロップしてマップを作成します．右側においたタイルの上で右クリックをすると，スコアアイテムを設定できます．",
             "save": "マップを（上書き）保存",
-            "saveAs": "マップを別名で保存：",
+            "saveAs": "マップを別名で保存",
             "name": "デザイン名：",
             "height": "最大高さ：",
             "width": "最大幅（横）：",
@@ -397,6 +421,23 @@
             "st3": "@:admin.lineRun.st3",
             "st4": "@:admin.lineRun.st4",
             "st5": "@:admin.lineRun.st5"
+        },
+        "mazeRunBulk": {
+            "title": "Maze 競技一括登録",
+            "s1T": "@:admin.lineRunBulk.s1T",
+            "s1D": "@:admin.lineRunBulk.s1D",
+            "s2T": "@:admin.lineRunBulk.s2T",
+            "s2D1": "@:admin.lineRunBulk.s2D1",
+            "s2D2": "@:admin.lineRunBulk.s2D2",
+            "s2D3": "@:admin.lineRunBulk.s2D3",
+            "s2D4": "@:admin.lineRunBulk.s2D4",
+            "s2D5": "@:admin.lineRunBulk.s2D5",
+            "s2D6": "@:admin.lineRunBulk.s2D6",
+            "s3T": "@:admin.lineRunBulk.s3T",
+            "s3D": "@:admin.lineRunBulk.s3D",
+            "exe": "@:admin.lineRunBulk.exe",
+            "inpro": "@:admin.lineRunBulk.inpro",
+            "compelete": "@:admin.lineRunBulk.complete"
         },
         "authority": {
             "title": "権限設定",

@@ -13,6 +13,13 @@
         "management": "Competition Management",
         "access_level": "The you logged in account, {{account}}, does not have permission to access Competition Management."
     },
+    "login": {
+        "title" : "Staff Login",
+        "description": "Please enter the username and password notified by the competition manager and login.",
+        "login" : "Login",
+        "failed" : "Sorry, your username or password cannot be recognized.",
+        "return" : "When login is successful, it returns to the you tried access page."
+    },
     "common": {
         "back": "Back",
         "other": "Other",
@@ -107,7 +114,7 @@
             "tim_start": "Start",
             "tim_stop": "Stop",
             "tim_reset": "Reset",
-            "select_elevel": "Please select the evacuation level:",
+            "select_elevel": "Select evacuation level",
             "high": "@:line.view.high",
             "low": "@:line.view.low",
             "ready": "We are ready to start run recording!!",
@@ -305,11 +312,28 @@
             "st4": "4.Finished",
             "st5": "5.Approved"
         },
+        "lineRunBulk": {
+            "title": "Line Run Bulk Registration",
+            "s1T": "STEP1 Download the template file",
+            "s1D": "Download the template file from the link below.",
+            "s2T": "STEP2 Edit the file",
+            "s2D1": "Open the csv format of Excel etc. with editable software and fill the information.",
+            "s2D2": "For Round, select one from the following and enter.",
+            "s2D3": "For Team name, select one from the following and enter.",
+            "s2D4": "For Map name, select one from the following and enter.",
+            "s2D5": "For Field name, select one from the following and enter. ",
+            "s2D6": "Enter start time in the following format ",
+            "s3T": "STEP3 Upload the file",
+            "s3D": "After selecting the file, please check the contents displayed below.",
+            "exe": "Execution",
+            "inpro": "Registration in progress ...",
+            "compelete": "Registration completed"
+        },
         "lineMapEditor": {
             "title": "Rescue Line map editor",
             "desc": "Draw the tiles to the field to create a new layout",
             "save": "Save map",
-            "saveAs": "Save map as:",
+            "saveAs": "Save map as",
             "name": "Name of design: ",
             "height": "Max height: ",
             "width": "Max width: ",
@@ -385,6 +409,23 @@
             "st3": "@:admin.lineRun.st3",
             "st4": "@:admin.lineRun.st4",
             "st5": "@:admin.lineRun.st5"
+        },
+        "mazeRunBulk": {
+            "title": "Maze Run Bulk Registration",
+            "s1T": "@:admin.lineRunBulk.s1T",
+            "s1D": "@:admin.lineRunBulk.s1D",
+            "s2T": "@:admin.lineRunBulk.s2T",
+            "s2D1": "@:admin.lineRunBulk.s2D1",
+            "s2D2": "@:admin.lineRunBulk.s2D2",
+            "s2D3": "@:admin.lineRunBulk.s2D3",
+            "s2D4": "@:admin.lineRunBulk.s2D4",
+            "s2D5": "@:admin.lineRunBulk.s2D5 ",
+            "s2D6": "@:admin.lineRunBulk.s2D6 ",
+            "s3T": "@:admin.lineRunBulk.s3T",
+            "s3D": "@:admin.lineRunBulk.s3D",
+            "exe": "@:admin.lineRunBulk.exe",
+            "inpro": "@:admin.lineRunBulk.inpro",
+            "compelete": "@:admin.lineRunBulk.complete"
         },
         "authority": {
             "title": "Authority",
