@@ -113,7 +113,6 @@ var app = angular.module("RunAdmin", ['pascalprecht.translate', 'ngCookies']).co
   }
   
   
-  $(window).on('load', function () {
     
     // File APIに対応しているか確認
     if (window.File) {
@@ -133,11 +132,11 @@ var app = angular.module("RunAdmin", ['pascalprecht.translate', 'ngCookies']).co
         // ファイル読み取りに成功したとき
         reader.onload = function () {
           // 行単位で配列にする
-          obj = $.csv(",", "", "\n")(reader.result);
+          obj = $.csv()(reader.result);
           console.log(obj)
           
           // tableで出力
-          var insert = '<table><thead><tr><th>Round</th><th>Team name</th><th>Map name</th><th>Field name</th><th>Start Time</th></tr></thead><tbody>';
+          var insert = '<table class="custom"><thead><tr><th>Round</th><th>Team name</th><th>Map name</th><th>Field name</th><th>Start Time</th></tr></thead><tbody>';
           for (var i = 1; i < obj.length; i++) {
             insert += '<tr>';
             insert += '<td>';
@@ -169,7 +168,6 @@ var app = angular.module("RunAdmin", ['pascalprecht.translate', 'ngCookies']).co
         reader.readAsText(fileData, 'Shift_JIS');
       }, false);
     }
-  });
   
   /* Usage:
    *  jQuery.csv()(csvtext)		returns an array of arrays representing the CSV text.
