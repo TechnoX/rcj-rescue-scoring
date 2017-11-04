@@ -4,12 +4,45 @@
 <div style="margin-top:50px;">
     <div class="row">
         <div class="col-md-12">
-            <button class="btn btn-primary" type="button" ng-click="saveMap()">{{"admin.lineMapEditor.save" | translate}}</button> <button class="btn btn-primary" type="button" ng-click="saveMapAs()">{{"admin.lineMapEditor.saveAs" | translate}} </button> <input type="text" ng-model="saveasname"><br>
-            <label>{{"admin.lineMapEditor.name" | translate}}<input type="text" ng-model="name"></label><br>
-            <label>{{"admin.lineMapEditor.height" | translate}}<input type="number" ng-model="height" ng-change="sliderOptions.ceil = height - 1" min="1"></label><br>
-            <label>{{"admin.lineMapEditor.width" | translate}}<input type="number" ng-model="width" min="1" ></label><br>
-            <label>{{"admin.lineMapEditor.length" | translate}}<input type="number" ng-model="length" min="1" ></label><br>
-            <label>{{"admin.lineMapEditor.check" | translate}}<input type="number" ng-model="numberOfDropTiles" min="0" ></label><br>
+            <div class="input-group">
+                <span class="input-group-addon">{{"admin.lineMapEditor.name" | translate}}</span>
+                <input type="text" class="form-control" ng-model="name">
+                <span class="input-group-btn">
+                <button class="btn btn-secondary" type="button" ng-click="saveMap()">{{"admin.lineMapEditor.save" | translate}}</button>
+              </span>
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">{{"admin.lineMapEditor.name" | translate}}</span>
+                <input type="text" class="form-control" ng-model="saveasname">
+                <span class="input-group-addon">@
+                    <select ng-model='se_competition' ng-options='b_competitions._id as b_competitions.name for b_competitions in competitions' value="{{competitionId}}"></select>
+                </span>
+                <span class="input-group-btn">
+                <button class="btn btn-secondary" type="button" ng-click="saveMapAs()">{{"admin.lineMapEditor.saveAs" | translate}}</button>
+              </span>
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">{{"admin.lineMapEditor.height" | translate}}</span>
+                <input type="number" ng-model="height" ng-change="sliderOptions.ceil = height - 1" min="1">
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">{{"admin.lineMapEditor.width" | translate}}</span>
+                <input type="number" ng-model="width" min="1" >
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">{{"admin.lineMapEditor.length" | translate}}</span>
+                <input type="number" ng-model="length" min="1" >
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">{{"admin.lineMapEditor.check" | translate}}</span>
+                <input type="number" ng-model="numberOfDropTiles" min="0" >
+            </div>
+            <br><br>
             <input type="checkbox" ng-model="finished" id="isFinished"><label class="checkbox" for="isFinished">{{"admin.lineMapEditor.finished" | translate}}</label><br>
             <div class="error" ng-show="startNotSet()">{{"admin.lineMapEditor.noStart" | translate}}</div>
         </div>

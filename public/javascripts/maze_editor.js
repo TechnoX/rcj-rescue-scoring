@@ -5,6 +5,11 @@ var app = angular.module('MazeEditor', ['ngAnimate', 'ui.bootstrap', 'rzModule',
 app.controller('MazeEditorController', ['$scope', '$uibModal', '$log', '$http', function ($scope, $uibModal, $log, $http) {
   
   $scope.competitionId = competitionId;
+    
+    $http.get("/api/competitions/").then(function (response) {
+        $scope.competitions = response.data
+        console.log($scope.competitions)
+    })
   
   $scope.sliderOptions = {
     floor             : 0,
@@ -205,7 +210,7 @@ app.controller('MazeEditorController', ['$scope', '$uibModal', '$log', '$http', 
     
     
     var map = {
-      competition: $scope.competitionId,
+      competition: $scope.se_competition,
       name       : $scope.saveasname,
       length     : $scope.length,
       height     : $scope.height,

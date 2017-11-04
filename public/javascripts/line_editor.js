@@ -5,6 +5,11 @@ var app = angular.module('LineEditor', ['lvl.services', 'ngAnimate', 'ui.bootstr
 app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', '$translate', function ($scope, $uibModal, $log, $http, $translate) {
 
     $scope.competitionId = competitionId;
+    
+    $http.get("/api/competitions/").then(function (response) {
+        $scope.competitions = response.data
+        console.log($scope.competitions)
+    })
 
     $scope.tileSets = [];
     $scope.tileSet = {};
@@ -108,7 +113,7 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
             return;
         }
         var map = {
-            competition: $scope.competitionId,
+            competition: $scope.se_competition,
             name: $scope.saveasname,
             length: $scope.length,
             height: $scope.height,
