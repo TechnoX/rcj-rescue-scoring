@@ -325,10 +325,12 @@ adminRouter.delete('/:map', function (req, res, next) {
   })
 })
 
-adminRouter.get('/name/:name', function (req, res, next) {
+adminRouter.get('/name/:competitionid/:name', function (req, res, next) {
   var name = req.params.name
+  var id = req.params.competitionid
   
   mazeMap.find({
+    "competition": id,
     "name": name
   }, function (err, data) {
     if (err) {
@@ -339,7 +341,7 @@ adminRouter.get('/name/:name', function (req, res, next) {
     } else {
       res.status(200).send(data)
     }
-  })
+  }).select("_id")
 })
 
 

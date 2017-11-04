@@ -112,10 +112,9 @@ publicRouter.get('/:competition/:league/teams', function (req, res, next) {
     })
 })
 
-publicRouter.get('/:competitionid/teams/:league/:name', function (req, res, next) {
+publicRouter.get('/:competitionid/teams/:name', function (req, res, next) {
     var id = req.params.competitionid
     var name = req.params.name
-    var league = req.params.league
 
     if (!ObjectId.isValid(id)) {
         return next()
@@ -123,8 +122,7 @@ publicRouter.get('/:competitionid/teams/:league/:name', function (req, res, next
 
     competitiondb.team.find({
         "competition": id,
-        "name": name,
-        "league": league
+        "name": name
     }, function (err, data) {
         if (err) {
             logger.error(err)
@@ -134,7 +132,7 @@ publicRouter.get('/:competitionid/teams/:league/:name', function (req, res, next
         } else {
             res.status(200).send(data)
         }
-    })
+    }).select("_id")
 })
 
 publicRouter.get('/:competition/line/runs', function (req, res, next) {
@@ -292,10 +290,9 @@ publicRouter.get('/:competition/:league/fields', function (req, res, next) {
     })
 })
 
-publicRouter.get('/:competitionid/fields/:league/:name', function (req, res, next) {
+publicRouter.get('/:competitionid/fields/:name', function (req, res, next) {
     var id = req.params.competitionid
     var name = req.params.name
-    var league = req.params.league
 
     if (!ObjectId.isValid(id)) {
         return next()
@@ -303,8 +300,7 @@ publicRouter.get('/:competitionid/fields/:league/:name', function (req, res, nex
 
     competitiondb.field.find({
         competition: id,
-        name: name,
-        league: league
+        name: name
     }, function (err, data) {
         if (err) {
             logger.error(err)
@@ -314,7 +310,7 @@ publicRouter.get('/:competitionid/fields/:league/:name', function (req, res, nex
         } else {
             res.status(200).send(data)
         }
-    })
+    }).select("_id")
 })
 
 publicRouter.get('/:competition/rounds', function (req, res, next) {
@@ -339,10 +335,9 @@ publicRouter.get('/:competition/rounds', function (req, res, next) {
     })
 })
 
-publicRouter.get('/:competitionid/rounds/:league/:name', function (req, res, next) {
+publicRouter.get('/:competitionid/rounds/:name', function (req, res, next) {
     var id = req.params.competitionid
     var name = req.params.name
-    var league = req.params.league
 
     if (!ObjectId.isValid(id)) {
         return next()
@@ -350,8 +345,7 @@ publicRouter.get('/:competitionid/rounds/:league/:name', function (req, res, nex
 
     competitiondb.round.find({
         competition: id,
-        name: name,
-        league: league
+        name: name
     }, function (err, data) {
         if (err) {
             logger.error(err)
@@ -361,7 +355,7 @@ publicRouter.get('/:competitionid/rounds/:league/:name', function (req, res, nex
         } else {
             res.status(200).send(data)
         }
-    })
+    }).select("_id")
 })
 
 publicRouter.get('/:competition/:league/rounds', function (req, res, next) {
@@ -445,6 +439,36 @@ adminRouter.post('/', function (req, res) {
                     }
 
                 )
+        }
+    })
+})
+
+adminRouter.delete('/:competitionid', function (req, res, next) {
+    var id = req.params.competitionid
+
+    if (!ObjectId.isValid(id)) {
+        return next()
+    }
+    if (!auth.authCompetition(req.user, id, ACCESSLEVELS.ADMIN)) {
+        return res.status(401).send({
+            msg: "You have no authority to access this api"
+        })
+    }
+
+
+    competitiondb.competition.remove({
+        _id: id
+    }, function (err) {
+        if (err) {
+            logger.error(err)
+            res.status(400).send({
+                msg: "Could not remove run",
+                err: err.message
+            })
+        } else {
+            res.status(200).send({
+                msg: "Run has been removed!"
+            })
         }
     })
 })
