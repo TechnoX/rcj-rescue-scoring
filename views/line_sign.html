@@ -134,8 +134,8 @@
                     </tile>
                 </div>
             </div>
-            <div ng-if="visType=='slider'">
-                <rzslider rz-slider-model="z" rz-slider-options="sliderOptions" ng-show="height>1"></rzslider>
+            <div ng-if="visType=='slider' && slider">
+                <rzslider rz-slider-model="z" rz-slider-options="slider.options" ng-show="height>1"></rzslider>
                 <div ng-repeat="r in range(length)" class="row" tile-load-finished=''>
                     <div ng-repeat="c in range(width)" class="slot">
                         <tile tile="mtiles[c+','+r+','+z]" ng-click="showElements(c,r,z)"></tile>

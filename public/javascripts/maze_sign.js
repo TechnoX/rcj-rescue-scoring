@@ -37,13 +37,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         // = translationId;
     });
 
-    $scope.sliderOptions = {
-        floor: 0,
-        ceil: 0,
-        showSelectionBar: true,
-        showTicksValues: true
-    };
-
     $scope.visType = "slider";
     $scope.countWords = ["Bottom", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Ninth"];
     $scope.z = 0;
@@ -137,7 +130,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 console.log(response.data);
                 $scope.startTile = response.data.startTile;
                 $scope.height = response.data.height;
-                $scope.sliderOptions.ceil = $scope.height - 1;
+                $scope.slider = {
+                    options : {
+                        floor: 0,
+                        ceil: $scope.height - 1,
+                        step: 1,
+                        showTicksValues: true
+                    }
+                };
                 $scope.width = response.data.width;
                 $scope.length = response.data.length;
 

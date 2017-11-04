@@ -4,13 +4,7 @@ var marker = {};
 var socket;
 // function referenced by the drop target
 app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', function ($scope, $uibModal, $log, $timeout, $http) {
-    $scope.sliderOptions = {
-        floor: 0,
-        ceil: 0,
-        showSelectionBar: true,
-        showTicksValues: true
-    };
-
+    
     $scope.visType = "slider";
     $scope.z = 0;
 
@@ -118,7 +112,15 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     console.log(response.data);
 
                     $scope.height = response.data.height;
-                    $scope.sliderOptions.ceil = $scope.height - 1;
+                    //$scope.slider.options.ceil = $scope.height - 1;
+                    $scope.slider = {
+                        options : {
+                            floor: 0,
+                            ceil: $scope.height - 1,
+                            step: 1,
+                            showTicksValues: true
+                        }
+                    };
                     $scope.width = response.data.width;
                     $scope.length = response.data.length;
                     width = response.data.width;

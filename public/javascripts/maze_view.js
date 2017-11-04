@@ -8,12 +8,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.visType = "slider";
     $scope.countWords = ["Bottom", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Ninth"];
-    $scope.sliderOptions = {
-        floor: 0,
-        ceil: 0,
-        showSelectionBar: true,
-        showTicksValues: true
-    };
+
 
     $scope.cells = {};
     $scope.tiles = {};
@@ -86,12 +81,15 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             // Verified time by timekeeper
             $scope.minutes = response.data.time.minutes;
             $scope.seconds = response.data.time.seconds;
+            
+            try{
 
-            $scope.cap_sig = response.data.sign.captain;
-            $scope.ref_sig = response.data.sign.referee;
-            $scope.refas_sig = response.data.sign.referee_as;
+                $scope.cap_sig = response.data.sign.captain;
+                $scope.ref_sig = response.data.sign.referee;
+                $scope.refas_sig = response.data.sign.referee_as;
 
-            $scope.comment = response.data.comment;
+                $scope.comment = response.data.comment;
+            }catch(err){}
 
             // Scoring elements of the tiles
             for (var i = 0; i < response.data.tiles.length; i++) {
@@ -106,7 +104,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 console.log(response.data);
                 $scope.startTile = response.data.startTile;
                 $scope.height = response.data.height;
-                $scope.sliderOptions.ceil = $scope.height - 1;
+                $scope.slider = {
+                    options : {
+                        floor: 0,
+                        ceil: $scope.height - 1,
+                        step: 1,
+                        showTicksValues: true
+                    }
+                };
                 $scope.width = response.data.width;
                 $scope.length = response.data.length;
 

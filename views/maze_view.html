@@ -108,12 +108,13 @@
             </div>
         </div>
         <div id="maze_map" class="col-md-6  tilearea">
-
-
-            <div class="row" ng-show="visType=='slider'">
+            <div class="row text-center" ng-if="!slider">
+                <img src="/images/loader2.gif" width=100px height=100px>
+            </div>
+            <div class="row" ng-if="visType=='slider' && slider">
                 <div class="col-md-12">
                     <div>
-                        <rzslider rz-slider-model="z" rz-slider-options="sliderOptions" ng-show="height>1"></rzslider>
+                        <rzslider rz-slider-model="z" rz-slider-options="slider.options" ng-show="height>1"></rzslider>
                         <table class="map">
                             <tr ng-repeat="r in range(2*length + 1)">
                                 <td ng-repeat="c in range(2*width + 1)" ng-class="{'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall, 'checkpoint': cells[c+','+r+','+z].tile.checkpoint, 'black': cells[c+','+r+','+z].tile.black, 'linear': cells[c+','+r+','+z].isLinear}" ng-click="cellClick(c, r, z, $odd != $parent.$odd, $odd && $parent.$odd)">
@@ -152,7 +153,7 @@
             </div>
 
 
-            <div class="row" ng-show="visType=='side'">
+            <div class="row" ng-if="visType=='side'">
                 <div class="col-md-12">
                     <div ng-repeat="z in range(height) track by $index" style="float: left; margin-right: 10px">
                         <h3>{{countWords[$index]}} floor</h3>

@@ -39,13 +39,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     });
 
 
-    $scope.sliderOptions = {
-        floor: 0,
-        ceil: 0,
-        showSelectionBar: true,
-        showTicksValues: true
-    };
-
     $scope.visType = "slider";
     $scope.z = 0;
 
@@ -151,7 +144,15 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 console.log(response.data);
 
                 $scope.height = response.data.height;
-                $scope.sliderOptions.ceil = $scope.height - 1;
+                setTimeout("tile_size()", 0);
+                $scope.slider = {
+                    options : {
+                        floor: 0,
+                        ceil: $scope.height - 1,
+                        step: 1,
+                        showTicksValues: true
+                    }
+                };
                 $scope.width = response.data.width;
                 $scope.length = response.data.length;
                 width = response.data.width;
@@ -502,9 +503,9 @@ function tile_size() {
             $('.slot').css('width', tilesize);
             $('#card_area').css('height', (window.innerHeight - 150));
             $('.chnumtxt').css('font-size', tilesize / 6);
-            if (b.height() == 0) setTimeout("tile_size()", 500);
+            if (b.height() == 0) setTimeout("tile_size()", 1000);
         } catch (e) {
-            setTimeout("tile_size()", 500);
+            setTimeout("tile_size()", 1000);
         }
 
 
