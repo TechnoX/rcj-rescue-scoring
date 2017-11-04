@@ -247,6 +247,10 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
             sum.score += runs[i].score
             sum.time.minutes += runs[i].time.minutes
             sum.time.seconds += runs[i].time.seconds
+            if(sum.time.seconds >= 60){
+                sum.time.minutes++;
+                sum.time.seconds-=60;
+            }
             sum.rescued += runs[i].rescuedLiveVictims + runs[i].rescuedDeadVictims
             sum.lops += runs[i].LoPsNum
         }
