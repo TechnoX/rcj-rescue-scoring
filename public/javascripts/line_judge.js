@@ -62,12 +62,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.time = 0;
     $scope.processing = new Array();
     $scope.rprocessing = false;
-    $scope.sliderOptions = {
-        floor: 0,
-        ceil: 0,
-        showSelectionBar: true,
-        showTicksValues: true
-    };
+
 
     // Scoring elements of the tiles
     $scope.stiles = [];
@@ -76,7 +71,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     if (document.referrer.indexOf('sign') != -1) {
         $scope.checked = true;
+        $scope.startedScoring = true;
+        $scope.fromSign = true;
         setTimeout("tile_size()", 10);
+        setTimeout("tile_size()", 200);
     }
 
     $http.get("/api/runs/line/" + runId +
@@ -119,7 +117,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             console.log(response.data);
 
             $scope.height = response.data.height;
-            $scope.sliderOptions.ceil = $scope.height - 1;
+            $scope.slider = {
+                        options : {
+                            floor: 0,
+                            ceil: $scope.height - 1,
+                            step: 1,
+                            showTicksValues: true
+                        }
+                    };
             $scope.width = response.data.width;
             $scope.length = response.data.length;
             width = response.data.width;
@@ -179,7 +184,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 
     $scope.toggleScoring = function () {
-        if ($scope.numberOfDropTiles - $scope.placedDropTiles > 0) {
+        if ($scope.numberOfDropTiles - $scope.placedDropTiles > 0 && !$scope.startedScoring) {
             swal("Oops!", txt_not_yet, "error");
             return;
         }
@@ -195,6 +200,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.infochecked = function () {
         $scope.checked = true;
         setTimeout("tile_size()", 10);
+        setTimeout("tile_size()", 200);
 
     }
 
@@ -355,7 +361,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         });
 
     }
-    $scope.changeLevel = function () {
+    $scope.changeLevel = function (n) {
+        $scope.evacuationLevel = n;
         $http.put("/api/runs/line/" + runId, {
             evacuationLevel: $scope.evacuationLevel
         }).then(function (response) {

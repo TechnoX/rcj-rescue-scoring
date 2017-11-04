@@ -15,7 +15,7 @@
 
 </nav>
 <div class="container">
-    <div style="text-align: center;" ng-hide="checked">
+    <div style="text-align: center;" ng-if="!checked">
         <h4><i class="fa fa-check-circle-o" aria-hidden="true"></i>{{'line.judge.before' | translate}}</h4><br>
         <div id="lops" class="card">
             <h3 class="card-header"><i class="fa fa-info-circle" aria-hidden="true"></i> {{'line.judge.info' | translate}}</h3>
@@ -68,29 +68,42 @@
         <br>
         <button class="btn btn-success" type="button" ng-click="infochecked()"><i class="fa fa-check-circle fa-2x" aria-hidden="true"> {{'line.judge.confirm' | translate}}</i></button>
     </div>
-    <div ng-show="checked">
+    <div ng-if="checked">
         <div class="row">
             <div class="col-md-6">
                 <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleScoring()"><i class="fa fa-calculator" aria-hidden="true"> {{ startedScoring ? 'line.judge.run_end' : 'line.judge.run_start' | translate }}</i></button>
                 <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleTime()"><i class="fa fa-clock-o" aria-hidden="true"> {{ startedTime ? 'line.judge.tim_stop' : 'line.judge.tim_start' |translate }}</i></button>
                 <button ng-show="!startedTime && time!=0" class="btn btn-warning" style="margin:0 10px 10px 0;" type="button" ng-click="TimeReset()"><i class="fa fa-clock-o" aria-hidden="true"> {{'line.judge.tim_reset' | translate}}</i></button>
-                <p ng-show="!startedScoring">{{'line.judge.select_elevel' | translate}}</p>
-                <label class="switch-light" onclick="" ng-show="!startedScoring">
-              <input type="checkbox" ng-model="evacuationLevel" ng-change="changeLevel()" ng-show="!startedScoring" ng-true-value="2" ng-false-value="1">
-              <span class="well" ng-show="!startedScoring">
-                <span style="border: solid 1px #000000;">{{'line.judge.low' | translate}}</span>
-                <span style="border: solid 1px #000000;">{{'line.judge.high' | translate}}</span>
-                <a class="btn btn-info"></a>
-              </span>
-            </label>
+                <div class="alert alert-info" role="alert" ng-show="numberOfDropTiles - placedDropTiles == 0 && !startedScoring && !fromSign">
+                    {{'line.judge.ready' | translate}}<br><strong style="font-size:20px;">{{'line.judge.push_start' | translate}}</strong>
+                </div>
+                <div class="card" ng-show="!startedScoring || fromSign">
+                  <h4 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> {{'line.judge.select_elevel' | translate}}</h4>
+                  <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6" style="position: relative;" ng-click="changeLevel(1)">
+                            
+                            <img src="/images/level1.png" class="img-thumbnail" width=100% ng-style="{'background-color': evacuationLevel==1?'#2ecc71':'#95a5a6' , 'opacity':evacuationLevel==1?'1':'0.4' }">
+                            <div style="position:absolute; top:10px; left:30px;">{{'line.judge.low' | translate}}</div>
+                            <div style="position:absolute; bottom:10px; right:25px;" ng-show="evacuationLevel==1"><i class="fa fa-3x fa-check-circle-o " aria-hidden="true" style="color:#27ae60;"></i></div>
+                            
+                        </div>
+                        <div class="col-md-6"  style="position: relative;" ng-click="changeLevel(2)">
+                            <img src="/images/level2.png" class="img-thumbnail" width=100% ng-style="{'background-color': evacuationLevel==2?'#2ecc71':'#95a5a6' , 'opacity':evacuationLevel==2?'1':'0.4' }">
+                            <div style="position:absolute; top:10px; left:30px;">{{'line.judge.high' | translate}}</div>
+                            <div style="position:absolute; bottom:10px; right:25px;" ng-show="evacuationLevel==2"><i class="fa fa-3x fa-check-circle-o" aria-hidden="true" style="color:#27ae60;"></i></div>
 
-                <div class="alert alert-info" role="alert" ng-show="numberOfDropTiles - placedDropTiles == 0 && !startedScoring">
-                    {{'line.judge.ready' | translate}}<br><strong>{{'line.judge.push_start' | translate}}</strong>
+                        </div>
+                    </div>
+                  </div>
                 </div>
+                <br>
+
+                
                 <div class="alert alert-warning" role="alert" ng-show="!startedScoring">
-                    {{'line.judge.tap_tile' |translate}}<br> {{'line.judge.remaining' | translate}} <strong>{{numberOfDropTiles - placedDropTiles}}</strong>
+                    {{'line.judge.tap_tile' |translate}}<br> {{'line.judge.remaining' | translate}} <strong style="font-size:30px;">{{numberOfDropTiles - placedDropTiles}}</strong>
                 </div>
-                <div class="alert alert-info blink" role="alert" ng-show="!startedTime && startedScoring && minutes < 8">
+                <div class="alert alert-info blink" role="alert" ng-show="!startedTime && startedScoring && minutes < 8 && !fromSign">
                     {{'line.judge.push_timer' | translate}}
                 </div>
                 <div id="card_area" class="scrool" style="overflow: scroll;" ng-show="startedScoring">
@@ -191,10 +204,8 @@
                 </div>
 
             </div>
-            <div class="col-md-6 tilearea">
-                <div ng-show="height>1">
-                    <rzslider rz-slider-model="z" rz-slider-options="sliderOptions"></rzslider>
-                </div>
+            <div class="col-md-6 tilearea"  ng-if="slider">
+                <rzslider rz-slider-model="z" rz-slider-options="slider.options" ng-show="height>1"></rzslider>
                 <div ng-repeat="r in range(length)" class="row">
                     <div ng-repeat="c in range(width)" class="slot">
                         <tile tile="mtiles[c+','+r+','+z]" ng-click="doScoring(c,r,z)" ng-if="showtile"></tile>
@@ -207,22 +218,24 @@
         <div class="row" style="margin:50 0 0 0;">
             <div class="col-sm-12">
 
-                <p>
-                    <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleScoring()"><i class="fa fa-calculator" aria-hidden="true"> {{ startedScoring ? 'line.judge.run_end' : 'line.judge.run_start' | translate }}</i></button>
-                    <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleTime()"><i class="fa fa-clock-o" aria-hidden="true"> {{ startedTime ? 'line.judge.tim_stop' : 'line.judge.tim_start' |translate }}</i></button>
-                    <!--<button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="retire()"><i class="fa fa-window-close" aria-hidden="true"> Retire!</i></button>-->
-                </p>
+                <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleScoring()"><i class="fa fa-calculator" aria-hidden="true"> {{ startedScoring ? 'line.judge.run_end' : 'line.judge.run_start' | translate }}</i></button>
+                <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleTime()"><i class="fa fa-clock-o" aria-hidden="true"> {{ startedTime ? 'line.judge.tim_stop' : 'line.judge.tim_start' |translate }}</i></button>
+                    
             </div>
             <div class="col-md-12 confirmation">
-                <div ng-show="!retired">
-                    <strong>{{'line.judge.adjust'| translate}}</strong><br>
-                    <label><input type="tel" min="0" max="8" ng-model="minutes">{{'common.min' | translate}}  </label>
-                    <label><input type="tel" min="0" max="60" ng-model="seconds">{{'common.sec' | translate}}</label><br>
+                <div>
+                    <h4>{{'line.judge.adjust'| translate}}</h4><br>
+                    <div class="input-group input-group-lg">
+                      <input type="tel" class="form-control" placeholder="" aria-label="min" aria-describedby="sizing-addon1"  min="0" max="8" ng-model="minutes">
+                      <span class="input-group-addon" id="sizing-addon1">{{'common.min' | translate}}</span>
+                      <input type="tel" class="form-control" placeholder="" aria-label="sec" aria-describedby="sizing-addon1" min="0" max="60" ng-model="seconds">
+                      <span class="input-group-addon" id="sizing-addon1">{{'common.sec' | translate}}</span>
+                    </div>
                 </div>
-
+                <br>
                 <strong>
-            {{'line.judge.confirm_text'| translate}}
-          </strong>
+                    {{'line.judge.confirm_text'| translate}}
+                </strong>
                 <br>
                 <div style="text-align:center; margin: 10 10 10 10;">
                     <button class="btn btn-danger" type="button" ng-click="confirm()"><i class="fa fa-arrow-right fa-2x" aria-hidden="true"> {{'line.judge.confirm'| translate}}</i></button>
