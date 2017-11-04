@@ -77,7 +77,7 @@
                 <div class="alert alert-info" role="alert" ng-show="numberOfDropTiles - placedDropTiles == 0 && !startedScoring && !fromSign">
                     {{'line.judge.ready' | translate}}<br><strong style="font-size:20px;">{{'line.judge.push_start' | translate}}</strong>
                 </div>
-                <div class="card" ng-show="!startedScoring || fromSign">
+                <div class="card" ng-if="league == 'LineWL'" ng-show="!startedScoring || fromSign">
                   <h4 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> {{'line.judge.select_elevel' | translate}}</h4>
                   <div class="card-body">
                     <div class="row">
