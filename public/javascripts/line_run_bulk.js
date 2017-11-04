@@ -8,16 +8,28 @@ var app = angular.module("RunAdmin", ['pascalprecht.translate', 'ngCookies']).co
     })
 
     $http.get("/api/competitions/" + competitionId +
-        "/Line/teams").then(function (response) {
+        "/LineNL/teams").then(function (response) {
         $scope.teams = response.data
     })
     $http.get("/api/competitions/" + competitionId +
-        "/Line/rounds").then(function (response) {
+        "/LineWL/teams").then(function (response) {
+        $scope.teams = $scope.teams.concat(response.data)
+    })
+    $http.get("/api/competitions/" + competitionId +
+        "/LineNL/rounds").then(function (response) {
         $scope.rounds = response.data
     })
     $http.get("/api/competitions/" + competitionId +
-        "/Line/fields").then(function (response) {
+        "/LineWL/rounds").then(function (response) {
+        $scope.rounds = $scope.rounds.concat(response.data)
+    })
+    $http.get("/api/competitions/" + competitionId +
+        "/LineNL/fields").then(function (response) {
         $scope.fields = response.data
+    })
+    $http.get("/api/competitions/" + competitionId +
+        "/LineWL/fields").then(function (response) {
+        $scope.fields = $scope.fields.concat(response.data)
     })
     $http.get("/api/competitions/" + competitionId +
         "/Line/maps").then(function (response) {
@@ -122,7 +134,6 @@ var app = angular.module("RunAdmin", ['pascalprecht.translate', 'ngCookies']).co
     }
 
 
-    $(window).on('load', function () {
 
         // File APIに対応しているか確認
         if (window.File) {
@@ -142,11 +153,11 @@ var app = angular.module("RunAdmin", ['pascalprecht.translate', 'ngCookies']).co
                 // ファイル読み取りに成功したとき
                 reader.onload = function () {
                     // 行単位で配列にする
-                    obj = $.csv(",", "", "\n")(reader.result);
+                    obj = $.csv()(reader.result);
                     console.log(obj)
 
                     // tableで出力
-                    var insert = '<table><thead><tr><th>Round</th><th>Team name</th><th>Map name</th><th>Field name</th><th>Start Time</th></tr></thead><tbody>';
+                    var insert = '<table class="custom"><thead><tr><th>Round</th><th>Team name</th><th>Map name</th><th>Field name</th><th>Start Time</th></tr></thead><tbody>';
                     for (var i = 1; i < obj.length; i++) {
                         insert += '<tr>';
                         insert += '<td>';
@@ -178,7 +189,7 @@ var app = angular.module("RunAdmin", ['pascalprecht.translate', 'ngCookies']).co
                 reader.readAsText(fileData, 'Shift_JIS');
             }, false);
         }
-    });
+
 
     /* Usage:
      *  jQuery.csv()(csvtext)		returns an array of arrays representing the CSV text.

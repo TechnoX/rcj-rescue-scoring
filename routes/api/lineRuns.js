@@ -94,7 +94,7 @@ function getLineRuns(req, res) {
       },
       {
         path  : "team",
-        select: "name"
+        select: "name league"
       },
       {
         path  : "field",

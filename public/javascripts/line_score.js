@@ -33,10 +33,10 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
 
             //console.log(runs)
 
-            $scope.primaryRuns = []
-            var primaryTeamRuns = {}
-            $scope.secondaryRuns = []
-            var secondaryTeamRuns = {}
+            $scope.nipponRuns = []
+            var nipponTeamRuns = {}
+            $scope.worldRuns = []
+            var worldTeamRuns = {}
 
             for (var i in runs) {
                 var run = runs[i]
@@ -52,59 +52,60 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
 
                 if (run.status >= 2 || run.score != 0 || run.time.minutes != 0 ||
                     run.time.seconds != 0) {
-                    if (true || run.team.league == "Line") {
+                    console.log(run)
+                    if (run.team.league == "LineNL") {
 
 
-                        if (primaryTeamRuns[run.team._id] === undefined) {
-                            primaryTeamRuns[run.team._id] = {
+                        if (nipponTeamRuns[run.team._id] === undefined) {
+                            nipponTeamRuns[run.team._id] = {
                                 team: {
                                     name: run.team.name
                                 },
                                 runs: [run]
                             }
                         } else {
-                            primaryTeamRuns[run.team._id].runs.push(run)
+                            nipponTeamRuns[run.team._id].runs.push(run)
                         }
-                        var sum = sumBest(primaryTeamRuns[run.team._id].runs)
-                        primaryTeamRuns[run.team._id].sumScore = sum.score
-                        primaryTeamRuns[run.team._id].sumTime = sum.time
-                        primaryTeamRuns[run.team._id].sumRescue = sum.rescued
-                        primaryTeamRuns[run.team._id].sumLoPs = sum.lops
-                        primaryTeamRuns[run.team._id].retired = sum.retired
+                        var sum = sumBest(nipponTeamRuns[run.team._id].runs)
+                        nipponTeamRuns[run.team._id].sumScore = sum.score
+                        nipponTeamRuns[run.team._id].sumTime = sum.time
+                        nipponTeamRuns[run.team._id].sumRescue = sum.rescued
+                        nipponTeamRuns[run.team._id].sumLoPs = sum.lops
+                        nipponTeamRuns[run.team._id].retired = sum.retired
                         if (run.status == 2 || run.status == 3) {
-                            //primaryTeamRuns[run.team._id].isplaying = true
+                            //nipponTeamRuns[run.team._id].isplaying = true
                             //run.isplaying = true
                         }
-                        $scope.primaryRuns.push(run)
+                        $scope.nipponRuns.push(run)
 
-                    } else if (run.team.league == "Secondary") {
-                        $scope.secondaryRuns.push(run)
-                        if (secondaryTeamRuns[run.team._id] === undefined) {
-                            secondaryTeamRuns[run.team._id] = {
+                    } else if (run.team.league == "LineWL") {
+                        $scope.worldRuns.push(run)
+                        if (worldTeamRuns[run.team._id] === undefined) {
+                            worldTeamRuns[run.team._id] = {
                                 team: {
                                     name: run.team.name
                                 },
                                 runs: [run]
                             }
                         } else {
-                            secondaryTeamRuns[run.team._id].runs.push(run)
+                            worldTeamRuns[run.team._id].runs.push(run)
                         }
-                        var sum = sum_jpop(secondaryTeamRuns[run.team._id].runs)
-                        secondaryTeamRuns[run.team._id].sumScore = sum.score
-                        secondaryTeamRuns[run.team._id].sumTime = sum.time
-                        secondaryTeamRuns[run.team._id].sumRescue = sum.rescued
-                        secondaryTeamRuns[run.team._id].sumLoPs = sum.lops
-                        secondaryTeamRuns[run.team._id].retired = sum.retired
+                        var sum = sum_jpop(worldTeamRuns[run.team._id].runs)
+                        worldTeamRuns[run.team._id].sumScore = sum.score
+                        worldTeamRuns[run.team._id].sumTime = sum.time
+                        worldTeamRuns[run.team._id].sumRescue = sum.rescued
+                        worldTeamRuns[run.team._id].sumLoPs = sum.lops
+                        worldTeamRuns[run.team._id].retired = sum.retired
                     }
                 }
             }
-            //$scope.primaryRuns.sort(sortRuns)
-            //$scope.secondaryRuns.sort(sortRuns)
+            //$scope.nipponRuns.sort(sortRuns)
+            //$scope.worldRuns.sort(sortRuns)
 
-            $scope.primaryRunsTop = []
-            for (var i in primaryTeamRuns) {
-                var teamRun = primaryTeamRuns[i]
-                $scope.primaryRunsTop.push({
+            $scope.nipponRunsTop = []
+            for (var i in nipponTeamRuns) {
+                var teamRun = nipponTeamRuns[i]
+                $scope.nipponRunsTop.push({
                     team: {
                         name: teamRun.team.name
                     },
@@ -116,12 +117,12 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
                     isplaying: teamRun.isplaying
                 })
             }
-            $scope.primaryRunsTop.sort(sortRuns)
+            $scope.nipponRunsTop.sort(sortRuns)
 
-            $scope.secondaryRunsTop = []
-            for (var i in secondaryTeamRuns) {
-                var teamRun = secondaryTeamRuns[i]
-                $scope.secondaryRunsTop.push({
+            $scope.worldRunsTop = []
+            for (var i in worldTeamRuns) {
+                var teamRun = worldTeamRuns[i]
+                $scope.worldRunsTop.push({
                     team: {
                         name: teamRun.team.name
                     },
@@ -132,7 +133,7 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
                     retired: teamRun.retired
                 })
             }
-            $scope.secondaryRunsTop.sort(sortRuns)
+            $scope.worldRunsTop.sort(sortRuns)
 
             if (callback != null && callback.constructor == Function) {
                 callback()
