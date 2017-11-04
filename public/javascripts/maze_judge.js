@@ -9,12 +9,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.time = 0;
     $scope.lopProcessing = false;
 
-    $scope.sliderOptions = {
-        floor: 0,
-        ceil: 0,
-        showSelectionBar: true,
-        showTicksValues: true
-    };
 
     $scope.cells = {};
     $scope.tiles = {};
@@ -50,7 +44,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             console.log(response.data);
             $scope.startTile = response.data.startTile;
             $scope.height = response.data.height;
-            $scope.sliderOptions.ceil = $scope.height - 1;
+            $scope.slider = {
+                    options : {
+                        floor: 0,
+                        ceil: $scope.height - 1,
+                        step: 1,
+                        showTicksValues: true
+                    }
+                };
             $scope.width = response.data.width;
             $scope.length = response.data.length;
 
@@ -106,6 +107,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.infochecked = function () {
         $scope.checked = true;
         setTimeout("tile_size()", 10);
+        setTimeout("tile_size()", 200);
     }
     $scope.decrement = function () {
         $scope.lopProcessing = true;

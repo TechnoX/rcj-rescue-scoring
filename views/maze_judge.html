@@ -14,7 +14,7 @@
         </div>
 </nav>
 <div class="container">
-    <div style="text-align: center;" ng-hide="checked">
+    <div style="text-align: center;" ng-if="!checked">
         <h4><i class="fa fa-check-circle-o" aria-hidden="true"></i>{{'maze.judge.before' | translate}}</h4><br>
         <div id="lops" class="card">
             <h3 class="card-header"><i class="fa fa-info-circle" aria-hidden="true"></i> {{'maze.judge.info' | translate}}</h3>
@@ -67,7 +67,7 @@
         <br>
         <button class="btn btn-success" type="button" ng-click="infochecked()"><i class="fa fa-check-circle fa-2x" aria-hidden="true"> {{'maze.judge.confirm' | translate}}</i></button>
     </div>
-    <div ng-show="checked">
+    <div ng-if="checked">
         <div class="row">
             <div class="col-md-6">
               <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleTime()"><i class="fa fa-clock-o" aria-hidden="true"> {{ startedTime ? 'maze.judge.tim_stop' : 'maze.judge.tim_start' |translate }}</i></button>
@@ -108,10 +108,8 @@
                   </div>
                 </div>
             </div>
-            <div class="col-md-6 tilearea">
-                <div ng-show="height>1">
-                    <rzslider rz-slider-model="z" rz-slider-options="sliderOptions"></rzslider>
-                </div>
+            <div class="col-md-6 tilearea" ng-if="slider">
+                <rzslider rz-slider-model="z" rz-slider-options="slider.options" ng-show="height>1"></rzslider>
                 <table class="map">
 	          <tr ng-repeat="r in range(2*length + 1)">
 	            <td ng-repeat="c in range(2*width + 1)" ng-class="{'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall, 'checkpoint': cells[c+','+r+','+z].tile.checkpoint, 'black': cells[c+','+r+','+z].tile.black, 'linear': cells[c+','+r+','+z].isLinear}"
@@ -159,12 +157,16 @@
                 </p>
             </div>
             <div class="col-md-12 confirmation">
-                <div ng-show="!retired">
-                    <strong>{{'maze.judge.adjust'| translate}}</strong><br>
-                    <label><input type="tel" min="0" max="8" ng-model="minutes">{{'common.min' | translate}}  </label>
-                    <label><input type="tel" min="0" max="60" ng-model="seconds">{{'common.sec' | translate}}</label><br>
+                <div>
+                    <h4>{{'maze.judge.adjust'| translate}}</h4><br>
+                    <div class="input-group input-group-lg">
+                      <input type="tel" class="form-control" placeholder="" aria-label="min" aria-describedby="sizing-addon1"  min="0" max="8" ng-model="minutes">
+                      <span class="input-group-addon" id="sizing-addon1">{{'common.min' | translate}}</span>
+                      <input type="tel" class="form-control" placeholder="" aria-label="sec" aria-describedby="sizing-addon1" min="0" max="60" ng-model="seconds">
+                      <span class="input-group-addon" id="sizing-addon1">{{'common.sec' | translate}}</span>
+                    </div>
                 </div>
-
+                <br>
                 <strong>
             {{'maze.judge.confirm_text'| translate}}
           </strong>
