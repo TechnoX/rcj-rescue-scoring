@@ -327,7 +327,7 @@
             "s3D": "After selecting the file, please check the contents displayed below.",
             "exe": "Execution",
             "inpro": "Registration in progress ...",
-            "compelete": "Registration completed"
+            "complete": "Registration completed"
         },
         "lineMapEditor": {
             "title": "Rescue Line map editor",
@@ -365,7 +365,7 @@
             "s3D": "After selecting the file, please check the contents displayed below.",
             "exe": "Execution",
             "inpro": "Registration in progress ...",
-            "compelete": "Registration completed"
+            "complete": "Registration completed"
         },
         "mazeMapAdmin": {
             "title": "Maze Map(Field layout)",
@@ -425,7 +425,7 @@
             "s3D": "@:admin.lineRunBulk.s3D",
             "exe": "@:admin.lineRunBulk.exe",
             "inpro": "@:admin.lineRunBulk.inpro",
-            "compelete": "@:admin.lineRunBulk.complete"
+            "complete": "@:admin.lineRunBulk.complete"
         },
         "authority": {
             "title": "Authority",

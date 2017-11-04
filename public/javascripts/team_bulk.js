@@ -48,8 +48,8 @@ var app = angular.module("TeamAdmin", ['pascalprecht.translate', 'ngCookies']).c
     }
 
 
-    $(window).on('load', function () {
-        // File APIに対応しているか確認
+
+        console.log("Ready");
         if (window.File) {
             var result = document.getElementById('result');
             var select = document.getElementById('select');
@@ -67,11 +67,11 @@ var app = angular.module("TeamAdmin", ['pascalprecht.translate', 'ngCookies']).c
                 // ファイル読み取りに成功したとき
                 reader.onload = function () {
                     // 行単位で配列にする
-                    obj = $.csv(",", "", "\n")(reader.result);
+                    obj = $.csv()(reader.result);
                     console.log(obj)
 
                     // tableで出力
-                    var insert = '<table><thead><tr><th>Team name</th><th>League</th></tr></thead><tbody>';
+                    var insert = '<table class="custom"><thead><tr><th>Team name</th><th>League</th></tr></thead><tbody>';
                     for (var i = 1; i < obj.length; i++) {
                         insert += '<tr>';
                         for (var j = 0; j < obj[i].length; j++) {
@@ -89,7 +89,7 @@ var app = angular.module("TeamAdmin", ['pascalprecht.translate', 'ngCookies']).c
                 reader.readAsText(fileData, 'Shift_JIS');
             }, false);
         }
-    });
+
 
     /* Usage:
      *  jQuery.csv()(csvtext)		returns an array of arrays representing the CSV text.

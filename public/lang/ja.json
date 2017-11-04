@@ -339,7 +339,7 @@
             "s3D": "ファイルを選択したら，下に表示される登録内容が正しいかを確認して，よろしければ，『実行』ボタンを押してください．",
             "exe": "実行",
             "inpro": "処理中...",
-            "compelete": "件登録完了"
+            "complete": "件登録完了"
         },
         "lineMapEditor": {
             "title": "Line マップエディター",
@@ -377,7 +377,7 @@
             "s3D": "ファイルを選択したら，下に表示される登録内容が正しいかを確認して，よろしければ，『実行』ボタンを押してください．",
             "exe": "実行",
             "inpro": "処理中...",
-            "compelete": "件登録完了"
+            "complete": "件登録完了"
         },
         "mazeMapAdmin": {
             "title": "Maze マップ（フィールドレイアウト）管理",
@@ -437,7 +437,7 @@
             "s3D": "@:admin.lineRunBulk.s3D",
             "exe": "@:admin.lineRunBulk.exe",
             "inpro": "@:admin.lineRunBulk.inpro",
-            "compelete": "@:admin.lineRunBulk.complete"
+            "complete": "@:admin.lineRunBulk.complete"
         },
         "authority": {
             "title": "権限設定",
