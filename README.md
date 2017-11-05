@@ -20,6 +20,30 @@
 * RoboCup 2017 Nagoya Japan
 * NESTロボコン2017
 
+## Usage
+#### 必要なソフト
+* [Node.js](https://nodejs.org/en/)
+* [mongodb](https://www.mongodb.com)
+
+### bowerのインストール
+`sudo npm install -g bower`
+
+### 各種依存ファイルの導入
+ディレクトリ内で...
+`npm install`
+`bower install`
+
+### 起動
+`node server`
+
+## 初期アカウント
+初期アカウントは次の通りです．  
+
+ユーザー名        | パスワード         |
+----------------|-------------------|
+admin | adminpass   |
+judge | judgepass  |
+
 ## 主な画面
 トップ画面  
 <img src="https://raw.githubusercontent.com/rrrobo/rcj-rescue-scoring-japan/日本国内向け/rcjj-scoring/1.png">
