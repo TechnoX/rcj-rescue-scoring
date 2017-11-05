@@ -32,14 +32,12 @@ block content
           .card-header.bg-transparent.border-dark
             i.fa.fa-2x.fa-search(aria-hidden='true') {{'maze.competition.refine.filter' | translate}}
           .card-body.text-dark
-            h6.card-title
-                {{'maze.competition.refine.round' | translate}}
+            h6.card-title {{'maze.competition.refine.round' | translate}}
             span(ng-repeat='(key, value) in rounds track by key')
               input(type='checkbox' ng-model='rounds[key]' id="checkR_{{key}}")
               label.checkbox(for="checkR_{{key}}") {{key}}
             hr
-            h6.card-title
-                {{'maze.competition.refine.field' | translate}}
+            h6.card-title {{'maze.competition.refine.field' | translate}}
             span(ng-repeat='(key, value) in fields track by key')
               input(type='checkbox' ng-model='fields[key]' id="checkF_{{key}}")
               label.checkbox(for="checkF_{{key}}") {{key}}
