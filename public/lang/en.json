@@ -250,7 +250,7 @@
             "line_tSet": "Line tilesets",
             "add_c": "Add competition",
             "user": "User management",
-            "access_level": "The you logged in account, {{account}}, does not have permission to access Account management."
+            "access_level": "The you logged in account, {{account}}, does not have permission to access User management."
 
         },
         "line_tSet": {
