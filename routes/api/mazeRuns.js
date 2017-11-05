@@ -533,7 +533,7 @@ adminRouter.delete('/:runid', function (req, res, next) {
 adminRouter.post('/', function (req, res) {
   const run = req.body
   
-  if(!auth.authCompetition(req.user , run.competition._id , ACCESSLEVELS.ADMIN)){
+  if(!auth.authCompetition(req.user , run.competition , ACCESSLEVELS.ADMIN)){
       return res.status(401).send({
                         msg: "You have no authority to access this api"
       })
