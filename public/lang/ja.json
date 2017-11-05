@@ -130,7 +130,7 @@
             "checkpoint": "@:line.view.checkpoint",
             "adjust": "記録時間調整:",
             "confirm_text": "下のボタンを押して，記録・タイム確認画面に進みます ",
-            "confirm": "確認画面",
+            "toSign": "確認画面",
             "m_score": "@:line.view.m_score",
             "m_score_d": "@:line.view.m_score_d",
             "js": {
@@ -230,7 +230,7 @@
             "return": "@:maze.view.return",
             "adjust": "@:line.judge.adjust",
             "confirm_text": "@:line.judge.confirm_text",
-            "confirm": "@:line.judge.confirm",
+            "toSign": "@:line.judge.toSign",
             "m_score": "@:maze.view.m_score",
             "m_reach": "@:maze.view.m_reach",
             "m_bump": "@:maze.view.m_bump",

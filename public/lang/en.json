@@ -132,7 +132,7 @@
             "checkpoint": "@:line.view.checkpoint",
             "adjust": "Adjust time:",
             "confirm_text": "Please press the button below and go to the score / time confirmation screen. ",
-            "confirm": "To confirmation screen",
+            "toSign": "To confirmation screen",
             "m_score": "@:line.view.m_score",
             "m_score_d": "@:line.view.m_score_d",
             "js": {
@@ -233,7 +233,7 @@
             "return": "@:maze.view.return",
             "adjust": "@:line.judge.adjust",
             "confirm_text": "@:line.judge.confirm_text",
-            "confirm": "@:line.judge.confirm",
+            "toSign": "@:line.judge.toSign",
             "m_score": "@:maze.view.m_score",
             "m_reach": "@:maze.view.m_reach",
             "m_bump": "@:maze.view.m_bump",
