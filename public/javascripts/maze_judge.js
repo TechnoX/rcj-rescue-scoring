@@ -12,6 +12,12 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.cells = {};
     $scope.tiles = {};
+    
+    if (document.referrer.indexOf('sign') != -1) {
+        $scope.checked = true;
+        setTimeout("tile_size()", 10);
+        setTimeout("tile_size()", 200);
+    }
 
     $http.get("/api/runs/maze/" + runId +
         "?populate=true").then(function (response) {
