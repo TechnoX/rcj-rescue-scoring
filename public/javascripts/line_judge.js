@@ -200,7 +200,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.infochecked = function () {
         $scope.checked = true;
         setTimeout("tile_size()", 10);
-        setTimeout("tile_size()", 200);
+        setTimeout("tile_size()", 500);
 
     }
 
