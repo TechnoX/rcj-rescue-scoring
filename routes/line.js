@@ -76,7 +76,7 @@ privateRouter.get('/judge/:runid', function (req, res, next) {
   if (!ObjectId.isValid(id)) {
     return next()
   }
-  logger.debug(req)
+  //logger.debug(req)
   res.render('line_judge', {id: id})
 })
 

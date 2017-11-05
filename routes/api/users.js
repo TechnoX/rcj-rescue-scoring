@@ -82,7 +82,7 @@ superRouter.post('/', function (req, res) {
             dbUser.superDuperAdmin = newUser.superDuperAdmin
             dbUser.competitions = newUser.competitions
 
-            logger.debug(dbUser)
+            //logger.debug(dbUser)
 
             dbUser.save(function (err) {
                 if (err) {
