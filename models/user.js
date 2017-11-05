@@ -170,14 +170,8 @@ var testUser = new User({
 var testUser2 = new User({
   username    : "judge",
   password    : "judgepass",
-  admin          : true,
-  competitions: [{
-    id         : "5976b89445524f1e629f63f5",
-    accessLevel: ACCESSLEVELS.JUDGE
-  }, {
-    id         : "59759831aa67ba5178a2751e",
-    accessLevel: ACCESSLEVELS.JUDGE
-  }]
+  admin          : false,
+  competitions: []
 });
 
 User.findOne({username: testUser.username}, function (err, dbUser) {
