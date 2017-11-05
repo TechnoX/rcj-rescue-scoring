@@ -4,49 +4,49 @@
             <i class="fa fa-calculator" aria-hidden="true"> : {{score}} points</i>
         </div>
         <div class="col-6">
-            <i class="fa fa-clock-o" aria-hidden="true"> : {{minutes*60*1000+seconds*1000 | date:'mm:ss'}}</i>
+            <i class="fa fa-clock-o" aria-hidden="true"> : {{time*1000 | date:'m:ss'}}</i>
         </div>
     </div>
 </div>
 
 <div class="row">
     <div class="col-md-12  tilearea">
-        <div ng-repeat="z in range(height) track by $index" style="float: left;">
-            <h4>{{countWords[$index]}} floor</h4>
-            <table>
-                <tr ng-repeat="r in range(2*length + 1)">
-                    <td ng-repeat="c in range(2*width + 1)" ng-class="{'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall, 'checkpoint': cells[c+','+r+','+z].tile.checkpoint, 'black': cells[c+','+r+','+z].tile.black, 'linear': cells[c+','+r+','+z].isLinear}" ng-click="cellClick(c, r, z, $odd != $parent.$odd, $odd && $parent.$odd)">
-                        <div class="tile-image-container" ng-show="cells[c+','+r+','+z].isTile">
-                            <img ng-src="/images/log.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.speedbump">
-                            <img ng-src="/images/elevator.png" class="tile-image" ng-show="!isUndefined(cells[c+','+r+','+z].tile.changeFloorTo) && cells[c+','+r+','+z].tile.changeFloorTo != z">
-                            <img ng-src="/images/start.png" class="tile-image" ng-show="startTile.x == c && startTile.y == r && startTile.z == z">
-                            <img ng-src="/images/ramp_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.rampTop">
-                            <img ng-src="/images/ramp_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.rampBottom">
-                            <img ng-src="/images/heated_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'Heated'">
-                            <img ng-src="/images/heated_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'Heated'">
-                            <img ng-src="/images/heated_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'Heated'">
-                            <img ng-src="/images/heated_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'Heated'">
-                            <img ng-src="/images/h_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'H'">
-                            <img ng-src="/images/h_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'H'">
-                            <img ng-src="/images/h_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'H'">
-                            <img ng-src="/images/h_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'H'">
-                            <img ng-src="/images/s_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'S'">
-                            <img ng-src="/images/s_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'S'">
-                            <img ng-src="/images/s_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'S'">
-                            <img ng-src="/images/s_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'S'">
-                            <img ng-src="/images/u_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'U'">
-                            <img ng-src="/images/u_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'U'">
-                            <img ng-src="/images/u_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'U'">
-                            <img ng-src="/images/u_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'U'">
+        <div ng-repeat="z in range(height) track by $index" style="float: left; margin-right: 10px">
+                        <h3>{{countWords[$index]}} floor</h3>
+                        <table class="map">
+                            <tr ng-repeat="r in range(2*length + 1)">
+                                <td ng-repeat="c in range(2*width + 1)" ng-class="{'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall, 'checkpoint': cells[c+','+r+','+z].tile.checkpoint, 'black': cells[c+','+r+','+z].tile.black, 'linear': cells[c+','+r+','+z].isLinear}" ng-click="cellClick(c, r, z, $odd != $parent.$odd, $odd && $parent.$odd)">
+                                    <div class="tile-image-container" ng-show="cells[c+','+r+','+z].isTile">
+                                        <img ng-src="/images/log.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.speedbump">
+                                        <img ng-src="/images/elevator.png" class="tile-image" ng-show="!isUndefined(cells[c+','+r+','+z].tile.changeFloorTo) && cells[c+','+r+','+z].tile.changeFloorTo != z">
+                                        <img ng-src="/images/start.png" class="tile-image" ng-show="startTile.x == c && startTile.y == r && startTile.z == z">
+                                        <img ng-src="/images/ramp_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.rampTop">
+                                        <img ng-src="/images/ramp_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.rampBottom">
+                                        <img ng-src="/images/heated_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'Heated'">
+                                        <img ng-src="/images/heated_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'Heated'">
+                                        <img ng-src="/images/heated_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'Heated'">
+                                        <img ng-src="/images/heated_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'Heated'">
+                                        <img ng-src="/images/h_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'H'">
+                                        <img ng-src="/images/h_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'H'">
+                                        <img ng-src="/images/h_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'H'">
+                                        <img ng-src="/images/h_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'H'">
+                                        <img ng-src="/images/s_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'S'">
+                                        <img ng-src="/images/s_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'S'">
+                                        <img ng-src="/images/s_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'S'">
+                                        <img ng-src="/images/s_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'S'">
+                                        <img ng-src="/images/u_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'U'">
+                                        <img ng-src="/images/u_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'U'">
+                                        <img ng-src="/images/u_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'U'">
+                                        <img ng-src="/images/u_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'U'">
 
-                            <i class="fa fa-check fa-fw tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'done'" style="padding-top:4px; color:#27ae60; opacity:0.9;"></i>
-                            <i class="fa fa-play fa-fw fa-rotate-270 tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'halfdone'" style="padding-top:4px; color:#f4d03f; opacity:0.9;"></i>
-                            <i class="fa fa-times fa-fw tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'undone'" style="padding-top:4px; color:#e74c3c; opacity:0.9;"></i>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-        </div>
+                                        <i class="fa fa-check fa-fw tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'done'" style="padding-top:4px; color:#27ae60; opacity:0.9;"></i>
+                                        <i class="fa fa-play fa-fw fa-rotate-270 tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'halfdone'" style="padding-top:4px; color:#f4d03f; opacity:0.9;"></i>
+                                        <i class="fa fa-times fa-fw tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'undone'" style="padding-top:4px; color:#e74c3c; opacity:0.9;"></i>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
 
 
     </div>

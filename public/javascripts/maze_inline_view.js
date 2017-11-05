@@ -14,7 +14,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     showSelectionBar: true,
     showTicksValues : true
   };
-  
+  var tick = function () {
+        if ($scope.status == 2 && $scope.minutes < 8) {
+            $scope.time += 1;
+        }
+    };
+    setInterval(function () {
+        $scope.$apply(tick);
+    }, 1000);
   $scope.cells = {};
   $scope.tiles = {};
   
@@ -38,7 +45,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         // Verified time by timekeeper
         $scope.minutes = data.time.minutes;
         $scope.seconds = data.time.seconds;
-        
+        $scope.time = $scope.minutes * 60 + $scope.seconds;
         // Scoring elements of the tiles
         for (var i = 0; i < data.tiles.length; i++) {
           $scope.tiles[data.tiles[i].x + ',' +
@@ -87,7 +94,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
       // Verified time by timekeeper
       $scope.minutes = response.data.time.minutes;
       $scope.seconds = response.data.time.seconds;
-      
+      $scope.time = $scope.minutes * 60 + $scope.seconds;
       $scope.cap_sig = response.data.sign.captain;
       $scope.ref_sig = response.data.sign.referee;
       $scope.refas_sig = response.data.sign.referee_as;

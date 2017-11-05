@@ -116,7 +116,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.LoPs = 0;
 
         $http.put("/api/runs/maze/" + runId, {
-            LoPs: $scope.LoPs
+            LoPs: $scope.LoPs,
+            time: {
+                minutes: Math.floor($scope.time / 60000),
+                seconds: (Math.floor($scope.time % 60000)) / 1000
+            }
         }).then(function (response) {
             console.log(response);
             $scope.score = response.data.score;
@@ -131,7 +135,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.LoPs++;
 
         $http.put("/api/runs/maze/" + runId, {
-            LoPs: $scope.LoPs
+            LoPs: $scope.LoPs,
+            time: {
+                minutes: Math.floor($scope.time / 60000),
+                seconds: (Math.floor($scope.time % 60000)) / 1000
+            }
         }).then(function (response) {
             console.log(response);
             $scope.score = response.data.score;
@@ -163,7 +171,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             // Start the timer
             $timeout(tick, $scope.tickInterval);
             $http.put("/api/runs/maze/" + runId, {
-                status: 2
+                status: 2,
+                time: {
+                    minutes: Math.floor($scope.time / 60000),
+                    seconds: (Math.floor($scope.time % 60000)) / 1000
+                }
             }).then(function (response) {
 
             }, function (response) {
@@ -179,7 +191,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.changeExitBonus = function () {
         $http.put("/api/runs/maze/" + runId, {
-            exitBonus: $scope.exitBonus
+            exitBonus: $scope.exitBonus,
+            time: {
+                minutes: Math.floor($scope.time / 60000),
+                seconds: (Math.floor($scope.time % 60000)) / 1000
+            }
         }).then(function (response) {
             $scope.score = response.data.score;
         }, function (response) {
@@ -442,6 +458,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             var httpdata = {
                 tiles: {
           [x + ',' + y + ',' + z]: tile
+                },
+                time: {
+                    minutes: Math.floor($scope.time / 60000),
+                    seconds: (Math.floor($scope.time % 60000)) / 1000
                 }
             };
             console.log(httpdata);
@@ -477,6 +497,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             var httpdata = {
                 tiles: {
           [x + ',' + y + ',' + z]: $scope.tiles[x + ',' + y + ',' + z]
+                },
+                time: {
+                    minutes: Math.floor($scope.time / 60000),
+                    seconds: (Math.floor($scope.time % 60000)) / 1000
                 }
             };
             console.log(httpdata);
