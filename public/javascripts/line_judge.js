@@ -213,7 +213,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         if ($scope.LoPs[index] < 0)
             $scope.LoPs[index] = 0;
         $http.put("/api/runs/line/" + runId, {
-            LoPs: $scope.LoPs
+            LoPs: $scope.LoPs,
+            time: {
+                minutes: Math.floor($scope.time / 60000),
+                seconds: (Math.floor($scope.time % 60000)) / 1000
+            }
         }).then(function (response) {
             console.log(response);
             $scope.score = response.data.score;
@@ -250,7 +254,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.rescuedLiveVictims = 0;
 
             $http.put("/api/runs/line/" + runId, {
-                rescuedLiveVictims: $scope.rescuedLiveVictims
+                rescuedLiveVictims: $scope.rescuedLiveVictims,
+                time: {
+                    minutes: Math.floor($scope.time / 60000),
+                    seconds: (Math.floor($scope.time % 60000)) / 1000
+                }
             }).then(function (response) {
                 $scope.score = response.data.score;
                 $scope.rlprocessing = false;
@@ -264,7 +272,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.rescuedDeadVictims = 0;
 
             $http.put("/api/runs/line/" + runId, {
-                rescuedDeadVictims: $scope.rescuedDeadVictims
+                rescuedDeadVictims: $scope.rescuedDeadVictims,
+                time: {
+                    minutes: Math.floor($scope.time / 60000),
+                    seconds: (Math.floor($scope.time % 60000)) / 1000
+                }
             }).then(function (response) {
                 $scope.score = response.data.score;
                 $scope.rdprocessing = false;
@@ -279,7 +291,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.rlprocessing = true;
             $scope.rescuedLiveVictims++;
             $http.put("/api/runs/line/" + runId, {
-                rescuedLiveVictims: $scope.rescuedLiveVictims
+                rescuedLiveVictims: $scope.rescuedLiveVictims,
+                time: {
+                    minutes: Math.floor($scope.time / 60000),
+                    seconds: (Math.floor($scope.time % 60000)) / 1000
+                }
             }).then(function (response) {
                 $scope.score = response.data.score;
                 $scope.rlprocessing = false;
@@ -290,7 +306,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.rdprocessing = true;
             $scope.rescuedDeadVictims++;
             $http.put("/api/runs/line/" + runId, {
-                rescuedDeadVictims: $scope.rescuedDeadVictims
+                rescuedDeadVictims: $scope.rescuedDeadVictims,
+                time: {
+                    minutes: Math.floor($scope.time / 60000),
+                    seconds: (Math.floor($scope.time % 60000)) / 1000
+                }
             }).then(function (response) {
                 $scope.score = response.data.score;
                 $scope.rdprocessing = false;
@@ -321,7 +341,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             // Start the timer
             $timeout(tick, $scope.tickInterval);
             $http.put("/api/runs/line/" + runId, {
-                status: 2
+                status: 2,
+                time: {
+                    minutes: Math.floor($scope.time / 60000),
+                    seconds: (Math.floor($scope.time % 60000)) / 1000
+                }
             }).then(function (response) {
 
             }, function (response) {
@@ -343,7 +367,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.changeShowedUp = function () {
         $http.put("/api/runs/line/" + runId, {
-            showedUp: $scope.showedUp
+            showedUp: $scope.showedUp,
+            time: {
+                minutes: Math.floor($scope.time / 60000),
+                seconds: (Math.floor($scope.time % 60000)) / 1000
+            }
         }).then(function (response) {
             $scope.score = response.data.score;
         }, function (response) {
@@ -353,7 +381,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
     $scope.changeExitBonus = function () {
         $http.put("/api/runs/line/" + runId, {
-            exitBonus: $scope.exitBonus
+            exitBonus: $scope.exitBonus,
+            time: {
+                minutes: Math.floor($scope.time / 60000),
+                seconds: (Math.floor($scope.time % 60000)) / 1000
+            }
         }).then(function (response) {
             $scope.score = response.data.score;
         }, function (response) {
@@ -364,7 +396,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.changeLevel = function (n) {
         $scope.evacuationLevel = n;
         $http.put("/api/runs/line/" + runId, {
-            evacuationLevel: $scope.evacuationLevel
+            evacuationLevel: $scope.evacuationLevel,
+            time: {
+                minutes: Math.floor($scope.time / 60000),
+                seconds: (Math.floor($scope.time % 60000)) / 1000
+            }
         }).then(function (response) {
             $scope.score = response.data.score;
         }, function (response) {
@@ -377,7 +413,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         var stile = [];
         var isDropTile = false;
         var httpdata = {
-            tiles: {}
+            tiles: {},
+            time: {
+                minutes: Math.floor($scope.time / 60000),
+                seconds: (Math.floor($scope.time % 60000)) / 1000
+            }
         };
 
         // If this is not a created tile
@@ -524,7 +564,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         }).closed.then(function (result) {
             console.log("Closed modal");
             $http.put("/api/runs/line/" + runId, {
-                tiles: $scope.stiles
+                tiles: $scope.stiles,
+                time: {
+                    minutes: Math.floor($scope.time / 60000),
+                    seconds: (Math.floor($scope.time % 60000)) / 1000
+                }
             }).then(function (response) {
                 $scope.score = response.data.score;
                 $scope.mtiles[x + ',' + y + ',' + z].processing = false;

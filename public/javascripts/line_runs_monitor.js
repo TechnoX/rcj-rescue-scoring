@@ -1,5 +1,5 @@
 // register the directive with your app module
-var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'rzModule', 'pascalprecht.translate', 'ngCookies']);
+var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'rzModule']);
 var marker = {};
 var scp;
 
@@ -7,8 +7,12 @@ var scp;
 app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', function ($scope, $uibModal, $log, $timeout, $http) {
 
     $http.get("/api/competitions/" + competitionId +
-        "/Line/fields").then(function (response) {
+        "/LineNL/fields").then(function (response) {
         $scope.fields = response.data
+    })
+    $http.get("/api/competitions/" + competitionId +
+        "/LineWL/fields").then(function (response) {
+        $scope.fields = $scope.fields.concat(response.data)
     })
     scp = $scope;
     $scope.getIframeSrc = function (runId) {
@@ -36,6 +40,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         if ($scope.selectfield[num] != null) {
             $http.get("/api/runs/line/find/" + competitionId + "/" +
                 $scope.selectfield[num]._id + "/3").then(function (response) {
+                if ($scope.selectfield[num].name.indexOf('1') != -1) {
+                    $scope.field_run[num].robot = 1;
+                } else {
+                    $scope.field_run[num].robot = 2;
+                }
                 if (response.data.length == 0) {
                     $scope.field_run[num].id = -1;
                     $scope.field_run[num].name = "No Team";
@@ -57,6 +66,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         if ($scope.selectfield[num] != null) {
             $http.get("/api/runs/line/find/" + competitionId + "/" +
                 $scope.selectfield[num]._id + "/2").then(function (response) {
+                if ($scope.selectfield[num].name.indexOf('1') != -1) {
+                    $scope.field_run[num].robot = 1;
+                } else {
+                    $scope.field_run[num].robot = 2;
+                }
                 if (response.data.length == 0) $scope.get_field_signing(num);
                 else if (response.data.length == 1) {
                     $scope.field_run[num].id = response.data[0]._id;
@@ -72,7 +86,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
     setInterval("scp.get_field(0)", 10000);
     setInterval("scp.get_field(1)", 10000);
-    setInterval("scp.get_field(2)", 10000);
+    //setInterval("scp.get_field(2)", 10000);
 
     $scope.go = function (path) {
         window.open(path)
