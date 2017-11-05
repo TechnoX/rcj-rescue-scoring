@@ -157,7 +157,7 @@
                 <div class="col-md-12">
                     <div ng-repeat="z in range(height) track by $index" style="float: left; margin-right: 10px">
                         <h3>{{countWords[$index]}} floor</h3>
-                        <table>
+                        <table class="map">
                             <tr ng-repeat="r in range(2*length + 1)">
                                 <td ng-repeat="c in range(2*width + 1)" ng-class="{'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall, 'checkpoint': cells[c+','+r+','+z].tile.checkpoint, 'black': cells[c+','+r+','+z].tile.black, 'linear': cells[c+','+r+','+z].isLinear}" ng-click="cellClick(c, r, z, $odd != $parent.$odd, $odd && $parent.$odd)">
                                     <div class="tile-image-container" ng-show="cells[c+','+r+','+z].isTile">
@@ -183,9 +183,9 @@
                                         <img ng-src="/images/u_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'U'">
                                         <img ng-src="/images/u_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'U'">
 
-                                        <img src="/images/done.png" class="tile-image" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'done'">
-                                        <img src="/images/halfdone.png" class="tile-image" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'halfdone'">
-                                        <img src="/images/undone.png" class="tile-image" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'undone'">
+                                        <i class="fa fa-check fa-fw tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'done'" style="padding-top:4px; color:#27ae60; opacity:0.9;"></i>
+                                        <i class="fa fa-play fa-fw fa-rotate-270 tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'halfdone'" style="padding-top:4px; color:#f4d03f; opacity:0.9;"></i>
+                                        <i class="fa fa-times fa-fw tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'undone'" style="padding-top:4px; color:#e74c3c; opacity:0.9;"></i>
                                     </div>
                                 </td>
                             </tr>
