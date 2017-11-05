@@ -24,12 +24,12 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
       'id'    : -1,
       'name'  : 'Select Field↓',
       'status': 0
-    },
+    }/*,
     {
       'id'    : -1,
       'name'  : 'Select Field↓',
       'status': 0
-    }
+    }*/
   ];
   
   $scope.get_field_signing = function (num) {
@@ -72,7 +72,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
   }
   setInterval("scp.get_field(0)", 10000);
   setInterval("scp.get_field(1)", 10000);
-  setInterval("scp.get_field(2)", 10000);
+  //setInterval("scp.get_field(2)", 10000);
   
   $scope.go = function (path) {
     window.open(path)
