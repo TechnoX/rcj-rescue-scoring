@@ -380,6 +380,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     }
     $scope.changeExitBonus = function () {
+        $scope.exitBonus = !$scope.exitBonus
+        $scope.exitBonusP = true
         $http.put("/api/runs/line/" + runId, {
             exitBonus: $scope.exitBonus,
             time: {
@@ -388,6 +390,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             }
         }).then(function (response) {
             $scope.score = response.data.score;
+            $scope.exitBonusP = false
         }, function (response) {
             console.log("Error: " + response.statusText);
         });

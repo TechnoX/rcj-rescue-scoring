@@ -190,11 +190,15 @@
                         <hr>
                         <div class="card-body">
                             <p class="card-text">{{'line.judge.exit' | translate}}<span class="badge badge-info">20　points</span></p>
-                            <input type="checkbox" ng-model="exitBonus" ng-change="changeExitBonus()" id="scoredrun"><label class="checkbox" for="scoredrun">{{'common.sucess' | translate}}</label><br>
+                            <div class="col-md-12" style="position: relative;" ng-click="changeExitBonus()">
+                            <img src="/images/line_bonus.png" class="img-thumbnail" width=186.3px height=118px ng-style="{'background-color': exitBonus?'#2ecc71':'#D91E18'}">
+                            <div style="position:absolute; top:25px; left:65px;">
+                                <img src="/images/loader2.gif" class="" ng-show="exitBonusP" style="" width= 70px height=70px>
+                                <i class="fa fa-check fa-fw fa-5x" ng-show="exitBonus && !exitBonusP" style="color:#27ae60; opacity:0.9;"></i>
+                                <i class="fa fa-times fa-fw fa-5x" ng-show="!exitBonus && !exitBonusP" style="padding-top:4px; color:#e74c3c; opacity:0.9;"></i>
+                          </div>
+                            
                         </div>
-                        <div class="card-body">
-                            <p class="card-text">{{'line.judge.show_up' | translate}} <span class="badge badge-info">3　points</span></p>
-                            <input type="checkbox" ng-model="showedUp" ng-change="changeShowedUp()" id="exitcheckbox"><label class="checkbox" for="exitcheckbox">{{'common.sucess' | translate}}</label><br>
                         </div>
 
                     </div>
@@ -226,9 +230,9 @@
                 <div>
                     <h4>{{'line.judge.adjust'| translate}}</h4><br>
                     <div class="input-group input-group-lg">
-                      <input type="tel" class="form-control" placeholder="" aria-label="min" aria-describedby="sizing-addon1"  min="0" max="8" ng-model="minutes">
+                      <input type="tel" class="form-control" placeholder="" aria-label="min" aria-describedby="sizing-addon1"  min="0" max="8" ng-model="$parent.minutes">
                       <span class="input-group-addon" id="sizing-addon1">{{'common.min' | translate}}</span>
-                      <input type="tel" class="form-control" placeholder="" aria-label="sec" aria-describedby="sizing-addon1" min="0" max="60" ng-model="seconds">
+                      <input type="tel" class="form-control" placeholder="" aria-label="sec" aria-describedby="sizing-addon1" min="0" max="60" ng-model="$parent.seconds">
                       <span class="input-group-addon" id="sizing-addon1">{{'common.sec' | translate}}</span>
                     </div>
                 </div>

@@ -151,8 +151,15 @@
                     </div>
                     <hr>
                     <div class="card-body">
-                        <p class="card-text">{{'line.view.exit' | translate}}<span class="badge badge-info">20 points</span></p>
-                        <input type="checkbox" ng-model="exitBonus" ng-change="changeExitBonus()" id="scoredrun" disabled><label class="checkbox" for="scoredrun">{{'common.sucess' | translate}}</label><br>
+                            <p class="card-text">{{'line.judge.exit' | translate}}<span class="badge badge-info">20　points</span></p>
+                            <div class="col-md-12" style="position: relative;">
+                            <img src="/images/line_bonus.png" class="img-thumbnail" width=186.3px height=118px ng-style="{'background-color': exitBonus?'#2ecc71':'#D91E18'}">
+                            <div style="position:absolute; top:25px; left:65px;">
+                                <i class="fa fa-check fa-fw fa-5x" ng-show="exitBonus" style="color:#27ae60; opacity:0.9;"></i>
+                                <i class="fa fa-times fa-fw fa-5x" ng-show="!exitBonus" style="padding-top:4px; color:#e74c3c; opacity:0.9;"></i>
+                          </div>
+                            
+                        </div>
                     </div>
                 </div>
 
