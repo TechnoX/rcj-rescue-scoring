@@ -111,18 +111,7 @@ adminRouter.get('/approval/:roundid', function (req, res) {
         id: id
     })
 })
-adminRouter.get('/editor/:mapid', function (req, res, next) {
-    const id = req.params.mapid
 
-    if (!ObjectId.isValid(id)) {
-        return next()
-    }
-
-    res.render('maze_editor', {
-        mapid: id,
-        user: req.user
-    })
-})
 
 publicRouter.all('*', function (req, res, next) {
     next()
