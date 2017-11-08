@@ -1,6 +1,7 @@
 .DS_Store
 
 logs/*
+!.gitkeep
 public/components/*
 node_modules/*
 
