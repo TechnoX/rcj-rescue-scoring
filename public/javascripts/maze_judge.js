@@ -43,37 +43,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 response.data.tiles[i].y + ',' +
                 response.data.tiles[i].z] = response.data.tiles[i];
         }
+        
 
-        // Get the map
-        $http.get("/api/maps/maze/" + response.data.map +
-            "?populate=true").then(function (response) {
-            console.log(response.data);
-            $scope.startTile = response.data.startTile;
-            $scope.height = response.data.height;
-            $scope.slider = {
-                    options : {
-                        floor: 0,
-                        ceil: $scope.height - 1,
-                        step: 1,
-                        showTicksValues: true
-                    }
-                };
-            $scope.width = response.data.width;
-            $scope.length = response.data.length;
-
-            for (var i = 0; i < response.data.cells.length; i++) {
-                $scope.cells[response.data.cells[i].x + ',' +
-                    response.data.cells[i].y + ',' +
-                    response.data.cells[i].z] = response.data.cells[i];
-            }
-
-            width = response.data.width;
-            length = response.data.length;
-
-
-        }, function (response) {
-            console.log("Error: " + response.statusText);
-        });
+        $scope.loadMap(response.data.map);
 
 
         $http.put("/api/runs/maze/" + runId, {
@@ -94,6 +66,72 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         }
     });
 
+    $scope.randomDice = function(){
+        var a = Math.floor( Math.random() * 6 ) ;
+        $scope.changeMap(a);
+    }
+
+    $scope.changeMap = function(n){
+        console.log(n)
+        $scope.diceSelect = n;
+        $http.put("/api/runs/maze/map/" + runId, {
+            map: $scope.dice[n]
+        }).then(function (response) {
+            
+            $scope.loadMap(response.data.map._id);
+
+        }, function (response) {
+            console.log("Error: " + response.statusText);
+            if (response.status == 401) {
+                $scope.go('/home/access_denied');
+            }
+        });
+    }
+    
+    $scope.loadMap = function(mapId){
+        // Get the map
+        $http.get("/api/maps/maze/" + mapId +
+            "?populate=true").then(function (response) {
+            console.log(response.data);
+            $scope.startTile = response.data.startTile;
+            $scope.height = response.data.height;
+            $scope.slider = {
+                    options : {
+                        floor: 0,
+                        ceil: $scope.height - 1,
+                        step: 1,
+                        showTicksValues: true
+                    }
+                };
+            $scope.width = response.data.width;
+            $scope.length = response.data.length;
+            if(response.data.parent){
+                if(!$scope.dice){
+                    $http.get("/api/maps/maze/" + response.data.parent).then(function (response) {
+                        $scope.dice = response.data.dice;
+                    }, function (response) {
+                        console.log("Error: " + response.statusText);
+                    });
+                }
+                
+            }else{
+                $scope.dice = response.data.dice;
+            }
+            
+            for (var i = 0; i < response.data.cells.length; i++) {
+                $scope.cells[response.data.cells[i].x + ',' +
+                    response.data.cells[i].y + ',' +
+                    response.data.cells[i].z] = response.data.cells[i];
+            }
+
+            width = response.data.width;
+            length = response.data.length;
+
+
+        }, function (response) {
+            console.log("Error: " + response.statusText);
+        });
+    }
 
     $scope.range = function (n) {
         arr = [];
@@ -196,6 +234,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 
     $scope.changeExitBonus = function () {
+        $scope.exitBonus = ! $scope.exitBonus
+        $scope.exitBonusP = true
         $http.put("/api/runs/maze/" + runId, {
             exitBonus: $scope.exitBonus,
             time: {
@@ -204,6 +244,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             }
         }).then(function (response) {
             $scope.score = response.data.score;
+            $scope.exitBonusP = false
         }, function (response) {
             console.log("Error: " + response.statusText);
         });

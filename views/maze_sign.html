@@ -61,8 +61,15 @@
                     </div>
                     <h3 class="card-header"><i class="fa fa-home" aria-hidden="true"></i> {{'common.other' | translate}}</h3>
                     <div class="card-body">
-                        <input type="checkbox" ng-model="exitBonus" id="hasReturned" disabled="disabled">
-                        <label class="checkbox" for="hasReturned">{{'maze.sign.return' | translate}}</label>
+                        <div class="col-md-12" style="position: relative;">
+                            <strong>{{'maze.judge.return' | translate}}</strong><br>
+                            <img src="/images/maze_bonus.png" class="img-thumbnail" width=100px height=100px ng-style="{'background-color': exitBonus?'#2ecc71':'#D91E18'}">
+                            <div style="position:absolute; top:30px; left:25px;">
+                                <i class="fa fa-check fa-fw fa-5x" ng-show="exitBonus && !exitBonusP" style="color:#27ae60; opacity:0.9;"></i>
+                                <i class="fa fa-times fa-fw fa-5x" ng-show="!exitBonus && !exitBonusP" style="padding-top:4px; color:#e74c3c; opacity:0.9;"></i>
+                          </div>
+                            
+                        </div>
                     </div>
                 </div>
             </div>
