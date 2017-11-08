@@ -21,7 +21,12 @@ var app = angular.module("RunAdmin", ['pascalprecht.translate', 'ngCookies']).co
   })
   $http.get("/api/competitions/" + competitionId +
             "/Maze/maps").then(function (response) {
-    $scope.maps = response.data
+     $scope.maps = {}
+    for (let i = 0; i < response.data.length; i++) {
+        if (!response.data[i].parent) {
+            $scope.maps[i] = response.data[i]
+        }
+    }
   })
   
   $scope.addRun = function () {
