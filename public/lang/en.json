@@ -204,7 +204,7 @@
         "view": {
             "info": "@:line.view.info",
             "total_lops": "Total number of LoPs",
-            "return": "Robot returned to starting tile for more than 10s",
+            "return": "Exit bonus",
             "comment": "@:line.view.comment",
             "comment_e": "@:line.view.comment_e",
             "sign": "@:line.view.sign",
