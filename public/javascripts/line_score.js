@@ -52,7 +52,7 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
 
                 if (run.status >= 2 || run.score != 0 || run.time.minutes != 0 ||
                     run.time.seconds != 0) {
-                    console.log(run)
+                    //console.log(run)
                     if (run.team.league == "LineNL") {
 
 
@@ -73,13 +73,12 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
                         nipponTeamRuns[run.team._id].sumLoPs = sum.lops
                         nipponTeamRuns[run.team._id].retired = sum.retired
                         if (run.status == 2 || run.status == 3) {
-                            //nipponTeamRuns[run.team._id].isplaying = true
-                            //run.isplaying = true
+                            nipponTeamRuns[run.team._id].isplaying = true
+                            run.isplaying = true
                         }
                         $scope.nipponRuns.push(run)
 
                     } else if (run.team.league == "LineWL") {
-                        $scope.worldRuns.push(run)
                         if (worldTeamRuns[run.team._id] === undefined) {
                             worldTeamRuns[run.team._id] = {
                                 team: {
@@ -90,12 +89,17 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
                         } else {
                             worldTeamRuns[run.team._id].runs.push(run)
                         }
-                        var sum = sum_jpop(worldTeamRuns[run.team._id].runs)
+                        var sum = sumBest(worldTeamRuns[run.team._id].runs)
                         worldTeamRuns[run.team._id].sumScore = sum.score
                         worldTeamRuns[run.team._id].sumTime = sum.time
                         worldTeamRuns[run.team._id].sumRescue = sum.rescued
                         worldTeamRuns[run.team._id].sumLoPs = sum.lops
                         worldTeamRuns[run.team._id].retired = sum.retired
+                        if (run.status == 2 || run.status == 3) {
+                            worldTeamRuns[run.team._id].isplaying = true
+                            run.isplaying = true
+                        }
+                        $scope.worldRuns.push(run)
                     }
                 }
             }
@@ -130,7 +134,8 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
                     time: teamRun.sumTime,
                     rescuedVictims: teamRun.sumRescue,
                     LoPsNum: teamRun.sumLoPs,
-                    retired: teamRun.retired
+                    retired: teamRun.retired,
+                    isplaying: teamRun.isplaying
                 })
             }
             $scope.worldRunsTop.sort(sortRuns)

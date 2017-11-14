@@ -78,7 +78,7 @@ block content
     .col-lg-6
       h3 日本リーグ - 全競技
       label {{'line.score.sort' | translate}}
-        input(type="checkbox" style='display:inline;' ng-model="sortOrder" ng-true-value="'[startTime,round.name,field.name,team.name]'" ng-false-value="'-score'")
+        input(type="checkbox" style='display:inline;' ng-model="sortOrderNL" ng-true-value="'[startTime,round.name,field.name,team.name]'" ng-false-value="'-score'")
       table.custom(style="overflow: scroll;")
         thead
           tr
@@ -90,7 +90,7 @@ block content
             th.text-center {{'common.rescued' | translate}}
             th.text-center {{'common.lops' | translate}}
         tbody
-          tr(ng-repeat='run in nipponRuns | orderBy:sortOrder')
+          tr(ng-repeat='run in nipponRuns | orderBy:sortOrderNL')
             td.text-center(ng-bind='run.team.name' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
             td.text-center(ng-bind='run.round.name'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
             td.text-center(ng-bind='run.field.name'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
@@ -102,7 +102,7 @@ block content
     .col-lg-6
       h3 ワールドリーグ - 全競技
       label {{'line.score.sort' | translate}}
-        input(type="checkbox" style='display:inline;' ng-model="sortOrder" ng-true-value="'[startTime,round.name,field.name,team.name]'" ng-false-value="'-score'")
+        input(type="checkbox" style='display:inline;' ng-model="sortOrderWL" ng-true-value="'[startTime,round.name,field.name,team.name]'" ng-false-value="'-score'")
       table.custom(style="overflow: scroll;")
         thead
           tr
@@ -114,7 +114,7 @@ block content
             th.text-center {{'common.rescued' | translate}}
             th.text-center {{'common.lops' | translate}}
         tbody
-          tr(ng-repeat='run in worldRuns | orderBy:sortOrder')
+          tr(ng-repeat='run in worldRuns | orderBy:sortOrderWL')
             td.text-center(ng-bind='run.team.name' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
             td.text-center(ng-bind='run.round.name'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
             td.text-center(ng-bind='run.field.name'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
