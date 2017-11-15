@@ -194,6 +194,18 @@ router.get('/:competitionid/line/editor', function (req, res, next) {
   else res.render('access_denied', {user: req.user})
 })
 
+router.get('/:competitionid/line/editor/:mapid', function (req, res, next) {
+    const id = req.params.mapid
+    const cid = req.params.competitionid
+
+    if (!ObjectId.isValid(id)) {
+        return next()
+    }
+    if(auth.authCompetition(req.user,id,ACCESSLEVELS.ADMIN)) res.render('line_editor', {compid: cid, mapid: id, user: req.user})
+    else res.render('access_denied', {user: req.user})
+
+})
+
 router.get('/:competitionid/fields', function (req, res, next) {
   const id = req.params.competitionid
   

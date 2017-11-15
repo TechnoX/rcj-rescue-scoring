@@ -31,6 +31,6 @@ block content
         tbody
             tr(ng-repeat='map in maps')
               td
-                a(ng-bind='map.name' ng-href="/line/editor/{{map._id}}")
+                a(ng-bind='map.name' ng-href="/admin/{{competitionId}}/line/editor/{{map._id}}")
               td
                 a(href="" ng-click='removeMap(map)') {{"common.delete" | translate}}
