@@ -38,6 +38,7 @@ const runSchema = new Schema({
     referee_as: {type: String, default: ""}
   },
   started  : {type: Boolean, default: false, index: true},
+  finished : {type: Boolean, default: false, index: true},
   comment  : {type: String, default: ""},
   startTime: {type: Number, default: 0}
 })
