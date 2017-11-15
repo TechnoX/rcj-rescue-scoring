@@ -5,11 +5,11 @@ const validator = require('validator')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
 const async = require('async')
-const mazeFill = require('mazeFill')
 
 const logger = require('../../config/logger').mainLogger
 
 const mapdb = require('../../models/map')
+const mazeFill = require('./mazeFill')
 
 const VICTIMS = ['H', 'S', 'U', "Heated", "None"]
 module.exports.VICTIMS = VICTIMS
