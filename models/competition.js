@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const idValidator = require('mongoose-id-validator')
 const validator = require('validator')
 const Schema = mongoose.Schema
+const ObjectId = Schema.Types.ObjectId
 
 const logger = require('../config/logger').mainLogger
 
