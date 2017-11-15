@@ -2,9 +2,9 @@
 
 const logger = require('../../config/logger').mainLogger
 
-const maze = require('maze/mazeRun')
+const maze = require('./mazeRun')
 
-const scoreCalculator = require('../../helper/scoreCalculator')
+const scoreCalculator = require('./scoreCalculator')
 
 module.exports = {
   name  : maze.NAME,
@@ -19,5 +19,5 @@ module.exports = {
     })
   },
   model : maze.model,
-  scoreCalculator : scoreCalculator.calculateMazeScore
+  scoreCalculator : scoreCalculator
 }
