@@ -9,7 +9,7 @@ const async = require('async')
 
 const logger = require('../../config/logger').mainLogger
 
-const pathFinder = require('pathFinder')
+const pathFinder = require('./pathFinder')
 
 const mapdb = require('../../models/map')
 const LineRun = require('./lineRun').lineRun
@@ -76,7 +76,7 @@ lineMapSchema.pre('save', function (next) {
       
       if (self.finished) {
         try {
-          pathFinder.findPath(self)
+          pathFinder(self)
         } catch (err) {
           logger.error(err)
           self.finished = false
