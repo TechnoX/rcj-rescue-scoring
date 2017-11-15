@@ -19,7 +19,6 @@ var async = require('async')
 
 // db
 var db = require('./config/db')
-db.connect(process.env.DB_CONNECT_STR)
 
 var mongoose = require('mongoose')
 
