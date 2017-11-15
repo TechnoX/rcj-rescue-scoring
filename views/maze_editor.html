@@ -4,6 +4,16 @@
 <button class="btn btn-info" type="button" ng-click="saveMap(parent)" ng-if="parent">親のマップの編集に戻る</button>
 <div style="margin-top:50px;">
     <div class="row">
+        <div class="col-md-6">
+            <button class="btn btn-dark" type="button" ng-click="export()">Export this map to file</button>
+        </div>
+        <div class="col-md-6">
+            <span>Import map from file:</span>
+            <input id="select" type="file" name="select">
+        </div>
+        <br>
+    </div>
+    <div class="row">
         <div class="col-md-12">
             <div class="input-group">
                 <span class="input-group-addon">{{"admin.mazeMapEditor.name" | translate}}</span>

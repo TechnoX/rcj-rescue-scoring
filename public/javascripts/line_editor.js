@@ -8,7 +8,7 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
     
     $http.get("/api/competitions/").then(function (response) {
         $scope.competitions = response.data
-        console.log($scope.competitions)
+        //console.log($scope.competitions)
     })
 
     $scope.tileSets = [];
@@ -47,6 +47,7 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
     if (mapId) {
         $http.get("/api/maps/line/" + mapId +
             "?populate=true").then(function (response) {
+            //console.log(response)
             for (var i = 0; i < response.data.tiles.length; i++) {
                 $scope.tiles[response.data.tiles[i].x + ',' +
                     response.data.tiles[i].y + ',' +
@@ -187,6 +188,61 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
             });
         }
     }
+    
+    $scope.export = function(){
+        
+        var map = {
+            name: $scope.name,
+            length: $scope.length,
+            height: $scope.height,
+            width: $scope.width,
+            finished: $scope.finished,
+            numberOfDropTiles: $scope.numberOfDropTiles,
+            startTile: $scope.startTile,
+            tiles: $scope.tiles
+        };
+         var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(map))
+         var downloadLink = document.createElement('a')
+         downloadLink.setAttribute("href",dataStr)
+         downloadLink.setAttribute("download", $scope.name + '.json')
+         downloadLink.click()
+    }
+    
+    // File APIに対応しているか確認
+        if (window.File) {
+            var select = document.getElementById('select');
+
+            // ファイルが選択されたとき
+            select.addEventListener('change', function (e) {
+                // 選択されたファイルの情報を取得
+                var fileData = e.target.files[0];
+
+                var reader = new FileReader();
+                // ファイル読み取りに失敗したとき
+                reader.onerror = function () {
+                    alert('ファイル読み取りに失敗しました')
+                }
+                // ファイル読み取りに成功したとき
+                reader.onload = function () {
+                    var data = JSON.parse(reader.result);
+                    $scope.tiles = data.tiles;
+                    $scope.competitionId = competitionId;
+
+                    $scope.startTile = data.startTile;
+                    $scope.numberOfDropTiles = data.numberOfDropTiles;
+                    $scope.height = data.height;
+                    $scope.sliderOptions.ceil = $scope.height - 1;
+                    $scope.width = data.width;
+                    $scope.length = data.length;
+                    $scope.name = data.name;
+                    $scope.finished = data.finished;
+                    $scope.$apply();
+                }
+
+                // ファイル読み取りを実行
+                reader.readAsText(fileData);
+            }, false);
+        }
 
 
     $scope.open = function (x, y) {
@@ -279,7 +335,7 @@ app.directive('tile', function () {
                 }
             }
             scope.isStart = function (tile) {
-                console.log(tile);
+                //console.log(tile);
                 return attrs.x == scope.$parent.startTile.x &&
                     attrs.y == scope.$parent.startTile.y &&
                     attrs.z == scope.$parent.startTile.z;
