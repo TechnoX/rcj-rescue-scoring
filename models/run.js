@@ -1,17 +1,13 @@
 "use strict"
 const mongoose = require('mongoose')
 const timestamps = require('mongoose-timestamp')
+const idValidator = require('mongoose-id-validator')
 const validator = require('validator')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
 const async = require('async')
 
-const competitiondb = require('./competition')
-
 const logger = require('../config/logger').mainLogger
-
-const options = {discriminatorKey: 'league'}
-module.exports.options = options
 
 const runSchema = new Schema({
   competition: {
@@ -20,6 +16,7 @@ const runSchema = new Schema({
     required: true,
     index   : true
   },
+  league     : {type: ObjectId, ref: 'League', required: true, index: true},
   round      : {type: ObjectId, ref: 'Round', required: true, index: true},
   team       : {type: ObjectId, ref: 'Team', required: true, index: true},
   field      : {type: ObjectId, ref: 'Field', required: true, index: true},
@@ -43,7 +40,8 @@ const runSchema = new Schema({
   started  : {type: Boolean, default: false, index: true},
   comment  : {type: String, default: ""},
   startTime: {type: Number, default: 0}
-}, options)
+})
+runSchema.index({competition: 1, league: 1})
 
 runSchema.pre('save', function (next) {
   const self = this
@@ -51,7 +49,7 @@ runSchema.pre('save', function (next) {
     Run.findOne({
       round: self.round,
       team : self.team
-    }).populate("round team").exec(function (err, dbRun) {
+    }).populate("round.name team.name").exec(function (err, dbRun) {
       if (err) {
         return next(err)
       } else if (dbRun) {
@@ -61,88 +59,39 @@ runSchema.pre('save', function (next) {
                         '"!')
         return next(err)
       } else {
-        // Check that all references matches
-        async.parallel({
-            competition: function (callback) {
-              competitiondb.competition.findById(self.competition, function (err, dbCompetition) {
-                if (err) {
-                  return callback(err)
-                } else if (!dbCompetition) {
-                  return callback(new Error("No competition with that id!"))
-                } else {
-                  return callback(null, dbCompetition)
-                }
-              })
-            },
-            round      : function (callback) {
-              competitiondb.round.findById(self.round, function (err, dbRound) {
-                if (err) {
-                  return callback(err)
-                } else if (!dbRound) {
-                  return callback(new Error("No round with that id!"))
-                } else {
-                  return callback(null, dbRound)
-                }
-              })
-            },
-            team       : function (callback) {
-              competitiondb.team.findById(self.team, function (err, dbTeam) {
-                if (err) {
-                  return callback(err)
-                } else if (!dbTeam) {
-                  return callback(new Error("No team with that id!"))
-                } else {
-                  return callback(null, dbTeam)
-                }
-              })
-            },
-            field      : function (callback) {
-              competitiondb.field.findById(self.field, function (err, dbField) {
-                if (err) {
-                  return callback(err)
-                } else if (!dbField) {
-                  return callback(new Error("No field with that id!"))
-                } else {
-                  return callback(null, dbField)
-                }
-              })
+        self.populate("league round.competition round.league team.competition team.league field.competition field.league", function (err, popRun) {
+          if (err) {
+            return next(err)
+          } else {
+            const competitionId = results.competition.id
+
+            if (popRun.round.competition != competitionId) {
+              return next(new Error("Round does not match competition!"))
             }
-          },
-          function (err, results) {
-            if (err) {
-              return next(err)
-            } else {
-              const competitionId = results.competition.id
 
-              if (results.round.competition != competitionId) {
-                return next(new Error("Round does not match competition!"))
-              }
-
-              if (results.team.competition != competitionId) {
-                return next(new Error("Team does not match competition!"))
-              }
-
-              if (results.field.competition != competitionId) {
-                return next(new Error("Field does not match competition!"))
-              }
-
-              if (self.league != null) {
-                if (results.round.league != self.league) {
-                  return next(new Error("Round does not match league!"))
-                }
-
-                if (results.team.league != self.league) {
-                  return next(new Error("Team does not match league!"))
-                }
-
-                if (results.field.league != self.league) {
-                  return next(new Error("Field does not match league!"))
-                }
-              }
-
-              return next()
+            if (popRun.team.competition != competitionId) {
+              return next(new Error("Team does not match competition!"))
             }
-          })
+
+            if (popRun.field.competition != competitionId) {
+              return next(new Error("Field does not match competition!"))
+            }
+
+            if (popRun.round.league != self.league) {
+              return next(new Error("Round does not match league!"))
+            }
+
+            if (popRun.team.league != self.league) {
+              return next(new Error("Team does not match league!"))
+            }
+
+            if (popRun.field.league != self.league) {
+              return next(new Error("Field does not match league!"))
+            }
+
+            return next()
+          }
+        })
       }
     })
   } else {
@@ -151,6 +100,7 @@ runSchema.pre('save', function (next) {
 })
 
 runSchema.plugin(timestamps)
+runSchema.plugin(idValidator)
 
 const Run = mongoose.model('Run', runSchema)
 

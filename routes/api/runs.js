@@ -8,13 +8,13 @@ const async = require('async')
 const ObjectId = require('mongoose').Types.ObjectId
 const logger = require('../../config/logger').mainLogger
 const fs = require('fs')
-const pathFinder = require('../../helper/pathFinder')
+const pathFinder = require('../../leagues/line/pathFinder')
 const auth = require('../../helper/authLevels')
 const ACCESSLEVELS = require('../../models/user').ACCESSLEVELS
 
 const run = require('../../models/run').run
 const baseModel = require('../../models/run').model
-const lineRun = require('../../models/lineRun').lineRun
+const lineRun = require('../../leagues/line/lineRun').lineRun
 const leagues = require('../../leagues')
 
 var socketIo

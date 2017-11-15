@@ -1,6 +1,6 @@
-var logger = require('../config/logger').mainLogger
+var logger = require('../../config/logger').mainLogger
 
-module.exports.findPath = function (map) {
+module.exports = function (map) {
   var tiles = []
   for (var i = 0; i < map.tiles.length; i++) {
     var tile = map.tiles[i]

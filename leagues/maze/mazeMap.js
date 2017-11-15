@@ -5,9 +5,11 @@ const validator = require('validator')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
 const async = require('async')
-const mazeFill = require('../helper/mazeFill')
+const mazeFill = require('mazeFill')
 
-const logger = require('../config/logger').mainLogger
+const logger = require('../../config/logger').mainLogger
+
+const mapdb = require('../../models/map')
 
 const VICTIMS = ['H', 'S', 'U', "Heated", "None"]
 module.exports.VICTIMS = VICTIMS
@@ -212,7 +214,7 @@ mazeMapSchema.pre('save', function (next) {
 
 mazeMapSchema.plugin(mongooseInteger)
 
-const MazeMap = mongoose.model('MazeMap', mazeMapSchema)
+const MazeMap = mapdb.map.discriminator("MazeMap", mazeMapSchema)
 
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
 module.exports.mazeMap = MazeMap

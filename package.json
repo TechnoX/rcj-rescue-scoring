@@ -24,6 +24,7 @@
     "jsdoc": "^3.2.2",
     "log4js": "^0.6.24",
     "mongoose": "^4.0.3",
+    "mongoose-id-validator": "^0.4.3",
     "mongoose-integer": "^0.1.1",
     "mongoose-timestamp": "^0.4.0",
     "node-env-file": "^0.1.7",

@@ -1,5 +1,5 @@
 "use strict"
-const logger = require('../config/logger').mainLogger
+const logger = require('../../config/logger').mainLogger
 
 module.exports.floodFill = function (map) {
   const cells = []

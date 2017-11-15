@@ -1,10 +1,10 @@
 "use strict"
 
-const logger = require('../config/logger').mainLogger
+const logger = require('../../config/logger').mainLogger
 
-const maze = require('../models/mazeRun')
+const maze = require('maze/mazeRun')
 
-const scoreCalculator = require('../helper/scoreCalculator')
+const scoreCalculator = require('../../helper/scoreCalculator')
 
 module.exports = {
   name  : maze.NAME,

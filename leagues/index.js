@@ -3,7 +3,7 @@
 const logger = require('../config/logger').mainLogger
 
 const line = require('./line')
-const maze = require('./maze')
+const maze = require('./maze/index')
 
 module.exports.LINE = line
 module.exports.MAZE = maze

@@ -5,9 +5,8 @@
  * Logger class for stuff
  *
  */
-var log4js = require('log4js');
-var env = require('node-env-file');
-env('process.env');
+var log4js = require('log4js')
+var env = require('node-env-file')
 
 log4js.configure({
   appenders: [

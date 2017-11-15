@@ -7,13 +7,11 @@ const timestamps = require('mongoose-timestamp')
 const validator = require('validator')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
-const async = require('async')
 
-const competitiondb = require('./competition')
-const rundb = require('./run')
+const rundb = require('./../../models/run')
 const mazeMapdb = require('./mazeMap')
 
-const logger = require('../config/logger').mainLogger
+const logger = require('../../config/logger').mainLogger
 
 function isOdd(n) {
   return n & 1 // Bitcheck LSB

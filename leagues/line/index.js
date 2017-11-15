@@ -1,10 +1,10 @@
 "use strict"
 
-const logger = require('../config/logger').mainLogger
+const logger = require('../../config/logger').mainLogger
 
-const line = require('../models/lineRun')
+const line = require('./lineRun')
 
-const scoreCalculator = require('../helper/scoreCalculator')
+const scoreCalculator = require('./scoreCalculator')
 
 module.exports = {
   name  : line.NAME,
@@ -19,5 +19,5 @@ module.exports = {
     })
   },
   model : line.model,
-  scoreCalculator : scoreCalculator.calculateLineScore
+  scoreCalculator : scoreCalculator
 }

@@ -7,10 +7,12 @@
 var mongoose = require('mongoose');
 var logger = require('../config/logger').mainLogger;
 var env = require('node-env-file');
-env('process.env');
+//env('process.env');
 
 
 mongoose.connect(process.env.DB_CONNECT_STR);
+
+
 var db = mongoose.connection;
 
 db.on('error', function (err) {

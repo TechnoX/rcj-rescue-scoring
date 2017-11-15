@@ -1,20 +1,12 @@
 "use strict"
 const mongoose = require('mongoose')
 const mongooseInteger = require('mongoose-integer')
+const idValidator = require('mongoose-id-validator')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
 
 const logger = require('../config/logger').mainLogger
 
-/**
- *
- *@constructor
- *
- * @param {String} username - The username
- * @param {String} password - The password
- * @param {String} salt - The salt used, unique for every user
- * @param {Boolean} admin - If the user is admin or not
- */
 const mapSchema = new Schema({
   competition: {
     type    : ObjectId,
@@ -22,9 +14,16 @@ const mapSchema = new Schema({
     required: true,
     index   : true
   },
+  league     : {
+    type    : ObjectId,
+    ref     : 'League',
+    required: true,
+    index   : true
+  },
   name       : {type: String, required: true},
   finished   : {type: Boolean, default: false}
 })
+mapSchema.index({competition: 1, league: 1})
 
 mapSchema.pre('save', function (next) {
   var self = this
@@ -32,13 +31,17 @@ mapSchema.pre('save', function (next) {
   if (self.isNew || self.isModified("name")) {
     Map.findOne({
       competition: self.competition,
+      league     : self.league,
       name       : self.name
-    }).populate("competition", "name").exec(function (err, dbMap) {
+    }).populate("competition.name league.name").exec(function (err, dbMap) {
       if (err) {
         return next(err)
       } else if (dbMap) {
-        err = new Error('Map "' + dbMap.name +
-                        '" already exists in competition "' +
+        err = new Error('Map "' +
+                        dbMap.name +
+                        '" already exists in league "' +
+                        dbMap.league.name +
+                        '" in competition "' +
                         dbMap.competition.name + '"!')
         return next(err)
       } else {
@@ -49,6 +52,7 @@ mapSchema.pre('save', function (next) {
 })
 
 mapSchema.plugin(mongooseInteger)
+mapSchema.plugin(idValidator)
 
 const Map = mongoose.model('Map', mapSchema)
 

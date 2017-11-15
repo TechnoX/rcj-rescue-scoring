@@ -1,7 +1,4 @@
 "use strict"
-const NAME = "Line"
-module.exports.NAME = NAME
-
 const _ = require('underscore')
 const mongoose = require('mongoose')
 const timestamps = require('mongoose-timestamp')
@@ -10,11 +7,10 @@ const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
 const async = require('async')
 
-const competitiondb = require('./competition')
-const rundb = require('./run')
+const rundb = require('./../../models/run')
 const lineMapdb = require('./lineMap')
 
-const logger = require('../config/logger').mainLogger
+const logger = require('../../config/logger').mainLogger
 
 
 const lineRunSchema = new Schema({
@@ -69,7 +65,7 @@ lineRunSchema.pre('save', function (next) {
   })
 })
 
-const LineRun = rundb.run.discriminator(NAME, lineRunSchema, rundb.options)
+const LineRun = rundb.run.discriminator("LineRun", lineRunSchema)
 
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
 module.exports.lineRun = LineRun
