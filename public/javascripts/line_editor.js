@@ -128,7 +128,7 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
         $http.post("/api/maps/line", map).then(function (response) {
             alert("Created map!");
             console.log(response.data);
-            window.location.replace("/admin/" + competitonId +"/line/editor/" + response.data.id)
+            window.location.replace("/admin/" + competitionId +"/line/editor/" + response.data.id)
         }, function (response) {
             console.log(response);
             console.log("Error: " + response.statusText);
@@ -180,7 +180,7 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
             $http.post("/api/maps/line", map).then(function (response) {
                 alert("Created map!");
                 console.log(response.data);
-                window.location.replace("/admin/" + competitonId +"/line/editor/" + response.data.id)
+                window.location.replace("/admin/" + competitionId +"/line/editor/" + response.data.id)
             }, function (response) {
                 console.log(response);
                 console.log("Error: " + response.statusText);
