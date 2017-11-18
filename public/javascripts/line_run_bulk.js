@@ -10,27 +10,30 @@ var app = angular.module("RunAdmin", ['pascalprecht.translate', 'ngCookies']).co
     $http.get("/api/competitions/" + competitionId +
         "/LineNL/teams").then(function (response) {
         $scope.teams = response.data
-    })
-    $http.get("/api/competitions/" + competitionId +
+        $http.get("/api/competitions/" + competitionId +
         "/LineWL/teams").then(function (response) {
         $scope.teams = $scope.teams.concat(response.data)
+        })
     })
+    
     $http.get("/api/competitions/" + competitionId +
         "/LineNL/rounds").then(function (response) {
         $scope.rounds = response.data
-    })
-    $http.get("/api/competitions/" + competitionId +
+        $http.get("/api/competitions/" + competitionId +
         "/LineWL/rounds").then(function (response) {
         $scope.rounds = $scope.rounds.concat(response.data)
     })
+    })
+    
     $http.get("/api/competitions/" + competitionId +
         "/LineNL/fields").then(function (response) {
         $scope.fields = response.data
-    })
-    $http.get("/api/competitions/" + competitionId +
+        $http.get("/api/competitions/" + competitionId +
         "/LineWL/fields").then(function (response) {
         $scope.fields = $scope.fields.concat(response.data)
     })
+    })
+    
     $http.get("/api/competitions/" + competitionId +
         "/Line/maps").then(function (response) {
         $scope.maps = response.data
