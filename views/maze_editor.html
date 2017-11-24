@@ -1,18 +1,17 @@
 <h1>{{"admin.mazeMapEditor.title" | translate}}</h1>
 <p>{{"admin.mazeMapEditor.desc" | translate}}</p>
-<h2 ng-if="parent">これは，親のパターンの一つです．</h2>
-<button class="btn btn-info" type="button" ng-click="saveMap(parent)" ng-if="parent">親のマップの編集に戻る</button>
+<h2 ng-if="parent">{{"admin.mazeMapEditor.parent" | translate}}</h2>
+<button class="btn btn-info" type="button" ng-click="saveMap(parent)" ng-if="parent">{{"admin.mazeMapEditor.backToParent" | translate}}</button>
 <div style="margin-top:50px;">
     <div class="row">
         <div class="col-md-6">
-            <button class="btn btn-dark" type="button" ng-click="export()">Export this map to file</button>
+            <button class="btn btn-dark" type="button" ng-click="export()">{{"admin.mazeMapEditor.export" | translate}}</button>
         </div>
         <div class="col-md-6">
-            <span>Import map from file:</span>
             <input id="select" type="file" name="select">
         </div>
-        <br>
     </div>
+    <br>
     <div class="row">
         <div class="col-md-12">
             <div class="input-group">
@@ -27,7 +26,7 @@
                 <span class="input-group-addon">{{"admin.mazeMapEditor.name" | translate}}</span>
                 <input type="text" class="form-control" ng-model="asname">
                 <span class="input-group-addon">@
-                    <select ng-model='se_competition' ng-options='b_competitions._id as b_competitions.name for b_competitions in competitions'></select>
+                    <select ng-model='$parent.se_competition' ng-options='b_competitions._id as b_competitions.name for b_competitions in competitions'></select>
                 </span>
                 <span class="input-group-btn">
                     <button class="btn btn-secondary" type="button" ng-click="saveMapAs(asname)">{{"admin.mazeMapEditor.saveAs" | translate}}</button>
@@ -50,23 +49,23 @@
             </div>
             <br>
             <div ng-if="!parent">
-                <h3>パターン設定</h3>
+                <h3>{{"admin.mazeMapEditor.pattern" | translate}}</h3>
                 <p ng-if="mapId == ''">
-                    パターンを設定するためには，一度，保存を行ってください．
+                    {{"admin.mazeMapEditor.patSave" | translate}}
                 </p>
                 <table class="custom" style="width: initial; margin:0;" ng-if="mapId != ''">
                     <tr>
-                        <th>サイコロの目</th>
-                        <th>関連づけるマップ</th>
-                        <th>操作</th>
-                        <th>操作</th>
+                        <th>No.</th>
+                        <th>{{"common.map" | translate}}</th>
+                        <th>{{"common.operation" | translate}}</th>
+                        <th>{{"common.operation" | translate}}</th>
                     </tr>
                     <tr ng-repeat='i in range(6)'>
                         <th>{{i+1}}</th>
                         <td><select ng-model='dice[i]' ng-options='b_maps._id as b_maps.name for b_maps in maps'></select> 
                         </td>
-                        <td><button class="" type="button" ng-click="childNew(i+1)">新規作成</button></td>
-                        <td><button class="" type="button" ng-click="saveMap(dice[i])">編集</button></td>
+                        <td><button class="" type="button" ng-click="childNew(i+1)">{{"admin.mazeMapEditor.create" | translate}}</button></td>
+                        <td><button class="" type="button" ng-click="saveMap(dice[i])">{{"admin.mazeMapEditor.edit" | translate}}</button></td>
                     </tr>
                 </table>
             </div>
@@ -74,7 +73,7 @@
             <div ng-show="(dice[0]&&dice[1]&&dice[2]&&dice[3]&&dice[4]&&dice[5]) || parent">
                 <input type="checkbox" ng-model="finished" id="isFinished"><label class="checkbox" for="isFinished">{{"admin.mazeMapEditor.finished" | translate}}</label>
             </div>
-            <div class="error" ng-hide="(dice[0]&&dice[1]&&dice[2]&&dice[3]&&dice[4]&&dice[5])||parent">サイコロパターン設定が行われていないため，迷路作成を完了できません.</div>
+            <div class="error" ng-hide="(dice[0]&&dice[1]&&dice[2]&&dice[3]&&dice[4]&&dice[5])||parent">{{"admin.mazeMapEditor.patYet" | translate}}</div>
             <br>
             <div class="error" ng-show="startNotSet()">{{"admin.mazeMapEditor.noStart" | translate}}</div>
         </div>
