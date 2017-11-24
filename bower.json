@@ -36,7 +36,8 @@
     "angular-translate-handler-log": "^2.15.2",
     "angular-cookies": "^1.6.5",
     "bootstrap": "v4.0.0-beta",
-    "angular-bootstrap": "git://github.com/rrrobo/ab-for-rcj.git"
+    "angular-bootstrap": "git://github.com/rrrobo/ab-for-rcj.git",
+    "bootstrap-fileinput": "^4.4.6"
   },
   "description": "",
   "main": "",
