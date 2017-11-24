@@ -141,23 +141,31 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     $scope.placedDropTiles++;
                 }
             }
-
-
-        }, function (response) {
-            console.log("Error: " + response.statusText);
-        });
-
-
-        $http.put("/api/runs/line/" + runId, {
-            status: 1
-        }).then(function (response) {
-
-        }, function (response) {
-            console.log("Error: " + response.statusText);
-            if (response.status == 401) {
-                $scope.go('/home/access_denied');
+            var ntile = {
+                    scored : false,
+                    isDropTile : false
             }
+
+            while($scope.stiles.length <= i){
+                $scope.stiles.push(ntile);
+            }
+            $http.put("/api/runs/line/" + runId, {
+                status: 1,
+                tiles : $scope.stiles
+            }).then(function (response) {
+
+            }, function (response) {
+                console.log("Error: " + response.statusText);
+                if (response.status == 401) {
+                    $scope.go('/home/access_denied');
+                }
+            });
+
+
+        }, function (response) {
+            console.log("Error: " + response.statusText);
         });
+
 
     }, function (response) {
         console.log("Error: " + response.statusText);

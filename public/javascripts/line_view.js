@@ -133,6 +133,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                             response.data.tiles[i].y + ',' +
                             response.data.tiles[i].z] = response.data.tiles[i];
                     }
+                    var ntile = {
+                        scored : false,
+                        isDropTile : false
+                    }
+
+                    while($scope.stiles.length <= i){
+                        $scope.stiles.push(ntile);
+                    }
 
                 }, function (response) {
                     console.log("Error: " + response.statusText);
