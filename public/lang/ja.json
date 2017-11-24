@@ -364,7 +364,9 @@
             "bottom": "下",
             "nothing": "なし",
             "noStart": "スタートタイルが設定されていません",
-            "start": "ここは，スタートタイル？"
+            "start": "ここは，スタートタイル？",
+            "export": "このマップをファイルにエクスポート",
+            "import": "マップをファイルからインポート"
         },
         "teamBulk": {
             "title": "チーム一括登録",
@@ -407,7 +409,16 @@
             "start": "@:admin.lineMapEditor.start",
             "placement" : "被災者の配置:",
             "changeF": "次の階層に移動: ",
-            "noEle": "（エレベーターがありません）"
+            "noEle": "（エレベーターがありません）",
+            "export": "@:admin.lineMapEditor.export",
+            "import": "@:admin.lineMapEditor.import",
+            "parent": "このマップは，親のサイコロパターンのうちの１つです",
+            "backToParent": "親の編集に戻る",
+            "pattern" : "サイコロパターン設定",
+            "patSave" : "パターンを設定するためには，マップを一度，保存してください．",
+            "create": "新規作成",
+            "edit": "編集",
+            "patYet": "サイコロパターン設定が行われていないため，迷路作成を完了できません."
         },
         "mazeRun": {
             "title": "Maze 競技管理",

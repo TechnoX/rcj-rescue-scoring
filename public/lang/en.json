@@ -352,7 +352,9 @@
             "bottom": "Bottom",
             "nothing": "Nothing",
             "noStart": "No start tile is defined!",
-            "start": "Is start"
+            "start": "Is start",
+            "export": "Export this map to file",
+            "import": "Import map from file"
         },
         "teamBulk": {
             "title": "Teams Bulk Registration",
@@ -395,7 +397,16 @@
             "start": "@:admin.lineMapEditor.start",
             "placement" : "Placement of victims:",
             "changeF": "Change floor to",
-            "noEle": "(No elevator)"
+            "noEle": "(No elevator)",
+            "export": "@:admin.lineMapEditor.export",
+            "import": "@:admin.lineMapEditor.import",
+            "parent": "This map is one of parent's dice pattern",
+            "backToParent": "Back to parent editing",
+            "pattern": "Dice pattern setting",
+            "patSave": "To set the pattern, save the map before once.",
+            "create": "Create New",
+            "edit" : "Edit",
+            "patYet": "The map creation can not be completed because the dice pattern setting has not been done."
         },
         "mazeRun": {
             "title": "Maze Runs",
