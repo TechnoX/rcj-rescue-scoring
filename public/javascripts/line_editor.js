@@ -5,6 +5,13 @@ var app = angular.module('LineEditor', ['lvl.services', 'ngAnimate', 'ui.bootstr
 app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', '$translate', function ($scope, $uibModal, $log, $http, $translate) {
 
     $scope.competitionId = competitionId;
+    $scope.se_competition = competitionId;
+    $translate('admin.lineMapEditor.import').then(function (val) {
+        $("#select").fileinput({'showUpload':false, 'showPreview':false, 'showRemove':false, 'showCancel':false  ,'msgPlaceholder': val,allowedFileExtensions: ['json'] , msgValidationError: "ERROR"});
+    }, function (translationId) {
+        // = translationId;
+    });
+    
     
     $http.get("/api/competitions/").then(function (response) {
         $scope.competitions = response.data
@@ -109,7 +116,7 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
             return;
         }
 
-        if ($scope.saveasname == $scope.name) {
+        if ($scope.saveasname == $scope.name && $scope.se_competition == competitionId) {
             alert("You must have a new name when saving as!");
             return;
         }
@@ -128,7 +135,7 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
         $http.post("/api/maps/line", map).then(function (response) {
             alert("Created map!");
             console.log(response.data);
-            window.location.replace("/admin/" + competitionId +"/line/editor/" + response.data.id)
+            window.location.replace("/admin/" + $scope.se_competition +"/line/editor/" + response.data.id)
         }, function (response) {
             console.log(response);
             console.log("Error: " + response.statusText);
@@ -203,9 +210,11 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
         };
          var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(map))
          var downloadLink = document.createElement('a')
+         document.body.appendChild(downloadLink);
          downloadLink.setAttribute("href",dataStr)
          downloadLink.setAttribute("download", $scope.name + '.json')
          downloadLink.click()
+         document.body.removeChild(downloadLink);
     }
     
     // File APIに対応しているか確認
@@ -484,3 +493,4 @@ app.directive('lvlDropTarget', ['$rootScope', 'uuid', function ($rootScope, uuid
         }
     };
 }]);
+
