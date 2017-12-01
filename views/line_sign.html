@@ -26,16 +26,15 @@
 
 
 </nav>
-<div class="container">
+<div class="container" style="padding: 0 0 0 0;">
     <div class="row">
         <div class="col-md12">
             <button class="btn btn-secondary" style="margin:0 10px 10px 0;" type="button" ng-click="go('/line/judge/' + runId)"><i class="fa fa-pencil-square-o" aria-hidden="true"> {{'line.sign.to_judge' | translate}}</i></button>
         </div>
     </div>
-    <br>
-    <br>
+
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-6" style="margin-bottom:70px;">
             <div id="card_area" class="scrool" style="overflow: scroll;">
                 <div id="lops" class="card">
                     <h3 class="card-header"><i class="fa fa-undo" aria-hidden="true"></i> {{'common.lops' | translate}}</h3>
@@ -128,37 +127,47 @@
 
             </div>
         </div>
-
-        <div class="col-md-6 tilearea" style="height=600px">
-            <form>
-                <input type="radio" ng-model="visType" value="stacked" id="stacked"><label class="radio" for="stacked">Stacked</label>
-                <input type="radio" ng-model="visType" value="slider" checked id="slider"><label class="radio" for="slider">Slider</label>
-                <input type="radio" ng-model="visType" value="side" id="slide-by-slide"><label class="radio" for="slide-by-slide">Slide-by-Slide</label>
-            </form>
-            <div ng-repeat="r in range(length)" class="row" ng-if="visType=='stacked'" tile-load-finished=''>
-                <div ng-repeat="c in range(width)" class="slot">
-                    <tile tile="mtiles[c+','+r+','+z]" ng-repeat="z in range(height)" ng-click="showElements(c,r,z)" ng-style="{'opacity': getOpacity(c,r)}">
-                    </tile>
+        <div class="col-md-6 tilearea" style="margin-top:-45px;">
+            <div style="text-align:left;float:left;">
+                <div class="btn-group">
+                  <span class="input-group-addon"><i class="fa fa-arrows-v" aria-hidden="true"></i></span>
+                  <button type="button" class="btn btn-outline-dark" ng-click="changeFloor(zz)" ng-repeat="zz in range(height)" ng-class="{active: zz == z}">&nbsp;{{zz}}&nbsp;</button>
                 </div>
             </div>
-            <div ng-if="visType=='slider' && slider">
-                <rzslider rz-slider-model="z" rz-slider-options="slider.options" ng-show="height>1"></rzslider>
-                <div ng-repeat="r in range(length)" class="row" tile-load-finished=''>
+            <div style="text-align:right;float:right;">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-outline-dark" ng-click="tileRot(-90)">&nbsp;<i class="fa fa-undo" aria-hidden="true"></i>&nbsp;</button>
+                  <button type="button" class="btn btn-outline-dark" ng-click="tileRot(90)">&nbsp;<i class="fa fa-repeat" aria-hidden="true"></i>&nbsp;</button>
+                </div>
+            </div>
+            <div style="clear:both;"></div>
+            <div class="mx-auto" style="margin-top:5px;" id="wrapTile">
+                <div ng-repeat="r in range(length)" ng-if="sRotate==0" style="display: flex;">
+                    <div style="text-align:center;">
                     <div ng-repeat="c in range(width)" class="slot">
                         <tile tile="mtiles[c+','+r+','+z]" ng-click="showElements(c,r,z)"></tile>
                     </div>
+                        </div>
                 </div>
-            </div>
-            <div ng-repeat="z in range(height)" style="float: left; border-left: 3px solid black;" ng-if="visType=='side'" tile-load-finished=''>
-                <div ng-repeat="r in range(length)">
+               <div ng-repeat="r in range(length)" ng-if="sRotate==180" style="display: flex;">
                     <div ng-repeat="c in range(width)" class="slot">
-                        <tile tile="mtiles[c+','+r+','+z]" ng-click="showElements(c,r,z)"></tile>
+                        <tile tile="mtiles[width - c -1+','+(length - r -1)+','+z]" ng-click="showElements(width - c -1,length - r -1,z)"></tile>
+                    </div>
+                </div>
+                <div ng-repeat="r in range(width)" ng-if="sRotate==270" style="display: flex;">
+                    <div ng-repeat="c in range(length)" class="slot">
+                        <tile tile="mtiles[width - r -1+','+c+','+z]" ng-click="showElements(width-r-1,c,z)"></tile>
+                    </div>
+                </div>
+                <div ng-repeat="r in range(width)" ng-if="sRotate==90" style="display: flex;">
+                    <div ng-repeat="c in range(length)" class="slot">
+                        <tile tile="mtiles[r+','+ (length - c-1) +','+z]" ng-click="showElements(r,length-c-1,z)"></tile>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="alert alert-success" style="margin:100 0 0 0;" role="alert">
+    <div class="alert alert-success" role="alert">
         <div class="row">
             <div class="col-md-6">
                 <div class="d-none d-sm-block">

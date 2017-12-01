@@ -14,7 +14,7 @@
     </div>
 
 </nav>
-<div class="container">
+<div class="container" style="padding: 0 0 0 0;">
     <div style="text-align: center;" ng-if="!checked">
         <h4><i class="fa fa-check-circle-o" aria-hidden="true"></i>{{'line.judge.before' | translate}}</h4><br>
         <div id="lops" class="card">
@@ -68,7 +68,7 @@
         <br>
         <button class="btn btn-success" type="button" ng-click="infochecked()"><i class="fa fa-check-circle fa-2x" aria-hidden="true"> {{'line.judge.confirm' | translate}}</i></button>
     </div>
-    <div ng-if="checked">
+    <div ng-show="checked">
         <div class="row">
             <div class="col-md-6">
                 <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleScoring()"><i class="fa fa-calculator" aria-hidden="true"> {{ startedScoring ? 'line.judge.run_end' : 'line.judge.run_start' | translate }}</i></button>
@@ -81,14 +81,14 @@
                   <h4 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> {{'line.judge.select_elevel' | translate}}</h4>
                   <div class="card-body">
                     <div class="row">
-                        <div class="col-md-6" style="position: relative;" ng-click="changeLevel(1)">
+                        <div class="col-6" style="position: relative;" ng-click="changeLevel(1)">
                             
                             <img src="/images/level1.png" class="img-thumbnail" width=100% ng-style="{'background-color': evacuationLevel==1?'#2ecc71':'#95a5a6' , 'opacity':evacuationLevel==1?'1':'0.4' }">
                             <div style="position:absolute; top:10px; left:30px;">{{'line.judge.low' | translate}}</div>
                             <div style="position:absolute; bottom:10px; right:25px;" ng-show="evacuationLevel==1"><i class="fa fa-3x fa-check-circle-o " aria-hidden="true" style="color:#27ae60;"></i></div>
                             
                         </div>
-                        <div class="col-md-6"  style="position: relative;" ng-click="changeLevel(2)">
+                        <div class="col-6"  style="position: relative;" ng-click="changeLevel(2)">
                             <img src="/images/level2.png" class="img-thumbnail" width=100% ng-style="{'background-color': evacuationLevel==2?'#2ecc71':'#95a5a6' , 'opacity':evacuationLevel==2?'1':'0.4' }">
                             <div style="position:absolute; top:10px; left:30px;">{{'line.judge.high' | translate}}</div>
                             <div style="position:absolute; bottom:10px; right:25px;" ng-show="evacuationLevel==2"><i class="fa fa-3x fa-check-circle-o" aria-hidden="true" style="color:#27ae60;"></i></div>
@@ -208,11 +208,42 @@
                 </div>
 
             </div>
-            <div class="col-md-6 tilearea"  ng-if="slider">
-                <rzslider rz-slider-model="z" rz-slider-options="slider.options" ng-show="height>1"></rzslider>
-                <div ng-repeat="r in range(length)" class="row">
-                    <div ng-repeat="c in range(width)" class="slot">
-                        <tile tile="mtiles[c+','+r+','+z]" ng-click="doScoring(c,r,z)" ng-if="showtile"></tile>
+            <div class="col-md-6 tilearea">
+                <div style="text-align:left;float:left;">
+                    <div class="btn-group">
+                      <span class="input-group-addon"><i class="fa fa-arrows-v" aria-hidden="true"></i></span>
+                      <button type="button" class="btn btn-outline-dark" ng-click="changeFloor(zz)" ng-repeat="zz in range(height)" ng-class="{active: zz == z}">&nbsp;{{zz}}&nbsp;</button>
+                    </div>
+                </div>
+                <div style="text-align:right;float:right;">
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-outline-dark" ng-click="tileRot(-90)">&nbsp;<i class="fa fa-undo" aria-hidden="true"></i>&nbsp;</button>
+                      <button type="button" class="btn btn-outline-dark" ng-click="tileRot(90)">&nbsp;<i class="fa fa-repeat" aria-hidden="true"></i>&nbsp;</button>
+                    </div>
+                </div>
+                <div style="clear:both;"></div>
+                <div class="mx-auto" style="margin-top:5px;" id="wrapTile">
+                    <div ng-repeat="r in range(length)" ng-if="sRotate==0" style="display: flex;">
+                        <div style="text-align:center;">
+                        <div ng-repeat="c in range(width)" class="slot">
+                            <tile tile="mtiles[c+','+r+','+z]" ng-click="doScoring(c,r,z)"></tile>
+                        </div>
+                            </div>
+                    </div>
+                   <div ng-repeat="r in range(length)" ng-if="sRotate==180" style="display: flex;">
+                        <div ng-repeat="c in range(width)" class="slot">
+                            <tile tile="mtiles[width - c -1+','+(length - r -1)+','+z]" ng-click="doScoring(width - c -1,length - r -1,z)"></tile>
+                        </div>
+                    </div>
+                    <div ng-repeat="r in range(width)" ng-if="sRotate==270" style="display: flex;">
+                        <div ng-repeat="c in range(length)" class="slot">
+                            <tile tile="mtiles[width - r -1+','+c+','+z]" ng-click="doScoring(width-r-1,c,z)"></tile>
+                        </div>
+                    </div>
+                    <div ng-repeat="r in range(width)" ng-if="sRotate==90" style="display: flex;">
+                        <div ng-repeat="c in range(length)" class="slot">
+                            <tile tile="mtiles[r+','+ (length - c-1) +','+z]" ng-click="doScoring(r,length-c-1,z)"></tile>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -230,9 +261,9 @@
                 <div>
                     <h4>{{'line.judge.adjust'| translate}}</h4><br>
                     <div class="input-group input-group-lg">
-                      <input type="tel" class="form-control" placeholder="" aria-label="min" aria-describedby="sizing-addon1"  min="0" max="8" ng-model="$parent.minutes">
+                      <input type="tel" class="form-control" placeholder="" aria-label="min" aria-describedby="sizing-addon1"  min="0" max="8" ng-model="minutes">
                       <span class="input-group-addon" id="sizing-addon1">{{'common.min' | translate}}</span>
-                      <input type="tel" class="form-control" placeholder="" aria-label="sec" aria-describedby="sizing-addon1" min="0" max="60" ng-model="$parent.seconds">
+                      <input type="tel" class="form-control" placeholder="" aria-label="sec" aria-describedby="sizing-addon1" min="0" max="60" ng-model="seconds">
                       <span class="input-group-addon" id="sizing-addon1">{{'common.sec' | translate}}</span>
                     </div>
                 </div>

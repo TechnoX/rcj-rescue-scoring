@@ -39,9 +39,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     });
 
 
-    $scope.visType = "slider";
     $scope.z = 0;
-
+    $scope.sRotate = 0;
     // Scoring elements of the tiles
     $scope.stiles = [];
     // Map (images etc.) for the tiles
@@ -144,7 +143,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 console.log(response.data);
 
                 $scope.height = response.data.height;
-                setTimeout("tile_size()", 0);
+                $timeout($scope.tile_size, 0);
                 $scope.slider = {
                     options : {
                         floor: 0,
@@ -200,6 +199,17 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         socket.emit('unsubscribe', 'runs/' + runId);
         window.location = path
     }
+    
+    $scope.changeFloor = function (z){
+        $scope.z = z;
+    }
+    
+    $scope.tileRot = function (r){
+        $scope.sRotate += r;
+        if($scope.sRotate >= 360)$scope.sRotate -= 360;
+        else if($scope.sRotate < 0) $scope.sRotate+= 360;
+        $timeout($scope.tile_size, 0);
+    }
 
     $scope.totalNumberOf = function (objects) {
         return objects.gaps + objects.speedbumps + objects.obstacles +
@@ -250,17 +260,55 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 stiles: function () {
                     return $scope.stiles;
                 },
+                sRotate: function(){
+                    return $scope.sRotate;
+                },
+                startTile: function(){
+                    return $scope.startTile;
+                },
                 nineTile: function () {
                     var nine = []
-                    nine[0] = $scope.mtiles[(x - 1) + ',' + (y - 1) + ',' + z];
-                    nine[1] = $scope.mtiles[(x) + ',' + (y - 1) + ',' + z];
-                    nine[2] = $scope.mtiles[(x + 1) + ',' + (y - 1) + ',' + z];
-                    nine[3] = $scope.mtiles[(x - 1) + ',' + (y) + ',' + z];
-                    nine[4] = $scope.mtiles[(x) + ',' + (y) + ',' + z];
-                    nine[5] = $scope.mtiles[(x + 1) + ',' + (y) + ',' + z];
-                    nine[6] = $scope.mtiles[(x - 1) + ',' + (y + 1) + ',' + z];
-                    nine[7] = $scope.mtiles[(x) + ',' + (y + 1) + ',' + z];
-                    nine[8] = $scope.mtiles[(x + 1) + ',' + (y + 1) + ',' + z];
+                    if($scope.sRotate == 0){
+                        nine[0] = $scope.mtiles[(x - 1) + ',' + (y - 1) + ',' + z];
+                        nine[1] = $scope.mtiles[(x) + ',' + (y - 1) + ',' + z];
+                        nine[2] = $scope.mtiles[(x + 1) + ',' + (y - 1) + ',' + z];
+                        nine[3] = $scope.mtiles[(x - 1) + ',' + (y) + ',' + z];
+                        nine[4] = $scope.mtiles[(x) + ',' + (y) + ',' + z];
+                        nine[5] = $scope.mtiles[(x + 1) + ',' + (y) + ',' + z];
+                        nine[6] = $scope.mtiles[(x - 1) + ',' + (y + 1) + ',' + z];
+                        nine[7] = $scope.mtiles[(x) + ',' + (y + 1) + ',' + z];
+                        nine[8] = $scope.mtiles[(x + 1) + ',' + (y + 1) + ',' + z];
+                    }else if($scope.sRotate == 180){
+                        nine[8] = $scope.mtiles[(x - 1) + ',' + (y - 1) + ',' + z];
+                        nine[7] = $scope.mtiles[(x) + ',' + (y - 1) + ',' + z];
+                        nine[6] = $scope.mtiles[(x + 1) + ',' + (y - 1) + ',' + z];
+                        nine[5] = $scope.mtiles[(x - 1) + ',' + (y) + ',' + z];
+                        nine[4] = $scope.mtiles[(x) + ',' + (y) + ',' + z];
+                        nine[3] = $scope.mtiles[(x + 1) + ',' + (y) + ',' + z];
+                        nine[2] = $scope.mtiles[(x - 1) + ',' + (y + 1) + ',' + z];
+                        nine[1] = $scope.mtiles[(x) + ',' + (y + 1) + ',' + z];
+                        nine[0] = $scope.mtiles[(x + 1) + ',' + (y + 1) + ',' + z];
+                    }else if($scope.sRotate == 90){
+                        nine[2] = $scope.mtiles[(x - 1) + ',' + (y - 1) + ',' + z];
+                        nine[5] = $scope.mtiles[(x) + ',' + (y - 1) + ',' + z];
+                        nine[8] = $scope.mtiles[(x + 1) + ',' + (y - 1) + ',' + z];
+                        nine[1] = $scope.mtiles[(x - 1) + ',' + (y) + ',' + z];
+                        nine[4] = $scope.mtiles[(x) + ',' + (y) + ',' + z];
+                        nine[7] = $scope.mtiles[(x + 1) + ',' + (y) + ',' + z];
+                        nine[0] = $scope.mtiles[(x - 1) + ',' + (y + 1) + ',' + z];
+                        nine[3] = $scope.mtiles[(x) + ',' + (y + 1) + ',' + z];
+                        nine[6] = $scope.mtiles[(x + 1) + ',' + (y + 1) + ',' + z];
+                    }else if($scope.sRotate == 270){
+                        nine[6] = $scope.mtiles[(x - 1) + ',' + (y - 1) + ',' + z];
+                        nine[3] = $scope.mtiles[(x) + ',' + (y - 1) + ',' + z];
+                        nine[0] = $scope.mtiles[(x + 1) + ',' + (y - 1) + ',' + z];
+                        nine[7] = $scope.mtiles[(x - 1) + ',' + (y) + ',' + z];
+                        nine[4] = $scope.mtiles[(x) + ',' + (y) + ',' + z];
+                        nine[1] = $scope.mtiles[(x + 1) + ',' + (y) + ',' + z];
+                        nine[8] = $scope.mtiles[(x - 1) + ',' + (y + 1) + ',' + z];
+                        nine[5] = $scope.mtiles[(x) + ',' + (y + 1) + ',' + z];
+                        nine[2] = $scope.mtiles[(x + 1) + ',' + (y + 1) + ',' + z];
+                    }
                     return nine;
                 }
             }
@@ -334,19 +382,74 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
 
     }
+    
+    $scope.tile_size = function () {
+        try {
+            var b = $('.tilearea');
+            //console.log('コンテンツ本体：' + b.height() + '×' + b.width());
+            //console.log('window：' + window.innerHeight);
+            if($scope.sRotate%180 == 0){
+                var tilesize_w = ($('.tilearea').width() - 50) / width;
+                var tilesize_h = (window.innerHeight - 130) / length;
+            }else{
+                var tilesize_w = ($('.tilearea').width() - 50) / length;
+                var tilesize_h = (window.innerHeight - 130) / width;
+            }
+            
+            //console.log('tilesize_w:' + tilesize_w);
+            //console.log('tilesize_h:' + tilesize_h);
+            if (tilesize_h > tilesize_w) var tilesize = tilesize_w;
+            else var tilesize = tilesize_h;
+            $('tile').css('height', tilesize);
+            $('tile').css('width', tilesize);
+            $('.tile-image').css('height', tilesize);
+            $('.tile-image').css('width', tilesize);
+            $('.tile-font').css('font-size', tilesize - 10);
+            $('.tile-font-1-25').css('font-size', tilesize / 2.5);
+            $('.slot').css('height', tilesize);
+            $('.slot').css('width', tilesize);
+            $('.chnumtxt').css('font-size', tilesize / 8);
+            
+            if($scope.sRotate%180 == 0){
+                $('#wrapTile').css('width', (tilesize+3)*width);
+            }else{
+                $('#wrapTile').css('width', (tilesize+3)*length);
+            }
+
+            $('#card_area').css('height', (window.innerHeight - 120));
+            if (b.height() == 0) $timeout($scope.tile_size, 500);
+        } catch (e) {
+            $timeout($scope.tile_size, 500);
+        }
+}
+
+
+var currentWidth = -1;
+
+
+$(window).on('load resize', function () {
+    if (currentWidth == window.innerWidth) {
+        return;
+    }
+    currentWidth = window.innerWidth;
+    var height = $('.navbar').height();
+    $('body').css('padding-top', height + 40);
+    $scope.tile_size();
+
+});
 
 
 }]).directive("tileLoadFinished", function ($timeout) {
     return function (scope, element, attrs) {
         if (scope.$last) {
             $timeout(function () {
-                tile_size();
+                $scope.tile_size();
             }, 0);
             $timeout(function () {
-                tile_size();
+                $scope.tile_size();
             }, 500);
             $timeout(function () {
-                tile_size();
+                $scope.tile_size();
             }, 1000);
         }
     }
@@ -361,6 +464,13 @@ app.directive('tile', function () {
         restrict: 'E',
         templateUrl: '/templates/tile.html',
         link: function ($scope, element, attrs) {
+            $scope.tilerotate = function (tilerot) {
+                if(!tilerot)return $scope.$parent.sRotate;
+                var ro = tilerot + $scope.$parent.sRotate;
+                if(ro >= 360)ro -= 360;
+                else if(ro < 0) ro+= 360;
+                return ro;
+            }
             $scope.tileNumber = function (tile) {
                 $scope.tileN = 1;
                 var ret_txt = "";
@@ -465,14 +575,32 @@ app.directive('tile', function () {
             }
 
             $scope.rotateRamp = function (direction) {
+                var ro;
                 switch (direction) {
                     case "bottom":
-                        return;
+                        ro = 0;
+                        break;
                     case "top":
-                        return "fa-rotate-180";
+                        ro = 180;
+                        break;
                     case "left":
-                        return "fa-rotate-90";
+                        ro = 90;
+                        break;
                     case "right":
+                        ro = 270;
+                        break;
+                }
+                ro += $scope.$parent.sRotate;
+                if(ro >= 360)ro-=360;
+                else if(ro < 0)ro+=360;
+                switch (ro) {
+                    case 0:
+                        return;
+                    case 180:
+                        return "fa-rotate-180";
+                    case 90:
+                        return "fa-rotate-90";
+                    case 270:
                         return "fa-rotate-270";
                 }
             }
@@ -481,91 +609,155 @@ app.directive('tile', function () {
     };
 });
 
-function tile_size() {
-    $(function () {
-        try {
-            var b = $('.tilearea');
-            console.log('コンテンツ本体：' + b.height() + '×' + b.width());
-            console.log('window：' + window.innerHeight);
-            var tilesize_w = ($('.tilearea').width() - 50) / width;
-            var tilesize_h = (window.innerHeight * 0.7) / length;
-            console.log('tilesize_w:' + tilesize_w);
-            console.log('tilesize_h:' + tilesize_h);
-            if (tilesize_h > tilesize_w) var tilesize = tilesize_w;
-            else var tilesize = tilesize_h;
-            $('tile').css('height', tilesize);
-            $('tile').css('width', tilesize);
-            $('.tile-image').css('height', tilesize);
-            $('.tile-image').css('width', tilesize);
-            $('.tile-font').css('font-size', tilesize - 10);
-            $('.tile-font-1-25').css('font-size', tilesize / 2.5);
-            $('.slot').css('height', tilesize);
-            $('.slot').css('width', tilesize);
-            $('#card_area').css('height', (window.innerHeight - 150));
-            $('.chnumtxt').css('font-size', tilesize / 6);
-            if (b.height() == 0) setTimeout("tile_size()", 1000);
-        } catch (e) {
-            setTimeout("tile_size()", 1000);
-        }
 
 
-    });
-}
-
-app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, stiles, nineTile) {
+app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, stiles, nineTile, sRotate,startTile) {
     $scope.mtile = mtile;
-    console.log(mtile);
+    $scope.sRotate = sRotate;
     $scope.stiles = stiles;
     $scope.nineTile = nineTile;
     $scope.words = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth"];
     $scope.next = [];
     for (var i = 0, d; d = mtile.next[i]; i++) {
         var sp = d.split(",");
-        console.log(sp);
 
         if (mtile.x == Number(sp[0]) && mtile.y - 1 == Number(sp[1])) {
-            console.log("TOP");
-            $scope.next.top = mtile.index[i];
+            //console.log("TOP");
+            switch(sRotate){
+                case 0:
+                    $scope.next.top = mtile.index[i];
+                    break;
+                case 90:
+                    $scope.next.right = mtile.index[i];
+                    break;
+                case 180:
+                    $scope.next.bottom = mtile.index[i];
+                    break;
+                case 270:
+                    $scope.next.left = mtile.index[i];
+                    break;
+            }
+            
         }
         if (mtile.x + 1 == Number(sp[0]) && mtile.y == Number(sp[1])) {
-            console.log("RIGHT");
-            $scope.next.right = mtile.index[i];
+            //console.log("RIGHT");
+            switch(sRotate){
+                case 0:
+                    $scope.next.right = mtile.index[i];
+                    break;
+                case 90:
+                    $scope.next.bottom = mtile.index[i];
+                    break;
+                case 180:
+                    $scope.next.left = mtile.index[i];
+                    break;
+                case 270:
+                    $scope.next.top = mtile.index[i];
+                    break;
+            }
         }
         if (mtile.x == Number(sp[0]) && mtile.y + 1 == Number(sp[1])) {
-            console.log("BOTTOM");
-            $scope.next.bottom = mtile.index[i];
+            //console.log("BOTTOM");
+            switch(sRotate){
+                case 0:
+                    $scope.next.bottom = mtile.index[i];
+                    break;
+                case 90:
+                    $scope.next.left = mtile.index[i];
+                    break;
+                case 180:
+                    $scope.next.top = mtile.index[i];
+                    break;
+                case 270:
+                    $scope.next.right = mtile.index[i];
+                    break;
+            }
         }
         if (mtile.x - 1 == Number(sp[0]) && mtile.y == Number(sp[1])) {
-            console.log("LEFT");
-            $scope.next.left = mtile.index[i];
+            //console.log("LEFT");
+            switch(sRotate){
+                case 0:
+                    $scope.next.left = mtile.index[i];
+                    break;
+                case 90:
+                    $scope.next.top = mtile.index[i];
+                    break;
+                case 180:
+                    $scope.next.right = mtile.index[i];
+                    break;
+                case 270:
+                    $scope.next.bottom = mtile.index[i];
+                    break;
+            }
         }
-        console.log($scope.next);
 
     }
 
+    $scope.tilerotate = function (tilerot) {
+        console.log(tilerot);
+        if(!tilerot)return $scope.sRotate;
+        var ro = tilerot + $scope.sRotate;
+        if(ro >= 360)ro -= 360;
+        else if(ro < 0) ro+= 360;
+        console.log(ro);
+        return ro;
+    }
+    
+     $scope.isDropTile = function (tile) {
+        if (!tile || tile.index.length == 0)
+            return;
+        return $scope.stiles[tile.index[0]].isDropTile;
+    }
 
+    $scope.isStart = function (tile) {
+        console.log(tile);
+        if (!tile)
+            return;
+        return tile.x == startTile.x &&
+            tile.y == startTile.y &&
+            tile.z == startTile.z;
+    }
+    
+    $scope.rotateRamp = function (direction) {
+        var ro;
+        switch (direction) {
+            case "bottom":
+                ro = 0;
+                break;
+            case "top":
+                ro = 180;
+                break;
+            case "left":
+                ro = 90;
+                break;
+            case "right":
+                ro = 270;
+                break;
+        }
+        ro += $scope.sRotate;
+        if(ro >= 360)ro-=360;
+        else if(ro < 0)ro+=360;
+        switch (ro) {
+            case 0:
+                return;
+            case 180:
+                return "fa-rotate-180";
+            case 90:
+                return "fa-rotate-90";
+            case 270:
+                return "fa-rotate-270";
+        }
+    }
     $scope.ok = function () {
         $uibModalInstance.close();
     };
+
 });
-
-
-var currentWidth = -1;
 
 $(window).on('beforeunload', function () {
     socket.emit('unsubscribe', 'runs/' + runId);
 });
 
-$(window).on('load resize', function () {
-    if (currentWidth == window.innerWidth) {
-        return;
-    }
-    currentWidth = window.innerWidth;
-    var height = $('.navbar').height();
-    $('body').css('padding-top', height + 40);
-    tile_size();
-
-});
 
 let lastTouch = 0;
 document.addEventListener('touchend', event => {

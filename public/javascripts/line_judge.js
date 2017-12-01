@@ -62,6 +62,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.time = 0;
     $scope.processing = new Array();
     $scope.rprocessing = false;
+    $scope.sRotate = 0;
 
 
     // Scoring elements of the tiles
@@ -73,8 +74,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.checked = true;
         $scope.startedScoring = true;
         $scope.fromSign = true;
-        setTimeout("tile_size()", 10);
-        setTimeout("tile_size()", 200);
+        $timeout($scope.tile_size, 10);
+        $timeout($scope.tile_size, 200);
     }
 
     $http.get("/api/runs/line/" + runId +
@@ -103,7 +104,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
         // Scoring elements of the tiles
         $scope.stiles = response.data.tiles;
-        $scope.showtile = true;
         for (var i = 0; i < response.data.tiles.length; i++) {
             if (response.data.tiles[i].isDropTile) {
                 $scope.actualUsedDropTiles++;
@@ -207,9 +207,20 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.infochecked = function () {
         $scope.checked = true;
-        setTimeout("tile_size()", 10);
-        setTimeout("tile_size()", 500);
+        $timeout($scope.tile_size, 10);
+        $timeout($scope.tile_size, 500);
 
+    }
+    
+    $scope.changeFloor = function (z){
+        $scope.z = z;
+    }
+    
+    $scope.tileRot = function (r){
+        $scope.sRotate += r;
+        if($scope.sRotate >= 360)$scope.sRotate -= 360;
+        else if($scope.sRotate < 0) $scope.sRotate+= 360;
+        $timeout($scope.tile_size, 0);
     }
 
     $scope.decrement = function (index) {
@@ -491,13 +502,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $http.put("/api/runs/line/" +
                     runId, httpdata).then(function (response) {
                     $scope.score = response.data.score;
-                    $scope.showtile = false;
-                    setTimeout(function () {
-                        $scope.showtile = true;
-                    }, 100);
-                    $scope.showtile = true;
-                    setTimeout("tile_size()", 10);
-                    setTimeout("tile_size()", 500);
+                    $timeout($scope.tile_size, 10);
+                    $timeout($scope.tile_size, 500);
                 }, function (response) {
                     console.log("Error: " + response.statusText);
                 });
@@ -558,17 +564,55 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 stiles: function () {
                     return $scope.stiles;
                 },
+                sRotate: function(){
+                    return $scope.sRotate;
+                },
+                startTile: function(){
+                    return $scope.startTile;
+                },
                 nineTile: function () {
                     var nine = []
-                    nine[0] = $scope.mtiles[(x - 1) + ',' + (y - 1) + ',' + z];
-                    nine[1] = $scope.mtiles[(x) + ',' + (y - 1) + ',' + z];
-                    nine[2] = $scope.mtiles[(x + 1) + ',' + (y - 1) + ',' + z];
-                    nine[3] = $scope.mtiles[(x - 1) + ',' + (y) + ',' + z];
-                    nine[4] = $scope.mtiles[(x) + ',' + (y) + ',' + z];
-                    nine[5] = $scope.mtiles[(x + 1) + ',' + (y) + ',' + z];
-                    nine[6] = $scope.mtiles[(x - 1) + ',' + (y + 1) + ',' + z];
-                    nine[7] = $scope.mtiles[(x) + ',' + (y + 1) + ',' + z];
-                    nine[8] = $scope.mtiles[(x + 1) + ',' + (y + 1) + ',' + z];
+                    if($scope.sRotate == 0){
+                        nine[0] = $scope.mtiles[(x - 1) + ',' + (y - 1) + ',' + z];
+                        nine[1] = $scope.mtiles[(x) + ',' + (y - 1) + ',' + z];
+                        nine[2] = $scope.mtiles[(x + 1) + ',' + (y - 1) + ',' + z];
+                        nine[3] = $scope.mtiles[(x - 1) + ',' + (y) + ',' + z];
+                        nine[4] = $scope.mtiles[(x) + ',' + (y) + ',' + z];
+                        nine[5] = $scope.mtiles[(x + 1) + ',' + (y) + ',' + z];
+                        nine[6] = $scope.mtiles[(x - 1) + ',' + (y + 1) + ',' + z];
+                        nine[7] = $scope.mtiles[(x) + ',' + (y + 1) + ',' + z];
+                        nine[8] = $scope.mtiles[(x + 1) + ',' + (y + 1) + ',' + z];
+                    }else if($scope.sRotate == 180){
+                        nine[8] = $scope.mtiles[(x - 1) + ',' + (y - 1) + ',' + z];
+                        nine[7] = $scope.mtiles[(x) + ',' + (y - 1) + ',' + z];
+                        nine[6] = $scope.mtiles[(x + 1) + ',' + (y - 1) + ',' + z];
+                        nine[5] = $scope.mtiles[(x - 1) + ',' + (y) + ',' + z];
+                        nine[4] = $scope.mtiles[(x) + ',' + (y) + ',' + z];
+                        nine[3] = $scope.mtiles[(x + 1) + ',' + (y) + ',' + z];
+                        nine[2] = $scope.mtiles[(x - 1) + ',' + (y + 1) + ',' + z];
+                        nine[1] = $scope.mtiles[(x) + ',' + (y + 1) + ',' + z];
+                        nine[0] = $scope.mtiles[(x + 1) + ',' + (y + 1) + ',' + z];
+                    }else if($scope.sRotate == 90){
+                        nine[2] = $scope.mtiles[(x - 1) + ',' + (y - 1) + ',' + z];
+                        nine[5] = $scope.mtiles[(x) + ',' + (y - 1) + ',' + z];
+                        nine[8] = $scope.mtiles[(x + 1) + ',' + (y - 1) + ',' + z];
+                        nine[1] = $scope.mtiles[(x - 1) + ',' + (y) + ',' + z];
+                        nine[4] = $scope.mtiles[(x) + ',' + (y) + ',' + z];
+                        nine[7] = $scope.mtiles[(x + 1) + ',' + (y) + ',' + z];
+                        nine[0] = $scope.mtiles[(x - 1) + ',' + (y + 1) + ',' + z];
+                        nine[3] = $scope.mtiles[(x) + ',' + (y + 1) + ',' + z];
+                        nine[6] = $scope.mtiles[(x + 1) + ',' + (y + 1) + ',' + z];
+                    }else if($scope.sRotate == 270){
+                        nine[6] = $scope.mtiles[(x - 1) + ',' + (y - 1) + ',' + z];
+                        nine[3] = $scope.mtiles[(x) + ',' + (y - 1) + ',' + z];
+                        nine[0] = $scope.mtiles[(x + 1) + ',' + (y - 1) + ',' + z];
+                        nine[7] = $scope.mtiles[(x - 1) + ',' + (y) + ',' + z];
+                        nine[4] = $scope.mtiles[(x) + ',' + (y) + ',' + z];
+                        nine[1] = $scope.mtiles[(x + 1) + ',' + (y) + ',' + z];
+                        nine[8] = $scope.mtiles[(x - 1) + ',' + (y + 1) + ',' + z];
+                        nine[5] = $scope.mtiles[(x) + ',' + (y + 1) + ',' + z];
+                        nine[2] = $scope.mtiles[(x + 1) + ',' + (y + 1) + ',' + z];
+                    }
                     return nine;
                 }
             }
@@ -666,6 +710,61 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             tile.y == $scope.startTile.y &&
             tile.z == $scope.startTile.z;
     }
+    
+    $scope.tile_size = function () {
+        try {
+            var b = $('.tilearea');
+            //console.log('コンテンツ本体：' + b.height() + '×' + b.width());
+            //console.log('window：' + window.innerHeight);
+            if($scope.sRotate%180 == 0){
+                var tilesize_w = ($('.tilearea').width() - 50) / width;
+                var tilesize_h = (window.innerHeight - 130) / length;
+            }else{
+                var tilesize_w = ($('.tilearea').width() - 50) / length;
+                var tilesize_h = (window.innerHeight - 130) / width;
+            }
+            
+            //console.log('tilesize_w:' + tilesize_w);
+            //console.log('tilesize_h:' + tilesize_h);
+            if (tilesize_h > tilesize_w) var tilesize = tilesize_w;
+            else var tilesize = tilesize_h;
+            $('tile').css('height', tilesize);
+            $('tile').css('width', tilesize);
+            $('.tile-image').css('height', tilesize);
+            $('.tile-image').css('width', tilesize);
+            $('.tile-font').css('font-size', tilesize - 10);
+            $('.tile-font-1-25').css('font-size', tilesize / 2.5);
+            $('.slot').css('height', tilesize);
+            $('.slot').css('width', tilesize);
+            $('.chnumtxt').css('font-size', tilesize / 8);
+            
+            if($scope.sRotate%180 == 0){
+                $('#wrapTile').css('width', (tilesize+3)*width);
+            }else{
+                $('#wrapTile').css('width', (tilesize+3)*length);
+            }
+
+            $('#card_area').css('height', (window.innerHeight - 120));
+            if (b.height() == 0) $timeout($scope.tile_size, 500);
+        } catch (e) {
+            $timeout($scope.tile_size, 500);
+        }
+}
+
+
+var currentWidth = -1;
+
+
+$(window).on('load resize', function () {
+    if (currentWidth == window.innerWidth) {
+        return;
+    }
+    currentWidth = window.innerWidth;
+    var height = $('.navbar').height();
+    $('body').css('padding-top', height + 40);
+    $scope.tile_size();
+
+});
 
 }]);
 
@@ -674,8 +773,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 // Please note that $uibModalInstance represents a modal window (instance) dependency.
 // It is not the same as the $uibModal service used above.
 
-app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, stiles, nineTile) {
+app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, stiles, nineTile, sRotate,startTile) {
     $scope.mtile = mtile;
+    $scope.sRotate = sRotate;
     console.log(mtile);
     $scope.stiles = stiles;
     $scope.nineTile = nineTile;
@@ -686,22 +786,75 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, 
         console.log(sp);
 
         if (mtile.x == Number(sp[0]) && mtile.y - 1 == Number(sp[1])) {
-            console.log("TOP");
-            $scope.next.top = mtile.index[i];
+            //console.log("TOP");
+            switch(sRotate){
+                case 0:
+                    $scope.next.top = mtile.index[i];
+                    break;
+                case 90:
+                    $scope.next.right = mtile.index[i];
+                    break;
+                case 180:
+                    $scope.next.bottom = mtile.index[i];
+                    break;
+                case 270:
+                    $scope.next.left = mtile.index[i];
+                    break;
+            }
+            
         }
         if (mtile.x + 1 == Number(sp[0]) && mtile.y == Number(sp[1])) {
-            console.log("RIGHT");
-            $scope.next.right = mtile.index[i];
+            //console.log("RIGHT");
+            switch(sRotate){
+                case 0:
+                    $scope.next.right = mtile.index[i];
+                    break;
+                case 90:
+                    $scope.next.bottom = mtile.index[i];
+                    break;
+                case 180:
+                    $scope.next.left = mtile.index[i];
+                    break;
+                case 270:
+                    $scope.next.top = mtile.index[i];
+                    break;
+            }
         }
         if (mtile.x == Number(sp[0]) && mtile.y + 1 == Number(sp[1])) {
-            console.log("BOTTOM");
-            $scope.next.bottom = mtile.index[i];
+            //console.log("BOTTOM");
+            switch(sRotate){
+                case 0:
+                    $scope.next.bottom = mtile.index[i];
+                    break;
+                case 90:
+                    $scope.next.left = mtile.index[i];
+                    break;
+                case 180:
+                    $scope.next.top = mtile.index[i];
+                    break;
+                case 270:
+                    $scope.next.right = mtile.index[i];
+                    break;
+            }
         }
         if (mtile.x - 1 == Number(sp[0]) && mtile.y == Number(sp[1])) {
-            console.log("LEFT");
-            $scope.next.left = mtile.index[i];
+            //console.log("LEFT");
+            switch(sRotate){
+                case 0:
+                    $scope.next.left = mtile.index[i];
+                    break;
+                case 90:
+                    $scope.next.top = mtile.index[i];
+                    break;
+                case 180:
+                    $scope.next.right = mtile.index[i];
+                    break;
+                case 270:
+                    $scope.next.bottom = mtile.index[i];
+                    break;
+            }
         }
-        console.log($scope.next);
+        //console.log($scope.next);
 
     }
 
@@ -712,6 +865,62 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, 
 
         }
 
+    }
+    
+    $scope.tilerotate = function (tilerot) {
+        console.log(tilerot);
+        if(!tilerot)return $scope.sRotate;
+        var ro = tilerot + $scope.sRotate;
+        if(ro >= 360)ro -= 360;
+        else if(ro < 0) ro+= 360;
+        console.log(ro);
+        return ro;
+    }
+    
+     $scope.isDropTile = function (tile) {
+        if (!tile || tile.index.length == 0)
+            return;
+        return $scope.stiles[tile.index[0]].isDropTile;
+    }
+
+    $scope.isStart = function (tile) {
+        console.log(tile);
+        if (!tile)
+            return;
+        return tile.x == startTile.x &&
+            tile.y == startTile.y &&
+            tile.z == startTile.z;
+    }
+    
+    $scope.rotateRamp = function (direction) {
+        var ro;
+        switch (direction) {
+            case "bottom":
+                ro = 0;
+                break;
+            case "top":
+                ro = 180;
+                break;
+            case "left":
+                ro = 90;
+                break;
+            case "right":
+                ro = 270;
+                break;
+        }
+        ro += $scope.sRotate;
+        if(ro >= 360)ro-=360;
+        else if(ro < 0)ro+=360;
+        switch (ro) {
+            case 0:
+                return;
+            case 180:
+                return "fa-rotate-180";
+            case 90:
+                return "fa-rotate-90";
+            case 270:
+                return "fa-rotate-270";
+        }
     }
 
     $scope.ok = function () {
@@ -729,6 +938,13 @@ app.directive('tile', function () {
         restrict: 'E',
         templateUrl: '/templates/tile.html',
         link: function ($scope, element, attrs) {
+            $scope.tilerotate = function (tilerot) {
+                if(!tilerot)return $scope.$parent.sRotate;
+                var ro = tilerot + $scope.$parent.sRotate;
+                if(ro >= 360)ro -= 360;
+                else if(ro < 0) ro+= 360;
+                return ro;
+            }
             $scope.tileNumber = function (tile) {
                 $scope.tileN = 1;
                 var ret_txt = "";
@@ -835,14 +1051,32 @@ app.directive('tile', function () {
             }
 
             $scope.rotateRamp = function (direction) {
+                var ro;
                 switch (direction) {
                     case "bottom":
-                        return;
+                        ro = 0;
+                        break;
                     case "top":
-                        return "fa-rotate-180";
+                        ro = 180;
+                        break;
                     case "left":
-                        return "fa-rotate-90";
+                        ro = 90;
+                        break;
                     case "right":
+                        ro = 270;
+                        break;
+                }
+                ro += $scope.$parent.sRotate;
+                if(ro >= 360)ro-=360;
+                else if(ro < 0)ro+=360;
+                switch (ro) {
+                    case 0:
+                        return;
+                    case 180:
+                        return "fa-rotate-180";
+                    case 90:
+                        return "fa-rotate-90";
+                    case 270:
                         return "fa-rotate-270";
                 }
             }
@@ -851,54 +1085,6 @@ app.directive('tile', function () {
     };
 });
 
-
-function tile_size() {
-    $(function () {
-        try {
-            var b = $('.tilearea');
-            //console.log('コンテンツ本体：' + b.height() + '×' + b.width());
-            //console.log('window：' + window.innerHeight);
-            var tilesize_w = ($('.tilearea').width() - 50) / width;
-            var tilesize_h = (window.innerHeight - 150) / length;
-            //console.log('tilesize_w:' + tilesize_w);
-            //console.log('tilesize_h:' + tilesize_h);
-            if (tilesize_h > tilesize_w) var tilesize = tilesize_w;
-            else var tilesize = tilesize_h;
-            $('tile').css('height', tilesize);
-            $('tile').css('width', tilesize);
-            $('.tile-image').css('height', tilesize);
-            $('.tile-image').css('width', tilesize);
-            $('.tile-font').css('font-size', tilesize - 10);
-            $('.tile-font-1-25').css('font-size', tilesize / 2.5);
-            $('.slot').css('height', tilesize);
-            $('.slot').css('width', tilesize);
-            $('.chnumtxt').css('font-size', tilesize / 8);
-
-
-            $('#card_area').css('height', (window.innerHeight - 180));
-            if (b.height() == 0) setTimeout("tile_size()", 500);
-        } catch (e) {
-            setTimeout("tile_size()", 500);
-        }
-
-
-    });
-}
-
-
-var currentWidth = -1;
-
-
-$(window).on('load resize', function () {
-    if (currentWidth == window.innerWidth) {
-        return;
-    }
-    currentWidth = window.innerWidth;
-    var height = $('.navbar').height();
-    $('body').css('padding-top', height + 40);
-    tile_size();
-
-});
 
 let lastTouch = 0;
 document.addEventListener('touchend', event => {
