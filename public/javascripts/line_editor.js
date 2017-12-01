@@ -245,6 +245,11 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
                     $scope.length = data.length;
                     $scope.name = data.name;
                     $scope.finished = data.finished;
+                    /*for (let i = 0; i < data.tiles.length; i++) {
+                        $scope.tiles[data.tiles[i].x + ',' +
+                            data.tiles[i].y + ',' +
+                            data.tiles[i].z] = data.tiles[i];
+                    }*/
                     $scope.$apply();
                 }
 
