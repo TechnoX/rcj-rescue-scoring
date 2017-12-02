@@ -18,9 +18,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     setInterval(function () {
         $scope.$apply(tick);
     }, 1000);
-    $scope.visType = "slider";
     $scope.z = 0;
-
+    $scope.sRotate = 0;
     // Scoring elements of the tiles
     $scope.stiles = [];
     // Map (images etc.) for the tiles
@@ -175,54 +174,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         window.location = path
     }
 
-    $scope.showElements = function (x, y, z) {
-        var mtile = $scope.mtiles[x + ',' + y + ',' + z];
-        var isDropTile = false;
-        // If this is not a created tile
-        if (!mtile || mtile.index.length == 0)
-            return;
 
-
-        for (var i = 0; i < mtile.index.length; i++) {
-            if ($scope.stiles[mtile.index[i]].isDropTile) {
-                isDropTile = true;
-            }
-        }
-
-
-        var total = (mtile.items.obstacles > 0 ||
-            mtile.items.speedbumps > 0 ||
-            mtile.tileType.gaps > 0 ||
-            mtile.tileType.intersections > 0) * mtile.index.length;
-        // Add the number of possible passes for drop tiles
-        if (isDropTile) {
-            total += mtile.index.length;
-        }
-
-        if (total > 1) {
-            // Show modal
-            $scope.open(x, y, z);
-        }
-    }
-
-    $scope.open = function (x, y, z) {
-        var modalInstance = $uibModal.open({
-            animation: true,
-            templateUrl: '/templates/line_view_modal.html',
-            controller: 'ModalInstanceCtrl',
-            size: 'sm',
-            resolve: {
-                mtile: function () {
-                    return $scope.mtiles[x + ',' + y + ',' + z];
-                },
-                stiles: function () {
-                    return $scope.stiles;
-                }
-            }
-        }).closed.then(function (result) {
-            console.log("Closed modal");
-        });
-    };
+    
 
 
 }]).directive("tileLoadFinished", function ($timeout) {
@@ -242,15 +195,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 });
 
 
-app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, stiles) {
-    $scope.mtile = mtile;
-    $scope.stiles = stiles;
-    $scope.words = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth"];
-    $scope.ok = function () {
-        $uibModalInstance.close();
-    };
-});
-
 app.directive('tile', function () {
     return {
         scope: {
@@ -259,6 +203,13 @@ app.directive('tile', function () {
         restrict: 'E',
         templateUrl: '/templates/tile.html',
         link: function ($scope, element, attrs) {
+            $scope.tilerotate = function (tilerot) {
+                if(!tilerot)return $scope.$parent.sRotate;
+                var ro = tilerot + $scope.$parent.sRotate;
+                if(ro >= 360)ro -= 360;
+                else if(ro < 0) ro+= 360;
+                return ro;
+            }
             $scope.tileNumber = function (tile) {
                 $scope.tileN = 1;
                 var ret_txt = "";
@@ -364,14 +315,32 @@ app.directive('tile', function () {
             }
 
             $scope.rotateRamp = function (direction) {
+                var ro;
                 switch (direction) {
                     case "bottom":
-                        return;
+                        ro = 0;
+                        break;
                     case "top":
-                        return "fa-rotate-180";
+                        ro = 180;
+                        break;
                     case "left":
-                        return "fa-rotate-90";
+                        ro = 90;
+                        break;
                     case "right":
+                        ro = 270;
+                        break;
+                }
+                ro += $scope.$parent.sRotate;
+                if(ro >= 360)ro-=360;
+                else if(ro < 0)ro+=360;
+                switch (ro) {
+                    case 0:
+                        return;
+                    case 180:
+                        return "fa-rotate-180";
+                    case 90:
+                        return "fa-rotate-90";
+                    case 270:
                         return "fa-rotate-270";
                 }
             }
@@ -379,6 +348,7 @@ app.directive('tile', function () {
         }
     };
 });
+
 
 function tile_size() {
     $(function () {

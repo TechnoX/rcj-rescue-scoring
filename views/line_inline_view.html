@@ -12,7 +12,7 @@
     <div class="tilearea" style="height=600px">
         <div ng-repeat="r in range(length)" class="row" tile-load-finished='' style="margin-right:0px;margin-left:0px">
             <div ng-repeat="c in range(width)" class="slot">
-                <tile tile="mtiles[c+','+r+','+z]" ng-repeat="z in range(height)" ng-click="showElements(c,r,z)" ng-style="{'opacity': getOpacity(c,r)}">
+                <tile tile="mtiles[c+','+r+','+z]" ng-repeat="z in range(height)" ng-style="{'opacity': getOpacity(c,r)}">
                 </tile>
             </div>
         </div>

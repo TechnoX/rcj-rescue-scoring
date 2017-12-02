@@ -141,6 +141,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     while($scope.stiles.length <= i){
                         $scope.stiles.push(ntile);
                     }
+                    $timeout($scope.tile_size, 0);
 
                 }, function (response) {
                     console.log("Error: " + response.statusText);
@@ -336,8 +337,6 @@ $(window).on('load resize', function () {
         return;
     }
     currentWidth = window.innerWidth;
-    var height = $('.navbar').height();
-    $('body').css('padding-top', height + 40);
     $scope.tile_size();
 
 });
@@ -354,7 +353,7 @@ $(window).on('load resize', function () {
             }, 500);
             $timeout(function () {
                 $scope.tile_size();
-            }, 1000);
+            }, 3000);
         }
     }
 });
