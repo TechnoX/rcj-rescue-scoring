@@ -50,12 +50,12 @@ table tr:nth-child(even) {
 }
 
 .tile {
-    background-color: LightSeaGreen;
+    background-color: #b4ffd5;
     padding: 0px!important;
 }
 
 .tile.linear {
-    background-color: lightblue;
+    background-color: #fffdea;
 }
 
 .wallspot:hover {

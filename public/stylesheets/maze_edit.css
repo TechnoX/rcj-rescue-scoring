@@ -32,11 +32,11 @@ tr td:nth-child(even) {
 }
 
 .tile {
-    background-color: LightSeaGreen;
+    background-color: #b4ffd5;
 }
 
 .tile.linear {
-    background-color: lightblue;
+    background-color: #fffdea;
 }
 
 .wallspot:hover {
