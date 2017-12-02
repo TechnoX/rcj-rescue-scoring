@@ -237,7 +237,16 @@
             "m_rampb": "@:maze.view.m_rampb",
             "m_rampt": "@:maze.view.m_rampt",
             "m_flash": "@:maze.view.m_flash",
-            "m_kit": "@:maze.view.m_kit"
+            "m_kit": "@:maze.view.m_kit",
+            "pat": "@:admin.mazeMapEditor.pattern",
+            "random": "ランダム抽選",
+            "js": {
+                "timeup": {
+                    "title": "@:line.judge.js.timeup.title",
+                    "content": "@:line.judge.js.timeup.content"
+                }
+
+            }
         },
         "sign": {
             "total_lops": "@:maze.view.total_lops",
@@ -414,7 +423,7 @@
             "import": "@:admin.lineMapEditor.import",
             "parent": "このマップは，親のサイコロパターンのうちの１つです",
             "backToParent": "親の編集に戻る",
-            "pattern" : "サイコロパターン設定",
+            "pattern" : "マップパターン設定",
             "patSave" : "パターンを設定するためには，マップを一度，保存してください．",
             "create": "新規作成",
             "edit": "編集",

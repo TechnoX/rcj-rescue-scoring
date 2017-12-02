@@ -240,7 +240,16 @@
             "m_rampb": "@:maze.view.m_rampb",
             "m_rampt": "@:maze.view.m_rampt",
             "m_flash": "@:maze.view.m_flash",
-            "m_kit": "@:maze.view.m_kit"
+            "m_kit": "@:maze.view.m_kit",
+            "pat": "@:admin.mazeMapEditor.pattern",
+            "random": "Random drawing",
+            "js": {
+                "timeup": {
+                    "title": "@:line.judge.js.timeup.title",
+                    "content": "@:line.judge.js.timeup.content"
+                }
+
+            }
         }
     },
     "admin": {
@@ -402,7 +411,7 @@
             "import": "@:admin.lineMapEditor.import",
             "parent": "This map is one of parent's dice pattern",
             "backToParent": "Back to parent editing",
-            "pattern": "Dice pattern setting",
+            "pattern": "Map pattern setting",
             "patSave": "To set the pattern, save the map before once.",
             "create": "Create New",
             "edit" : "Edit",
