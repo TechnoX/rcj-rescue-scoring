@@ -2,12 +2,27 @@
 var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'rzModule', 'pascalprecht.translate', 'ngCookies']);
 
 // function referenced by the drop target
-app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', function ($scope, $uibModal, $log, $timeout, $http) {
+app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http','$translate', function ($scope, $uibModal, $log, $timeout, $http, $translate) {
+    
+    var txt_timeup,txt_timeup_mes;
+    
+    $translate('maze.judge.js.timeup.title').then(function (val) {
+        txt_timeup = val;
+    }, function (translationId) {
+        // = translationId;
+    });
+    $translate('maze.judge.js.timeup.content').then(function (val) {
+        txt_timeup_mes = val;
+    }, function (translationId) {
+        // = translationId;
+    });
 
     $scope.z = 0;
     $scope.startedTime = false;
     $scope.time = 0;
     $scope.lopProcessing = false;
+    
+    $scope.sRotate = 0;
 
 
     $scope.cells = {};
@@ -15,8 +30,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     
     if (document.referrer.indexOf('sign') != -1) {
         $scope.checked = true;
-        setTimeout("tile_size()", 10);
-        setTimeout("tile_size()", 200);
+        $timeout($scope.tile_size, 10);
+        $timeout($scope.tile_size, 200);
     }
 
     $http.get("/api/runs/maze/" + runId +
@@ -126,7 +141,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
             width = response.data.width;
             length = response.data.length;
-
+            $timeout($scope.tile_size, 0);
 
         }, function (response) {
             console.log("Error: " + response.statusText);
@@ -150,8 +165,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.infochecked = function () {
         $scope.checked = true;
-        setTimeout("tile_size()", 10);
-        setTimeout("tile_size()", 200);
+        $timeout($scope.tile_size, 10);
+        $timeout($scope.tile_size, 200);
     }
     $scope.decrement = function () {
         $scope.lopProcessing = true;
@@ -192,6 +207,17 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             console.log("Error: " + response.statusText);
         });
     }
+    
+    $scope.changeFloor = function (z){
+        $scope.z = z;
+    }
+    
+    $scope.tileRot = function (r){
+        $scope.sRotate += r;
+        if($scope.sRotate >= 360)$scope.sRotate -= 360;
+        else if($scope.sRotate < 0) $scope.sRotate+= 360;
+        $timeout($scope.tile_size, 0);
+    }
 
 
     var tick = function () {
@@ -201,7 +227,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.minutes = Math.floor($scope.time / 60000)
             $scope.seconds = (Math.floor($scope.time % 60000)) / 1000
             $scope.saveEverything();
-            swal("Time Up!", "8 minutes has passed", "info");
+            swal(txt_timeup, txt_timeup_mes, "info");
         }
         if ($scope.startedTime) {
             $timeout(tick, 1000);
@@ -538,6 +564,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 },
                 tile: function () {
                     return $scope.tiles[x + ',' + y + ',' + z];
+                },
+                sRotate: function (){
+                    return $scope.sRotate;
                 }
             }
         }).closed.then(function (result) {
@@ -607,6 +636,52 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.go = function (path) {
         window.location = path
     }
+    
+    $scope.tile_size = function () {
+        try {
+            var b = $('.tilearea');
+            
+            if($scope.sRotate%180 == 0){
+                var tilesize_w = (b.width() - (20 + 11 * (width + 1))) / width;
+                var tilesize_h = (window.innerHeight - (130 + 11 * (length + 1))) /length;
+            }else{
+                var tilesize_w = (b.width() - (20 + 11 * (length + 1))) / length;
+                var tilesize_h = (window.innerHeight - (130 + 11 * (width + 1))) /width;
+            }
+
+
+            if (tilesize_h > tilesize_w) var tilesize = tilesize_w;
+            else var tilesize = tilesize_h;
+
+            $('.tile-image-container').css('height', tilesize);
+            $('.tile-image-container').css('width', tilesize);
+            $('.tile-image').css('height', tilesize);
+            $('.tile-image').css('width', tilesize);
+            $('.tile-font').css('font-size', tilesize - 10);
+            if (b.height() == 0) $timeout($scope.tile_size, 500);
+            
+            if($scope.sRotate%180 == 0){
+                $('#wrapTile').css('width', (tilesize+10)*width+11);
+            }else{
+                $('#wrapTile').css('width', (tilesize+10)*length+11);
+            }
+        } catch (e) {
+            $timeout($scope.tile_size, 500);
+        }
+}
+
+
+var currentWidth = -1;
+
+
+$(window).on('load resize', function () {
+    if (currentWidth == window.innerWidth) {
+        return;
+    }
+    currentWidth = window.innerWidth;
+    $scope.tile_size();
+
+});
 
 }]);
 
@@ -614,7 +689,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 // Please note that $uibModalInstance represents a modal window (instance) dependency.
 // It is not the same as the $uibModal service used above.
 
-app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, cell, tile) {
+app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, cell, tile, sRotate) {
     $scope.cell = cell;
     $scope.tile = tile;
     $scope.hasVictims = (cell.tile.victims.top != "None") ||
@@ -632,6 +707,60 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, cell, t
             $scope.tile.scoredItems.rescueKits[direction] = 0;
         }
     }
+    
+    $scope.lightStatus = function(light, kit){
+        if(light) return true;
+        if(kit > 0) return true;
+        return false;
+    }
+    
+    $scope.kitStatus = function(light, kit, type){
+        switch(type){
+                case 'Heated':
+                    if(kit >= 1) return true;
+                    break;
+                case 'H':
+                    if(kit >= 2) return true;
+                    break;
+                case 'S':
+                    if(kit >= 1) return true;
+                    break;
+                case 'U':
+                    if(light || kit > 0) return true;
+                    break;
+        }
+        return false;
+    }
+    
+    $scope.modalRotate = function(dir){
+        var ro;
+        switch(dir){
+            case 'top':
+                ro = 0;
+                break;
+            case 'right':
+                ro = 90;
+                break;
+            case 'left':
+                ro = 270;
+                break;
+            case 'bottom':
+                ro = 180;
+                break;
+        }
+        ro += sRotate;
+        if(ro >= 360)ro -= 360;
+        switch(ro){
+            case 0:
+                return 'top';
+            case 90:
+                return 'right';
+            case 180:
+                return 'bottom';
+            case 270:
+                return 'left';
+        }
+    }
 
     $scope.ok = function () {
         $uibModalInstance.close();
@@ -639,47 +768,8 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, cell, t
 });
 
 
-function tile_size() {
-    $(function () {
-        try {
-            var b = $('.tilearea');
-            //console.log('コンテンツ本体：' + b.height() + '×' + b.width());
-            //console.log('window：' + window.innerHeight);
-            var tilesize_w = (b.width() - (40 + 11 * (width + 1))) / width;
-            var tilesize_h = (window.innerHeight - (100 + 11 * (length + 1))) /
-                length;
-            //console.log(width + 'tilesize_w:' + tilesize_w);
-            //console.log('tilesize_h:' + tilesize_h);
-            if (tilesize_h > tilesize_w) var tilesize = tilesize_w;
-            else var tilesize = tilesize_h;
-
-            $('.tile-image-container').css('height', tilesize);
-            $('.tile-image-container').css('width', tilesize);
-            $('.tile-image').css('height', tilesize);
-            $('.tile-image').css('width', tilesize);
-            $('.tile-font').css('font-size', tilesize - 10);
-            if (b.height() == 0) setTimeout("tile_size()", 500);
-        } catch (e) {
-            setTimeout("tile_size()", 500);
-        }
 
 
-    });
-}
-
-var currentWidth = -1;
-
-
-$(window).on('load resize', function () {
-    if (currentWidth == window.innerWidth) {
-        return;
-    }
-    currentWidth = window.innerWidth;
-    var height = $('.navbar').height();
-    $('body').css('padding-top', height + 40);
-    tile_size();
-
-});
 
 let lastTouch = 0;
 document.addEventListener('touchend', event => {

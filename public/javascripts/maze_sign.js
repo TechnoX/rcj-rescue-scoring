@@ -43,7 +43,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.cells = {};
     $scope.tiles = {};
-
+    
+    $scope.sRotate = 0;
 
     if (typeof runId !== 'undefined') {
         $scope.runId = runId;
@@ -148,6 +149,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 }
                 width = response.data.width;
                 length = response.data.length;
+                $timeout($scope.tile_size, 0);
 
             }, function (response) {
                 console.log("Error: " + response.statusText);
@@ -159,6 +161,17 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.go('/home/access_denied');
             }
         });
+    }
+    
+    $scope.changeFloor = function (z){
+        $scope.z = z;
+    }
+    
+    $scope.tileRot = function (r){
+        $scope.sRotate += r;
+        if($scope.sRotate >= 360)$scope.sRotate -= 360;
+        else if($scope.sRotate < 0) $scope.sRotate+= 360;
+        $timeout($scope.tile_size, 0);
     }
 
 
@@ -398,6 +411,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 },
                 tile: function () {
                     return $scope.tiles[x + ',' + y + ',' + z];
+                },
+                sRotate: function (){
+                    return $scope.sRotate;
                 }
             }
         }).closed.then(function (result) {
@@ -477,38 +493,20 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
 
     }
-
-    $scope.changevis = function () {
-        console.log("AAAA");
-    }
-    }]);
-
-
-app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, cell, tile) {
-    $scope.cell = cell;
-    $scope.tile = tile;
-    $scope.hasVictims = (cell.tile.victims.top != "None") ||
-        (cell.tile.victims.right != "None") ||
-        (cell.tile.victims.bottom != "None") ||
-        (cell.tile.victims.left != "None");
-
-    $scope.ok = function () {
-        $uibModalInstance.close();
-    };
-});
-
-
-function tile_size() {
-    $(function () {
+    
+    $scope.tile_size = function () {
         try {
             var b = $('.tilearea');
-            //console.log('コンテンツ本体：' + b.height() + '×' + b.width());
-            //console.log('window：' + window.innerHeight);
-            var tilesize_w = (b.width() - (40 + 11 * (width + 1))) / width;
-            var tilesize_h = (window.innerHeight - (100 + 11 * (length + 1))) /
-                length;
-            //console.log(width + 'tilesize_w:' + tilesize_w);
-            //console.log('tilesize_h:' + tilesize_h);
+            
+            if($scope.sRotate%180 == 0){
+                var tilesize_w = (b.width() - (20 + 11 * (width + 1))) / width;
+                var tilesize_h = (window.innerHeight - (130 + 11 * (length + 1))) /length;
+            }else{
+                var tilesize_w = (b.width() - (20 + 11 * (length + 1))) / length;
+                var tilesize_h = (window.innerHeight - (130 + 11 * (width + 1))) /width;
+            }
+
+
             if (tilesize_h > tilesize_w) var tilesize = tilesize_w;
             else var tilesize = tilesize_h;
 
@@ -517,31 +515,110 @@ function tile_size() {
             $('.tile-image').css('height', tilesize);
             $('.tile-image').css('width', tilesize);
             $('.tile-font').css('font-size', tilesize - 10);
-            if (b.height() == 0) setTimeout("tile_size()", 500);
+            if (b.height() == 0) $timeout($scope.tile_size, 500);
+            
+            if($scope.sRotate%180 == 0){
+                $('#wrapTile').css('width', (tilesize+10)*width+11);
+            }else{
+                $('#wrapTile').css('width', (tilesize+10)*length+11);
+            }
         } catch (e) {
-            setTimeout("tile_size()", 500);
+            $timeout($scope.tile_size, 500);
         }
-
-
-    });
 }
+
 
 var currentWidth = -1;
 
-$(window).on('beforeunload', function () {
-    socket.emit('unsubscribe', 'runs/' + runId);
-});
 
 $(window).on('load resize', function () {
     if (currentWidth == window.innerWidth) {
         return;
     }
     currentWidth = window.innerWidth;
-    var height = $('.navbar').height();
-    $('body').css('padding-top', height + 40);
-    tile_size();
+    $scope.tile_size();
+    $timeout($scope.tile_size, 500);
+    $timeout($scope.tile_size, 3000);
 
 });
+
+    }]);
+
+
+app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, cell, tile, sRotate) {
+    $scope.cell = cell;
+    $scope.tile = tile;
+    $scope.hasVictims = (cell.tile.victims.top != "None") ||
+        (cell.tile.victims.right != "None") ||
+        (cell.tile.victims.bottom != "None") ||
+        (cell.tile.victims.left != "None");
+    
+    $scope.lightStatus = function(light, kit){
+        if(light) return true;
+        if(kit > 0) return true;
+        return false;
+    }
+    
+    $scope.kitStatus = function(light, kit, type){
+        switch(type){
+                case 'Heated':
+                    if(kit >= 1) return true;
+                    break;
+                case 'H':
+                    if(kit >= 2) return true;
+                    break;
+                case 'S':
+                    if(kit >= 1) return true;
+                    break;
+                case 'U':
+                    if(light || kit > 0) return true;
+                    break;
+        }
+        return false;
+    }
+    
+    $scope.modalRotate = function(dir){
+        var ro;
+        switch(dir){
+            case 'top':
+                ro = 0;
+                break;
+            case 'right':
+                ro = 90;
+                break;
+            case 'left':
+                ro = 270;
+                break;
+            case 'bottom':
+                ro = 180;
+                break;
+        }
+        ro += sRotate;
+        if(ro >= 360)ro -= 360;
+        switch(ro){
+            case 0:
+                return 'top';
+            case 90:
+                return 'right';
+            case 180:
+                return 'bottom';
+            case 270:
+                return 'left';
+        }
+    }
+
+    $scope.ok = function () {
+        $uibModalInstance.close();
+    };
+});
+
+
+
+
+$(window).on('beforeunload', function () {
+    socket.emit('unsubscribe', 'runs/' + runId);
+});
+
 
 let lastTouch = 0;
 document.addEventListener('touchend', event => {
