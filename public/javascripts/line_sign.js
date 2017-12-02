@@ -163,8 +163,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     $scope.mtiles[response.data.tiles[i].x + ',' +
                         response.data.tiles[i].y + ',' +
                         response.data.tiles[i].z] = response.data.tiles[i];
-                    // FROM RYO: marker[response.data.tiles[i].index[j]] = true;
                 }
+                $timeout($scope.tile_size, 0);
 
             }, function (response) {
                 console.log("Error: " + response.statusText);
@@ -432,8 +432,6 @@ $(window).on('load resize', function () {
         return;
     }
     currentWidth = window.innerWidth;
-    var height = $('.navbar').height();
-    $('body').css('padding-top', height + 40);
     $scope.tile_size();
 
 });
