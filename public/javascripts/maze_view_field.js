@@ -21,7 +21,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
   $scope.tiles = {};
   setInterval(function () {
         $scope.get_field();
-    }, 1000);
+    }, 10000);
   $scope.get_field_signing = function () {
       var pRunId,pName,pStatus;
       $http.get("/api/runs/maze/find/" + competitionId + "/" +
@@ -60,7 +60,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
           pName = "ERROR";
           pStatus = 0;
         }
-        if(pRunId == -1) $scope.get_field_signing();
+        if(pRunId == -1  && pName=='No Team') $scope.get_field_signing();
         else $scope.updateRun(pRunId,pName,pStatus);
         
       })
@@ -439,6 +439,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     socket.emit('unsubscribe', 'runs/' + runId);
     window.location = path
   }
+  
+  $scope.navColor = function (stat){
+        if(stat == 2) return '#e74c3c';
+        if(stat == 3) return '#e67e22';
+        return '#7f8c8d';
+    }
+    
+    $scope.get_field();
   
   $(window).on('beforeunload', function () {
       socket.emit('unsubscribe', 'runs/' + $scope.dRunId);
