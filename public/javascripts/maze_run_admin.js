@@ -152,7 +152,7 @@ var app = angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap
   }
   
   $scope.go = function (path) {
-    window.location = path
+    window.location = path + '?return=' + window.location.pathname;
   }
   
   $scope.format = "yyyy-MM-dd"

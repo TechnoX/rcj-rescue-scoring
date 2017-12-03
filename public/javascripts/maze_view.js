@@ -1,19 +1,23 @@
 // register the directive with your app module
-var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'rzModule', 'pascalprecht.translate', 'ngCookies']);
+var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'pascalprecht.translate', 'ngCookies']);
 var socket;
 // function referenced by the drop target
-app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', function ($scope, $uibModal, $log, $timeout, $http) {
+app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', '$cookies', function ($scope, $uibModal, $log, $timeout, $http, $cookies) {
 
     $scope.z = 0;
 
-    $scope.visType = "slider";
     $scope.countWords = ["Bottom", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Ninth"];
 
 
     $scope.cells = {};
     $scope.tiles = {};
-    $scope.sRotate = 0;
-
+    
+     //$cookies.remove('sRotate')
+    if($cookies.get('sRotate')){
+        $scope.sRotate = Number($cookies.get('sRotate'));
+    }
+    else $scope.sRotate = 0;
+    
     if (typeof runId !== 'undefined') {
         loadNewRun();
     }
@@ -105,14 +109,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 console.log(response.data);
                 $scope.startTile = response.data.startTile;
                 $scope.height = response.data.height;
-                $scope.slider = {
-                    options : {
-                        floor: 0,
-                        ceil: $scope.height - 1,
-                        step: 1,
-                        showTicksValues: true
-                    }
-                };
+                
                 $scope.width = response.data.width;
                 $scope.length = response.data.length;
 
@@ -155,6 +152,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         if($scope.sRotate >= 360)$scope.sRotate -= 360;
         else if($scope.sRotate < 0) $scope.sRotate+= 360;
         $timeout($scope.tile_size, 0);
+        
+        $cookies.put('sRotate', $scope.sRotate, {
+          path: '/'
+        });
     }
 
 
@@ -371,6 +372,22 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.open(x, y, z);
         }
 
+    }
+    
+    $scope.getParam = function (key) {
+        var str = location.search.split("?");
+        if (str.length < 2) {
+          return "";
+        }
+
+        var params = str[1].split("&");
+        for (var i = 0; i < params.length; i++) {
+          var keyVal = params[i].split("=");
+          if (keyVal[0] == key && keyVal.length == 2) {
+            return decodeURIComponent(keyVal[1]);
+          }
+        }
+        return "";
     }
 
     $scope.go = function (path) {

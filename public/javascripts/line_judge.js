@@ -1,9 +1,9 @@
 // register the directive with your app module
-var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'rzModule', 'pascalprecht.translate', 'ngCookies']);
+var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'pascalprecht.translate', 'ngCookies']);
 var marker = {};
 
 // function referenced by the drop target
-app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', '$translate', function ($scope, $uibModal, $log, $timeout, $http, $translate) {
+app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', '$translate', '$cookies', function ($scope, $uibModal, $log, $timeout, $http, $translate, $cookies) {
 
     var txt_score_element, txt_not_yet, txt_timeup, txt_timeup_mes, txt_lops, txt_lops_mes, txt_cantvisit, txt_start, txt_implicit;
     $translate('line.judge.js.score_element').then(function (val) {
@@ -62,7 +62,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.time = 0;
     $scope.processing = new Array();
     $scope.rprocessing = false;
-    $scope.sRotate = 0;
+
+    //$cookies.remove('sRotate')
+    if($cookies.get('sRotate')){
+        $scope.sRotate = Number($cookies.get('sRotate'));
+    }
+    else $scope.sRotate = 0;
+    
 
 
     // Scoring elements of the tiles
@@ -117,14 +123,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             console.log(response.data);
 
             $scope.height = response.data.height;
-            $scope.slider = {
-                        options : {
-                            floor: 0,
-                            ceil: $scope.height - 1,
-                            step: 1,
-                            showTicksValues: true
-                        }
-                    };
+           
             $scope.width = response.data.width;
             $scope.length = response.data.length;
             width = response.data.width;
@@ -149,7 +148,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             while($scope.stiles.length <= i){
                 $scope.stiles.push(ntile);
             }
-            $timeout($scope.tile_size, 0);
+            $timeout($scope.tile_size, 100);
+            $timeout($scope.tile_size, 3000);
             $http.put("/api/runs/line/" + runId, {
                 status: 1,
                 tiles : $scope.stiles
@@ -228,6 +228,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         if($scope.sRotate >= 360)$scope.sRotate -= 360;
         else if($scope.sRotate < 0) $scope.sRotate+= 360;
         $timeout($scope.tile_size, 0);
+        
+        $cookies.put('sRotate', $scope.sRotate, {
+          path: '/'
+        });
     }
 
     $scope.decrement = function (index) {
@@ -714,13 +718,28 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
             $http.put("/api/runs/line/" + runId, run).then(function (response) {
                 $scope.score = response.data.score;
-                $scope.go('/line/sign/' + runId)
+                $scope.go('/line/sign/' + runId + '?return=' + $scope.getParam('return'));
             }, function (response) {
                 console.log("Error: " + response.statusText);
             });
         }
     };
+    
+    $scope.getParam = function (key) {
+        var str = location.search.split("?");
+        if (str.length < 2) {
+          return "";
+        }
 
+        var params = str[1].split("&");
+        for (var i = 0; i < params.length; i++) {
+          var keyVal = params[i].split("=");
+          if (keyVal[0] == key && keyVal.length == 2) {
+            return decodeURIComponent(keyVal[1]);
+          }
+        }
+        return "";
+    }
 
     $scope.go = function (path) {
         playSound(sClick);

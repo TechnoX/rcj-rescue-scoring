@@ -89,7 +89,7 @@ var app = angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap
                 startTime: $scope.startTime.getTime()
             }
 
-            console.log(run)
+            //console.log(run)
 
             $http.post("/api/runs/line", run).then(function (response) {
                 console.log(response)
@@ -165,6 +165,7 @@ var app = angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap
         }
 
         $scope.go = function (path) {
+            path = path + '?return=' + window.location.pathname;
             window.location = path
         }
 
