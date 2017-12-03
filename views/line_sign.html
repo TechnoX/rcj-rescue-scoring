@@ -12,21 +12,21 @@
 </script>
 <nav class="navbar" style="background-color: #e67e22; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%">
     <!-- Navbar content -->
-    <div class="col-md-6 col-sm4 col-12">
+    <div class="col-md-6 col-sm4 col-xs-12">
         <li class="navbar-brand" href="#"><i class="fa fa-spinner fa-pulse fa-fw"></i> {{team}}</li>
     </div>
-    <div class="col-md-3 col-sm4 col-7">
+    <div class="col-md-3 col-sm4 col-xs-7">
         <i class="fa fa-calculator fa-2x" aria-hidden="true"></i>
         <li class="navbar-brand" href="#"> {{score}} {{'common.point' | translate}}</li>
     </div>
-    <div class="col-md-3 col-sm4 col-5">
+    <div class="col-md-3 col-sm4 col-xs-5">
         <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
         <li class="navbar-brand" href="#"> {{minutes*60*1000+seconds*1000 | date:'m:ss'}}</li>
     </div>
 
 
 </nav>
-<div class="container" style="padding-top:70px;">
+<div class="container nav-cont">
     <div class="row">
         <div class="col-md12">
             <button class="btn btn-secondary" style="margin:0 10px 10px 0;" type="button" ng-click="go('/line/judge/' + runId + '?return=' + getParam('return'))"><i class="fa fa-pencil-square-o" aria-hidden="true"> {{'line.sign.to_judge' | translate}}</i></button>
