@@ -1,15 +1,10 @@
 // register the directive with your app module
-var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap']);
+var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'pascalprecht.translate', 'ngCookies']);
 var marker = {};
 var socket;
 // function referenced by the drop target
-app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', function ($scope, $uibModal, $log, $timeout, $http) {
-    $scope.sliderOptions = {
-        floor: 0,
-        ceil: 0,
-        showSelectionBar: true,
-        showTicksValues: true
-    };
+app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', '$cookies',function ($scope, $uibModal, $log, $timeout, $http, $cookies) {
+
     var tick = function () {
         if ($scope.status == 2 && $scope.minutes < 8) {
             $scope.time += 1;
@@ -25,21 +20,90 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     // Map (images etc.) for the tiles
     $scope.mtiles = [];
 
-
-    if (typeof runId !== 'undefined') {
-        loadNewRun();
-    }
-
-    (function launchSocketIo() {
-        // launch socket.io
-        socket = io(window.location.origin, {
-            transports: ['websocket']
-        });
-        if (typeof runId !== 'undefined') {
-            $scope.actualUsedDropTiles = 0;
-            socket.emit('subscribe', 'runs/' + runId);
-
-            socket.on('data', function (data) {
+    
+    setInterval(function () {
+        $scope.get_field();
+    }, 10000);
+  $scope.get_field_signing = function () {
+      var pRunId,pName,pStatus;
+      $http.get("/api/runs/line/find/" + competitionId + "/" +
+                fieldId + "/3").then(function (response) {
+        if (response.data.length == 0) {
+          pRunId = -1;
+          pName = "No Team";
+          pStatus = 0;
+        } else if (response.data.length == 1) {
+          pRunId = response.data[0]._id;
+          pName = response.data[0].team.name;
+          pStatus = 3;
+        } else {
+          pRunId = -1;
+          pName = "ERROR";
+          pStatus = 0;
+        }
+        $scope.updateRun(pRunId,pName,pStatus);
+      })
+  }
+  
+  $scope.get_field = function () {
+      var pRunId,pName,pStatus;
+      $http.get("/api/runs/line/find/" + competitionId + "/" +
+                fieldId + "/2").then(function (response) {
+        if (response.data.length == 0) {
+          pRunId = -1;
+          pName = "No Team";
+          pStatus = 0;
+        } else if (response.data.length == 1) {
+          pRunId = response.data[0]._id;
+          pName = response.data[0].team.name;
+          pStatus = 2;
+        } else {
+          pRunId = -1;
+          pName = "ERROR";
+          pStatus = 0;
+        }
+        if(pRunId == -1 && pName=='No Team') $scope.get_field_signing();
+        else $scope.updateRun(pRunId,pName,pStatus);
+        
+      })
+  }
+  
+    
+  $scope.updateRun = function (pRunId,pName,pStatus){
+      $scope.runId = pRunId;
+      $scope.team = pName;
+      $scope.status = pStatus;
+      if ($scope.dRunId == $scope.runId){
+          return;
+      }
+      if ($scope.dRunId != -1){
+          socket.emit('unsubscribe', 'runs/' + $scope.dRunId);
+      }
+      if ($scope.runId == -1){
+          $scope.exist = false;
+          $scope.LoPs_total = 0;
+          $scope.time = 0;
+          $scope.score = 0;
+          $scope.rescuedLiveVictims = 0;
+          $scope.rescuedDeadVictims = 0;
+          marker = [];
+          $scope.dRunId = $scope.runId;
+          return;
+      }
+      launchSocketIo();
+      loadNewRun();
+      $scope.dRunId = $scope.runId;
+      $scope.exist = true;
+  }
+  
+  socket = io(window.location.origin, {
+      transports: ['websocket']
+    });
+  function launchSocketIo() {
+    // launch socket.io
+    if (typeof $scope.runId !== 'undefined') {
+      socket.emit('subscribe', 'runs/' + $scope.runId);
+      socket.on('data', function (data) {
                 console.log(data);
                 $scope.rescuedLiveVictims = data.rescuedLiveVictims;
                 $scope.rescuedDeadVictims = data.rescuedDeadVictims;
@@ -61,14 +125,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.$apply();
                 console.log("Updated view from socket.io");
             });
-        }
-
-
-    })();
-
+    }
+    
+  }
+    
 
     function loadNewRun() {
-        $http.get("/api/runs/line/" + runId +
+        $http.get("/api/runs/line/" + $scope.runId +
             "?populate=true").then(function (response) {
             console.log(response.data);
             $scope.LoPs = response.data.LoPs;
@@ -103,7 +166,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             for (var i = 0; i < response.data.tiles.length; i++) {
                 if (response.data.tiles[i].isDropTile) {
                     $scope.actualUsedDropTiles++;
-                    marker[i] = true;
+                    f = true;
                 }
             }
 
@@ -113,7 +176,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 console.log(response.data);
 
                 $scope.height = response.data.height;
-                $scope.sliderOptions.ceil = $scope.height - 1;
                 $scope.width = response.data.width;
                 $scope.length = response.data.length;
                 width = response.data.width;
@@ -157,7 +219,79 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         socket.emit('unsubscribe', 'runs/' + runId);
         window.location = path
     }
+    
+    $scope.showElements = function (x, y, z) {
+        var mtile = $scope.mtiles[x + ',' + y + ',' + z];
+        var isDropTile = false;
+        // If this is not a created tile
+        if (!mtile || mtile.index.length == 0)
+            return;
 
+
+        for (var i = 0; i < mtile.index.length; i++) {
+            if ($scope.stiles[mtile.index[i]].isDropTile) {
+                isDropTile = true;
+            }
+        }
+
+
+        var total = (mtile.items.obstacles > 0 ||
+            mtile.items.speedbumps > 0 ||
+            mtile.tileType.gaps > 0 ||
+            mtile.tileType.intersections > 0) * mtile.index.length;
+        // Add the number of possible passes for drop tiles
+        if (isDropTile) {
+            total += mtile.index.length;
+        }
+
+        if (total > 1) {
+            // Show modal
+            $scope.open(x, y, z);
+        }
+    }
+    
+    $scope.open = function (x, y, z) {
+        var modalInstance = $uibModal.open({
+            animation: true,
+            templateUrl: '/templates/line_view_modal.html',
+            controller: 'ModalInstanceCtrl',
+            size: 'lm',
+            resolve: {
+                mtile: function () {
+                    return $scope.mtiles[x + ',' + y + ',' + z];
+                },
+                stiles: function () {
+                    return $scope.stiles;
+                },
+                startTile: function(){
+                    return $scope.startTile;
+                },
+                nineTile: function () {
+                    var nine = []
+                    nine[0] = $scope.mtiles[(x - 1) + ',' + (y - 1) + ',' + z];
+                    nine[1] = $scope.mtiles[(x) + ',' + (y - 1) + ',' + z];
+                    nine[2] = $scope.mtiles[(x + 1) + ',' + (y - 1) + ',' + z];
+                    nine[3] = $scope.mtiles[(x - 1) + ',' + (y) + ',' + z];
+                    nine[4] = $scope.mtiles[(x) + ',' + (y) + ',' + z];
+                    nine[5] = $scope.mtiles[(x + 1) + ',' + (y) + ',' + z];
+                    nine[6] = $scope.mtiles[(x - 1) + ',' + (y + 1) + ',' + z];
+                    nine[7] = $scope.mtiles[(x) + ',' + (y + 1) + ',' + z];
+                    nine[8] = $scope.mtiles[(x + 1) + ',' + (y + 1) + ',' + z];
+                    return nine;
+                }
+            }
+        }).closed.then(function (result) {
+            console.log("Closed modal");
+        });
+    }
+    
+    $scope.navColor = function (stat){
+        if(stat == 2) return '#e74c3c';
+        if(stat == 3) return '#e67e22';
+        return '#7f8c8d';
+    }
+    
+    $scope.get_field();
 
     
 
@@ -333,6 +467,88 @@ app.directive('tile', function () {
     };
 });
 
+    
+app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, stiles, nineTile,startTile) {
+    $scope.mtile = mtile;
+    $scope.stiles = stiles;
+    $scope.nineTile = nineTile;
+    $scope.words = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth"];
+    $scope.next = [];
+    for (var i = 0, d; d = mtile.next[i]; i++) {
+        var sp = d.split(",");
+
+        if (mtile.x == Number(sp[0]) && mtile.y - 1 == Number(sp[1])) {
+            //console.log("TOP");
+                    $scope.next.top = mtile.index[i];
+            }
+            
+        if (mtile.x + 1 == Number(sp[0]) && mtile.y == Number(sp[1])) {
+            //console.log("RIGHT");
+
+                    $scope.next.right = mtile.index[i];
+        }
+        if (mtile.x == Number(sp[0]) && mtile.y + 1 == Number(sp[1])) {
+            //console.log("BOTTOM");
+           
+                    $scope.next.bottom = mtile.index[i];
+        }
+        if (mtile.x - 1 == Number(sp[0]) && mtile.y == Number(sp[1])) {
+            //console.log("LEFT");
+                    $scope.next.left = mtile.index[i];
+        }
+
+    }
+
+    $scope.tilerotate = function (tilerot) {
+        return tilerot;
+    }
+    
+     $scope.isDropTile = function (tile) {
+        if (!tile || tile.index.length == 0)
+            return;
+        return $scope.stiles[tile.index[0]].isDropTile;
+    }
+
+    $scope.isStart = function (tile) {
+        console.log(tile);
+        if (!tile)
+            return;
+        return tile.x == startTile.x &&
+            tile.y == startTile.y &&
+            tile.z == startTile.z;
+    }
+    
+    $scope.rotateRamp = function (direction) {
+        var ro;
+        switch (direction) {
+            case "bottom":
+                ro = 0;
+                break;
+            case "top":
+                ro = 180;
+                break;
+            case "left":
+                ro = 90;
+                break;
+            case "right":
+                ro = 270;
+                break;
+        }
+        switch (ro) {
+            case 0:
+                return;
+            case 180:
+                return "fa-rotate-180";
+            case 90:
+                return "fa-rotate-90";
+            case 270:
+                return "fa-rotate-270";
+        }
+    }
+    $scope.ok = function () {
+        $uibModalInstance.close();
+    };
+});
 
 function tile_size() {
     $(function () {

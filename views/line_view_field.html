@@ -1,0 +1,52 @@
+<nav class="navbar" style="color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%" ng-style="{backgroundColor: navColor(status)}">
+    <!-- Navbar content -->
+
+      <div class="col-md-6 col-sm4 col-12">
+          <li class="navbar-brand" href="#"><i class="fa fa-spinner fa-pulse fa-fw"></i> {{team}}</li>
+      </div>
+      <div class="col-md-3 col-sm4 col-7">
+          <i class="fa fa-calculator fa-2x" aria-hidden="true"></i>
+          <li class="navbar-brand" href="#"> {{score}} points</li>
+      </div>
+      <div class="col-md-3 col-sm4 col-5">
+          <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
+          <li class="navbar-brand" href="#"> {{time*1000 | date:'mm:ss'}}</li>
+      </div>
+
+</nav>
+<div class="nav-cont">
+    <div class="tilearea" ng-show = "exist">
+        <div ng-repeat="r in range(length)" class="row" tile-load-finished='' style="margin-right:0px;margin-left:0px">
+            <div ng-repeat="c in range(width)" class="slot">
+                <tile tile="mtiles[c+','+r+','+z]" ng-repeat="z in range(height)" ng-style="{'opacity': getOpacity(c,r)}" ng-click="showElements(c,r,z)">
+                </tile>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12" ng-show = "!exist">
+        <div class="alert alert-dark" role="alert">
+            <h1>現在，このフィールドでは競技が行われていません</h1>
+        </div>
+    </div>
+</div>
+<br>
+<div class="alert alert-info" role="alert" ng-show="exist">
+    <div class="row">
+        <div class="col-6">
+            <i class="fa fa-undo" aria-hidden="true"> : {{LoPs_total}} times</i>
+        </div>
+        <div class="col-6">
+            <i class="fa fa-ambulance" aria-hidden="true"> : L: {{rescuedLiveVictims}} 　D: {{rescuedDeadVictims}}</i>
+        </div>
+    </div>
+
+</div>
+<div class="row" ng-show="exist">
+    <div class="col-12">
+        <h3>
+            <span class="badge badge-danger" ng-show="evacuationLevel==1">{{"line.view.low" | translate}}</span>
+            <span class="badge badge-danger" ng-show="evacuationLevel==2">{{"line.view.high" | translate}}</span>
+        </h3>
+    </div>
+</div>
+
