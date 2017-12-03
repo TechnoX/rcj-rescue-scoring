@@ -6,32 +6,32 @@ var socket;
 // function referenced by the drop target
 app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', '$translate', '$cookies', function ($scope, $uibModal, $log, $timeout, $http, $translate, $cookies) {
     var txt_cap_sign, txt_cref_sign, txt_ref_sign, txt_no_sign, txt_complete, txt_confirm;
-    $translate('line.sign.cap_sign').then(function (val) {
+    $translate('maze.sign.cap_sign').then(function (val) {
         txt_cap_sign = val;
     }, function (translationId) {
         // = translationId;
     });
-    $translate('line.sign.ref_sign').then(function (val) {
+    $translate('maze.sign.ref_sign').then(function (val) {
         txt_ref_sign = val;
     }, function (translationId) {
         // = translationId;
     });
-    $translate('line.sign.cref_sign').then(function (val) {
+    $translate('maze.sign.cref_sign').then(function (val) {
         txt_cref_sign = val;
     }, function (translationId) {
         // = translationId;
     });
-    $translate('line.sign.no_sign').then(function (val) {
+    $translate('maze.sign.no_sign').then(function (val) {
         txt_no_sign = val;
     }, function (translationId) {
         // = translationId;
     });
-    $translate('line.sign.complete').then(function (val) {
+    $translate('maze.sign.complete').then(function (val) {
         txt_complete = val;
     }, function (translationId) {
         // = translationId;
     });
-    $translate('line.sign.confirm').then(function (val) {
+    $translate('maze.sign.confirm').then(function (val) {
         txt_confirm = val;
     }, function (translationId) {
         // = translationId;
@@ -80,19 +80,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.$apply();
                 console.log("Updated view from socket.io");
             });
-        }
-        if (typeof fieldId !== 'undefined') {
-            console.log("Field ID: ", fieldId);
-            socket.emit('subscribe', 'fields/' + fieldId);
-            socket.on('data', function (data) {
-                //                if(typeof runId === 'undefined') || runId != data.newRun){ // TODO: FIX!
-                console.log("Judge changed to a new run");
-                runId = data.newRun;
-                loadNewRun();
-                //                }
-            });
-        } else {
-            console.log("No fieldId provided");
         }
 
     })();
