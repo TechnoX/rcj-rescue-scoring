@@ -19,6 +19,10 @@
 ### 2017年ルール対応版
 * RoboCup 2017 Nagoya Japan
 * NESTロボコン2017
+* ロボカップジュニア2018 北埼玉ノード大会
+* ロボカップジュニア2018 南埼玉ノード大会
+* ロボカップジュニア2018 千葉ノード大会
+* ロボカップジュニア2018 広島ノード大会
 
 ## Usage
 #### 必要なソフト
@@ -66,3 +70,9 @@ Line 確認
 Maze 審判  
 <img src="https://raw.githubusercontent.com/rrrobo/rcj-rescue-scoring-japan/日本国内向け/rcjj-scoring/7.png">
 <hr>
+
+### 効果音
+以下の効果音を使用しています． 
+ 
+* [MusMus](http://musmus.main.jp)
+* [魔王魂](https://maoudamashii.jokersounds.com)
