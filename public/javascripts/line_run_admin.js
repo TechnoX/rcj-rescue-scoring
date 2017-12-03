@@ -24,7 +24,7 @@ var app = angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap
                 transports: ['websocket']
             }).connect(window.location.origin)
             socket.on('connect', function () {
-                socket.emit('subscribe', 'runs/line')
+                socket.emit('subscribe', 'runs/line/' + competitionId)
             })
             socket.on('changed', function () {
                 runListChanged = true;

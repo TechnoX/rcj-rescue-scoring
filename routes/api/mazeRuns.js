@@ -442,12 +442,8 @@ privateRouter.put('/:runid', function (req, res, next) {
                         })
                     } else {
                         if (socketIo !== undefined) {
-                            socketIo.sockets.in('runs/maze').emit('changed')
+                            socketIo.sockets.in('runs/maze/' + dbRun.competition).emit('changed')
                             socketIo.sockets.in('runs/' + dbRun._id).emit('data', dbRun)
-                            socketIo.sockets.in('fields/' +
-                                dbRun.field).emit('data', {
-                                newRun: dbRun._id
-                            })
                         }
                         return res.status(200).send({
                             msg: "Saved run",
@@ -512,6 +508,14 @@ privateRouter.put('/map/:runid', function (req, res, next) {
                             msg: "Could not save run"
                         })
                     } else {
+                        if (socketIo !== undefined) {
+                            socketIo.sockets.in('runs/maze').emit('changed')
+                            socketIo.sockets.in('runs/' + dbRun._id).emit('data', dbRun)
+                            socketIo.sockets.in('fields/' +
+                                dbRun.field).emit('data', {
+                                newRun: dbRun._id
+                            })
+                        }
                         return res.status(200).send({
                             msg: "Saved run",
                             map: dbRun.map

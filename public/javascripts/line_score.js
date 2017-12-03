@@ -163,7 +163,7 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
             transports: ['websocket']
         }).connect(window.location.origin)
         socket.on('connect', function () {
-            socket.emit('subscribe', 'runs/line')
+            socket.emit('subscribe', 'runs/line/'+ competitionId)
         })
         socket.on('changed', function () {
             runListChanged = true;

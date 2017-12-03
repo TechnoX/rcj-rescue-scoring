@@ -93,7 +93,7 @@ app.controller("MazeScoreController", function ($scope, $http) {
             transports: ['websocket']
         }).connect(window.location.origin)
         socket.on('connect', function () {
-            socket.emit('subscribe', 'runs/maze')
+            socket.emit('subscribe', 'runs/maze/' + competitionId)
         })
         socket.on('changed', function () {
             runListChanged = true;

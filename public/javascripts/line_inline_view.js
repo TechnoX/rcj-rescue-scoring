@@ -63,22 +63,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             });
         }
 
-        if (typeof fieldIds !== 'undefined') {
-            console.log(fieldIds);
-            var fields = fieldIds.split(',');
-            for (var i = 0; i < fields.length; i++) {
-                socket.emit('subscribe', 'fields/' + fields[i]);
-            }
-            socket.on('data', function (data) {
-                //                if(typeof runId === 'undefined') || runId != data.newRun){ // TODO: FIX!
-                console.log("Judge changed to a new run");
-                runId = data.newRun;
-                loadNewRun();
-                //                }
-            });
-
-
-        }
 
     })();
 
