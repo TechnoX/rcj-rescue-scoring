@@ -1,8 +1,8 @@
 // register the directive with your app module
-var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'rzModule', 'pascalprecht.translate', 'ngCookies']);
+var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'pascalprecht.translate', 'ngCookies']);
 
 // function referenced by the drop target
-app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http','$translate', function ($scope, $uibModal, $log, $timeout, $http, $translate) {
+app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http','$translate', '$cookies',function ($scope, $uibModal, $log, $timeout, $http, $translate, $cookies) {
     
     var txt_timeup,txt_timeup_mes;
     
@@ -22,8 +22,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.time = 0;
     $scope.lopProcessing = false;
     
-    $scope.sRotate = 0;
-
+    //$cookies.remove('sRotate')
+    if($cookies.get('sRotate')){
+        $scope.sRotate = Number($cookies.get('sRotate'));
+    }
+    else $scope.sRotate = 0;
 
     $scope.cells = {};
     $scope.tiles = {};
@@ -82,12 +85,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     });
 
     $scope.randomDice = function(){
+        playSound(sClick);
         var a = Math.floor( Math.random() * 6 ) ;
         $scope.changeMap(a);
     }
 
     $scope.changeMap = function(n){
-        console.log(n)
+        playSound(sClick);
         $scope.diceSelect = n;
         $http.put("/api/runs/maze/map/" + runId, {
             map: $scope.dice[n]
@@ -110,14 +114,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             console.log(response.data);
             $scope.startTile = response.data.startTile;
             $scope.height = response.data.height;
-            $scope.slider = {
-                    options : {
-                        floor: 0,
-                        ceil: $scope.height - 1,
-                        step: 1,
-                        showTicksValues: true
-                    }
-                };
+
             $scope.width = response.data.width;
             $scope.length = response.data.length;
             if(response.data.parent){
@@ -157,6 +154,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 
     $scope.timeReset = function () {
+        playSound(sClick);
         $scope.time = 0;
         $scope.minutes = 0;
         $scope.seconds = 0;
@@ -164,11 +162,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 
     $scope.infochecked = function () {
+        playSound(sClick);
         $scope.checked = true;
         $timeout($scope.tile_size, 10);
         $timeout($scope.tile_size, 200);
     }
     $scope.decrement = function () {
+        playSound(sClick);
         $scope.lopProcessing = true;
         $scope.LoPs--;
         if ($scope.LoPs < 0)
@@ -190,6 +190,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     }
     $scope.increment = function () {
+        playSound(sClick);
         $scope.lopProcessing = true;
         $scope.LoPs++;
 
@@ -209,20 +210,27 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
     
     $scope.changeFloor = function (z){
+        playSound(sClick);
         $scope.z = z;
     }
     
     $scope.tileRot = function (r){
+        playSound(sClick);
         $scope.sRotate += r;
         if($scope.sRotate >= 360)$scope.sRotate -= 360;
         else if($scope.sRotate < 0) $scope.sRotate+= 360;
         $timeout($scope.tile_size, 0);
+        
+        $cookies.put('sRotate', $scope.sRotate, {
+          path: '/'
+        });
     }
 
 
     var tick = function () {
         $scope.time += 1000;
         if ($scope.time >= 480000) {
+            playSound(sTimeup);
             $scope.startedTime = !$scope.startedTime;
             $scope.minutes = Math.floor($scope.time / 60000)
             $scope.seconds = (Math.floor($scope.time % 60000)) / 1000
@@ -235,6 +243,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 
     $scope.toggleTime = function () {
+        playSound(sClick);
         // Start/stop timer
         $scope.startedTime = !$scope.startedTime;
         if ($scope.startedTime) {
@@ -260,6 +269,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 
     $scope.changeExitBonus = function () {
+        playSound(sClick);
         $scope.exitBonus = ! $scope.exitBonus
         $scope.exitBonusP = true
         $http.put("/api/runs/maze/" + runId, {
@@ -475,7 +485,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             return;
         if (!isTile)
             return;
-
+        playSound(sClick);
 
         if (!$scope.tiles[x + ',' + y + ',' + z]) {
             $scope.tiles[x + ',' + y + ',' + z] = {
@@ -612,6 +622,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     };
 
     $scope.confirm = function () {
+        playSound(sClick);
         var run = {}
         run.exitBonus = $scope.exitBonus;
         run.LoPs = $scope.LoPs;
@@ -627,13 +638,30 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
         $http.put("/api/runs/maze/" + runId, run).then(function (response) {
             $scope.score = response.data.score;
-            $scope.go('/maze/sign/' + runId)
+            $scope.go('/maze/sign/' + runId + '?return=' + $scope.getParam('return'));
         }, function (response) {
             console.log("Error: " + response.statusText);
         });
     };
+    
+    $scope.getParam = function (key) {
+        var str = location.search.split("?");
+        if (str.length < 2) {
+          return "";
+        }
+
+        var params = str[1].split("&");
+        for (var i = 0; i < params.length; i++) {
+          var keyVal = params[i].split("=");
+          if (keyVal[0] == key && keyVal.length == 2) {
+            return decodeURIComponent(keyVal[1]);
+          }
+        }
+        return "";
+    }
 
     $scope.go = function (path) {
+        playSound(sClick);
         window.location = path
     }
     
@@ -696,12 +724,16 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, cell, t
         (cell.tile.victims.right != "None") ||
         (cell.tile.victims.bottom != "None") ||
         (cell.tile.victims.left != "None");
-
+    $scope.clickSound = function(){
+        playSound(sClick);
+    }
     $scope.incKits = function (direction) {
+        playSound(sClick);
         $scope.tile.scoredItems.rescueKits[direction]++;
     }
 
     $scope.decKits = function (direction) {
+        playSound(sClick);
         $scope.tile.scoredItems.rescueKits[direction]--;
         if ($scope.tile.scoredItems.rescueKits[direction] < 0) {
             $scope.tile.scoredItems.rescueKits[direction] = 0;
@@ -763,6 +795,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, cell, t
     }
 
     $scope.ok = function () {
+        playSound(sClick);
         $uibModalInstance.close();
     };
 });
@@ -779,3 +812,48 @@ document.addEventListener('touchend', event => {
     }
     lastTouch = now;
 }, true);
+
+window.AudioContext = window.AudioContext || window.webkitAudioContext;  
+var context = new AudioContext();
+
+var getAudioBuffer = function(url, fn) {  
+  var req = new XMLHttpRequest();
+  req.responseType = 'arraybuffer';
+
+  req.onreadystatechange = function() {
+    if (req.readyState === 4) {
+      if (req.status === 0 || req.status === 200) {
+        context.decodeAudioData(req.response, function(buffer) {
+          fn(buffer);
+        });
+      }
+    }
+  };
+
+  req.open('GET', url, true);
+  req.send('');
+};
+
+var playSound = function(buffer) {  
+  var source = context.createBufferSource();
+  source.buffer = buffer;
+  source.connect(context.destination);
+  source.start(0);
+};
+
+var sClick,sInfo,sError,sTimeup;
+window.onload = function() {  
+  getAudioBuffer('/sounds/click.mp3', function(buffer) {
+      sClick = buffer;
+  });
+  getAudioBuffer('/sounds/info.mp3', function(buffer) {
+      sInfo = buffer;
+  });
+  getAudioBuffer('/sounds/error.mp3', function(buffer) {
+      sError = buffer;
+  });
+  getAudioBuffer('/sounds/timeup.mp3', function(buffer) {
+      sTimeup = buffer;
+  });
+};
+

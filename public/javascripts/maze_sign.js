@@ -1,10 +1,10 @@
 // register the directive with your app module
-var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'rzModule', 'pascalprecht.translate', 'ngCookies']);
+var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'pascalprecht.translate', 'ngCookies']);
 var marker = {};
 var socket;
 
 // function referenced by the drop target
-app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', '$translate', function ($scope, $uibModal, $log, $timeout, $http, $translate) {
+app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', '$translate', '$cookies', function ($scope, $uibModal, $log, $timeout, $http, $translate, $cookies) {
     var txt_cap_sign, txt_cref_sign, txt_ref_sign, txt_no_sign, txt_complete, txt_confirm;
     $translate('line.sign.cap_sign').then(function (val) {
         txt_cap_sign = val;
@@ -37,15 +37,18 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         // = translationId;
     });
 
-    $scope.visType = "slider";
     $scope.countWords = ["Bottom", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Ninth"];
     $scope.z = 0;
 
     $scope.cells = {};
     $scope.tiles = {};
     
-    $scope.sRotate = 0;
-
+    //$cookies.remove('sRotate')
+    if($cookies.get('sRotate')){
+        $scope.sRotate = Number($cookies.get('sRotate'));
+    }
+    else $scope.sRotate = 0;
+    
     if (typeof runId !== 'undefined') {
         $scope.runId = runId;
         loadNewRun();
@@ -131,14 +134,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 console.log(response.data);
                 $scope.startTile = response.data.startTile;
                 $scope.height = response.data.height;
-                $scope.slider = {
-                    options : {
-                        floor: 0,
-                        ceil: $scope.height - 1,
-                        step: 1,
-                        showTicksValues: true
-                    }
-                };
+               
                 $scope.width = response.data.width;
                 $scope.length = response.data.length;
 
@@ -164,14 +160,20 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
     
     $scope.changeFloor = function (z){
+        playSound(sClick);
         $scope.z = z;
     }
     
     $scope.tileRot = function (r){
+        playSound(sClick);
         $scope.sRotate += r;
         if($scope.sRotate >= 360)$scope.sRotate -= 360;
         else if($scope.sRotate < 0) $scope.sRotate+= 360;
         $timeout($scope.tile_size, 0);
+        
+        $cookies.put('sRotate', $scope.sRotate, {
+          path: '/'
+        });
     }
 
 
@@ -394,6 +396,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
         if (total > 1 || hasVictims) {
             // Open modal for multi-select
+            playSound(sClick);
             $scope.open(x, y, z);
         }
 
@@ -420,26 +423,45 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             console.log("Closed modal");
         });
     };
+    
+    $scope.getParam = function (key) {
+        var str = location.search.split("?");
+        if (str.length < 2) {
+          return "";
+        }
 
+        var params = str[1].split("&");
+        for (var i = 0; i < params.length; i++) {
+          var keyVal = params[i].split("=");
+          if (keyVal[0] == key && keyVal.length == 2) {
+            return decodeURIComponent(keyVal[1]);
+          }
+        }
+        return "";
+    }
 
     $scope.go = function (path) {
+        playSound(sClick);
         socket.emit('unsubscribe', 'runs/' + runId);
         window.location = path
     }
 
 
     $scope.success_message = function () {
+        playSound(sInfo);
         swal({
             title: 'Recorded!',
             text: txt_complete,
             type: 'success'
         }, function () {
-            $scope.go("/maze/" + $scope.competition_id);
+            if($scope.getParam('return')) $scope.go($scope.getParam('return'));
+            else $scope.go("/maze/" + $scope.competition_id);
         });
         console.log("Success!!");
     }
 
     $scope.send_sign = function () {
+        playSound(sInfo);
         var sign_empty = "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj48c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMCIgaGVpZ2h0PSIwIj48L3N2Zz4="
         var run = {}
         run.comment = $scope.comment;
@@ -468,9 +490,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
 
         if (err_mes != "") {
+            playSound(sError);
             swal("Oops!", err_mes + txt_no_sign, "error");
             return;
         }
+        playSound(sInfo);
 
         swal({
             title: "Finish Run?",
@@ -485,6 +509,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $http.put("/api/runs/maze/" + runId, run).then(function (response) {
                 setTimeout($scope.success_message, 500);
             }, function (response) {
+                playSound(sError);
                 swal("Oops", "We couldn't connect to the server! Please notice to system manager.", "error");
                 console.log("Error: " + response.statusText);
             });
@@ -608,6 +633,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, cell, t
     }
 
     $scope.ok = function () {
+        playSound(sClick);
         $uibModalInstance.close();
     };
 });
@@ -628,3 +654,44 @@ document.addEventListener('touchend', event => {
     }
     lastTouch = now;
 }, true);
+
+window.AudioContext = window.AudioContext || window.webkitAudioContext;  
+var context = new AudioContext();
+
+var getAudioBuffer = function(url, fn) {  
+  var req = new XMLHttpRequest();
+  req.responseType = 'arraybuffer';
+
+  req.onreadystatechange = function() {
+    if (req.readyState === 4) {
+      if (req.status === 0 || req.status === 200) {
+        context.decodeAudioData(req.response, function(buffer) {
+          fn(buffer);
+        });
+      }
+    }
+  };
+
+  req.open('GET', url, true);
+  req.send('');
+};
+
+var playSound = function(buffer) {  
+  var source = context.createBufferSource();
+  source.buffer = buffer;
+  source.connect(context.destination);
+  source.start(0);
+};
+
+var sClick,sInfo,sError;
+window.onload = function() {  
+  getAudioBuffer('/sounds/click.mp3', function(buffer) {
+      sClick = buffer;
+  });
+  getAudioBuffer('/sounds/info.mp3', function(buffer) {
+      sInfo = buffer;
+  });
+  getAudioBuffer('/sounds/error.mp3', function(buffer) {
+      sError = buffer;
+  });
+};
