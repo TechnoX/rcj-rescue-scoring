@@ -30,7 +30,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         if (typeof runId !== 'undefined') {
             socket.emit('subscribe', 'runs/' + runId);
             socket.on('data', function (data) {
-                console.log(data);
                 $scope.exitBonus = data.exitBonus;
                 $scope.score = data.score;
                 $scope.LoPs = data.LoPs;
@@ -48,8 +47,12 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.$apply();
                 console.log("Updated view from socket.io");
             });
+            
+            socket.emit('subscribe', 'runs/map/' + runId);
+            socket.on('mapChange', function (data) {
+                $scope.getMap(data.newMap._id);
+            });
         }
-        
 
     })();
 
@@ -58,7 +61,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $http.get("/api/runs/maze/" + runId +
             "?populate=true").then(function (response) {
 
-            console.log(response.data);
             $scope.exitBonus = response.data.exitBonus;
             $scope.field = response.data.field.name;
             $scope.round = response.data.round.name;
@@ -90,9 +92,20 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             }
 
             // Get the map
-            $http.get("/api/maps/maze/" + response.data.map +
+            $scope.getMap(response.data.map);
+            
+
+        }, function (response) {
+            console.log("Error: " + response.statusText);
+            if (response.status == 401) {
+                $scope.go('/home/access_denied');
+            }
+        });
+    }
+    
+    $scope.getMap = function(mapId){
+        $http.get("/api/maps/maze/" + mapId +
                 "?populate=true").then(function (response) {
-                console.log(response.data);
                 $scope.startTile = response.data.startTile;
                 $scope.height = response.data.height;
                 
@@ -108,17 +121,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 width = response.data.width;
                 length = response.data.length;
                 $timeout($scope.tile_size, 0);
+                $timeout($scope.tile_size, 3000);
 
             }, function (response) {
                 console.log("Error: " + response.statusText);
             });
-
-        }, function (response) {
-            console.log("Error: " + response.statusText);
-            if (response.status == 401) {
-                $scope.go('/home/access_denied');
-            }
-        });
     }
 
     $scope.range = function (n) {

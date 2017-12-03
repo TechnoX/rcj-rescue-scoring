@@ -509,11 +509,8 @@ privateRouter.put('/map/:runid', function (req, res, next) {
                         })
                     } else {
                         if (socketIo !== undefined) {
-                            socketIo.sockets.in('runs/maze').emit('changed')
-                            socketIo.sockets.in('runs/' + dbRun._id).emit('data', dbRun)
-                            socketIo.sockets.in('fields/' +
-                                dbRun.field).emit('data', {
-                                newRun: dbRun._id
+                            socketIo.sockets.in('runs/map/' + dbRun._id).emit('mapChange', {
+                                newMap: dbRun.map
                             })
                         }
                         return res.status(200).send({
