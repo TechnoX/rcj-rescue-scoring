@@ -266,7 +266,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         else
             $scope.LoPs[index] = 1;
         $http.put("/api/runs/line/" + runId, {
-            LoPs: $scope.LoPs
+            LoPs: $scope.LoPs,
+            time: {
+                minutes: Math.floor($scope.time / 60000),
+                seconds: (Math.floor($scope.time % 60000)) / 1000
+            }
         }).then(function (response) {
             console.log(response);
             $scope.score = response.data.score;
