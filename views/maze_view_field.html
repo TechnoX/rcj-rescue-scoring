@@ -1,21 +1,27 @@
-<div class="alert alert-success" role="alert">
-    <div class="row">
-        <div class="col-6">
-            <i class="fa fa-calculator" aria-hidden="true"> : {{score}} points</i>
-        </div>
-        <div class="col-6">
-            <i class="fa fa-clock-o" aria-hidden="true"> : {{time*1000 | date:'m:ss'}}</i>
-        </div>
-    </div>
-</div>
+<nav class="navbar" style="color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%" ng-style="{backgroundColor: status==2? '#e74c3c':'#e67e22'}">
+    <!-- Navbar content -->
 
-<div class="row">
-    <div class="col-md-12  tilearea">
+      <div class="col-md-6 col-sm4 col-12">
+          <li class="navbar-brand" href="#"><i class="fa fa-spinner fa-pulse fa-fw"></i> {{team}}</li>
+      </div>
+      <div class="col-md-3 col-sm4 col-7">
+          <i class="fa fa-calculator fa-2x" aria-hidden="true"></i>
+          <li class="navbar-brand" href="#"> {{score}} points</li>
+      </div>
+      <div class="col-md-3 col-sm4 col-5">
+          <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
+          <li class="navbar-brand" href="#"> {{time*1000 | date:'mm:ss'}}</li>
+      </div>
+
+</nav>
+
+<div class="row nav-cont">
+    <div class="col-md-12  tilearea" ng-show= "exist">
         <div ng-repeat="z in range(height) track by $index" style="float: left; margin-right: 10px">
                         <h3>{{countWords[$index]}} floor</h3>
                         <table class="map">
                             <tr ng-repeat="r in range(2*length + 1)">
-                                <td ng-repeat="c in range(2*width + 1)" ng-class="{'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall, 'checkpoint': cells[c+','+r+','+z].tile.checkpoint, 'black': cells[c+','+r+','+z].tile.black, 'linear': cells[c+','+r+','+z].isLinear}">
+                                <td ng-repeat="c in range(2*width + 1)" ng-class="{'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall, 'checkpoint': cells[c+','+r+','+z].tile.checkpoint, 'black': cells[c+','+r+','+z].tile.black, 'linear': cells[c+','+r+','+z].isLinear}"  ng-click="cellClick(c, r, z, $odd != $parent.$odd, $odd && $parent.$odd)">
                                     <div class="tile-image-container" ng-show="cells[c+','+r+','+z].isTile">
                                         <img ng-src="/images/log.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.speedbump">
                                         <img ng-src="/images/elevator.png" class="tile-image" ng-show="!isUndefined(cells[c+','+r+','+z].tile.changeFloorTo) && cells[c+','+r+','+z].tile.changeFloorTo != z">
@@ -50,6 +56,11 @@
 
 
     </div>
+    <div class="col-md-12" ng-show = "!exist">
+        <div class="alert alert-dark" role="alert">
+            <h1>現在，このフィールドでは競技が行われていません</h1>
+        </div>
+    </div>
 </div>
 <br>
 
@@ -62,9 +73,4 @@
             <i class="fa fa-home" aria-hidden="true"> : Returned: <b>{{exitBonus}}</b></i>
         </div>
     </div>
-</div>
-
-<div style="text-align:center; margin: 10 10 10 10;">
-    <button class="btn btn-danger" type="button" ng-show="status == 2"><i aria-hidden="true" > Running</i></button>
-    <button class="btn btn-warning" type="button" ng-show="status == 3"><i aria-hidden="true" > Checking</i></button>
 </div>
