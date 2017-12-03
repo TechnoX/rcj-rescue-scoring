@@ -446,8 +446,6 @@ input[type=checkbox]:checked+.checkbox:before {
     background: #333;
 }
 
-
-
 .blink {
     -webkit-animation: blink 0.5s infinite alternate;
     -moz-animation: blink 0.5s infinite alternate;
@@ -533,5 +531,17 @@ footer {
     font-size: 1vw;
     @media screen and (min-width: 769px) {
         font-size: 1rem!important;
+    }
+}
+
+@media (min-width: 768px) {
+    .nav-cont {
+        padding-top: 70px;
+    }
+}
+
+@media (max-width: 767px) {
+    .nav-cont {
+        padding-top: 100px;
     }
 }
