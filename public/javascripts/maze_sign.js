@@ -430,6 +430,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.go = function (path) {
         playSound(sClick);
         socket.emit('unsubscribe', 'runs/' + runId);
+        socket.emit('subscribe', 'runs/map/' + runId);
         window.location = path
     }
 
@@ -630,6 +631,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, cell, t
 
 $(window).on('beforeunload', function () {
     socket.emit('unsubscribe', 'runs/' + runId);
+    socket.emit('subscribe', 'runs/map/' + runId);
 });
 
 
