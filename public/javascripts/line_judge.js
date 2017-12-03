@@ -149,6 +149,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             while($scope.stiles.length <= i){
                 $scope.stiles.push(ntile);
             }
+            $timeout($scope.tile_size, 0);
             $http.put("/api/runs/line/" + runId, {
                 status: 1,
                 tiles : $scope.stiles
@@ -184,6 +185,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 
     $scope.TimeReset = function () {
+        playSound(sClick);
         $scope.time = 0;
         $scope.minutes = 0;
         $scope.seconds = 0;
@@ -193,9 +195,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.toggleScoring = function () {
         if ($scope.numberOfDropTiles - $scope.placedDropTiles > 0 && !$scope.startedScoring) {
+            playSound(sError);
             swal("Oops!", txt_not_yet, "error");
             return;
         }
+        playSound(sClick);
         // Start/stop scoring
         var i;
         for (i = $scope.LoPs.length; i < $scope.actualUsedDropTiles + 1; i++) {
@@ -206,6 +210,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 
     $scope.infochecked = function () {
+        playSound(sClick);
         $scope.checked = true;
         $timeout($scope.tile_size, 10);
         $timeout($scope.tile_size, 500);
@@ -213,10 +218,12 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
     
     $scope.changeFloor = function (z){
+        playSound(sClick);
         $scope.z = z;
     }
     
     $scope.tileRot = function (r){
+        playSound(sClick);
         $scope.sRotate += r;
         if($scope.sRotate >= 360)$scope.sRotate -= 360;
         else if($scope.sRotate < 0) $scope.sRotate+= 360;
@@ -224,6 +231,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 
     $scope.decrement = function (index) {
+        playSound(sClick);
         $scope.processing[index] = true;
         if ($scope.LoPs[index])
             $scope.LoPs[index]--;
@@ -247,6 +255,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     }
     $scope.increment = function (index, last) {
+        playSound(sClick);
         $scope.processing[index] = true;
         if ($scope.LoPs[index])
             $scope.LoPs[index]++;
@@ -261,11 +270,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         }, function (response) {
             console.log("Error: " + response.statusText);
         });
-        if ($scope.LoPs[index] >= 3 &&
-            !last) swal(txt_lops, txt_lops_mes, "info");
+        if ($scope.LoPs[index] >= 3 &&!last){
+            playSound(sInfo);
+            swal(txt_lops, txt_lops_mes, "info");
+        }
     }
 
     $scope.decVictims = function (type) {
+        playSound(sClick);
         if (type == 'live') {
             $scope.rlprocessing = true;
             $scope.rescuedLiveVictims--;
@@ -306,6 +318,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 
     $scope.incVictims = function (type) {
+        playSound(sClick);
         if (type == 'live') {
             $scope.rlprocessing = true;
             $scope.rescuedLiveVictims++;
@@ -342,6 +355,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     var tick = function () {
         $scope.time += 1000;
         if ($scope.time >= 480000) {
+            playSound(sTimeup);
             $scope.startedTime = !$scope.startedTime;
             $scope.minutes = Math.floor($scope.time / 60000)
             $scope.seconds = (Math.floor($scope.time % 60000)) / 1000
@@ -354,6 +368,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 
     $scope.toggleTime = function () {
+        playSound(sClick);
         // Start/stop timer
         $scope.startedTime = !$scope.startedTime;
         if ($scope.startedTime) {
@@ -385,6 +400,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 
     $scope.changeShowedUp = function () {
+        playSound(sClick);
         $http.put("/api/runs/line/" + runId, {
             showedUp: $scope.showedUp,
             time: {
@@ -399,6 +415,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     }
     $scope.changeExitBonus = function () {
+        playSound(sClick);
         $scope.exitBonus = !$scope.exitBonus
         $scope.exitBonusP = true
         $http.put("/api/runs/line/" + runId, {
@@ -416,6 +433,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     }
     $scope.changeLevel = function (n) {
+        playSound(sClick);
         $scope.evacuationLevel = n;
         $http.put("/api/runs/line/" + runId, {
             evacuationLevel: $scope.evacuationLevel,
@@ -445,7 +463,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         // If this is not a created tile
         if (!mtile || mtile.index.length == 0)
             return;
-
+        playSound(sClick);
         for (var i = 0; i < mtile.index.length; i++) {
             stile.push($scope.stiles[mtile.index[i]]);
             if ($scope.stiles[mtile.index[i]].isDropTile) {
@@ -464,12 +482,15 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         if (!$scope.startedScoring) {
             // We can only place drop markers on tiles without scoring elements (rule 3.3.5)
             if (mtile.index.length == 0) {
+                playSound(sError);
                 swal("Oops!", txt_cantvisit, "error");
             } else if (total > 0) {
+                playSound(sError);
                 swal("Oops!", txt_score_element, "error");
             } else if (mtile.x == $scope.startTile.x &&
                 mtile.y == $scope.startTile.y &&
                 mtile.z == $scope.startTile.z) {
+                playSound(sError);
                 swal("Oops!", txt_start, "error");
             } else {
                 var placed = false;
@@ -675,8 +696,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.confirm = function () {
         if ((!$scope.showedUp || $scope.showedUp == null) && $scope.score > 0) {
+            playSound(sError);
             swal("Oops!", txt_implicit, "error");
         } else {
+            playSound(sClick);
             var run = {}
             run.rescuedDeadVictims = $scope.rescuedDeadVictims;
             run.rescuedLiveVictims = $scope.rescuedLiveVictims;
@@ -700,6 +723,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
 
     $scope.go = function (path) {
+        playSound(sClick);
         window.location = path
     }
 
@@ -760,8 +784,7 @@ $(window).on('load resize', function () {
         return;
     }
     currentWidth = window.innerWidth;
-    var height = $('.navbar').height();
-    $('body').css('padding-top', height + 40);
+
     $scope.tile_size();
 
 });
@@ -783,7 +806,6 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, 
     $scope.next = [];
     for (var i = 0, d; d = mtile.next[i]; i++) {
         var sp = d.split(",");
-        console.log(sp);
 
         if (mtile.x == Number(sp[0]) && mtile.y - 1 == Number(sp[1])) {
             //console.log("TOP");
@@ -859,6 +881,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, 
     }
 
     $scope.toggle_scored = function (num) {
+        playSound(sClick);
         try {
             $scope.stiles[num].scored = !$scope.stiles[num].scored;
         } catch (e) {
@@ -924,6 +947,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, 
     }
 
     $scope.ok = function () {
+        playSound(sClick);
         $uibModalInstance.close();
     };
 });
@@ -1094,3 +1118,49 @@ document.addEventListener('touchend', event => {
     }
     lastTouch = now;
 }, true);
+
+
+
+window.AudioContext = window.AudioContext || window.webkitAudioContext;  
+var context = new AudioContext();
+
+var getAudioBuffer = function(url, fn) {  
+  var req = new XMLHttpRequest();
+  req.responseType = 'arraybuffer';
+
+  req.onreadystatechange = function() {
+    if (req.readyState === 4) {
+      if (req.status === 0 || req.status === 200) {
+        context.decodeAudioData(req.response, function(buffer) {
+          fn(buffer);
+        });
+      }
+    }
+  };
+
+  req.open('GET', url, true);
+  req.send('');
+};
+
+var playSound = function(buffer) {  
+  var source = context.createBufferSource();
+  source.buffer = buffer;
+  source.connect(context.destination);
+  source.start(0);
+};
+
+var sClick,sInfo,sError,sTimeup;
+window.onload = function() {  
+  getAudioBuffer('/sounds/click.mp3', function(buffer) {
+      sClick = buffer;
+  });
+  getAudioBuffer('/sounds/info.mp3', function(buffer) {
+      sInfo = buffer;
+  });
+  getAudioBuffer('/sounds/error.mp3', function(buffer) {
+      sError = buffer;
+  });
+  getAudioBuffer('/sounds/timeup.mp3', function(buffer) {
+      sTimeup = buffer;
+  });
+};
