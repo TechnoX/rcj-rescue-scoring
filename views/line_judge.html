@@ -23,6 +23,22 @@
                 <tbody>
                     <tr>
                         <th>
+                            {{'common.team' | translate}}
+                        </th>
+                        <td>
+                            <h1><b>{{team}}</b></h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{'common.round' | translate}}
+                        </th>
+                        <td>
+                            <h2><b>{{round}}</b></h2>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
                             {{'common.competition' | translate}}
                         </th>
                         <td>
@@ -31,26 +47,10 @@
                     </tr>
                     <tr>
                         <th>
-                            {{'common.round' | translate}}
-                        </th>
-                        <td>
-                            {{round}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{'common.field' | translate}}
                         </th>
                         <td>
                             {{field}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{'common.team' | translate}}
-                        </th>
-                        <td>
-                            {{team}}
                         </td>
                     </tr>
                     <tr>
@@ -280,7 +280,7 @@
     </div>
     <div class="row" style="margin:20 0 0 0;">
         <div class="col-md12">
-            <button class="btn btn-secondary" style="margin:0 10px 10px 0;" type="button" ng-click="go('/line/' + competition._id)"><i class="fa fa-undo" aria-hidden="true"> {{'common.back' | translate}}</i></button>
+            <button class="btn btn-secondary" style="margin:0 10px 10px 0;" type="button" ng-click="getParam('return')? go(getParam('return')):go('/line/' + competition._id)"><i class="fa fa-undo" aria-hidden="true"> {{'common.back' | translate}}</i></button>
         </div>
     </div>
 </div>
