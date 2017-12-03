@@ -1,4 +1,4 @@
-<nav class="navbar" style="color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%" ng-style="{backgroundColor: status==2? '#e74c3c':'#e67e22'}">
+<nav class="navbar" style="color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%" ng-style="{backgroundColor: navColor(status)}">
     <!-- Navbar content -->
 
       <div class="col-md-6 col-sm4 col-12">
@@ -16,7 +16,7 @@
 </nav>
 
 <div class="row nav-cont">
-    <div class="col-md-12  tilearea" ng-show= "exist">
+    <div class="col-md-12  tilearea" ng-if= "exist">
         <div ng-repeat="z in range(height) track by $index" style="float: left; margin-right: 10px">
                         <h3>{{countWords[$index]}} floor</h3>
                         <table class="map">
@@ -64,7 +64,7 @@
 </div>
 <br>
 
-<div class="alert alert-info" role="alert">
+<div class="alert alert-info" role="alert" ng-show = "exist">
     <div class="row">
         <div class="col-6">
             <i class="fa fa-undo" aria-hidden="true"> : {{LoPs}} times</i>
