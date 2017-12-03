@@ -79,10 +79,11 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-2">
-            <rzslider rz-slider-model="z" rz-slider-options="sliderOptions" ng-show="height > 1"></rzslider>
-        </div>
-        <div class="col-md-10">
+        <div class="col-md-12">
+            <div class="btn-group" style="margin-bottom:5px;">
+                  <span class="input-group-addon"><i class="fa fa-arrows-v" aria-hidden="true"></i></span>
+                  <button type="button" class="btn btn-outline-dark" ng-click="changeFloor(zz)" ng-repeat="zz in range(height)" ng-class="{active: zz == z}">&nbsp;{{zz}}&nbsp;</button>
+            </div>
             <table>
                 <tr ng-repeat="r in range(2*length + 1)">
                     <td ng-repeat="c in range(2*width + 1)" ng-class="{'wallspot': $odd != $parent.$odd, 'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall, 'checkpoint': cells[c+','+r+','+z].tile.checkpoint, 'black': cells[c+','+r+','+z].tile.black, 'linear': cells[c+','+r+','+z].isLinear}" ng-click="cellClick(c, r, z, $odd != $parent.$odd, $odd && $parent.$odd)">

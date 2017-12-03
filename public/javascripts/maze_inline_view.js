@@ -1,5 +1,5 @@
 // register the directive with your app module
-var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'rzModule']);
+var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap']);
 var socket;
 // function referenced by the drop target
 app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', function ($scope, $uibModal, $log, $timeout, $http) {

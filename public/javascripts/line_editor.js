@@ -1,5 +1,5 @@
 // register the directive with your app module
-var app = angular.module('LineEditor', ['lvl.services', 'ngAnimate', 'ui.bootstrap', 'rzModule', 'pascalprecht.translate', 'ngCookies']);
+var app = angular.module('LineEditor', ['lvl.services', 'ngAnimate', 'ui.bootstrap', 'pascalprecht.translate', 'ngCookies']);
 
 // function referenced by the drop target
 app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', '$translate', function ($scope, $uibModal, $log, $http, $translate) {
@@ -27,16 +27,7 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
         console.log("Error: " + response.statusText);
     });
 
-    $scope.sliderOptions = {
-        floor: 0,
-        ceil: 0,
-        vertical: true,
-        showSelectionBar: true,
-        showTicksValues: true,
-        ticksValuesTooltip: function (v) {
-            return 'Level ' + v;
-        }
-    };
+
     $scope.z = 0;
     $scope.tiles = {};
     $scope.startTile = {
@@ -46,7 +37,6 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
     };
     $scope.numberOfDropTiles = 0;
     $scope.height = 1;
-    $scope.sliderOptions.ceil = $scope.height - 1;
     $scope.width = 1;
     $scope.length = 1;
     $scope.name = "Awesome Testbana";
@@ -69,7 +59,6 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
             $scope.startTile = response.data.startTile;
             $scope.numberOfDropTiles = response.data.numberOfDropTiles;
             $scope.height = response.data.height;
-            $scope.sliderOptions.ceil = $scope.height - 1;
             $scope.width = response.data.width;
             $scope.length = response.data.length;
             $scope.name = response.data.name;
@@ -93,6 +82,10 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
         }
         return arr;
     }
+    
+    $scope.changeFloor = function (z){
+        $scope.z = z;
+    }
 
     $scope.rotateTile = function (x, y) {
         // If the tile doesn't exists yet
@@ -102,6 +95,7 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
         if ($scope.tiles[x + ',' + y + ',' + $scope.z].rot >= 360)
             $scope.tiles[x + ',' + y + ',' + $scope.z].rot = 0;
     }
+    
 
 
     $scope.startNotSet = function () {
@@ -240,7 +234,6 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
                     $scope.startTile = data.startTile;
                     $scope.numberOfDropTiles = data.numberOfDropTiles;
                     $scope.height = data.height;
-                    $scope.sliderOptions.ceil = $scope.height - 1;
                     $scope.width = data.width;
                     $scope.length = data.length;
                     $scope.name = data.name;
@@ -335,6 +328,9 @@ app.directive('tile', function () {
         restrict: 'E',
         templateUrl: '/templates/tile.html',
         link: function (scope, element, attrs) {
+            scope.tilerotate = function (tilerot) {
+                return tilerot;
+            }
             scope.rotateRamp = function (direction) {
                 switch (direction) {
                     case "bottom":
@@ -353,6 +349,7 @@ app.directive('tile', function () {
                     attrs.y == scope.$parent.startTile.y &&
                     attrs.z == scope.$parent.startTile.z;
             }
+            
         }
     };
 });

@@ -58,12 +58,10 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-1">
-            <rzslider rz-slider-model="z" rz-slider-options="sliderOptions" ng-show="height > 1"></rzslider>
-        </div>
-        <div class="col-md-5 tools">
+        <div class="col-md-6 tools">
             <p><label>{{"admin.lineMapEditor.tileset" | translate}}<select ng-model="tileSet" ng-options="set as set.name for set in tileSets"></select></label></p>
-
+            
+            
             <span ng-repeat="tile in tileSet.tiles track by tile.tileType._id" class="toolbox-tile-container">
 	<img class="toolbox-tile rot0" ng-src="/images/tiles/{{tile.tileType.image}}" x-lvl-draggable="true" x-lvl-drop-target="true" x-on-drop="dropped(dragEl, dropEl)" tile-id="{{tile.tileType._id}}" rotate-on-click rot="0">
 	<span ng-bind="tile.count"></span>
@@ -72,6 +70,10 @@
             <img>
         </div>
         <div class="col-md-6">
+            <div class="btn-group" style="margin-bottom:5px;">
+                  <span class="input-group-addon"><i class="fa fa-arrows-v" aria-hidden="true"></i></span>
+                  <button type="button" class="btn btn-outline-dark" ng-click="changeFloor(zz)" ng-repeat="zz in range(height)" ng-class="{active: zz == z}">&nbsp;{{zz}}&nbsp;</button>
+            </div>
             <div ng-repeat="r in range(length)" class="row">
                 <div ng-repeat="c in range(width)" class="slot">
                     <tile tile="tiles[c+','+r+','+z]" x="{{c}}" y="{{r}}" z="{{z}}" x-lvl-draggable="true" x-lvl-drop-target="true" ng-right-click="open(c,r)" ng-click="$parent.rotateTile(c,r)"></tile>

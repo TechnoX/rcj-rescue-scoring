@@ -1,5 +1,5 @@
 // register the directive with your app module
-var app = angular.module('MazeEditor', ['ngAnimate', 'ui.bootstrap', 'rzModule', 'pascalprecht.translate', 'ngCookies']);
+var app = angular.module('MazeEditor', ['ngAnimate', 'ui.bootstrap', 'pascalprecht.translate', 'ngCookies']);
 
 // function referenced by the drop target
 app.controller('MazeEditorController', ['$scope', '$uibModal', '$log', '$http','$translate', function ($scope, $uibModal, $log, $http, $translate) {
@@ -25,16 +25,6 @@ app.controller('MazeEditorController', ['$scope', '$uibModal', '$log', '$http','
         }
     })
 
-    $scope.sliderOptions = {
-        floor: 0,
-        ceil: 0,
-        vertical: true,
-        showSelectionBar: true,
-        showTicksValues: true,
-        ticksValuesTooltip: function (v) {
-            return 'Level ' + v;
-        }
-    };
     $scope.z = 0;
     $scope.startTile = {
         x: 0,
@@ -42,7 +32,6 @@ app.controller('MazeEditorController', ['$scope', '$uibModal', '$log', '$http','
         z: 0
     };
     $scope.height = 1;
-    $scope.sliderOptions.ceil = $scope.height - 1;
     $scope.width = 1;
     $scope.length = 1;
     $scope.name = "Awesome Testbana";
@@ -62,7 +51,6 @@ app.controller('MazeEditorController', ['$scope', '$uibModal', '$log', '$http','
             console.log(response.data);
             $scope.startTile = response.data.startTile;
             $scope.height = response.data.height;
-            $scope.sliderOptions.ceil = $scope.height - 1;
             $scope.width = response.data.width;
             $scope.length = response.data.length;
             $scope.name = response.data.name;
@@ -104,6 +92,10 @@ app.controller('MazeEditorController', ['$scope', '$uibModal', '$log', '$http','
             arr.push(i);
         }
         return arr;
+    }
+    
+    $scope.changeFloor = function (z){
+        $scope.z = z;
     }
 
     $scope.$watchCollection('startTile', function (newValue, oldValue) {
@@ -427,7 +419,6 @@ app.controller('MazeEditorController', ['$scope', '$uibModal', '$log', '$http','
                     $scope.startTile = data.startTile;
                     $scope.numberOfDropTiles = data.numberOfDropTiles;
                     $scope.height = data.height;
-                    $scope.sliderOptions.ceil = $scope.height - 1;
                     $scope.width = data.width;
                     $scope.length = data.length;
                     $scope.name = data.name;
