@@ -7,12 +7,20 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
     $scope.competitionId = competitionId;
     $scope.se_competition = competitionId;
     $translate('admin.lineMapEditor.import').then(function (val) {
-        $("#select").fileinput({'showUpload':false, 'showPreview':false, 'showRemove':false, 'showCancel':false  ,'msgPlaceholder': val,allowedFileExtensions: ['json'] , msgValidationError: "ERROR"});
+        $("#select").fileinput({
+            'showUpload': false,
+            'showPreview': false,
+            'showRemove': false,
+            'showCancel': false,
+            'msgPlaceholder': val,
+            allowedFileExtensions: ['json'],
+            msgValidationError: "ERROR"
+        });
     }, function (translationId) {
         // = translationId;
     });
-    
-    
+
+
     $http.get("/api/competitions/").then(function (response) {
         $scope.competitions = response.data
         //console.log($scope.competitions)
@@ -47,8 +55,8 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
             //console.log(response)
             for (var i = 0; i < response.data.tiles.length; i++) {
                 $scope.tiles[response.data.tiles[i].x + ',' +
-                    response.data.tiles[i].y + ',' +
-                    response.data.tiles[i].z] = response.data.tiles[i];
+                response.data.tiles[i].y + ',' +
+                response.data.tiles[i].z] = response.data.tiles[i];
             }
             $scope.competitionId = response.data.competition;
             $http.get("/api/competitions/" +
@@ -82,8 +90,8 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
         }
         return arr;
     }
-    
-    $scope.changeFloor = function (z){
+
+    $scope.changeFloor = function (z) {
         $scope.z = z;
     }
 
@@ -95,7 +103,6 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
         if ($scope.tiles[x + ',' + y + ',' + $scope.z].rot >= 360)
             $scope.tiles[x + ',' + y + ',' + $scope.z].rot = 0;
     }
-    
 
 
     $scope.startNotSet = function () {
@@ -129,7 +136,7 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
         $http.post("/api/maps/line", map).then(function (response) {
             alert("Created map!");
             console.log(response.data);
-            window.location.replace("/admin/" + $scope.se_competition +"/line/editor/" + response.data.id)
+            window.location.replace("/admin/" + $scope.se_competition + "/line/editor/" + response.data.id)
         }, function (response) {
             console.log(response);
             console.log("Error: " + response.statusText);
@@ -181,7 +188,7 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
             $http.post("/api/maps/line", map).then(function (response) {
                 alert("Created map!");
                 console.log(response.data);
-                window.location.replace("/admin/" + competitionId +"/line/editor/" + response.data.id)
+                window.location.replace("/admin/" + competitionId + "/line/editor/" + response.data.id)
             }, function (response) {
                 console.log(response);
                 console.log("Error: " + response.statusText);
@@ -189,9 +196,9 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
             });
         }
     }
-    
-    $scope.export = function(){
-        
+
+    $scope.export = function () {
+
         var map = {
             name: $scope.name,
             length: $scope.length,
@@ -202,54 +209,54 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
             startTile: $scope.startTile,
             tiles: $scope.tiles
         };
-         var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(map))
-         var downloadLink = document.createElement('a')
-         document.body.appendChild(downloadLink);
-         downloadLink.setAttribute("href",dataStr)
-         downloadLink.setAttribute("download", $scope.name + '.json')
-         downloadLink.click()
-         document.body.removeChild(downloadLink);
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(map))
+        var downloadLink = document.createElement('a')
+        document.body.appendChild(downloadLink);
+        downloadLink.setAttribute("href", dataStr)
+        downloadLink.setAttribute("download", $scope.name + '.json')
+        downloadLink.click()
+        document.body.removeChild(downloadLink);
     }
-    
+
     // File APIに対応しているか確認
-        if (window.File) {
-            var select = document.getElementById('select');
+    if (window.File) {
+        var select = document.getElementById('select');
 
-            // ファイルが選択されたとき
-            select.addEventListener('change', function (e) {
-                // 選択されたファイルの情報を取得
-                var fileData = e.target.files[0];
+        // ファイルが選択されたとき
+        select.addEventListener('change', function (e) {
+            // 選択されたファイルの情報を取得
+            var fileData = e.target.files[0];
 
-                var reader = new FileReader();
-                // ファイル読み取りに失敗したとき
-                reader.onerror = function () {
-                    alert('ファイル読み取りに失敗しました')
-                }
-                // ファイル読み取りに成功したとき
-                reader.onload = function () {
-                    var data = JSON.parse(reader.result);
-                    $scope.tiles = data.tiles;
-                    $scope.competitionId = competitionId;
+            var reader = new FileReader();
+            // ファイル読み取りに失敗したとき
+            reader.onerror = function () {
+                alert('ファイル読み取りに失敗しました')
+            }
+            // ファイル読み取りに成功したとき
+            reader.onload = function () {
+                var data = JSON.parse(reader.result);
+                $scope.tiles = data.tiles;
+                $scope.competitionId = competitionId;
 
-                    $scope.startTile = data.startTile;
-                    $scope.numberOfDropTiles = data.numberOfDropTiles;
-                    $scope.height = data.height;
-                    $scope.width = data.width;
-                    $scope.length = data.length;
-                    $scope.name = data.name;
-                    $scope.finished = data.finished;
-                    /*for (let i = 0; i < data.tiles.length; i++) {
-                        $scope.tiles[data.tiles[i].x + ',' +
-                            data.tiles[i].y + ',' +
-                            data.tiles[i].z] = data.tiles[i];
-                    }*/
-                    $scope.$apply();
-                }
+                $scope.startTile = data.startTile;
+                $scope.numberOfDropTiles = data.numberOfDropTiles;
+                $scope.height = data.height;
+                $scope.width = data.width;
+                $scope.length = data.length;
+                $scope.name = data.name;
+                $scope.finished = data.finished;
+                /*for (let i = 0; i < data.tiles.length; i++) {
+                    $scope.tiles[data.tiles[i].x + ',' +
+                        data.tiles[i].y + ',' +
+                        data.tiles[i].z] = data.tiles[i];
+                }*/
+                $scope.$apply();
+            }
 
-                // ファイル読み取りを実行
-                reader.readAsText(fileData);
-            }, false);
-        }
+            // ファイル読み取りを実行
+            reader.readAsText(fileData);
+        }, false);
+    }
 
 
     $scope.open = function (x, y) {
@@ -349,7 +356,7 @@ app.directive('tile', function () {
                     attrs.y == scope.$parent.startTile.y &&
                     attrs.z == scope.$parent.startTile.z;
             }
-            
+
         }
     };
 });
@@ -448,11 +455,11 @@ app.directive('lvlDropTarget', ['$rootScope', 'uuid', function ($rootScope, uuid
                 if (drop[0].tagName == "IMG") {
                     // Remove the element from where we dragged it
                     delete scope.tiles[drag.attr("x") + "," + drag.attr("y") + "," +
-                        drag.attr("z")];
+                    drag.attr("z")];
                 } else if (drag[0].tagName == "IMG") { // If we drag out an image, this is a new tile
 
                     scope.tiles[drop.attr("x") + "," + drop.attr("y") + "," +
-                        drop.attr("z")] = {
+                    drop.attr("z")] = {
                         rot: +drag.attr("rot"),
                         tileType: scope.tileSet.tiles.find(function (t) {
                             return t.tileType._id == drag.attr("tile-id")
@@ -464,19 +471,19 @@ app.directive('lvlDropTarget', ['$rootScope', 'uuid', function ($rootScope, uuid
                     };
                     // We dragged an non-existing tile
                 } else if (!scope.tiles[drag.attr("x") + "," + drag.attr("y") + "," +
-                        drag.attr("z")]) {
+                    drag.attr("z")]) {
                     // Just ignore!
                     ;
                 } else if (drag.attr("x") != drop.attr("x") ||
                     drag.attr("y") != drop.attr("y") ||
                     drag.attr("z") != drop.attr("z")) {
                     scope.tiles[drop.attr("x") + "," + drop.attr("y") + "," +
-                            drop.attr("z")] =
+                    drop.attr("z")] =
                         scope.tiles[drag.attr("x") + "," + drag.attr("y") + "," +
-                            drag.attr("z")];
+                        drag.attr("z")];
                     // Remove the element from where we dragged it
                     delete scope.tiles[drag.attr("x") + "," + drag.attr("y") + "," +
-                        drag.attr("z")];
+                    drag.attr("z")];
                 }
                 scope.$apply();
 
