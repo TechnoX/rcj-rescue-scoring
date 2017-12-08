@@ -250,6 +250,22 @@
                 }
 
             }
+        },
+        "sign": {
+            "total_lops": "@:maze.view.total_lops",
+            "return": "@:maze.view.return",
+            "comment": "@:line.view.comment",
+            "comment_e": "@:line.view.comment_e",
+            "sign": "@:line.view.sign",
+            "sign_e": "@:line.view.sign_e",
+            "cap_sign": "@:line.view.cap_sign",
+            "ref_sign": "@:line.view.ref_sign",
+            "cref_sign": "@:line.view.cref_sign",
+            "submit": "@:line.sign.submit",
+            "to_judge": "@:line.sign.to_judge",
+            "no_sign": "@:line.sign.no_sign",
+            "confirm": "@:line.sign.confirm",
+            "complete": "@:line.sign.complete"
         }
     },
     "admin": {
