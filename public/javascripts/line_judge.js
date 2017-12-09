@@ -134,7 +134,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                         scored : false,
                         isDropTile : false
                 }
-                while($scope.stiles.length < response.data.tiles.length){
+                while($scope.stiles.length < response.data.indexCount){
                     $scope.stiles.push(ntile);
                     flag = true;
                 }
@@ -142,7 +142,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     $http.put("/api/runs/line/" + runId, {
                         tiles : $scope.stiles
                     }).then(function (response) {
-                        console.log("Run Tileset Updated")
+                        console.log("Run Score Tileset Updated")
                         loadNewRun();
                     }, function (response) {
                         console.log("Error: " + response.statusText);

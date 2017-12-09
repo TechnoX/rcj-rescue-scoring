@@ -113,7 +113,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                         isDropTile : false
                     }
 
-                    while($scope.stiles.length < response.data.tiles.length){
+                    while($scope.stiles.length < response.data.indexCount){
                         $scope.stiles.push(ntile);
                     }
                     
