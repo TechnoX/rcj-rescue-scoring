@@ -84,96 +84,116 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $timeout($scope.tile_size, 200);
     }
 
-    $http.get("/api/runs/line/" + runId +
-        "?populate=true").then(function (response) {
-
-        console.log(response.data);
-
-        $scope.LoPs = response.data.LoPs;
-        $scope.evacuationLevel = response.data.evacuationLevel;
-        $scope.exitBonus = response.data.exitBonus;
-        $scope.field = response.data.field.name;
-        $scope.rescuedDeadVictims = response.data.rescuedDeadVictims;
-        $scope.rescuedLiveVictims = response.data.rescuedLiveVictims;
-        $scope.score = response.data.score;
-        $scope.showedUp = response.data.showedUp;
-        $scope.started = response.data.started;
-        $scope.round = response.data.round.name;
-        $scope.team = response.data.team.name;
-        $scope.league = response.data.team.league;
-        $scope.competition = response.data.competition;
-        $scope.retired = response.data.retired;
-        // Verified time by timekeeper
-        $scope.minutes = response.data.time.minutes;
-        $scope.seconds = response.data.time.seconds;
-        $scope.time = $scope.minutes * 60 * 1000 + $scope.seconds * 1000;
-
-        // Scoring elements of the tiles
-        $scope.stiles = response.data.tiles;
-        for (var i = 0; i < response.data.tiles.length; i++) {
-            if (response.data.tiles[i].isDropTile) {
-                $scope.actualUsedDropTiles++;
-                marker[i] = true;
-            }
-        }
-
-        // Get the map
-        $http.get("/api/maps/line/" + response.data.map +
+    function loadNewRun(){
+        $http.get("/api/runs/line/" + runId +
             "?populate=true").then(function (response) {
-            console.log(response.data);
 
-            $scope.height = response.data.height;
-           
-            $scope.width = response.data.width;
-            $scope.length = response.data.length;
-            width = response.data.width;
-            length = response.data.length;
-            $scope.startTile = response.data.startTile;
-            $scope.numberOfDropTiles = response.data.numberOfDropTiles;;
-            $scope.mtiles = {};
+            $scope.LoPs = response.data.LoPs;
+            $scope.evacuationLevel = response.data.evacuationLevel;
+            $scope.exitBonus = response.data.exitBonus;
+            $scope.field = response.data.field.name;
+            $scope.rescuedDeadVictims = response.data.rescuedDeadVictims;
+            $scope.rescuedLiveVictims = response.data.rescuedLiveVictims;
+            $scope.score = response.data.score;
+            $scope.showedUp = response.data.showedUp;
+            $scope.started = response.data.started;
+            $scope.round = response.data.round.name;
+            $scope.team = response.data.team.name;
+            $scope.league = response.data.team.league;
+            $scope.competition = response.data.competition;
+            $scope.retired = response.data.retired;
+            // Verified time by timekeeper
+            $scope.minutes = response.data.time.minutes;
+            $scope.seconds = response.data.time.seconds;
+            $scope.time = $scope.minutes * 60 * 1000 + $scope.seconds * 1000;
+
+            // Scoring elements of the tiles
+            $scope.stiles = response.data.tiles;
             for (var i = 0; i < response.data.tiles.length; i++) {
-                $scope.mtiles[response.data.tiles[i].x + ',' +
-                    response.data.tiles[i].y + ',' +
-                    response.data.tiles[i].z] = response.data.tiles[i];
-                if ($scope.stiles[response.data.tiles[i].index[0]] &&
-                    $scope.stiles[response.data.tiles[i].index[0]].isDropTile) {
-                    $scope.placedDropTiles++;
+                if (response.data.tiles[i].isDropTile) {
+                    $scope.actualUsedDropTiles++;
+                    marker[i] = true;
                 }
             }
-            var ntile = {
-                    scored : false,
-                    isDropTile : false
-            }
 
-            while($scope.stiles.length <= i){
-                $scope.stiles.push(ntile);
-            }
-            $timeout($scope.tile_size, 100);
-            $timeout($scope.tile_size, 3000);
-            $http.put("/api/runs/line/" + runId, {
-                status: 1,
-                tiles : $scope.stiles
-            }).then(function (response) {
+            // Get the map
+            $http.get("/api/maps/line/" + response.data.map +
+                "?populate=true").then(function (response) {
+
+                $scope.height = response.data.height;
+
+                $scope.width = response.data.width;
+                $scope.length = response.data.length;
+                width = response.data.width;
+                length = response.data.length;
+                $scope.startTile = response.data.startTile;
+                $scope.numberOfDropTiles = response.data.numberOfDropTiles;;
+                $scope.mtiles = {};
+                var flag = false;
+                var ntile = {
+                        scored : false,
+                        isDropTile : false
+                }
+                while($scope.stiles.length < response.data.tiles.length){
+                    $scope.stiles.push(ntile);
+                    flag = true;
+                }
+                if(flag){
+                    $http.put("/api/runs/line/" + runId, {
+                        tiles : $scope.stiles
+                    }).then(function (response) {
+                        console.log("Run Tileset Updated")
+                        loadNewRun();
+                    }, function (response) {
+                        console.log("Error: " + response.statusText);
+                        if (response.status == 401) {
+                            $scope.go('/home/access_denied');
+                        }
+                    });
+                    return;
+                }
+                for (var i = 0; i < response.data.tiles.length; i++) {
+                    $scope.mtiles[response.data.tiles[i].x + ',' +
+                        response.data.tiles[i].y + ',' +
+                        response.data.tiles[i].z] = response.data.tiles[i];
+                    if ($scope.stiles[response.data.tiles[i].index[0]] &&
+                        $scope.stiles[response.data.tiles[i].index[0]].isDropTile) {
+                        $scope.placedDropTiles++;
+                    }
+                }
+
+                $timeout($scope.tile_size, 0);
+                $timeout($scope.tile_size, 500);
+                $timeout($scope.tile_size, 1000);
+                $timeout($scope.tile_size, 1500);
+                $timeout($scope.tile_size, 3000);
+                $http.put("/api/runs/line/" + runId, {
+                    status: 1
+                    //tiles : $scope.stiles
+                }).then(function (response) {
+
+                }, function (response) {
+                    console.log("Error: " + response.statusText);
+                    if (response.status == 401) {
+                        $scope.go('/home/access_denied');
+                    }
+                });
+
 
             }, function (response) {
                 console.log("Error: " + response.statusText);
-                if (response.status == 401) {
-                    $scope.go('/home/access_denied');
-                }
             });
 
 
         }, function (response) {
             console.log("Error: " + response.statusText);
+            if (response.status == 401) {
+                $scope.go('/home/access_denied');
+            }
         });
-
-
-    }, function (response) {
-        console.log("Error: " + response.statusText);
-        if (response.status == 401) {
-            $scope.go('/home/access_denied');
-        }
-    });
+    }
+    
+    loadNewRun();
 
 
     $scope.range = function (n) {

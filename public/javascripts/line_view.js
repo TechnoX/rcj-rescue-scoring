@@ -108,20 +108,25 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     $scope.startTile = response.data.startTile;
                     $scope.numberOfDropTiles = response.data.numberOfDropTiles;;
                     $scope.mtiles = {};
-                    for (var i = 0; i < response.data.tiles.length; i++) {
-                        $scope.mtiles[response.data.tiles[i].x + ',' +
-                            response.data.tiles[i].y + ',' +
-                            response.data.tiles[i].z] = response.data.tiles[i];
-                    }
                     var ntile = {
                         scored : false,
                         isDropTile : false
                     }
 
-                    while($scope.stiles.length <= i){
+                    while($scope.stiles.length < response.data.tiles.length){
                         $scope.stiles.push(ntile);
                     }
+                    
+                    for (var i = 0; i < response.data.tiles.length; i++) {
+                        $scope.mtiles[response.data.tiles[i].x + ',' +
+                            response.data.tiles[i].y + ',' +
+                            response.data.tiles[i].z] = response.data.tiles[i];
+                    }
+                    
                     $timeout($scope.tile_size, 0);
+                    $timeout($scope.tile_size, 500);
+                    $timeout($scope.tile_size, 1000);
+                    $timeout($scope.tile_size, 1500);
                     $timeout($scope.tile_size, 3000);
 
                 }, function (response) {
