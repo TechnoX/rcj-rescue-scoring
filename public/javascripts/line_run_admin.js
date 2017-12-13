@@ -7,7 +7,7 @@ var app = angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap
 
         var runListTimer = null;
         var runListChanged = false;
-        
+
 
         function timerUpdateRunList() {
             if (runListChanged) {
@@ -41,32 +41,32 @@ var app = angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap
         })
 
         $http.get("/api/competitions/" + competitionId +
-        "/LineNL/teams").then(function (response) {
-        $scope.teams = response.data
+            "/LineNL/teams").then(function (response) {
+            $scope.teams = response.data
             $http.get("/api/competitions/" + competitionId +
-            "/LineWL/teams").then(function (response) {
-            $scope.teams = $scope.teams.concat(response.data)
+                "/LineWL/teams").then(function (response) {
+                $scope.teams = $scope.teams.concat(response.data)
+            })
         })
-        })
-        
+
         $http.get("/api/competitions/" + competitionId +
             "/LineNL/rounds").then(function (response) {
             $scope.rounds = response.data
             $http.get("/api/competitions/" + competitionId +
-            "/LineWL/rounds").then(function (response) {
-            $scope.rounds = $scope.rounds.concat(response.data)
+                "/LineWL/rounds").then(function (response) {
+                $scope.rounds = $scope.rounds.concat(response.data)
+            })
         })
-        })
-        
+
         $http.get("/api/competitions/" + competitionId +
             "/LineNL/fields").then(function (response) {
             $scope.fields = response.data
             $http.get("/api/competitions/" + competitionId +
-            "/LineWL/fields").then(function (response) {
-            $scope.fields = $scope.fields.concat(response.data)
+                "/LineWL/fields").then(function (response) {
+                $scope.fields = $scope.fields.concat(response.data)
+            })
         })
-        })
-        
+
         $http.get("/api/competitions/" + competitionId +
             "/Line/maps").then(function (response) {
             $scope.maps = response.data
@@ -100,17 +100,17 @@ var app = angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap
                 swal("Oops!", error.data.err, "error");
             })
         }
-        
-        $scope.selectAll = function(){
-            angular.forEach($scope.runs, function(run) {
-              run.checked = true;
+
+        $scope.selectAll = function () {
+            angular.forEach($scope.runs, function (run) {
+                run.checked = true;
             });
         }
-        
-        $scope.removeSelectedRun = function(){
-            var chk=[];
-            angular.forEach($scope.runs, function(run) {
-              if(run.checked) chk.push(run._id);
+
+        $scope.removeSelectedRun = function () {
+            var chk = [];
+            angular.forEach($scope.runs, function (run) {
+                if (run.checked) chk.push(run._id);
             });
             $scope.removeRun(chk.join(","));
         }
@@ -125,7 +125,7 @@ var app = angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap
                 confirmButtonColor: "#ec6c62"
             }, function () {
 
-                    $http.delete("/api/runs/line/"+runIds).then(function (response) {
+                $http.delete("/api/runs/line/" + runIds).then(function (response) {
                     console.log(response)
                     updateRunList()
                 }, function (error) {
