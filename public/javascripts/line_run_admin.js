@@ -7,6 +7,7 @@ var app = angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap
 
         var runListTimer = null;
         var runListChanged = false;
+        
 
         function timerUpdateRunList() {
             if (runListChanged) {
@@ -99,8 +100,22 @@ var app = angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap
                 swal("Oops!", error.data.err, "error");
             })
         }
+        
+        $scope.selectAll = function(){
+            angular.forEach($scope.runs, function(run) {
+              run.checked = true;
+            });
+        }
+        
+        $scope.removeSelectedRun = function(){
+            var chk=[];
+            angular.forEach($scope.runs, function(run) {
+              if(run.checked) chk.push(run._id);
+            });
+            $scope.removeRun(chk.join(","));
+        }
 
-        $scope.removeRun = function (run) {
+        $scope.removeRun = function (runIds) {
             swal({
                 title: "Delete Run?",
                 text: "Are you sure you want to remove the run?",
@@ -109,7 +124,8 @@ var app = angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap
                 confirmButtonText: "Yes, delete it!",
                 confirmButtonColor: "#ec6c62"
             }, function () {
-                $http.delete("/api/runs/line/" + run._id).then(function (response) {
+
+                    $http.delete("/api/runs/line/"+runIds).then(function (response) {
                     console.log(response)
                     updateRunList()
                 }, function (error) {

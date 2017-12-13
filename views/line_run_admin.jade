@@ -67,9 +67,11 @@ block content
             td
               button(ng-click='addRun()') {{"admin.lineRun.add" | translate}}
       a(ng-href='/admin/{{competitionId}}/line/runs/bulk') {{"admin.lineRun.bulk" | translate}}
-      br
-      br
-      a(ng-href='/admin/{{competitionId}}/line/runs/monitor') {{"admin.lineRun.monitor" | translate}}
+
+      div
+          button(ng-click="selectAll()" class='btn btn-primary' style="margin: 5px 5px 5px 5px;") {{"admin.lineRun.selectAll" | translate}}
+          button(ng-click="removeSelectedRun()" class='btn btn-danger' style="margin: 5px 5px 5px 5px;") {{"admin.lineRun.delS" | translate}}
+          button(ng-click="go('/admin/'+ competitionId +'/line/runs/monitor')" class='btn btn-success' style="margin: 5px 5px 5px 5px; text-align:right;") {{"admin.lineRun.monitor" | translate}}
       center
         .loader
           img(src="/images/loader2.gif")
@@ -77,6 +79,7 @@ block content
       table(class="custom")
         thead
           tr
+            th
             th {{"common.starttime" | translate}}
             th {{"common.round" | translate}}
             th {{"common.team" | translate}}
@@ -92,18 +95,9 @@ block content
             th {{"common.operation" | translate}}
         tbody
           tr(ng-repeat='run in runs | orderBy:"[startTime,round.name,field.name,team.name]"' runs-read-finished='')
-            td(ng-style="{'background-color':run.status==5?'#bdafdb':''}" )
-              span {{run.startTime | date:"dd EEE HH:mm"}}
-              //button(uib-popover-template="'myPopoverTemplate.html'" popover-trigger="'outsideClick'" type="button" class="btn btn-default") Edit
-              //script(type="text/ng-template" id="myPopoverTemplate.html")
-              //  div.form-group
-              //    p.input-group
-              //      span.input-group-btn
-              //        button.btn.btn-info(type="button" ng-click="openStartDate()")
-              //          i.fa.fa-calendar(aria-hidden='true')
-              //      input.form-control(type="text" uib-datepicker-popup ng-model="startDate" ng-change="updateStartTime()" is-open="startDatePopup.opened" datepicker-options="startDateOptions" close-text="Close")
-              //    div(uib-timepicker ng-model="startTime" ng-change="updateStartTime()" hour-step="1" minute-step="5" show-meridian="false" show-spinners='true')
-
+            td
+                input(type='checkbox' ng-model='run.checked' style="display:initial;")
+            td(ng-bind='run.startTime | date:"dd EEE HH:mm"' ng-style="{'background-color':run.status==5?'#bdafdb':''}" )
             td(ng-bind='run.round.name' ng-style="{'background-color':run.status==5?'#bdafdb':''}" )
             td(ng-bind='run.team.name' ng-style="{'background-color':run.status==5?'#bdafdb':''}")
             td(ng-bind='run.field.name' ng-style="{'background-color':run.status==5?'#bdafdb':''}")
@@ -127,4 +121,4 @@ block content
             //td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
               button(ng-click="go_approval(run._id)" class='btn btn-secondary') Approval
             td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
-              a(href="" ng-click='removeRun(run)') {{"common.delete" | translate}}
+              a(href="" ng-click='removeRun(run._id)') {{"common.delete" | translate}}

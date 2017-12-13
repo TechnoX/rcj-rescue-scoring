@@ -335,7 +335,9 @@
             "st2": "2.Timer start",
             "st3": "3.Record checking",
             "st4": "4.Finished",
-            "st5": "5.Approved"
+            "st5": "5.Approved",
+            "selectAll": "Select all runs",
+            "delS": "Delete selected runs"
         },
         "lineRunBulk": {
             "title": "Line Run Bulk Registration",
@@ -444,7 +446,9 @@
             "st2": "@:admin.lineRun.st2",
             "st3": "@:admin.lineRun.st3",
             "st4": "@:admin.lineRun.st4",
-            "st5": "@:admin.lineRun.st5"
+            "st5": "@:admin.lineRun.st5",
+            "selectAll": "@:admin.lineRun.selectAll",
+            "delS": "@:admin.lineRun.delS"
         },
         "mazeRunBulk": {
             "title": "Maze Run Bulk Registration",

@@ -525,58 +525,57 @@ privateRouter.put('/map/:runid', function (req, res, next) {
 
 
 /**
- * @api {delete} /runs/maze/:runid Delete run
- * @apiName DeleteRun
+ * @api {delete} /runs/maze/:runids Delete run
+ * @apiName DeleteRuns
  * @apiGroup Run
- * @apiVersion 1.0.0
+ * @apiVersion 1.1.0
  *
- * @apiParam {String} runid The run id
+ * @apiParam {String} runids The run ids
  *
  * @apiSuccess (200) {String} msg Success msg
  *
  * @apiError (400) {String} err The error message
  */
-adminRouter.delete('/:runid', function (req, res, next) {
-    var id = req.params.runid
-
-    if (!ObjectId.isValid(id)) {
-        return next()
-    }
-
-    mazeRun.findById(id)
-        .select("competition")
-        .exec(function (err, dbRun) {
-            if (err) {
-                logger.error(err)
-                res.status(400).send({
-                    msg: "Could not get run",
-                    err: err.message
-                })
-            } else if (dbRun) {
-                if (!auth.authCompetition(req.user, dbRun.competition, ACCESSLEVELS.ADMIN)) {
-                    return res.status(401).send({
-                        msg: "You have no authority to access this api"
-                    })
-                }
-            }
+adminRouter.delete('/:runids', function (req, res) {
+  var ids = req.params.runids.split(",");
+  if (!ObjectId.isValid(ids[0])) {
+    return next()
+  }
+  mazeRun.findById(ids[0])
+    .select("competition")
+    .exec(function (err, dbRun) {
+      if (err) {
+        logger.error(err)
+        res.status(400).send({
+          msg: "Could not get run",
+          err: err.message
         })
-
-    mazeRun.remove({
-        _id: id
-    }, function (err) {
+      } else if (dbRun) {
+          if(!auth.authCompetition(req.user , dbRun.competition , ACCESSLEVELS.ADMIN)){
+              return res.status(401).send({
+                                msg: "You have no authority to access this api"
+              })
+          }
+      }
+      mazeRun.remove({
+        '_id': {$in : ids},
+        'competition': dbRun.competition
+      }, function (err) {
         if (err) {
-            logger.error(err)
-            res.status(400).send({
-                msg: "Could not remove run",
-                err: err.message
-            })
+          logger.error(err)
+          res.status(400).send({
+            msg: "Could not remove run",
+            err: err.message
+          })
         } else {
-            res.status(200).send({
-                msg: "Run has been removed!"
-            })
+          res.status(200).send({
+            msg: "Run has been removed!"
+          })
         }
+      })
     })
 })
+
 
 /**
  * @api {post} /runs/maze Create new run

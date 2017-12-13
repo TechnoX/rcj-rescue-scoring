@@ -331,7 +331,9 @@
             "st2": "2.タイマースタート",
             "st3": "3.記録確認中",
             "st4": "4.競技終了済み",
-            "st5": "5.記録承認済み"
+            "st5": "5.記録承認済み",
+            "selectAll": "全選択",
+            "delS": "選択した競技を削除"
         },
         "lineRunBulk": {
             "title": "Line 競技一括登録",
@@ -440,7 +442,9 @@
             "st2": "@:admin.lineRun.st2",
             "st3": "@:admin.lineRun.st3",
             "st4": "@:admin.lineRun.st4",
-            "st5": "@:admin.lineRun.st5"
+            "st5": "@:admin.lineRun.st5",
+            "selectAll": "@:admin.lineRun.selectAll",
+            "delS": "@:admin.lineRun.delS"
         },
         "mazeRunBulk": {
             "title": "Maze 競技一括登録",
