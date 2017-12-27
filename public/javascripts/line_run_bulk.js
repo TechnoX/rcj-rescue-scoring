@@ -38,6 +38,14 @@ var app = angular.module("RunAdmin", ['pascalprecht.translate', 'ngCookies']).co
         "/Line/maps").then(function (response) {
         $scope.maps = response.data
     })
+    
+    function find(array,key){
+        for(let data of array){
+            if(data.name === key)return data._id;
+        }
+        swal("Error", key + " is not exist!", "error");
+        return -1;
+    }
 
     $scope.addRun = function () {
         $scope.processing = true;
@@ -45,78 +53,34 @@ var app = angular.module("RunAdmin", ['pascalprecht.translate', 'ngCookies']).co
         $scope.total = obj.length - 1;
         $scope.now = 0;
         next_add();
-        /*var team = {name: $scope.teamName, league: $scope.teamLeague, competition: competitionId}
-         
-         $http.post("/api/teams/createteam", team).then(function (response) {
-         console.log(response)
-         updateTeamList()
-         }, function (error) {
-         console.log(error)
-         })*/
     }
 
-    get_round = function () {
-        $http.get("/api/competitions/" + competitionId +
-            "/rounds/" + obj[$scope.now][0]).then(function (response) {
-            $scope.now_round = response.data;
-            setTimeout(get_team, 100);
-        }, function (error) {
-            console.log(error)
-        })
-    }
-
-    get_team = function () {
-        $http.get("/api/competitions/" + competitionId +
-            "/teams/" + obj[$scope.now][1]).then(function (response) {
-            $scope.now_team = response.data;
-            setTimeout(get_field, 100);
-        }, function (error) {
-            console.log(error)
-        })
-    }
-
-    get_field = function () {
-        $http.get("/api/competitions/" + competitionId +
-            "/fields/" + obj[$scope.now][3]).then(function (response) {
-            $scope.now_field = response.data;
-            setTimeout(get_map, 100);
-        }, function (error) {
-            console.log(error)
-        })
-    }
-
-    get_map = function () {
-        $http.get("/api/maps/line/name/" + competitionId + "/" +
-            obj[$scope.now][2]).then(function (response) {
-            $scope.now_map = response.data;
-            setTimeout(exe, 100);
-        }, function (error) {
-            console.log(error)
-        })
-    }
+    
 
     exe = function () {
         var time = new Date(obj[$scope.now][4]);
 
         var run = {
-            round: $scope.now_round[0]._id,
-            team: $scope.now_team[0]._id,
-            field: $scope.now_field[0]._id,
-            map: $scope.now_map[0]._id,
+            round: find($scope.rounds,obj[$scope.now][0]),
+            team: find($scope.teams,obj[$scope.now][1]),
+            field: find($scope.fields,obj[$scope.now][3]),
+            map: find($scope.maps,obj[$scope.now][2]),
             competition: competitionId,
             startTime: time.getTime()
         }
         console.log(run)
 
         $http.post("/api/runs/line", run).then(function (response) {
-            setTimeout(next_add, 100);
+            next_add();
         }, function (error) {
             console.log(error)
             swal("Oops!", error.data.err, "error");
             $scope.processing = false;
             $scope.completed = false;
             $scope.error = true;
-            $scope.$apply();
+            if ($scope.$root.$$phase != '$apply' && $scope.$root.$$phase != '$digest') {
+                $scope.$apply();
+            }
             return;
         })
 
@@ -129,10 +93,12 @@ var app = angular.module("RunAdmin", ['pascalprecht.translate', 'ngCookies']).co
             $scope.processing = false;
             $scope.completed = true;
             $scope.error = false;
-            $scope.$apply();
+            if ($scope.$root.$$phase != '$apply' && $scope.$root.$$phase != '$digest') {
+                $scope.$apply();
+            }
             return;
         }
-        setTimeout(get_round, 10);
+        setTimeout(exe, 10);
 
     }
 

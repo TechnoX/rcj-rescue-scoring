@@ -6,7 +6,6 @@ var app = angular.module("TeamAdmin", ['pascalprecht.translate', 'ngCookies']).c
 
     $http.get("/api/teams/leagues").then(function (response) {
         $scope.leagues = response.data
-        console.log($scope.leagues)
     })
 
     $scope.addTeam = function () {
@@ -40,7 +39,7 @@ var app = angular.module("TeamAdmin", ['pascalprecht.translate', 'ngCookies']).c
             competition: competitionId
         };
         $http.post("/api/teams", team).then(function (response) {
-            setTimeout(next_add, 100);
+            setTimeout(next_add, 10);
         }, function (error) {
             console.log(error)
         })
