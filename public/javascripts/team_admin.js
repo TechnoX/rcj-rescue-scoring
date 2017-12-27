@@ -26,24 +26,39 @@ var app = angular.module("TeamAdmin", ['pascalprecht.translate', 'ngCookies']).c
             console.log(error)
         })
     }
+    
+    $scope.selectAll = function () {
+        angular.forEach($scope.teams, function (team) {
+            team.checked = true;
+        });
+    }
 
-    $scope.removeTeam = function (team) {
+    $scope.removeSelectedTeam = function () {
+        var chk = [];
+        angular.forEach($scope.teams, function (team) {
+            if (team.checked) chk.push(team._id);
+        });
+        $scope.removeTeam(chk.join(","));
+    }
+
+    $scope.removeTeam = function (teamId) {
         swal({
             title: "Remove team?",
-            text: "Are you sure you want to remove the team: " +
-                team.name + '?',
+            text: "Are you sure you want to remove?",
             type: "warning",
             showCancelButton: true,
             confirmButtonText: "Remove it!",
             confirmButtonColor: "#ec6c62"
-        }, function () {
-            $http.delete("/api/teams/" + team._id).then(function (response) {
-                console.log(response)
-                updateTeamList()
-            }, function (error) {
-                console.log(error)
-            })
-        });
+        }).then((result) => {
+            if (result.value) {
+                $http.delete("/api/teams/" + teamId).then(function (response) {
+                    console.log(response)
+                    updateTeamList()
+                }, function (error) {
+                    console.log(error)
+                })
+            }
+        })
     }
 
     function updateTeamList() {
