@@ -33,7 +33,6 @@ publicRouter.get('/:competitionid/score', function (req, res, next) {
   res.render('line_score', {id: id, user: req.user, get: req.query})
 })
 
-
 publicRouter.get('/view/:runid', function (req, res, next) {
   const id = req.params.runid
   
