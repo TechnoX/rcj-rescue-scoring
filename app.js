@@ -43,6 +43,8 @@ var mazeRoute = require('./routes/maze')
 var loginRoute = require('./routes/login')
 var adminRoute = require('./routes/admin')
 var localesRoute = require('./routes/locales')
+var interviewRoute = require('./routes/interview')
+
 
 //========================================================================
 //                          Api routes
@@ -95,10 +97,14 @@ app.use(express.static(path.join(__dirname, 'public')))
 // init passport and session
 app.use(session({
     store: new MongoStore({
-        mongooseConnection: mongoose.connection,
-        useMongoClient: true
+        mongooseConnection: mongoose.connection
     }),
-    secret: 'rcjscoring'
+    secret: 'rcjscoring',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 10 * 60 * 60 * 1000
+    }
 }))
 app.use(passport.initialize())
 app.use(passport.session())
@@ -138,6 +144,7 @@ app.use('/locales', localesRoute)
 
 app.use('/line', [lineRoute.public, pass.ensureAuthenticated, lineRoute.private, pass.ensureAdmin, lineRoute.admin])
 app.use('/maze', [mazeRoute.public, pass.ensureAuthenticated, mazeRoute.private, pass.ensureAdmin, mazeRoute.admin])
+app.use('/interview', [interviewRoute.public, pass.ensureAuthenticated, interviewRoute.private, pass.ensureAdmin, interviewRoute.admin])
 app.use('/admin', pass.ensureAdmin, adminRoute)
 
 //========================================================================
@@ -209,7 +216,7 @@ app.use(function (err, req, res, next) {
             // in production :(
             else {
                 res.status(err.status || 500)
-                res.render('error', {
+                res.render('error.jade', {
                     message: err.message,
                     error: {}
                 })

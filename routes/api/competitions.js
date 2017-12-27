@@ -84,6 +84,33 @@ publicRouter.get('/:competition/teams', function (req, res, next) {
     })
 })
 
+publicRouter.get('/:competition/teams/:teamid', function (req, res, next) {
+    const id = req.params.competition
+    const tid = req.params.teamid
+
+    if (!ObjectId.isValid(id)) {
+        return next()
+    }
+    if (!ObjectId.isValid(tid)) {
+        return next()
+    }
+
+    competitiondb.team.findOne({
+        competition: id,
+        _id: tid
+    }).lean().exec(function (err, data) {
+        if (err) {
+            logger.error(err)
+            res.status(400).send({
+                msg: "Could not get teams",
+                err: err.message
+            })
+        } else {
+            res.status(200).send(data)
+        }
+    })
+})
+
 publicRouter.get('/:competition/:league/teams', function (req, res, next) {
     const id = req.params.competition
     const league = req.params.league

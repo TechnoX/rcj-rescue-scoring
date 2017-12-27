@@ -1,0 +1,192 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'InterviewTeam'
+
+append scripts
+  script.
+    var competitionId = "#{id}"
+    var teamId = "#{tid}"
+  script(src='/javascripts/do_interview.js')
+  script(src='/components/ng-file-upload/ng-file-upload-all.min.js')
+block location
+    a.breadcrumb-item(onclick="location.href='/home'") Home
+    a.breadcrumb-item(ng-click="go('/interview/' + competitionId)") Interview
+    span.breadcrumb-item.active {{team.name}}
+
+
+block content
+  .row
+    .col-md-1
+    .col-md-10
+      h1 {{team.name}} - {{"common.interview" | translate}}
+      button.btn.btn-secondary(style='margin:0 10px 10px 0;', type='button', ng-click="go('/interview/' + competitionId)")
+        i.fa.fa-undo(aria-hidden='true') {{'common.back' | translate}}
+      br
+      h2 競技一覧
+      #compe
+          table(class="custom")
+            thead
+              tr
+                th {{'common.round' | translate}}
+                th {{'common.field' | translate}}
+                th {{'common.starttime' | translate}}
+                th {{'common.score' | translate}}
+                th {{'common.time' | translate}}
+                th {{'common.lops' | translate}}
+                th
+            tbody
+              tr(ng-repeat='run in lruns | filter: teamId | orderBy:"[startTime,round.name,field.name,team.name]" ')
+                td(ng-bind='run.round.name' data-content="{{'common.round' | translate}}")
+                td(ng-bind='run.field.name' data-content="{{'common.field' | translate}}")
+                td(ng-bind='run.startTime | date:"dd EEE HH:mm"' data-content="{{'common.starttime' | translate}}")
+                td {{run.score}}
+                td {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+                td {{run.LoPsNum}}
+                td
+                  button(ng-click="go('/line/view/' + run._id + '?return=/interview/'+competitionId + '/do/'+teamId)" class='btn btn-info' style="width:45%; margin-right:5px;") {{'common.view' | translate}}
+              tr(ng-repeat='run in mruns | filter: teamId | orderBy:"[startTime]" ')
+                td(ng-bind='run.round.name' data-content="{{'common.round' | translate}}")
+                td(ng-bind='run.field.name' data-content="{{'common.field' | translate}}")
+                td(ng-bind='run.startTime | date:"dd EEE HH:mm"' data-content="{{'common.starttime' | translate}}")
+                td(ng-bind='run.score' data-content="{{'common.score' | translate}}")
+                td {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+                td {{run.LoPs}}
+                td
+                  button(ng-click="go('/maze/view/' + run._id + '?return=/interview/'+competitionId + '/do/'+teamId)" class='btn btn-info' style="width:45%; margin-right:5px;") {{'common.view' | translate}}
+      br
+      
+      #picture.card
+          h3.card-header
+            i.fa.fa-picture-o(aria-hidden='true')
+            |  写真
+          .card-body
+            .row
+                .col-md-4(ng-repeat='i in range(picN)')
+                    img(style="max-width: 100%;height: auto; margin-bottom:20px;" ng-src="/api/teams/pic/{{competitionId}}/{{teamId}}/{{i}}" ng-if="showImg[i]")
+                
+                
+      br
+      
+
+
+      br
+      div(ng-if="doc")
+          #teaminfo.card
+              h3.card-header
+                i.fa.fa-book(aria-hidden='true')
+                |  チーム情報
+              .card-body
+                p チーム名
+                h3 {{doc.team}}
+                hr
+                p チーム名の読み方
+                h3 {{doc.yomi}}
+                hr
+                p チームの所属団体
+                h3 {{doc.dantai}}
+          br
+          #member.card
+              h3.card-header
+                i.fa.fa-book(aria-hidden='true')
+                |  チームメンバー
+              .card-body
+                p チームメンバーの氏名と読み方を『１行に１人分』入力してください
+                textarea(style="width:100%; background:#E0F2F7;" rows="6" readonly) {{doc.member}}
+                hr
+                p チームメンバーが複数いる場合は，それぞれのメンバーがチームで果たした役割を詳しく教えてください
+                textarea(style="width:100%; background:#E0F2F7;" rows="15" readonly) {{doc.role}}
+          br
+          #member.card
+              h3.card-header
+                i.fa.fa-book(aria-hidden='true')
+                |  ロボットのハードウェア
+              .card-body
+                p {{doc.hardware.q1.q}}
+                textarea(style="width:100%; background:#E0F2F7;" rows="2" readonly) {{doc.hardware.q1.a}}
+                hr
+                p {{doc.hardware.q2.q}}
+                textarea(style="width:100%; background:#E0F2F7;" rows="15" readonly) {{doc.hardware.q2.a}}
+                hr
+                p {{doc.hardware.q3.q}}
+                textarea(style="width:100%; background:#E0F2F7;" rows="15" readonly) {{doc.hardware.q3.a}}
+                div(ng-if="doc.hardware.q4.q")
+                    hr
+                    p {{doc.hardware.q4.q}}
+                    textarea(style="width:100%; background:#E0F2F7;" rows="15" readonly) {{doc.hardware.q4.a}}
+                div(ng-if="doc.hardware.q5.q")
+                    hr
+                    p {{doc.hardware.q5.q}}
+                    textarea(style="width:100%; background:#E0F2F7;" rows="15" readonly) {{doc.hardware.q5.a}}
+                div(ng-if="doc.hardware.q6.q")
+                    hr
+                    p {{doc.hardware.q6.q}}
+                    textarea(style="width:100%; background:#E0F2F7;" rows="15" readonly) {{doc.hardware.q6.a}}
+                div(ng-if="doc.hardware.q7.q")
+                    hr
+                    p {{doc.hardware.q7.q}}
+                    textarea(style="width:100%; background:#E0F2F7;" rows="15" readonly) {{doc.hardware.q7.a}}
+          br
+          #member.card
+              h3.card-header
+                i.fa.fa-book(aria-hidden='true')
+                |  ロボットのソフトウェア
+              .card-body
+                p {{doc.software.q1.q}}
+                textarea(style="width:100%; background:#E0F2F7;" rows="3" readonly) {{doc.software.q1.a}}
+                hr
+                p {{doc.software.q2.q}}
+                textarea(style="width:100%; background:#E0F2F7;" rows="15" readonly) {{doc.software.q2.a}}
+                hr
+                p {{doc.software.q3.q}}
+                textarea(style="width:100%; background:#E0F2F7;" rows="15" readonly) {{doc.software.q3.a}}
+                div(ng-if="doc.software.q4.q")
+                    hr
+                    p {{doc.software.q4.q}}
+                    textarea(style="width:100%; background:#E0F2F7;" rows="15" readonly) {{doc.software.q4.a}}
+                div(ng-if="doc.software.q5.q")
+                    hr
+                    p {{doc.software.q5.q}}
+                    textarea(style="width:100%; background:#E0F2F7;" rows="15" readonly) {{doc.software.q5.a}}
+                div(ng-if="doc.software.q6.q")
+                    hr
+                    p {{doc.software.q6.q}}
+                    textarea(style="width:100%; background:#E0F2F7;" rows="15" readonly) {{doc.software.q6.a}}
+                div(ng-if="doc.software.q7.q")
+                    hr
+                    p {{doc.software.q7.q}}
+                    textarea(style="width:100%; background:#E0F2F7;" rows="15" readonly) {{doc.software.q7.a}}
+          br
+          #ikigomi.card
+              h3.card-header
+                i.fa.fa-book(aria-hidden='true')
+                |  大会への意気込み・目標
+              .card-body
+                    textarea(style="width:100%; background:#E0F2F7;" rows="5" readonly) {{doc.ikigomi}}
+          br
+          #ikigomi.card
+              h3.card-header
+                i.fa.fa-file-pdf-o(aria-hidden='true')
+                |  添付ファイル
+              .card-body
+                    iframe(ng-src="{{'/components/pdfjs/web/viewer.html?file=/api/teams/pdf/' + competitionId + '/' +teamId}}" style="width:100%; height:600px;" )
+
+      br
+      br
+      #sign.card
+          h3.card-header
+            i.fa.fa-edit(aria-hidden='true')
+            |  インタビュアー記入欄
+          .card-body
+            p.card-text.text-info
+              | インタービューの所感を入力してください
+            .form-group
+              textarea.form-control(ng-model='team.comment', rows='8' readonly)
+            h2 インタビュアーサイン
+            img(ng-src='{{team.interviewer}}', style='max-width: 100%;height: auto;')
+      br
+      br
+
+
+

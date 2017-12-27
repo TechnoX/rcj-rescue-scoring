@@ -38,16 +38,22 @@ block content
       a(ng-href='/admin/{{competitionId}}/teams/bulk') {{"admin.teams.bulk" | translate}}
       br
       br
+      div
+          button(ng-click="selectAll()" class='btn btn-primary' style="margin: 5px 5px 5px 5px;") {{"common.selectAll" | translate}}
+          button(ng-click="removeSelectedTeam()" class='btn btn-danger' style="margin: 5px 5px 5px 5px;") {{"common.delS" | translate}}
       table.custom
         thead
             tr
+              th
               th {{"common.team" | translate}}
               th {{"common.league" | translate}}
               th {{"common.operation" | translate}}
         tbody
             tr(ng-repeat='team in teams')
+              td
+                input(type='checkbox' ng-model='team.checked' style="display:initial;")
               td(ng-bind='team.name')
               td(ng-bind='team.league')
               td
-                a(href="" ng-click='removeTeam(team)') {{"common.delete" | translate}}
+                a(href="" ng-click='removeTeam(team._id)') {{"common.delete" | translate}}
       

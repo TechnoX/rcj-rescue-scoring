@@ -27,6 +27,7 @@
         "starttime": "開始時間",
         "field": "フィールド",
         "team": "チーム名",
+        "teams": "チーム一覧",
         "round": "ラウンド",
         "map": "マップ",
         "rank": "順位",
@@ -51,7 +52,11 @@
         "operation": "操作",
         "create": "作成",
         "save": "保存",
-        "comment": "コメント"
+        "comment": "コメント",
+        "inspected": "検査済",
+        "interview": "インタビュー",
+        "selectAll": "全選択",
+        "delS": "選択した競技を削除"
     },
     "accessDenied":{
         "title" : "アクセス拒絶",

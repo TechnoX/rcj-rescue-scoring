@@ -27,6 +27,7 @@
         "starttime": "Start Time",
         "field": "Field",
         "team": "Team",
+        "teams": "Teams",
         "round": "Round",
         "map": "Map",
         "rank": "Rank",
@@ -51,7 +52,11 @@
         "operation": "Operation",
         "create": "Create",
         "save": "Save",
-        "comment": "Comment"
+        "comment": "Comment",
+        "inspected": "Inspected",
+        "interview": "Interview",
+        "selectAll": "Select all runs",
+        "delS": "Delete selected runs"
     },
     "accessDenied":{
         "title" : "Access denied",
