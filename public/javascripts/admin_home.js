@@ -29,7 +29,8 @@ var app = angular.module("AdminHome", ['pascalprecht.translate', 'ngCookies']).c
             showCancelButton: true,
             confirmButtonText: "Remove it!",
             confirmButtonColor: "#ec6c62"
-        }, function () {
+        }).then((result) => {
+            if (result.value) {
             $http.delete("/api/competitions/" +
                 competition._id).then(function (response) {
                 console.log(response)
@@ -37,7 +38,8 @@ var app = angular.module("AdminHome", ['pascalprecht.translate', 'ngCookies']).c
             }, function (error) {
                 console.log(error)
             })
-        });
+            }
+        })
     }
 
     function updateCompetitionList() {

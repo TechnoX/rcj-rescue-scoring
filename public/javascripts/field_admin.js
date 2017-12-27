@@ -36,14 +36,16 @@ var app = angular.module("FieldAdmin", ['pascalprecht.translate', 'ngCookies']).
             showCancelButton: true,
             confirmButtonText: "Remove it!",
             confirmButtonColor: "#ec6c62"
-        }, function () {
+        }).then((result) => {
+            if (result.value) {
             $http.delete("/api/fields/" + field._id).then(function (response) {
                 console.log(response)
                 updateFieldList()
             }, function (error) {
                 console.log(error)
             })
-        });
+            }
+        })
     }
 
     function updateFieldList() {

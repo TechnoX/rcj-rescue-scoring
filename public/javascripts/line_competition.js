@@ -126,11 +126,12 @@ app.controller("LineCompetitionController", ['$scope', '$http', '$translate', fu
             type: "warning",
             showCancelButton: true,
             confirmButtonText: "Yes",
-        }, function () {
+        }).then((result) => {
+            if (result.value) {
             $scope.go(path);
-        }, function (error) {
-            console.log(error);
-        });
+            }
+        })
+        
     }
 
     $scope.no_judge = function () {

@@ -36,14 +36,16 @@ var app = angular.module("RoundAdmin", ['pascalprecht.translate', 'ngCookies']).
             showCancelButton: true,
             confirmButtonText: "Remove it!",
             confirmButtonColor: "#ec6c62"
-        }, function () {
-            $http.delete("/api/rounds/" + round._id).then(function (response) {
-                console.log(response)
-                updateRoundList()
-            }, function (error) {
-                console.log(error)
-            })
-        });
+        }).then((result) => {
+            if (result.value) {
+                $http.delete("/api/rounds/" + round._id).then(function (response) {
+                    console.log(response)
+                    updateRoundList()
+                }, function (error) {
+                    console.log(error)
+                })
+            }
+        })
     }
 
     function updateRoundList() {

@@ -342,10 +342,12 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             title: 'Recorded!',
             text: txt_complete,
             type: 'success'
-        }, function () {
-            if($scope.getParam('return')) $scope.go($scope.getParam('return'));
-            else $scope.go("/line/" + $scope.competition_id);
-        });
+        }).then((result) => {
+            if (result.value) {
+                if($scope.getParam('return')) $scope.go($scope.getParam('return'));
+                else $scope.go("/line/" + $scope.competition_id);
+            }
+        })
         console.log("Success!!");
     }
 
@@ -391,19 +393,19 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             showCancelButton: true,
             confirmButtonText: "Yes, finish it!",
             confirmButtonColor: "#ec6c62"
-        }, function () {
-            console.log("STATUS UPDATED(4)")
-            run.status = 4;
-            $http.put("/api/runs/line/" + runId, run).then(function (response) {
-                setTimeout($scope.success_message, 500);
-            }, function (response) {
-                playSound(sError);
-                swal("Oops", "We couldn't connect to the server! Please notice to system manager.", "error");
-                console.log("Error: " + response.statusText);
-            });
-
-        });
-
+        }).then((result) => {
+            if (result.value) {
+                console.log("STATUS UPDATED(4)")
+                run.status = 4;
+                $http.put("/api/runs/line/" + runId, run).then(function (response) {
+                    setTimeout($scope.success_message, 500);
+                }, function (response) {
+                    playSound(sError);
+                    swal("Oops", "We couldn't connect to the server! Please notice to system manager.", "error");
+                    console.log("Error: " + response.statusText);
+                });
+            }
+        })
 
     }
     

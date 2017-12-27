@@ -20,7 +20,7 @@
     "datatables": "~1.10.9",
     "angular": "^1.6.5",
     "angular-datatables": "~0.4.3",
-    "sweetalert": "^1.1.3",
+    "sweetalert": "^2.1.0",
     "font-awesome": "^4.7.0",
     "jSignature": "^2.1.1",
     "angular-animate": "^1.6.5",
@@ -36,7 +36,9 @@
     "angular-cookies": "^1.6.5",
     "bootstrap": "v4.0.0-beta",
     "angular-bootstrap": "git://github.com/rrrobo/ab-for-rcj.git",
-    "bootstrap-fileinput": "^4.4.6"
+    "bootstrap-fileinput": "^4.4.6",
+    "pdfjs": "https://github.com/mozilla/pdf.js/releases/download/v1.10.88/pdfjs-1.10.88-dist.zip",
+    "ng-file-upload": "^12.2.13"
   },
   "description": "",
   "main": "",

@@ -113,14 +113,16 @@ var app = angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap
                 showCancelButton: true,
                 confirmButtonText: "Yes, delete it!",
                 confirmButtonColor: "#ec6c62"
-            }, function () {
-                $http.delete("/api/runs/maze/" + runid).then(function (response) {
-                    console.log(response)
-                    updateRunList()
-                }, function (error) {
-                    console.log(error)
-                })
-            });
+            }).then((result) => {
+                if (result.value) {
+                    $http.delete("/api/runs/maze/" + runid).then(function (response) {
+                        console.log(response)
+                        updateRunList()
+                    }, function (error) {
+                        console.log(error)
+                    })
+                }
+            })
         }
 
         function updateRunList() {
@@ -138,9 +140,11 @@ var app = angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap
                 showCancelButton: true,
                 confirmButtonText: "GO!",
                 confirmButtonColor: "#ec6c62"
-            }, function () {
-                $scope.go('/maze/sign/' + runid + '/');
-            });
+            }).then((result) => {
+                if (result.value) {
+                    $scope.go('/maze/sign/' + runid + '/');
+                }
+            })
         }
 
         $scope.go_judge = function (runid) {
@@ -151,9 +155,11 @@ var app = angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap
                 showCancelButton: true,
                 confirmButtonText: "GO!",
                 confirmButtonColor: "#ec6c62"
-            }, function () {
-                $scope.go('/maze/judge/' + runid + '/');
-            });
+            }).then((result) => {
+                if (result.value) {
+                    $scope.go('/maze/judge/' + runid + '/');
+                }
+            })
         }
 
         $scope.go_approval = function (runid) {
@@ -164,9 +170,11 @@ var app = angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap
                 showCancelButton: true,
                 confirmButtonText: "GO!",
                 confirmButtonColor: "#ec6c62"
-            }, function () {
-                $scope.go('/admin/approval/' + runid + '/');
-            });
+            }).then((result) => {
+                if (result.value) {
+                    $scope.go('/admin/approval/' + runid + '/');
+                }
+            })
         }
 
         $scope.go = function (path) {

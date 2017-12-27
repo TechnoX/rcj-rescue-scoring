@@ -29,14 +29,16 @@ var app = angular.module("AdminUser", ['pascalprecht.translate', 'ngCookies']).c
             showCancelButton: true,
             confirmButtonText: "Remove it!",
             confirmButtonColor: "#ec6c62"
-        }, function () {
+        }).then((result) => {
+            if (result.value) {
             $http.delete("/api/users/" + user._id).then(function (response) {
                 console.log(response)
                 updateUserList()
             }, function (error) {
                 console.log(error)
             })
-        });
+            }
+        })
     }
 
     function updateUserList() {

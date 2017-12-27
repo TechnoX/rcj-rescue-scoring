@@ -129,11 +129,11 @@ app.controller("MazeCompetitionController", ['$scope', '$http', '$translate', fu
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonText: "Yes",
-            }, function () {
-                $scope.go(path);
-            }, function (error) {
-                console.log(error);
-            });
+            }).then((result) => {
+                if (result.value) {
+                    $scope.go(path);
+                }
+            })
         }
 
         $scope.no_judge = function () {
