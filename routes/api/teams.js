@@ -12,8 +12,9 @@ var validator = require('validator')
 var async = require('async')
 var ObjectId = require('mongoose').Types.ObjectId
 var logger = require('../../config/logger').mainLogger
-var multer = require('multer');
-var path = require('path')
+const multer = require('multer');
+const path = require('path')
+const mkdirp = require('mkdirp');
 const auth = require('../../helper/authLevels')
 const fs = require('fs')
 const ACCESSLEVELS = require('../../models/user').ACCESSLEVELS
@@ -157,6 +158,28 @@ adminRouter.post('/', function (req, res) {
       res.status(201).send({msg: "New team has been saved", id: data._id})
     }
   })
+  
+  competitiondb.competition.findOne({_id:team.competition})
+    .exec(function (err, dbComp) {
+            if (err) {
+                logger.error(err)
+                res.status(400).send({
+                    msg: "Could not get competition",
+                    err: err.message
+                })
+            } else if (dbComp) {
+                var path = __dirname + "/../../TechnicalDocument/" + dbComp.name + "/" +team.name;
+                  mkdirp(path, function (err) {
+                      if(err)logger.error(err);
+                      else logger.info(path);
+                  });
+            }
+        }
+
+    )
+  
+    
+  
 })
 
 function isExistFile(file) {
