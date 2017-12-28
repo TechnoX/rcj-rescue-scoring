@@ -22,6 +22,10 @@ var app = angular.module("TeamAdmin", ['pascalprecht.translate', 'ngCookies']).c
          console.log(error)
          })*/
     }
+    
+    $scope.go = function (path) {
+        window.location = path
+    }
 
     next_add = function () {
         $scope.now++;

@@ -27,7 +27,9 @@ var app = angular.module("TilesetAdmin", ['pascalprecht.translate', 'ngCookies']
     });
 
     
-
+    $scope.go = function (path) {
+        window.location = path
+    }
 
     $http.get("/api/maps/line/tiletypes").then((response) => {
         $scope.tileTypes = response.data

@@ -97,6 +97,10 @@ app.controller('MazeEditorController', ['$scope', '$uibModal', '$log', '$http','
     $scope.changeFloor = function (z){
         $scope.z = z;
     }
+    
+    $scope.go = function (path) {
+        window.location = path
+    }
 
     $scope.$watchCollection('startTile', function (newValue, oldValue) {
         // If initialization

@@ -46,6 +46,10 @@ var app = angular.module("RunAdmin", ['pascalprecht.translate', 'ngCookies']).co
     next_add();
   }
   
+  $scope.go = function (path) {
+        window.location = path
+    }
+  
   exe = function () {
     var time = new Date(obj[$scope.now][4]);
     var run = {

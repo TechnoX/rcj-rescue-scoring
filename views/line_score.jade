@@ -15,8 +15,8 @@ append scripts
 
 
 block location
-    a.breadcrumb-item(onclick="location.href='/home'") Home
-    a.breadcrumb-item(onclick="location.href='/line'") Line
+    a.breadcrumb-item(ng-click="go('/home')") Home
+    a.breadcrumb-item(ng-click="go('/line')") Line
     a.breadcrumb-item(ng-click='go("/line/"+ competitionId )') {{competition.name}}
     span.breadcrumb-item.active Score
 

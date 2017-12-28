@@ -15,6 +15,10 @@ var app = angular.module("AdminAuth", ['pascalprecht.translate', 'ngCookies']).c
         })
         
     }
+    
+    $scope.go = function (path) {
+        window.location = path
+    }
 
 
     function updateUserList() {

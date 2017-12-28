@@ -8,7 +8,7 @@ append scripts
   script(src='/javascripts/locales.js')
 
 block location
-  a.breadcrumb-item(href='/home') Home
+  a.breadcrumb-item(ng-click="go('/home')") Home
   span.breadcrumb-item.active Locales
   
 append css

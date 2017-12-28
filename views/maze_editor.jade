@@ -24,10 +24,10 @@ append css
   link(href="/components/bootstrap-fileinput/css/fileinput.min.css" rel="stylesheet")
 
 block location
-    a.breadcrumb-item(href='/home') Home
-    a.breadcrumb-item(href='/admin') Admin
-    a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition}}
-    a.breadcrumb-item(ng-href='/admin/{{competitionId}}/maze/maps') Maze maps
+    a.breadcrumb-item(ng-click="go('/home')") Home
+    a.breadcrumb-item(ng-click="go('/admin')") Admin
+    a.breadcrumb-item(ng-click="go('/admin/'+competitionId)") {{competition}}
+    a.breadcrumb-item(ng-click="go('/admin/'+competitionId+'/maze/maps')") Maze maps
     span.breadcrumb-item.active Maze editor
 
 block content

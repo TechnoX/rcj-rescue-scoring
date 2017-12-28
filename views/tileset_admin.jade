@@ -23,8 +23,8 @@ append css
     }
 
 block location
-    a.breadcrumb-item(href='/home') Home
-    a.breadcrumb-item(href='/admin') Admin
+    a.breadcrumb-item(ng-click="go('/home')") Home
+    a.breadcrumb-item(ng-click="go('/admin')") Admin
     span.breadcrumb-item.active Line tilesets
 
 block content

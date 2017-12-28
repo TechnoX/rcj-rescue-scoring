@@ -24,4 +24,8 @@ var app = angular.module("MapAdmin", ['pascalprecht.translate', 'ngCookies']).co
       $scope.maps = response.data
     })
   }
+    
+    $scope.go = function (path) {
+        window.location = path
+    }
 })

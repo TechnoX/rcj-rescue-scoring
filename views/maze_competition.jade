@@ -13,8 +13,8 @@ append scripts
 
 
 block location
-  a.breadcrumb-item(href='/home') Home
-  a.breadcrumb-item(href='/maze') Maze
+  a.breadcrumb-item(ng-click="go('/home')") Home
+  a.breadcrumb-item(ng-click="go('/maze')") Maze
   span.breadcrumb-item.active {{competition.name}}
 
 

@@ -68,4 +68,7 @@ var app = angular.module("TeamAdmin", ['pascalprecht.translate', 'ngCookies']).c
             console.log($scope.teams)
         })
     }
+    $scope.go = function (path) {
+        window.location = path
+    }
 })

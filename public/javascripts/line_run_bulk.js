@@ -54,6 +54,9 @@ var app = angular.module("RunAdmin", ['pascalprecht.translate', 'ngCookies']).co
         $scope.now = 0;
         next_add();
     }
+    $scope.go = function (path) {
+        window.location = path
+    }
 
     
 

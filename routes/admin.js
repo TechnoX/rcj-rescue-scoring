@@ -218,7 +218,7 @@ router.get('/:competitionid/fields', function (req, res, next) {
 })
 
 router.get('/line/tilesets', function (req, res, next) {
-  res.render('tileset_admin')
+  res.render('tileset_admin',{user: req.user})
 })
 
 module.exports = router

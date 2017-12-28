@@ -3,7 +3,7 @@ extends includes/layout
 
 
 block location
-  a.breadcrumb-item(href='/home') Home
+  a.breadcrumb-item(ng-click="go('/home')") Home
   span.breadcrumb-item.active= error.status
 
 block content

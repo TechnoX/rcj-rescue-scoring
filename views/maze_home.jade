@@ -10,7 +10,7 @@ append scripts
   script(src='/javascripts/maze_home.js')
 
 block location
-    a.breadcrumb-item(href='/home') Home
+    a.breadcrumb-item(ng-click="go('/home')") Home
     span.breadcrumb-item.active Maze
 
 block content

@@ -24,10 +24,10 @@ append css
   
 
 block location
-    a.breadcrumb-item(href='/home') Home
-    a.breadcrumb-item(href='/admin') Admin
-    a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition}}
-    a.breadcrumb-item(ng-href='/admin/{{competitionId}}/line/maps') Line maps
+    a.breadcrumb-item(ng-click="go('/home')") Home
+    a.breadcrumb-item(ng-click="go('/admin')") Admin
+    a.breadcrumb-item(ng-click="go('/admin/'+competitionId)") {{competition}}
+    a.breadcrumb-item(ng-click="go('/admin/'+competitionId + '/line/maps')") Line maps
     span.breadcrumb-item.active Line editor
 
 block content

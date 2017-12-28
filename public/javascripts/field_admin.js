@@ -47,6 +47,10 @@ var app = angular.module("FieldAdmin", ['pascalprecht.translate', 'ngCookies']).
             }
         })
     }
+    
+    $scope.go = function (path) {
+        window.location = path
+    }
 
     function updateFieldList() {
         $http.get("/api/competitions/" + competitionId +

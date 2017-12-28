@@ -11,6 +11,9 @@ app.controller('loginController', ['$scope', '$log', '$timeout', '$http', '$tran
         return_path = decodeURIComponent(match[1]);
     }
     if(return_path != "") $scope.return = true;  
+    $scope.go = function (path) {
+        window.location = path
+    }
   $scope.login = function () {
     $http.post("/api/auth/login", {
       username: $scope.username,

@@ -55,4 +55,7 @@ var app = angular.module("RoundAdmin", ['pascalprecht.translate', 'ngCookies']).
             console.log($scope.rounds)
         })
     }
+    $scope.go = function (path) {
+        window.location = path
+    }
 })

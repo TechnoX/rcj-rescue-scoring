@@ -40,6 +40,10 @@ var app = angular.module("AdminUser", ['pascalprecht.translate', 'ngCookies']).c
             }
         })
     }
+    
+    $scope.go = function (path) {
+        window.location = path
+    }
 
     function updateUserList() {
         $http.get("/api/users").then(function (response) {
