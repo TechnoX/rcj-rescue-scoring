@@ -82,7 +82,7 @@ block content
                       input(type='file', ngf-select='', ng-model='picFile', ngf-max-size='5MB', required='', ngf-accept="'image/*'", ngf-pattern="'image/*'",  ngf-multiple='false')
                       button.btn.btn-dark(ng-click='uploadPic(picFile,i)') 送信
                       button.btn.btn-warning(ng-click='picFile = null', ng-show='picFile') キャンセル
-                .col-md-4(style="padding-top:100px; background:#ffffb7;border: thin dashed;")
+                .col-md-4(style="background:#ffffb7;border: thin dashed;")
                     i.fa.fa-plus-circle.fa-2x(aria-hidden='true') ファイルを追加
                     form(style="")
                       input(type='file', ngf-select='', ng-model='picFile', ngf-max-size='5MB', required='', ngf-accept="'image/*'", ngf-pattern="'image/*'",  ngf-multiple='false' capture="environment")
