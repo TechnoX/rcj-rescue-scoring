@@ -15,6 +15,7 @@ var logger = require('../../config/logger').mainLogger
 const multer = require('multer');
 const path = require('path')
 const mkdirp = require('mkdirp');
+const jsonfile = require('jsonfile');
 const auth = require('../../helper/authLevels')
 const fs = require('fs')
 const ACCESSLEVELS = require('../../models/user').ACCESSLEVELS
@@ -227,6 +228,71 @@ privateRouter.get('/document/:competitionid/:teamid', function (req, res, next) 
                                         msg: "No json file for this team"
                                     })
                                 }
+                                
+                            }
+                        }
+
+                    )
+
+
+                }
+            }
+
+        )
+  }
+  else{
+      res.status(401).send({
+                        msg: "You have no authority to access this api"
+        })
+      return next()
+  }
+})
+
+
+privateRouter.put('/document/:competitionid/:teamid', function (req, res, next) {
+  const id = req.params.competitionid
+  const tid = req.params.teamid
+  var data = req.body
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+  if(auth.authCompetition(req.user,id,ACCESSLEVELS.JUDGE)){
+      competitiondb.competition.findOne({_id:id})
+        .exec(function (err, dbCompe) {
+                if (err) {
+                    logger.error(err)
+                    res.status(400).send({
+                        msg: "Could not get competition",
+                        err: err.message
+                    })
+                } else if (dbCompe) {
+                    competitiondb.team.findOne({_id:tid , competition: id})
+                    .exec(function (err, dbTeam) {
+                            if (err) {
+                                logger.error(err)
+                                res.status(400).send({
+                                    msg: "Could not get team",
+                                    err: err.message
+                                })
+                            } else if (dbTeam) {
+                                var path = __dirname + "/../../TechnicalDocument/" + dbCompe.name + "/" + dbTeam.name + "/content.json"
+                                jsonfile.writeFile(path, data, {
+                                    encoding: 'utf-8', 
+                                    replacer: null, 
+                                    spaces: "\t"
+                                }, function (err) {
+                                    if(err){
+                                        res.status(400).send({
+                                            msg: "Error saving to json file"
+                                        })
+                                    }
+                                    else{
+                                        res.status(200).send({
+                                            msg: "Complete!"
+                                        })
+                                    }
+                                });
+                                
                                 
                             }
                         }

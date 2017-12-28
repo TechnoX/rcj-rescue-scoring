@@ -1,4 +1,4 @@
-var app = angular.module("InterviewTeam", ['pascalprecht.translate', 'ngCookies', 'ngFileUpload']).controller("InterviewTeamController",[ '$scope' , '$http', 'Upload','$timeout', function ($scope, $http,Upload,$timeout) {
+var app = angular.module("InterviewTeam", ['pascalprecht.translate', 'ngCookies', 'ngFileUpload', 'ngAlertify']).controller("InterviewTeamController",[ '$scope' , '$http', 'Upload','$timeout', 'alertify',function ($scope, $http,Upload,$timeout,alertify) {
     $scope.competitionId = competitionId
     $scope.teamId = teamId
     $scope.picN = 0;
@@ -6,7 +6,6 @@ var app = angular.module("InterviewTeam", ['pascalprecht.translate', 'ngCookies'
     for(let i=0;i<50;i++){
         $scope.showImg[i]=true;
     }
-
     $http.get("/api/competitions/" + competitionId).then(function (response) {
         $scope.competition = response.data
     })
@@ -40,6 +39,7 @@ var app = angular.module("InterviewTeam", ['pascalprecht.translate', 'ngCookies'
         "/" + teamId).then(function (response) {
         if(response.status == '200'){
             $scope.doc = response.data
+            console.log($scope.doc.hardware)
         }else{
             $scope.doc = null
         }
@@ -80,9 +80,10 @@ var app = angular.module("InterviewTeam", ['pascalprecht.translate', 'ngCookies'
             file: item
           },
       })
-      .then(function (resp){//送信成功
+      .then(function (resp){
             //$scope.showImg[i]= false;
-            console.log("画像アップロード完了");
+            //console.log("画像アップロード完了");
+            alertify.success('画像アップロード完了！');
             getPicN();
             $scope.picFile = null
             //$timeout($scope.showI(i), 1000);
@@ -91,7 +92,6 @@ var app = angular.module("InterviewTeam", ['pascalprecht.translate', 'ngCookies'
       );
     }
 
-    
     $scope.send = function(){
         var sign;
         var sign_empty = "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj48c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMCIgaGVpZ2h0PSIwIj48L3N2Zz4="
@@ -102,13 +102,15 @@ var app = angular.module("InterviewTeam", ['pascalprecht.translate', 'ngCookies'
             sign = "data:" + datapair[0] + "," + datapair[1];
         }
         //console.log($scope.team.comment);
-        
-        $http.put("/api/teams/" + competitionId +
-            "/"+teamId , {
+        //console.log($scope.doc);
+        $http.put("/api/teams/document/" + competitionId + "/"+teamId , $scope.doc).then(function (response) {
+            $http.put("/api/teams/" + competitionId + "/"+teamId , {
                 interviewer: sign,
                 comment: $scope.team.comment
             }).then(function (response) {
-            $scope.go('/interview/' + competitionId);
+                $scope.go('/interview/' + competitionId);
+            })
         })
+        
     }
 }])
