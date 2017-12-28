@@ -82,7 +82,10 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
         })
     }
 
-
+    $scope.go = function (path) {
+        window.location = path
+    }
+    
     $scope.range = function (n) {
         arr = [];
         for (var i = 0; i < n; i++) {
