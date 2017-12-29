@@ -106,6 +106,9 @@ publicRouter.get('/:competition/teams/:teamid', function (req, res, next) {
                 err: err.message
             })
         } else {
+            if(!auth.authCompetition(req.user,id,ACCESSLEVELS.VIEW)){
+                delete data.interviewer
+            }
             res.status(200).send(data)
         }
     })

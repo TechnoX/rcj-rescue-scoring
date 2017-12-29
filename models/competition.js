@@ -74,7 +74,8 @@ const teamSchema = new Schema({
   league     : {type: String, enum: LEAGUES, required: true, index: true},
   inspected  : {type: Boolean, default: false},
   comment    : {type: String, default: ""},
-  interviewer: {type: String, default: ""}
+  interviewer: {type: String, default: ""},
+  docPublic  : {type: Boolean, default: false}
 })
 
 teamSchema.pre('save', function (next) {
