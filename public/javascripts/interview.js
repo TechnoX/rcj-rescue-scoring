@@ -20,6 +20,22 @@ var app = angular.module("CompetitionTeams", ['pascalprecht.translate', 'ngCooki
         window.location = path
     }
     
+    $scope.getParam = function (key) {
+        var str = location.search.split("?");
+        if (str.length < 2) {
+          return "";
+        }
+
+        var params = str[1].split("&");
+        for (var i = 0; i < params.length; i++) {
+          var keyVal = params[i].split("=");
+          if (keyVal[0] == key && keyVal.length == 2) {
+            return decodeURIComponent(keyVal[1]);
+          }
+        }
+        return "";
+    }
+    
     $scope.inspected = function(team){
         console.log(team.inspected)
         $http.put("/api/teams/" + competitionId +
