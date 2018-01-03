@@ -27,7 +27,7 @@ block content
       button(ng-click="go('/maze/' + competition._id + '/score')" class='btn btn-outline-info btn-lg btn-block')
         i.fa.fa-trophy(aria-hidden='true')  {{'maze.competition.result' | translate}}
       br
-      button(ng-click="go('/interview/' + competition._id)" class='btn btn-outline-success btn-lg btn-block' ng-if="isJudge == 1") 
+      button(ng-click="go('/interview/' + competition._id + '?return=/maze/'+competitionId)" class='btn btn-outline-success btn-lg btn-block') 
         i.fa.fa-comments-o(aria-hidden='true')  {{'common.interview' | translate}}
       br
       .refine
