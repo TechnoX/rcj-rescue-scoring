@@ -8,14 +8,9 @@ append scripts
   script.
     var competitionId = "#{id}"
     var teamId = "#{tid}"
-  script(src='/javascripts/do_interview.js')
+  script(src='/javascripts/pub_interview.js')
   //if lt IE 9
     script(type='text/javascript', src='/components/jSignature/libs/flashcanvas.js')
-  script(src='/components/jSignature/libs/jSignature.min.js')
-  script.
-      $(document).ready(function() {
-      $("#int_sig").jSignature()
-      })
   script(src='/components/ng-file-upload/ng-file-upload-all.min.js')
   script(src='/components/lightbox2/dist/js/lightbox.min.js')
   
@@ -32,7 +27,7 @@ block content
   .row
     .col-md-1
     .col-md-10
-      h1 {{team.name}} - {{"common.interview" | translate}}
+      h1 {{team.name}} - 公開用{{"common.interview" | translate}}
       button.btn.btn-secondary(style='margin:0 10px 10px 0;', type='button', ng-click="getParam('return')? go(getParam('return')):go('/interview/' + competitionId)")
         i.fa.fa-undo(aria-hidden='true') {{'common.back' | translate}}
       br
@@ -72,7 +67,7 @@ block content
       #picture.card
           h3.card-header
             i.fa.fa-picture-o(aria-hidden='true')
-            |  写真
+            |  写真　【非公開】
           .card-body
             .row
                 .col-md-4(ng-repeat='i in range(picN)')
@@ -114,11 +109,11 @@ block content
           #member.card
               h3.card-header
                 i.fa.fa-book(aria-hidden='true')
-                |  チームメンバー
+                |  チームメンバー　【非公開】
               .card-body
                 i.fa.fa-quora(aria-hidden='true' style="font-size:20px;") &nbsp; チームメンバーの氏名と読み方を『１行に１人分』入力してください
                 p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;") {{doc.member}}
-                //textarea(style="width:100%; background:  #eaf9de;" rows="6" readonly) {{doc.member}}
+                //textarea(style="width:100%; background:  #eaf9de;" rows="6" ng-model="doc.member") {{doc.member}}
                 hr
                 i.fa.fa-quora(aria-hidden='true' style="font-size:20px;") &nbsp; チームメンバーが複数いる場合は，それぞれのメンバーがチームで果たした役割を詳しく教えてください
                 p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;") {{doc.role}}
@@ -132,47 +127,47 @@ block content
                 |  ロボットのハードウェア
               .card-body
                 i.fa.fa-quora(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.hardware.q1.q}}
-                p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.hardware.q1.a}}
+                textarea(style="width:100%; background:  #eaf9de;" rows="15" ng-model="doc.hardware.q1.a") {{doc.hardware.q1.a}}
                 div(style="padding-left:50px;")
                     span インタビュアーのコメント
                     textarea(style="width:100%;" rows="3" ng-model="doc.hardware.q1.c") {{doc.hardware.q1.c}}
                 hr
                 i.fa.fa-quora(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.hardware.q2.q}}
-                p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.hardware.q2.a}}
+                textarea(style="width:100%; background:  #eaf9de;" rows="15" ng-model="doc.hardware.q2.a") {{doc.hardware.q2.a}}
                 div(style="padding-left:50px;")
                     span インタビュアーのコメント
                     textarea(style="width:100%;" rows="3" ng-model="doc.hardware.q2.c") {{doc.hardware.q2.c}}
                 hr
                 i.fa.fa-quora(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.hardware.q3.q}}
-                p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.hardware.q3.a}}
+                textarea(style="width:100%; background:  #eaf9de;" rows="15" ng-model="doc.hardware.q3.a") {{doc.hardware.q3.a}}
                 div(style="padding-left:50px;")
                     span インタビュアーのコメント
                     textarea(style="width:100%;" rows="3" ng-model="doc.hardware.q3.c") {{doc.hardware.q3.c}}
                 div(ng-show="doc.hardware.q4.q")
                     hr
                     i.fa.fa-quora(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.hardware.q4.q}}
-                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.hardware.q4.a}}
+                    textarea(style="width:100%; background:  #eaf9de;" rows="15" ng-model="doc.hardware.q4.a") {{doc.hardware.q4.a}}
                     div(style="padding-left:50px;")
                         span インタビュアーのコメント
                         textarea(style="width:100%;" rows="3" ng-model="doc.hardware.q4.c") {{doc.hardware.q4.c}}
                 div(ng-show="doc.hardware.q5.q")
                     hr
                     i.fa.fa-quora(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.hardware.q5.q}}
-                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.hardware.q5.a}}
+                    textarea(style="width:100%; background:  #eaf9de;" rows="15" ng-model="doc.hardware.q5.a") {{doc.hardware.q5.a}}
                     div(style="padding-left:50px;")
                         span インタビュアーのコメント
                         textarea(style="width:100%;" rows="3" ng-model="doc.hardware.q5.c") {{doc.hardware.q5.c}}
                 div(ng-show="doc.hardware.q6.q")
                     hr
                     i.fa.fa-quora(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.hardware.q6.q}}
-                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.hardware.q6.a}}
+                    textarea(style="width:100%; background:  #eaf9de;" rows="15" ng-model="doc.hardware.q6.a") {{doc.hardware.q6.a}}
                     div(style="padding-left:50px;")
                         span インタビュアーのコメント
                         textarea(style="width:100%;" rows="3" ng-model="doc.hardware.q6.c") {{doc.hardware.q6.c}}
                 div(ng-show="doc.hardware.q7.q")
                     hr
                     i.fa.fa-quora(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.hardware.q7.q}}
-                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.hardware.q7.a}}
+                    textarea(style="width:100%; background:  #eaf9de;" rows="15" ng-model="doc.hardware.q7.a") {{doc.hardware.q7.a}}
                     div(style="padding-left:50px;")
                         span インタビュアーのコメント
                         textarea(style="width:100%;" rows="3" ng-model="doc.hardware.q7.c") {{doc.hardware.q7.c}}
@@ -183,47 +178,47 @@ block content
                 |  ロボットのソフトウェア
               .card-body
                 i.fa.fa-quora(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.software.q1.q}}
-                p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.software.q1.a}}
+                textarea(style="width:100%; background:  #eaf9de;" rows="15" ng-model="doc.software.q1.a") {{doc.software.q1.a}}
                 div(style="padding-left:50px;")
                     span インタビュアーのコメント
                     textarea(style="width:100%;" rows="3" ng-model="doc.software.q1.c") {{doc.software.q1.c}}
                 hr
                 i.fa.fa-quora(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.software.q2.q}}
-                p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.software.q2.a}}
+                textarea(style="width:100%; background:  #eaf9de;" rows="15" ng-model="doc.software.q2.a") {{doc.software.q2.a}}
                 div(style="padding-left:50px;")
                     span インタビュアーのコメント
                     textarea(style="width:100%;" rows="3" ng-model="doc.software.q2.c") {{doc.software.q2.c}}
                 hr
                 i.fa.fa-quora(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.software.q3.q}}
-                p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.software.q3.a}}
+                textarea(style="width:100%; background:  #eaf9de;" rows="15" ng-model="doc.software.q3.a") {{doc.software.q3.a}}
                 div(style="padding-left:50px;")
                     span インタビュアーのコメント
                     textarea(style="width:100%;" rows="3" ng-model="doc.software.q3.c") {{doc.software.q3.c}}
                 div(ng-show="doc.software.q4.q")
                     hr
                     i.fa.fa-quora(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.software.q4.q}}
-                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.software.q4.a}}
+                    textarea(style="width:100%; background:  #eaf9de;" rows="15" ng-model="doc.software.q4.a") {{doc.software.q4.a}}
                     div(style="padding-left:50px;")
                         span インタビュアーのコメント
                         textarea(style="width:100%;" rows="3" ng-model="doc.software.q4.c") {{doc.software.q4.c}}
                 div(ng-show="doc.software.q5.q")
                     hr
                     i.fa.fa-quora(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.software.q5.q}}
-                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.software.q5.a}}
+                    textarea(style="width:100%; background:  #eaf9de;" rows="15" ng-model="doc.software.q5.a") {{doc.software.q5.a}}
                     div(style="padding-left:50px;")
                         span インタビュアーのコメント
                         textarea(style="width:100%;" rows="3" ng-model="doc.software.q5.c") {{doc.software.q5.c}}
                 div(ng-show="doc.software.q6.q")
                     hr
                     i.fa.fa-quora(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.software.q6.q}}
-                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.software.q6.a}}
+                    textarea(style="width:100%; background:  #eaf9de;" rows="15" ng-model="doc.software.q6.a") {{doc.software.q6.a}}
                     div(style="padding-left:50px;")
                         span インタビュアーのコメント
                         textarea(style="width:100%;" rows="3" ng-model="doc.software.q6.c") {{doc.software.q6.c}}
                 div(ng-show="doc.software.q7.q")
                     hr
                     i.fa.fa-quora(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.software.q7.q}}
-                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.software.q7.a}}
+                    textarea(style="width:100%; background:  #eaf9de;" rows="15" ng-model="doc.software.q7.a") {{doc.software.q7.a}}
                     div(style="padding-left:50px;")
                         span インタビュアーのコメント
                         textarea(style="width:100%;" rows="3" ng-model="doc.software.q7.c") {{doc.software.q7.c}}
@@ -233,7 +228,7 @@ block content
                 i.fa.fa-book(aria-hidden='true')
                 |  大会への意気込み・目標
               .card-body
-                    p(style="white-space: pre-wrap;margin-left:30px;background:#f5f5f5;")  {{doc.ikigomi}}
+                    textarea(style="width:100%; background:  #eaf9de;" rows="15" ng-model="doc.ikigomi") {{doc.ikigomi}}
           br
           #attach.card
               h3.card-header
@@ -253,8 +248,8 @@ block content
               | インタービューの所感を入力してください
             .form-group
               textarea.form-control(ng-model='team.comment', rows='8')
-            h2 インタビュアーサイン
-            #int_sig(style="width: 100%;border: 1px dashed black;")
+            input(type='checkbox' ng-model='team.docPublic' id="public")
+            label.checkbox(for="public") 一般向けに公開
       br
       button.btn.btn-danger.btn-block(type='button', style='padding:30 0 30 0', ng-click='send()')
         i.fa.fa-paper-plane.fa-2x(aria-hidden='true')  インタビュー終了

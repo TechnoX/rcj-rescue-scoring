@@ -19,7 +19,9 @@ publicRouter.get('/:competitionid', function (req, res, next) {
   if (!ObjectId.isValid(id)) {
     return next()
   }
-  res.render('interview', {id: id, user: req.user})
+  if(auth.authCompetition(req.user,id,ACCESSLEVELS.ADMIN)) res.render('interview', {id: id, user: req.user, judge: 2})
+  else if(auth.authCompetition(req.user,id,ACCESSLEVELS.JUDGE)) res.render('interview', {id: id, user: req.user, judge: 1})
+  else res.render('interview', {id: id, user: req.user, judge: 0})
   //if(auth.authCompetition(req.user,id,ACCESSLEVELS.JUDGE)) res.render('interview', {id: id, user: req.user})
   //else res.render('access_denied', {user: req.user})
 })
@@ -36,6 +38,17 @@ privateRouter.get('/:competitionid/do/:teamid', function (req, res, next) {
   else res.render('access_denied', {user: req.user})
 })
 
+adminRouter.get('/:competitionid/pub/:teamid', function (req, res, next) {
+  const id = req.params.competitionid
+  const tid = req.params.teamid
+  
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+  if(auth.authCompetition(req.user,id,ACCESSLEVELS.ADMIN)) res.render('pub_interview', {id: id, tid: tid, user: req.user})
+  else res.render('access_denied', {user: req.user})
+})
+
 publicRouter.get('/:competitionid/view/:teamid', function (req, res, next) {
   const id = req.params.competitionid
   const tid = req.params.teamid
@@ -43,7 +56,8 @@ publicRouter.get('/:competitionid/view/:teamid', function (req, res, next) {
   if (!ObjectId.isValid(id)) {
     return next()
   }
-  res.render('view_interview', {id: id, tid: tid, user: req.user})
+  if(auth.authCompetition(req.user,id,ACCESSLEVELS.JUDGE))res.render('view_interview', {id: id, tid: tid, user: req.user, judge: 1})
+  else res.render('view_interview', {id: id, tid: tid, user: req.user, judge: 0})
   //if(auth.authCompetition(req.user,id,ACCESSLEVELS.JUDGE)) res.render('view_interview', {id: id, tid: tid, user: req.user})
   //else res.render('access_denied', {user: req.user})
 })

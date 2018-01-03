@@ -8,6 +8,7 @@ append scripts
   script.
     var competitionId = "#{id}"
     var teamId = "#{tid}"
+    var judge = "#{judge}"
   script(src='/javascripts/do_interview.js')
   script(src='/components/ng-file-upload/ng-file-upload-all.min.js')
   script(src='/components/lightbox2/dist/js/lightbox.min.js')
@@ -27,7 +28,7 @@ block content
     .col-md-1
     .col-md-10
       h1 {{team.name}} - {{"common.interview" | translate}}
-      button.btn.btn-secondary(style='margin:0 10px 10px 0;', type='button', ng-click="go('/interview/' + competitionId)")
+      button.btn.btn-secondary(style='margin:0 10px 10px 0;', type='button', ng-click="getParam('return')? go(getParam('return')):go('/interview/' + competitionId)")
         i.fa.fa-undo(aria-hidden='true') {{'common.back' | translate}}
       br
       h2 競技一覧
@@ -63,7 +64,7 @@ block content
                   button(ng-click="go('/maze/view/' + run._id + '?return=/interview/'+competitionId + '/do/'+teamId)" class='btn btn-info' style="width:45%; margin-right:5px;") {{'common.view' | translate}}
       br
       
-      #picture.card
+      #picture.card(ng-if="#{judge == 1}")
           h3.card-header
             i.fa.fa-picture-o(aria-hidden='true')
             |  写真
@@ -94,7 +95,7 @@ block content
                 p チームの所属団体
                 h3 {{doc.dantai}}
           br
-          #member.card
+          #member.card(ng-if="#{judge == 1}")
               h3.card-header
                 i.fa.fa-book(aria-hidden='true')
                 |  チームメンバー
@@ -236,8 +237,9 @@ block content
               | インタービューの所感を入力してください
             .form-group
               textarea.form-control(ng-model='team.comment', rows='8' readonly)
-            h2 インタビュアーサイン
-            img(ng-src='{{team.interviewer}}', style='max-width: 100%;height: auto;')
+            div(ng-if="#{judge == 1}")
+                h2 インタビュアーサイン
+                img(ng-src='{{team.interviewer}}', style='max-width: 100%;height: auto;')
       br
       br
 
