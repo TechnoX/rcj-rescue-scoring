@@ -16,10 +16,13 @@
 </nav>
 <div class="nav-cont">
     <div class="tilearea" ng-show = "exist">
-        <div ng-repeat="r in range(length)" class="row" tile-load-finished='' style="margin-right:0px;margin-left:0px">
-            <div ng-repeat="c in range(width)" class="slot">
-                <tile tile="mtiles[c+','+r+','+z]" ng-repeat="z in range(height)" ng-style="{'opacity': getOpacity(c,r)}" ng-click="showElements(c,r,z)">
-                </tile>
+        <div style="clear:both;"></div>
+        <div class="mx-auto" style="margin-top:5px;" id="wrapTile">
+            <div ng-repeat="r in range(length)" class="row" tile-load-finished='' style="margin-right:0px;margin-left:0px">
+                <div ng-repeat="c in range(width)" class="slot">
+                    <tile tile="mtiles[c+','+r+','+z]" ng-repeat="z in range(height)" ng-style="{'opacity': getOpacity(c,r)}" ng-click="showElements(c,r,z)">
+                    </tile>
+                </div>
             </div>
         </div>
     </div>

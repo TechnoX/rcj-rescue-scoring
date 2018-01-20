@@ -69,7 +69,7 @@
     </div>
     <div ng-show="checked">
         <div class="row">
-            <div class="col-md-6" style="margin-bottom:30px;">
+            <div class="col-md-4 col-lg-3" style="margin-bottom:30px;">
                 <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleTime()"><i class="fa fa-clock-o" aria-hidden="true"> {{ startedTime ? 'maze.judge.tim_stop' : 'maze.judge.tim_start' |translate }}</i></button>
                 <button ng-show="!startedTime && time!=0" class="btn btn-warning" style="margin:0 10px 10px 0;" type="button" ng-click="timeReset()"><i class="fa fa-clock-o" aria-hidden="true"> {{'maze.judge.tim_reset' | translate}}</i></button>
                 <div class="alert alert-info blink" role="alert" ng-show="!startedTime && minutes < 8">
@@ -81,7 +81,7 @@
                         <div class="card-body">
                             <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="randomDice()"><i class="fa fa-random" aria-hidden="true">{{'maze.judge.random' | translate}}</i></button>
                             <div class="row">
-                                <div class="col-4" style="position: relative;" ng-repeat='i in range(6)'>
+                                <div class="col-4" style="padding:0 0 0 0;position: relative;" ng-repeat='i in range(6)'>
                                     <img ng-src="/images/dice/{{i+1}}.png" class="img-thumbnail" width=100% ng-style="{'background-color': diceSelect==i?'#2ecc71':'#95a5a6' , 'opacity':diceSelect==i?'1':'0.7' }" ng-click="changeMap(i)">
                                 </div>
                             </div>
@@ -128,7 +128,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 tilearea">
+            <div class="col-md-8 col-lg-9 tilearea">
                 <div style="text-align:left;float:left;">
                     <div class="btn-group">
                       <span class="input-group-addon"><i class="fa fa-arrows-v" aria-hidden="true"></i></span>
