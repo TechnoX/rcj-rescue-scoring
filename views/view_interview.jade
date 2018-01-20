@@ -52,7 +52,7 @@ block content
                 td {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
                 td {{run.LoPsNum}}
                 td
-                  button(ng-click="go('/line/view/' + run._id + '?return=/interview/'+competitionId + '/do/'+teamId)" class='btn btn-info' style="width:45%; margin-right:5px;") {{'common.view' | translate}}
+                  button(ng-click="go('/line/view/' + run._id + '?return=/interview/'+competitionId + '/view/'+teamId)" class='btn btn-info' style="width:45%; margin-right:5px;") {{'common.view' | translate}}
               tr(ng-repeat='run in mruns | filter: teamId | orderBy:"[startTime]" ')
                 td(ng-bind='run.round.name' data-content="{{'common.round' | translate}}")
                 td(ng-bind='run.field.name' data-content="{{'common.field' | translate}}")
