@@ -561,8 +561,8 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, 
 function tile_size() {
     $(function () {
         try {
-            var tilesize_w = (window.innerWidth - 100) / width;
-            var tilesize_h = (window.innerHeight * 0.7) / length;
+            var tilesize_w = (window.innerWidth - 2*width) / width;
+            var tilesize_h = (window.innerHeight -230) / length;
             console.log('tilesize_w:' + tilesize_w);
             console.log('tilesize_h:' + tilesize_h);
             if (tilesize_h > tilesize_w) var tilesize = tilesize_w;
@@ -575,8 +575,8 @@ function tile_size() {
             $('.tile-font-1-25').css('font-size', tilesize / 2.5);
             $('.slot').css('height', tilesize);
             $('.slot').css('width', tilesize);
-            $('#card_area').css('height', (window.innerHeight - 150));
             $('.chnumtxt').css('font-size', tilesize / 6);
+            $('#wrapTile').css('width', (tilesize+3)*width);
             if (b.height() == 0) setTimeout("tile_size()", 500);
         } catch (e) {
             setTimeout("tile_size()", 1000);

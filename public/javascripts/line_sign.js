@@ -415,11 +415,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             //console.log('コンテンツ本体：' + b.height() + '×' + b.width());
             //console.log('window：' + window.innerHeight);
             if($scope.sRotate%180 == 0){
-                var tilesize_w = ($('.tilearea').width() - 50) / width;
-                var tilesize_h = (window.innerHeight - 130) / length;
+                var tilesize_w = ($('.tilearea').width() -2*width) / width;
+                var tilesize_h = (window.innerHeight - 110) / length;
             }else{
-                var tilesize_w = ($('.tilearea').width() - 50) / length;
-                var tilesize_h = (window.innerHeight - 130) / width;
+                var tilesize_w = ($('.tilearea').width() - 2*length) / length;
+                var tilesize_h = (window.innerHeight - 110) / width;
             }
             
             //console.log('tilesize_w:' + tilesize_w);
@@ -434,7 +434,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $('.tile-font-1-25').css('font-size', tilesize / 2.5);
             $('.slot').css('height', tilesize);
             $('.slot').css('width', tilesize);
-            $('.chnumtxt').css('font-size', tilesize / 8);
+            $('.chnumtxt').css('font-size', tilesize / 6);
             
             if($scope.sRotate%180 == 0){
                 $('#wrapTile').css('width', (tilesize+3)*width);
@@ -442,13 +442,12 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $('#wrapTile').css('width', (tilesize+3)*length);
             }
 
-            $('#card_area').css('height', (window.innerHeight - 120));
+            $('#card_area').css('height', (window.innerHeight - 60));
             if (b.height() == 0) $timeout($scope.tile_size, 500);
         } catch (e) {
             $timeout($scope.tile_size, 500);
         }
 }
-
 
 var currentWidth = -1;
 

@@ -670,8 +670,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             var b = $('.tilearea');
             
             if($scope.sRotate%180 == 0){
-                var tilesize_w = (b.width() - (20 + 11 * (width + 1))) / width;
-                var tilesize_h = (window.innerHeight - (130 + 11 * (length + 1))) /length;
+                var tilesize_w = (b.width()-2*(width+1)) / (width+1 + (width+1)/12);
+                console.log(tilesize_w);
+                var tilesize_h = (window.innerHeight - 130) /(length + length/12*(length+1));
             }else{
                 var tilesize_w = (b.width() - (20 + 11 * (length + 1))) / length;
                 var tilesize_h = (window.innerHeight - (130 + 11 * (width + 1))) /width;
@@ -686,6 +687,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $('.tile-image').css('height', tilesize);
             $('.tile-image').css('width', tilesize);
             $('.tile-font').css('font-size', tilesize - 10);
+            $('.wall').css('padding', tilesize/12);
             if (b.height() == 0) $timeout($scope.tile_size, 500);
             
             if($scope.sRotate%180 == 0){
