@@ -6,15 +6,12 @@ table.map {
 table.map th {
     font-weight: bold;
     vertical-align: top;
-    border: 1px solid #ccc;
 }
 
 table.map td {
-    padding: 5px;
     vertical-align: top;
     border: 1px solid #ccc;
     text-align: left;
-    border: 1px solid grey;
 }
 
 table.map tr:nth-child(2n+1) {
@@ -42,7 +39,7 @@ table tr:nth-child(even) {
 
 .wall {
     background-color: navy;
-    padding: 5px!important;
+    padding: 5px;
 }
 
 .wall.linear {
