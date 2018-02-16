@@ -161,27 +161,21 @@ module.exports.user = User;
 
 //User.remove({}, function (err) {
 
-var testUser = new User({
-  username       : "admin",
-  password       : "adminpass",
-  admin          : true,
-  superDuperAdmin: true
-});
-var testUser2 = new User({
-  username    : "judge",
-  password    : "judgepass",
-  admin          : false,
-  competitions: []
+var DefaultUser = new User({
+  username       : process.env.dUsername,
+  password       :  process.env.dPassword,
+  admin          :  process.env.dAdmin,
+  superDuperAdmin:  process.env.dSDAdmin
 });
 
-User.findOne({username: testUser.username}, function (err, dbUser) {
+User.findOne({username: DefaultUser.username}, function (err, dbUser) {
   if (dbUser) {
-    if (testUser.password != null) {
-      dbUser.password = testUser.password
+    if (DefaultUser.password != null) {
+      dbUser.password = DefaultUser.password
     }
-    dbUser.admin = testUser.admin
-    dbUser.superDuperAdmin = testUser.superDuperAdmin
-    dbUser.competitions = testUser.competitions
+    dbUser.admin = DefaultUser.admin
+    dbUser.superDuperAdmin = DefaultUser.superDuperAdmin
+    dbUser.competitions = DefaultUser.competitions
     
     //logger.debug(dbUser)
     
@@ -191,7 +185,7 @@ User.findOne({username: testUser.username}, function (err, dbUser) {
       }
     })
   } else {
-    testUser.save(function (err) {
+    DefaultUser.save(function (err) {
       if (err) {
         logger.error(err)
       }
@@ -201,31 +195,3 @@ User.findOne({username: testUser.username}, function (err, dbUser) {
     });
   }
 })
-
-User.findOne({username: testUser2.username}, function (err, dbUser) {
-  if (dbUser) {
-    if (testUser2.password != null) {
-      dbUser.password = testUser2.password
-    }
-    dbUser.admin = testUser2.admin
-    dbUser.superDuperAdmin = testUser2.superDuperAdmin
-    dbUser.competitions = testUser2.competitions
-    
-    dbUser.save(function (err) {
-      if (err) {
-        logger.error(err)
-      }
-    })
-  } else {
-    testUser2.save(function (err) {
-      if (err) {
-        logger.error(err)
-      }
-      else {
-        console.log("saved judge user for the first time, this will only get saved if it is a new installation");
-      }
-    });
-  }
-})
-
-//})

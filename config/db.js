@@ -10,9 +10,7 @@ var env = require('node-env-file');
 env('process.env');
 
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.DB_CONNECT_STR, {
-  useMongoClient: true
-});
+mongoose.connect(process.env.DB_CONNECT_STR);
 var db = mongoose.connection;
 
 db.on('error', function (err) {
