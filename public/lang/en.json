@@ -1,6 +1,6 @@
 {
     "language_name": "English",
-    "select_lang": "Choose a Language",
+    "select_lang": "Select a Language",
     "home": {
         "line": "Rescue Line",
         "maze": "Rescue Maze",
@@ -136,8 +136,9 @@
             "start": "@:line.view.start",
             "checkpoint": "@:line.view.checkpoint",
             "adjust": "Adjust time:",
-            "confirm_text": "Please press the button below and go to the score / time confirmation screen. ",
-            "toSign": "To confirmation screen",
+            "confirm_text": "Please press the red button and go to the score / time confirmation screen. ",
+            "disabled_confirm_text": "Please stop the timer before you get to the score / time confirmation screen.",
+            "toSign": "Go NEXT!",
             "m_score": "@:line.view.m_score",
             "m_score_d": "@:line.view.m_score_d",
             "js": {
@@ -238,6 +239,7 @@
             "return": "@:maze.view.return",
             "adjust": "@:line.judge.adjust",
             "confirm_text": "@:line.judge.confirm_text",
+            "disabled_confirm_text": "@:line.judge.disabled_confirm_text",
             "toSign": "@:line.judge.toSign",
             "m_score": "@:maze.view.m_score",
             "m_reach": "@:maze.view.m_reach",
