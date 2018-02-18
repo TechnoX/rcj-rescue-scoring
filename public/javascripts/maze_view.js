@@ -433,7 +433,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $('.tile-image').css('height', tilesize);
             $('.tile-image').css('width', tilesize);
             $('.tile-font').css('font-size', tilesize - 10);
-            $('.wall').css('padding', tilesize/12);
+            $('.cell').css('padding', tilesize/12);
             if (b.height() == 0) $timeout($scope.tile_size, 500);
             
             if($scope.sRotate%180 == 0){

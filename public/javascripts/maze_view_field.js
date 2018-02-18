@@ -480,6 +480,7 @@ function tile_size() {
       $('.tile-image').css('height', tilesize);
       $('.tile-image').css('width', tilesize);
       $('.tile-font').css('font-size', tilesize - 10);
+      $('.cell').css('padding', tilesize/12);
       if (b.height() == 0) setTimeout("tile_size()", 500);
     } catch (e) {
       setTimeout("tile_size()", 500);
