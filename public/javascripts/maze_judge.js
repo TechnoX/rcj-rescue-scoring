@@ -20,6 +20,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.z = 0;
     $scope.startedTime = false;
     $scope.time = 0;
+    $scope.startUnixTime = 0;
+    var date = new Date();
+    var prevTime = 0;
+
+
     $scope.lopProcessing = false;
     
     //$cookies.remove('sRotate')
@@ -53,7 +58,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         // Verified time by timekeeper
         $scope.minutes = response.data.time.minutes;
         $scope.seconds = response.data.time.seconds;
-        $scope.time = $scope.minutes * 60 * 1000 + $scope.seconds * 1000;
+        $scope.time = ($scope.minutes * 60 + $scope.seconds)*1000;
+        prevTime = $scope.time;
 
         // Scoring elements of the tiles
         for (var i = 0; i < response.data.tiles.length; i++) {
@@ -155,9 +161,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.timeReset = function () {
         playSound(sClick);
+        prevTime = 0;
         $scope.time = 0;
-        $scope.minutes = 0;
-        $scope.seconds = 0;
         $scope.saveEverything();
     }
 
@@ -178,7 +183,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             LoPs: $scope.LoPs,
             time: {
                 minutes: Math.floor($scope.time / 60000),
-                seconds: (Math.floor($scope.time % 60000)) / 1000
+                seconds: Math.floor(($scope.time % 60000) / 1000)
             }
         }).then(function (response) {
             console.log(response);
@@ -198,7 +203,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             LoPs: $scope.LoPs,
             time: {
                 minutes: Math.floor($scope.time / 60000),
-                seconds: (Math.floor($scope.time % 60000)) / 1000
+                seconds: Math.floor(($scope.time % 60000) / 1000)
             }
         }).then(function (response) {
             console.log(response);
@@ -226,19 +231,20 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         });
     }
 
-
     var tick = function () {
-        $scope.time += 1000;
-        if ($scope.time >= 480000) {
-            playSound(sTimeup);
-            $scope.startedTime = !$scope.startedTime;
-            $scope.minutes = Math.floor($scope.time / 60000)
-            $scope.seconds = (Math.floor($scope.time % 60000)) / 1000
-            $scope.saveEverything();
-            swal(txt_timeup, txt_timeup_mes, "info");
-        }
         if ($scope.startedTime) {
-            $timeout(tick, 1000);
+            date = new Date();
+            $scope.time = prevTime + (date.getTime() - $scope.startUnixTime);
+            $scope.minutes = Math.floor($scope.time / 60000);
+            $scope.seconds = Math.floor(($scope.time % 60000) / 1000);
+            if ($scope.time >= 480000) {
+                playSound(sTimeup);
+                $scope.startedTime = !$scope.startedTime;
+                $scope.time = 480000;
+                $scope.saveEverything();
+                swal(txt_timeup, txt_timeup_mes, "info");
+            }
+            $timeout(tick, 100);
         }
     }
 
@@ -248,12 +254,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.startedTime = !$scope.startedTime;
         if ($scope.startedTime) {
             // Start the timer
-            $timeout(tick, $scope.tickInterval);
+            $timeout(tick, 0);
+            date = new Date();
+            $scope.startUnixTime = date.getTime();
             $http.put("/api/runs/maze/" + runId, {
                 status: 2,
                 time: {
                     minutes: Math.floor($scope.time / 60000),
-                    seconds: (Math.floor($scope.time % 60000)) / 1000
+                    seconds: Math.floor(($scope.time % 60000) / 1000)
                 }
             }).then(function (response) {
 
@@ -262,8 +270,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             });
         } else {
             // Save everything when you stop the time
-            $scope.minutes = Math.floor($scope.time / 60000)
-            $scope.seconds = (Math.floor($scope.time % 60000)) / 1000
+            date = new Date();
+            $scope.time = prevTime + (date.getTime() - $scope.startUnixTime);
+            prevTime = $scope.time;
             $scope.saveEverything();
         }
     }
@@ -276,7 +285,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             exitBonus: $scope.exitBonus,
             time: {
                 minutes: Math.floor($scope.time / 60000),
-                seconds: (Math.floor($scope.time % 60000)) / 1000
+                seconds: Math.floor(($scope.time % 60000) / 1000)
             }
         }).then(function (response) {
             $scope.score = response.data.score;
@@ -544,7 +553,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 },
                 time: {
                     minutes: Math.floor($scope.time / 60000),
-                    seconds: (Math.floor($scope.time % 60000)) / 1000
+                    seconds: Math.floor(($scope.time % 60000) / 1000)
                 }
             };
             console.log(httpdata);
@@ -586,7 +595,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 },
                 time: {
                     minutes: Math.floor($scope.time / 60000),
-                    seconds: (Math.floor($scope.time % 60000)) / 1000
+                    seconds: Math.floor(($scope.time % 60000) / 1000)
                 }
             };
             console.log(httpdata);
@@ -606,7 +615,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
         // Scoring elements of the tiles
         run.tiles = $scope.tiles;
-
+        $scope.minutes = Math.floor($scope.time / 60000)
+        $scope.seconds = Math.floor(($scope.time % 60000) / 1000)
         run.time = {
             minutes: $scope.minutes,
             seconds: $scope.seconds
@@ -687,7 +697,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $('.tile-image').css('height', tilesize);
             $('.tile-image').css('width', tilesize);
             $('.tile-font').css('font-size', tilesize - 10);
-            $('.wall').css('padding', tilesize/12);
+            $('.cell').css('padding', tilesize/12);
             if (b.height() == 0) $timeout($scope.tile_size, 500);
             
             if($scope.sRotate%180 == 0){

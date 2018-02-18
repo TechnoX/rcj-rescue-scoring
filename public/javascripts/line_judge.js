@@ -60,15 +60,18 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.startedScoring = false;
     $scope.startedTime = false;
     $scope.time = 0;
+    $scope.startUnixTime = 0;
     $scope.processing = new Array();
     $scope.rprocessing = false;
 
+    var date = new Date();
+    var prevTime = 0;
+
     //$cookies.remove('sRotate')
-    if($cookies.get('sRotate')){
+    if ($cookies.get('sRotate')) {
         $scope.sRotate = Number($cookies.get('sRotate'));
-    }
-    else $scope.sRotate = 0;
-    
+    } else $scope.sRotate = 0;
+
 
 
     // Scoring elements of the tiles
@@ -84,7 +87,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $timeout($scope.tile_size, 200);
     }
 
-    function loadNewRun(){
+    function loadNewRun() {
         $http.get("/api/runs/line/" + runId +
             "?populate=true").then(function (response) {
 
@@ -105,7 +108,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             // Verified time by timekeeper
             $scope.minutes = response.data.time.minutes;
             $scope.seconds = response.data.time.seconds;
-            $scope.time = $scope.minutes * 60 * 1000 + $scope.seconds * 1000;
+            $scope.time = ($scope.minutes * 60 + $scope.seconds)*1000;
+            prevTime = $scope.time;
 
             // Scoring elements of the tiles
             $scope.stiles = response.data.tiles;
@@ -131,16 +135,16 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.mtiles = {};
                 var flag = false;
                 var ntile = {
-                        scored : false,
-                        isDropTile : false
+                    scored: false,
+                    isDropTile: false
                 }
-                while($scope.stiles.length < response.data.indexCount){
+                while ($scope.stiles.length < response.data.indexCount) {
                     $scope.stiles.push(ntile);
                     flag = true;
                 }
-                if(flag){
+                if (flag) {
                     $http.put("/api/runs/line/" + runId, {
-                        tiles : $scope.stiles
+                        tiles: $scope.stiles
                     }).then(function (response) {
                         console.log("Run Score Tileset Updated")
                         loadNewRun();
@@ -192,7 +196,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             }
         });
     }
-    
+
     loadNewRun();
 
 
@@ -206,9 +210,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.TimeReset = function () {
         playSound(sClick);
+        prevTime = 0;
         $scope.time = 0;
-        $scope.minutes = 0;
-        $scope.seconds = 0;
         $scope.retired = false;
         $scope.saveEverything();
     }
@@ -236,21 +239,21 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $timeout($scope.tile_size, 500);
 
     }
-    
-    $scope.changeFloor = function (z){
+
+    $scope.changeFloor = function (z) {
         playSound(sClick);
         $scope.z = z;
     }
-    
-    $scope.tileRot = function (r){
+
+    $scope.tileRot = function (r) {
         playSound(sClick);
         $scope.sRotate += r;
-        if($scope.sRotate >= 360)$scope.sRotate -= 360;
-        else if($scope.sRotate < 0) $scope.sRotate+= 360;
+        if ($scope.sRotate >= 360) $scope.sRotate -= 360;
+        else if ($scope.sRotate < 0) $scope.sRotate += 360;
         $timeout($scope.tile_size, 0);
-        
+
         $cookies.put('sRotate', $scope.sRotate, {
-          path: '/'
+            path: '/'
         });
     }
 
@@ -267,7 +270,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             LoPs: $scope.LoPs,
             time: {
                 minutes: Math.floor($scope.time / 60000),
-                seconds: (Math.floor($scope.time % 60000)) / 1000
+                seconds: Math.floor(($scope.time % 60000) / 1000)
             }
         }).then(function (response) {
             console.log(response);
@@ -289,7 +292,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             LoPs: $scope.LoPs,
             time: {
                 minutes: Math.floor($scope.time / 60000),
-                seconds: (Math.floor($scope.time % 60000)) / 1000
+                seconds: Math.floor(($scope.time % 60000) / 1000)
             }
         }).then(function (response) {
             console.log(response);
@@ -298,7 +301,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         }, function (response) {
             console.log("Error: " + response.statusText);
         });
-        if ($scope.LoPs[index] >= 3 &&!last){
+        if ($scope.LoPs[index] >= 3 && !last) {
             playSound(sInfo);
             swal(txt_lops, txt_lops_mes, "info");
         }
@@ -316,7 +319,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 rescuedLiveVictims: $scope.rescuedLiveVictims,
                 time: {
                     minutes: Math.floor($scope.time / 60000),
-                    seconds: (Math.floor($scope.time % 60000)) / 1000
+                    seconds: Math.floor(($scope.time % 60000) / 1000)
                 }
             }).then(function (response) {
                 $scope.score = response.data.score;
@@ -334,7 +337,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 rescuedDeadVictims: $scope.rescuedDeadVictims,
                 time: {
                     minutes: Math.floor($scope.time / 60000),
-                    seconds: (Math.floor($scope.time % 60000)) / 1000
+                    seconds: Math.floor(($scope.time % 60000) / 1000)
                 }
             }).then(function (response) {
                 $scope.score = response.data.score;
@@ -354,7 +357,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 rescuedLiveVictims: $scope.rescuedLiveVictims,
                 time: {
                     minutes: Math.floor($scope.time / 60000),
-                    seconds: (Math.floor($scope.time % 60000)) / 1000
+                    seconds: Math.floor(($scope.time % 60000) / 1000)
                 }
             }).then(function (response) {
                 $scope.score = response.data.score;
@@ -381,19 +384,24 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 
     var tick = function () {
-        $scope.time += 1000;
-        if ($scope.time >= 480000) {
-            playSound(sTimeup);
-            $scope.startedTime = !$scope.startedTime;
-            $scope.minutes = Math.floor($scope.time / 60000)
-            $scope.seconds = (Math.floor($scope.time % 60000)) / 1000
-            $scope.saveEverything();
-            swal(txt_timeup, txt_timeup_mes, "info");
-        }
         if ($scope.startedTime) {
-            $timeout(tick, 1000);
+            date = new Date();
+            $scope.time = prevTime + (date.getTime() - $scope.startUnixTime);
+            $scope.minutes = Math.floor($scope.time / 60000);
+            $scope.seconds = Math.floor(($scope.time % 60000) / 1000);
+            if ($scope.time >= 480000) {
+                playSound(sTimeup);
+                $scope.startedTime = !$scope.startedTime;
+                $scope.time = 480000;
+                $scope.saveEverything();
+                swal(txt_timeup, txt_timeup_mes, "info");
+            }
+            $timeout(tick, 100);
         }
+
+
     }
+
 
     $scope.toggleTime = function () {
         playSound(sClick);
@@ -401,12 +409,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.startedTime = !$scope.startedTime;
         if ($scope.startedTime) {
             // Start the timer
-            $timeout(tick, $scope.tickInterval);
+            $timeout(tick, 0);
+            date = new Date();
+            $scope.startUnixTime = date.getTime();
             $http.put("/api/runs/line/" + runId, {
                 status: 2,
                 time: {
                     minutes: Math.floor($scope.time / 60000),
-                    seconds: (Math.floor($scope.time % 60000)) / 1000
+                    seconds: Math.floor(($scope.time % 60000) / 1000)
                 }
             }).then(function (response) {
 
@@ -415,8 +425,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             });
         } else {
             // Save everything when you stop the time
-            $scope.minutes = Math.floor($scope.time / 60000)
-            $scope.seconds = (Math.floor($scope.time % 60000)) / 1000
+            date = new Date();
+            $scope.time = prevTime + (date.getTime() - $scope.startUnixTime);
+            prevTime = $scope.time;
             $scope.saveEverything();
         }
     }
@@ -433,7 +444,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             showedUp: $scope.showedUp,
             time: {
                 minutes: Math.floor($scope.time / 60000),
-                seconds: (Math.floor($scope.time % 60000)) / 1000
+                seconds: Math.floor(($scope.time % 60000) / 1000)
             }
         }).then(function (response) {
             $scope.score = response.data.score;
@@ -446,16 +457,16 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         playSound(sClick);
         $scope.exitBonus = !$scope.exitBonus
         $scope.exitBonusP = true
-        if($scope.exitBonus){
+        if ($scope.exitBonus) {
             $scope.startedTime = false
             $scope.minutes = Math.floor($scope.time / 60000)
-            $scope.seconds = (Math.floor($scope.time % 60000)) / 1000
+            $scope.seconds = Math.floor(($scope.time % 60000) / 1000)
         }
         $http.put("/api/runs/line/" + runId, {
             exitBonus: $scope.exitBonus,
             time: {
                 minutes: Math.floor($scope.time / 60000),
-                seconds: (Math.floor($scope.time % 60000)) / 1000
+                seconds: Math.floor(($scope.time % 60000) / 1000)
             }
         }).then(function (response) {
             $scope.score = response.data.score;
@@ -472,7 +483,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             evacuationLevel: $scope.evacuationLevel,
             time: {
                 minutes: Math.floor($scope.time / 60000),
-                seconds: (Math.floor($scope.time % 60000)) / 1000
+                seconds: Math.floor(($scope.time % 60000) / 1000)
             }
         }).then(function (response) {
             $scope.score = response.data.score;
@@ -489,7 +500,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             tiles: {},
             time: {
                 minutes: Math.floor($scope.time / 60000),
-                seconds: (Math.floor($scope.time % 60000)) / 1000
+                seconds: Math.floor(($scope.time % 60000) / 1000)
             }
         };
 
@@ -618,15 +629,15 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 stiles: function () {
                     return $scope.stiles;
                 },
-                sRotate: function(){
+                sRotate: function () {
                     return $scope.sRotate;
                 },
-                startTile: function(){
+                startTile: function () {
                     return $scope.startTile;
                 },
                 nineTile: function () {
                     var nine = []
-                    if($scope.sRotate == 0){
+                    if ($scope.sRotate == 0) {
                         nine[0] = $scope.mtiles[(x - 1) + ',' + (y - 1) + ',' + z];
                         nine[1] = $scope.mtiles[(x) + ',' + (y - 1) + ',' + z];
                         nine[2] = $scope.mtiles[(x + 1) + ',' + (y - 1) + ',' + z];
@@ -636,7 +647,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                         nine[6] = $scope.mtiles[(x - 1) + ',' + (y + 1) + ',' + z];
                         nine[7] = $scope.mtiles[(x) + ',' + (y + 1) + ',' + z];
                         nine[8] = $scope.mtiles[(x + 1) + ',' + (y + 1) + ',' + z];
-                    }else if($scope.sRotate == 180){
+                    } else if ($scope.sRotate == 180) {
                         nine[8] = $scope.mtiles[(x - 1) + ',' + (y - 1) + ',' + z];
                         nine[7] = $scope.mtiles[(x) + ',' + (y - 1) + ',' + z];
                         nine[6] = $scope.mtiles[(x + 1) + ',' + (y - 1) + ',' + z];
@@ -646,7 +657,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                         nine[2] = $scope.mtiles[(x - 1) + ',' + (y + 1) + ',' + z];
                         nine[1] = $scope.mtiles[(x) + ',' + (y + 1) + ',' + z];
                         nine[0] = $scope.mtiles[(x + 1) + ',' + (y + 1) + ',' + z];
-                    }else if($scope.sRotate == 90){
+                    } else if ($scope.sRotate == 90) {
                         nine[2] = $scope.mtiles[(x - 1) + ',' + (y - 1) + ',' + z];
                         nine[5] = $scope.mtiles[(x) + ',' + (y - 1) + ',' + z];
                         nine[8] = $scope.mtiles[(x + 1) + ',' + (y - 1) + ',' + z];
@@ -656,7 +667,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                         nine[0] = $scope.mtiles[(x - 1) + ',' + (y + 1) + ',' + z];
                         nine[3] = $scope.mtiles[(x) + ',' + (y + 1) + ',' + z];
                         nine[6] = $scope.mtiles[(x + 1) + ',' + (y + 1) + ',' + z];
-                    }else if($scope.sRotate == 270){
+                    } else if ($scope.sRotate == 270) {
                         nine[6] = $scope.mtiles[(x - 1) + ',' + (y - 1) + ',' + z];
                         nine[3] = $scope.mtiles[(x) + ',' + (y - 1) + ',' + z];
                         nine[0] = $scope.mtiles[(x + 1) + ',' + (y - 1) + ',' + z];
@@ -676,7 +687,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 tiles: $scope.stiles,
                 time: {
                     minutes: Math.floor($scope.time / 60000),
-                    seconds: (Math.floor($scope.time % 60000)) / 1000
+                    seconds: Math.floor(($scope.time % 60000) / 1000)
                 }
             }).then(function (response) {
                 $scope.score = response.data.score;
@@ -697,6 +708,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         run.showedUp = $scope.showedUp;
         run.started = $scope.started;
         run.tiles = $scope.stiles;
+        $scope.minutes = Math.floor($scope.time / 60000)
+        $scope.seconds = Math.floor(($scope.time % 60000) / 1000)
         run.time = {
             minutes: $scope.minutes,
             seconds: $scope.seconds
@@ -753,19 +766,19 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             });
         }
     };
-    
+
     $scope.getParam = function (key) {
         var str = location.search.split("?");
         if (str.length < 2) {
-          return "";
+            return "";
         }
 
         var params = str[1].split("&");
         for (var i = 0; i < params.length; i++) {
-          var keyVal = params[i].split("=");
-          if (keyVal[0] == key && keyVal.length == 2) {
-            return decodeURIComponent(keyVal[1]);
-          }
+            var keyVal = params[i].split("=");
+            if (keyVal[0] == key && keyVal.length == 2) {
+                return decodeURIComponent(keyVal[1]);
+            }
         }
         return "";
     }
@@ -782,20 +795,20 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             tile.y == $scope.startTile.y &&
             tile.z == $scope.startTile.z;
     }
-    
+
     $scope.tile_size = function () {
         try {
             var b = $('.tilearea');
             //console.log('コンテンツ本体：' + b.height() + '×' + b.width());
             //console.log('window：' + window.innerHeight);
-            if($scope.sRotate%180 == 0){
-                var tilesize_w = ($('.tilearea').width() -2*width) / width;
+            if ($scope.sRotate % 180 == 0) {
+                var tilesize_w = ($('.tilearea').width() - 2 * width) / width;
                 var tilesize_h = (window.innerHeight - 110) / length;
-            }else{
-                var tilesize_w = ($('.tilearea').width() - 2*length) / length;
+            } else {
+                var tilesize_w = ($('.tilearea').width() - 2 * length) / length;
                 var tilesize_h = (window.innerHeight - 110) / width;
             }
-            
+
             //console.log('tilesize_w:' + tilesize_w);
             //console.log('tilesize_h:' + tilesize_h);
             if (tilesize_h > tilesize_w) var tilesize = tilesize_w;
@@ -809,11 +822,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $('.slot').css('height', tilesize);
             $('.slot').css('width', tilesize);
             $('.chnumtxt').css('font-size', tilesize / 8);
-            
-            if($scope.sRotate%180 == 0){
-                $('#wrapTile').css('width', (tilesize+3)*width);
-            }else{
-                $('#wrapTile').css('width', (tilesize+3)*length);
+
+            if ($scope.sRotate % 180 == 0) {
+                $('#wrapTile').css('width', (tilesize + 3) * width);
+            } else {
+                $('#wrapTile').css('width', (tilesize + 3) * length);
             }
 
             $('#card_area').css('height', (window.innerHeight - 60));
@@ -821,20 +834,20 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         } catch (e) {
             $timeout($scope.tile_size, 500);
         }
-}
-
-var currentWidth = -1;
-
-
-$(window).on('load resize', function () {
-    if (currentWidth == window.innerWidth) {
-        return;
     }
-    currentWidth = window.innerWidth;
 
-    $scope.tile_size();
+    var currentWidth = -1;
 
-});
+
+    $(window).on('load resize', function () {
+        if (currentWidth == window.innerWidth) {
+            return;
+        }
+        currentWidth = window.innerWidth;
+
+        $scope.tile_size();
+
+    });
 
 }]);
 
@@ -843,7 +856,7 @@ $(window).on('load resize', function () {
 // Please note that $uibModalInstance represents a modal window (instance) dependency.
 // It is not the same as the $uibModal service used above.
 
-app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, stiles, nineTile, sRotate,startTile) {
+app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance,$timeout, mtile, stiles, nineTile, sRotate, startTile) {
     $scope.mtile = mtile;
     $scope.sRotate = sRotate;
     console.log(mtile);
@@ -856,7 +869,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, 
 
         if (mtile.x == Number(sp[0]) && mtile.y - 1 == Number(sp[1])) {
             //console.log("TOP");
-            switch(sRotate){
+            switch (sRotate) {
                 case 0:
                     $scope.next.top = mtile.index[i];
                     break;
@@ -870,11 +883,11 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, 
                     $scope.next.left = mtile.index[i];
                     break;
             }
-            
+
         }
         if (mtile.x + 1 == Number(sp[0]) && mtile.y == Number(sp[1])) {
             //console.log("RIGHT");
-            switch(sRotate){
+            switch (sRotate) {
                 case 0:
                     $scope.next.right = mtile.index[i];
                     break;
@@ -891,7 +904,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, 
         }
         if (mtile.x == Number(sp[0]) && mtile.y + 1 == Number(sp[1])) {
             //console.log("BOTTOM");
-            switch(sRotate){
+            switch (sRotate) {
                 case 0:
                     $scope.next.bottom = mtile.index[i];
                     break;
@@ -908,7 +921,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, 
         }
         if (mtile.x - 1 == Number(sp[0]) && mtile.y == Number(sp[1])) {
             //console.log("LEFT");
-            switch(sRotate){
+            switch (sRotate) {
                 case 0:
                     $scope.next.left = mtile.index[i];
                     break;
@@ -931,23 +944,25 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, 
         playSound(sClick);
         try {
             $scope.stiles[num].scored = !$scope.stiles[num].scored;
+            $timeout($uibModalInstance.close, 300);
         } catch (e) {
 
         }
 
     }
     
+
     $scope.tilerotate = function (tilerot) {
-        console.log(tilerot);
-        if(!tilerot)return $scope.sRotate;
+        //console.log(tilerot);
+        if (!tilerot) return $scope.sRotate;
         var ro = tilerot + $scope.sRotate;
-        if(ro >= 360)ro -= 360;
-        else if(ro < 0) ro+= 360;
+        if (ro >= 360) ro -= 360;
+        else if (ro < 0) ro += 360;
         console.log(ro);
         return ro;
     }
-    
-     $scope.isDropTile = function (tile) {
+
+    $scope.isDropTile = function (tile) {
         if (!tile || tile.index.length == 0)
             return;
         return $scope.stiles[tile.index[0]].isDropTile;
@@ -961,7 +976,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, 
             tile.y == startTile.y &&
             tile.z == startTile.z;
     }
-    
+
     $scope.rotateRamp = function (direction) {
         var ro;
         switch (direction) {
@@ -979,8 +994,8 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, 
                 break;
         }
         ro += $scope.sRotate;
-        if(ro >= 360)ro-=360;
-        else if(ro < 0)ro+=360;
+        if (ro >= 360) ro -= 360;
+        else if (ro < 0) ro += 360;
         switch (ro) {
             case 0:
                 return;
@@ -1010,10 +1025,10 @@ app.directive('tile', function () {
         templateUrl: '/templates/tile.html',
         link: function ($scope, element, attrs) {
             $scope.tilerotate = function (tilerot) {
-                if(!tilerot)return $scope.$parent.sRotate;
+                if (!tilerot) return $scope.$parent.sRotate;
                 var ro = tilerot + $scope.$parent.sRotate;
-                if(ro >= 360)ro -= 360;
-                else if(ro < 0) ro+= 360;
+                if (ro >= 360) ro -= 360;
+                else if (ro < 0) ro += 360;
                 return ro;
             }
             $scope.tileNumber = function (tile) {
@@ -1138,8 +1153,8 @@ app.directive('tile', function () {
                         break;
                 }
                 ro += $scope.$parent.sRotate;
-                if(ro >= 360)ro-=360;
-                else if(ro < 0)ro+=360;
+                if (ro >= 360) ro -= 360;
+                else if (ro < 0) ro += 360;
                 switch (ro) {
                     case 0:
                         return;
@@ -1168,46 +1183,46 @@ document.addEventListener('touchend', event => {
 
 
 
-window.AudioContext = window.AudioContext || window.webkitAudioContext;  
+window.AudioContext = window.AudioContext || window.webkitAudioContext;
 var context = new AudioContext();
 
-var getAudioBuffer = function(url, fn) {  
-  var req = new XMLHttpRequest();
-  req.responseType = 'arraybuffer';
+var getAudioBuffer = function (url, fn) {
+    var req = new XMLHttpRequest();
+    req.responseType = 'arraybuffer';
 
-  req.onreadystatechange = function() {
-    if (req.readyState === 4) {
-      if (req.status === 0 || req.status === 200) {
-        context.decodeAudioData(req.response, function(buffer) {
-          fn(buffer);
-        });
-      }
-    }
-  };
+    req.onreadystatechange = function () {
+        if (req.readyState === 4) {
+            if (req.status === 0 || req.status === 200) {
+                context.decodeAudioData(req.response, function (buffer) {
+                    fn(buffer);
+                });
+            }
+        }
+    };
 
-  req.open('GET', url, true);
-  req.send('');
+    req.open('GET', url, true);
+    req.send('');
 };
 
-var playSound = function(buffer) {  
-  var source = context.createBufferSource();
-  source.buffer = buffer;
-  source.connect(context.destination);
-  source.start(0);
+var playSound = function (buffer) {
+    var source = context.createBufferSource();
+    source.buffer = buffer;
+    source.connect(context.destination);
+    source.start(0);
 };
 
-var sClick,sInfo,sError,sTimeup;
-window.onload = function() {  
-  getAudioBuffer('/sounds/click.mp3', function(buffer) {
-      sClick = buffer;
-  });
-  getAudioBuffer('/sounds/info.mp3', function(buffer) {
-      sInfo = buffer;
-  });
-  getAudioBuffer('/sounds/error.mp3', function(buffer) {
-      sError = buffer;
-  });
-  getAudioBuffer('/sounds/timeup.mp3', function(buffer) {
-      sTimeup = buffer;
-  });
+var sClick, sInfo, sError, sTimeup;
+window.onload = function () {
+    getAudioBuffer('/sounds/click.mp3', function (buffer) {
+        sClick = buffer;
+    });
+    getAudioBuffer('/sounds/info.mp3', function (buffer) {
+        sInfo = buffer;
+    });
+    getAudioBuffer('/sounds/error.mp3', function (buffer) {
+        sError = buffer;
+    });
+    getAudioBuffer('/sounds/timeup.mp3', function (buffer) {
+        sTimeup = buffer;
+    });
 };
