@@ -260,20 +260,27 @@
             <div class="col-md-12 confirmation">
                 <div>
                     <h4>{{'line.judge.adjust'| translate}}</h4><br>
-                    <div class="input-group input-group-lg">
-                      <input type="tel" class="form-control" placeholder="" aria-label="min" aria-describedby="sizing-addon1"  min="0" max="8" ng-model="minutes">
-                      <span class="input-group-addon" id="sizing-addon1">{{'common.min' | translate}}</span>
-                      <input type="tel" class="form-control" placeholder="" aria-label="sec" aria-describedby="sizing-addon1" min="0" max="60" ng-model="seconds">
-                      <span class="input-group-addon" id="sizing-addon1">{{'common.sec' | translate}}</span>
+                    <strong ng-if="!startedTime">
+                        {{'line.judge.confirm_text'| translate}}
+                    </strong>
+                    <strong ng-if="startedTime" style="color:red">
+                        {{'line.judge.disabled_confirm_text'| translate}}
+                    </strong>
+                    <div class="row">
+                        <div class="col-sm-7" style="margin-bottom:10px;">
+                            <div class="input-group input-group-lg">
+                                <input type="tel" class="form-control" placeholder="" aria-label="min" aria-describedby="sizing-addon1" min="0" max="8" ng-model="minutes" ng-disabled="startedTime">
+                                <span class="input-group-addon" id="sizing-addon1">{{'common.min' | translate}}</span>
+                                <input type="tel" class="form-control" placeholder="" aria-label="sec" aria-describedby="sizing-addon1" min="0" max="60" ng-model="seconds" ng-disabled="startedTime">
+                                <span class="input-group-addon" id="sizing-addon1">{{'common.sec' | translate}}</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-5">
+                            <div style="text-align:right;">
+                                <button class="btn btn-danger" type="button" ng-click="confirm()" ng-disabled="startedTime"><i class="fa fa-arrow-right fa-2x" aria-hidden="true"> {{'line.judge.toSign'| translate}}</i></button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <br>
-                <strong>
-                    {{'line.judge.confirm_text'| translate}}
-                </strong>
-                <br>
-                <div style="text-align:center; margin: 10 10 10 10;">
-                    <button class="btn btn-danger" type="button" ng-click="confirm()"><i class="fa fa-arrow-right fa-2x" aria-hidden="true"> {{'line.judge.toSign'| translate}}</i></button>
                 </div>
             </div>
         </div>
