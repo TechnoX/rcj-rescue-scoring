@@ -15,7 +15,7 @@
     },
     "login": {
         "title" : "Staff Login",
-        "description": "Please enter the username and password notified by the competition manager and login.",
+        "description": "Please enter the username and password notified by the OC/TC and login.",
         "login" : "Login",
         "failed" : "Sorry, your username or password cannot be recognized.",
         "return" : "When login is successful, it returns to the you tried access page."
