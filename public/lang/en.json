@@ -55,6 +55,8 @@
         "comment": "Comment",
         "inspected": "Inspected",
         "interview": "Interview",
+        "public": "Public",
+        "private": "Private",
         "selectAll": "Select all runs",
         "delS": "Delete selected runs"
     },
@@ -62,6 +64,30 @@
         "title" : "Access denied",
         "description1" : "You do not have permission to access this page. Please login with authorized account.",
         "description2" : "If you suspect this screen is displayed due to any problem, please contact system administrator."
+    },
+    "interview":{
+        "runs": "All runs",
+        "ad_pic": "Additional pictures",
+        "me_pic": "Member's picture",
+        "ma_pic": "Machine picture",
+        "interviewer_field": "Interviewer entry field",
+        "field_description": "Please input the interview feeling",
+        "sign": "Interviewer sign",
+        "teaminfo": "Team information",
+        "teamname": "Team name",
+        "howtoread": "How to read the team name",
+        "organization": "Team affiliation organization",
+        "member": "Team member",
+        "nameread": "Please enter the name of the team member and how to read 【One person per line】",
+        "role": "Please tell me the role each member played in the team in detail",
+        "hard": "Hardware",
+        "soft": "Software",
+        "motivation": "Motivation / Goal",
+        "attach": "Attachment",
+        "comment": "Interviewer's comment",
+        "add": "Add file",
+        "upload": "Upload",
+        "complete": "Complete the interview"
     },
     "line": {
         "home": {
