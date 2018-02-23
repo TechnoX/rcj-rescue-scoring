@@ -2,14 +2,14 @@
     <!-- Navbar content -->
 
       <div class="col-md-6 col-sm4 col-12">
-          <li class="navbar-brand" href="#"><i class="fa fa-spinner fa-pulse fa-fw"></i> {{team}}</li>
+          <li class="navbar-brand" href="#"><i class="fa fa-spinner fa-spin fa-fw"></i> {{team}}</li>
       </div>
       <div class="col-md-3 col-sm4 col-7">
-          <i class="fa fa-calculator fa-2x" aria-hidden="true"></i>
+          <i class="fas fa-calculator fa-2x" aria-hidden="true"></i>
           <li class="navbar-brand" href="#"> {{score}} points</li>
       </div>
       <div class="col-md-3 col-sm4 col-5">
-          <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
+          <i class="fas fa-stopwatch fa-2x" aria-hidden="true"></i>
           <li class="navbar-brand" href="#"> {{time*1000 | date:'mm:ss'}}</li>
       </div>
 
@@ -36,10 +36,10 @@
 <div class="alert alert-info" role="alert" ng-show="exist">
     <div class="row">
         <div class="col-6">
-            <i class="fa fa-undo" aria-hidden="true"> : {{LoPs_total}} times</i>
+            <i class="fas fa-step-forward" aria-hidden="true"> : {{LoPs_total}} times</i>
         </div>
         <div class="col-6">
-            <i class="fa fa-ambulance" aria-hidden="true"> : L: {{rescuedLiveVictims}} 　D: {{rescuedDeadVictims}}</i>
+            <i class="fas fa-ambulance" aria-hidden="true"> : L: {{rescuedLiveVictims}} 　D: {{rescuedDeadVictims}}</i>
         </div>
     </div>
 

@@ -17,7 +17,7 @@
         </li>
 
         <div ng-show="hasVictims">
-            <i class="fa fa-2x fa-lightbulb-o" aria-hidden="true" style="color:#f8b500;">&nbsp;</i>{{"maze.judge.m_flash" | translate}}
+            <i class="far fa-2x fa-lightbulb" aria-hidden="true" style="color:#f8b500;">&nbsp;</i>{{"maze.judge.m_flash" | translate}}
                 <div ng-repeat="(direction, type) in cell.tile.victims track by $index" ng-show="type != 'None'" style="margin-left:50px;" >
                     <input type="checkbox" ng-model="tile.scoredItems.victims[direction]" id="{{ 'victim-' + $index }}"><label class="checkbox" for="{{ 'victim-' + $index }}" ng-style="{backgroundColor: lightStatus(tile.scoredItems.victims[direction],tile.scoredItems.rescueKits[direction]) ? '#d3f5d3': '#f5d3d4'}" ng-click="clickSound()">
                     <img src="/images/thermometer.png" height=45px ng-if="type=='Heated'">
@@ -29,7 +29,7 @@
                 </div>
         <div>
         <div ng-show="hasVictims">
-            <i class="fa fa-2x fa-medkit" aria-hidden="true" style="color:#c53d43;">&nbsp;</i>{{"maze.judge.m_kit" | translate}}
+            <i class="fas fa-2x fa-medkit" aria-hidden="true" style="color:#c53d43;">&nbsp;</i>{{"maze.judge.m_kit" | translate}}
                 <div ng-repeat="(direction, type) in cell.tile.victims" ng-show="type != 'None'" style="margin-left:50px;">
                     <div class="input-group" style="width:100%;" >
                         <span class="input-group-addon" ng-style="{backgroundColor: kitStatus(tile.scoredItems.victims[direction],tile.scoredItems.rescueKits[direction],type) ? '#d3f5d3': '#f5d3d4'}">

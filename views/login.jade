@@ -19,7 +19,8 @@ block content
           .card-body
             .text-center
                 h1.card-title 
-                    i.fa.fa-unlock-alt(aria-hidden='true')  {{'login.title' | translate}}
+                    i.fas.fa-unlock-alt(aria-hidden='true')
+                    {{'login.title' | translate}}
                 img(src='/images/logo.png', alt='...' style="width:100px;")
                 
             br
@@ -29,17 +30,18 @@ block content
             form(class="login-container" ng-submit="login()")
                 .input-group.input-group-lg
                   span#sizing-addon1.input-group-addon
-                    i.fa.fa-user.fa-lg(aria-hidden='true')
+                    i.fas.fa-user.fa-lg(aria-hidden='true')
                   input.form-control(type='text' autocorrect="off" autocapitalize="off" placeholder='Username' aria-label='Username' aria-describedby='sizing-addon1' ng-model="username" ng-class="isFailed?'is-invalid':''")
                 br
                 .input-group.input-group-lg
                   span#sizing-addon1.input-group-addon
-                    i.fa.fa-key(aria-hidden='true')
+                    i.fas.fa-key.fa-lg(aria-hidden='true')
                   input.form-control(type='password', placeholder='Password', aria-label='Password', aria-describedby='sizing-addon1' ng-model="password" ng-class="isFailed?'is-invalid':''")
                 br
                 .text-center
                     button.btn.btn-success.btn-lg(type='submit')
-                        i.fa.fa-sign-in(aria-hidden='true')  {{'login.login' | translate}}
+                        i.fas.fa-sign-in-alt(aria-hidden='true')
+                        {{'login.login' | translate}}
 
 
 

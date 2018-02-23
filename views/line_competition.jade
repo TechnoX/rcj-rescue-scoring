@@ -25,15 +25,18 @@ block content
       h1 {{'line.competition.title' | translate}} - {{competition.name}}
       br
       button(ng-click="go('/line/' + competition._id + '/score')" class='btn btn-outline-info btn-lg btn-block') 
-        i.fa.fa-trophy(aria-hidden='true')  {{'line.competition.result' | translate}}
+        i.fas.fa-trophy(aria-hidden='true')
+        {{'line.competition.result' | translate}}
       br
       button(ng-click="go('/interview/' + competition._id + '?return=/line/'+competitionId)" class='btn btn-outline-success btn-lg btn-block') 
-        i.fa.fa-comments-o(aria-hidden='true')  {{'common.interview' | translate}}
+        i.fas.fa-microphone(aria-hidden='true')
+        {{'common.interview' | translate}}
       br
       .refine
         .card.border-dark.mb-3(style='width:100%;')
-          .card-header.bg-transparent.border-dark
-            i.fa.fa-2x.fa-search(aria-hidden='true') {{'line.competition.refine.filter' | translate}}
+          .card-header.bg-transparent.border-dark.fa-2x
+            i.fas.fa-search(aria-hidden='true')
+            {{'line.competition.refine.filter' | translate}}
           .card-body.text-dark
             h6.card-title {{'line.competition.refine.round' | translate}}
             span(ng-repeat='(key, value) in rounds track by key')
@@ -48,7 +51,7 @@ block content
             h6.card-title {{'line.competition.refine.team' | translate}}
             .input-group
               span#basic-addon1.input-group-addon
-                i.fa.fa-users(aria-hidden='true')
+                i.fas.fa-users(aria-hidden='true')
               input.form-control(type='text', placeholder='Team name', aria-label='Username', aria-describedby='basic-addon1' ng-model='teamName')
 
 

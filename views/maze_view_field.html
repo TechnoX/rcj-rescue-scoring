@@ -2,14 +2,14 @@
     <!-- Navbar content -->
 
       <div class="col-md-6 col-sm4 col-12">
-          <li class="navbar-brand" href="#"><i class="fa fa-spinner fa-pulse fa-fw"></i> {{team}}</li>
+          <li class="navbar-brand" href="#"><i class="fas fa-spinner fa-spin fa-fw"></i> {{team}}</li>
       </div>
       <div class="col-md-3 col-sm4 col-7">
-          <i class="fa fa-calculator fa-2x" aria-hidden="true"></i>
+          <i class="fas fa-calculator fa-2x" aria-hidden="true"></i>
           <li class="navbar-brand" href="#"> {{score}} points</li>
       </div>
       <div class="col-md-3 col-sm4 col-5">
-          <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
+          <i class="fas fa-stopwatch fa-2x" aria-hidden="true"></i>
           <li class="navbar-brand" href="#"> {{time*1000 | date:'mm:ss'}}</li>
       </div>
 
@@ -45,9 +45,9 @@
                                         <img ng-src="/images/u_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'U'">
                                         <img ng-src="/images/u_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'U'">
 
-                                        <i class="fa fa-check fa-fw tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'done'" style="padding-top:4px; color:#27ae60; opacity:0.9;"></i>
-                                        <i class="fa fa-play fa-fw fa-rotate-270 tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'halfdone'" style="padding-top:4px; color:#f4d03f; opacity:0.9;"></i>
-                                        <i class="fa fa-times fa-fw tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'undone'" style="padding-top:4px; color:#e74c3c; opacity:0.9;"></i>
+                                        <i class="fas fa-check fa-fw tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'done'" style="padding-top:4px; color:#27ae60; opacity:0.9;"></i>
+                                        <i class="fas fa-play fa-fw fa-rotate-270 tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'halfdone'" style="padding-top:4px; color:#f4d03f; opacity:0.9;"></i>
+                                        <i class="fas fa-times fa-fw tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'undone'" style="padding-top:6px; color:#e74c3c; opacity:0.9;"></i>
                                     </div>
                                 </td>
                             </tr>
@@ -67,10 +67,10 @@
 <div class="alert alert-info" role="alert" ng-show = "exist">
     <div class="row">
         <div class="col-6">
-            <i class="fa fa-undo" aria-hidden="true"> : {{LoPs}} times</i>
+            <i class="fas fa-step-forward" aria-hidden="true"> : {{LoPs}} times</i>
         </div>
         <div class="col-6">
-            <i class="fa fa-home" aria-hidden="true"> : Returned: <b>{{exitBonus}}</b></i>
+            <i class="fas fa-home" aria-hidden="true"> : Returned: <b>{{exitBonus}}</b></i>
         </div>
     </div>
 </div>

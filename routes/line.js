@@ -33,6 +33,16 @@ publicRouter.get('/:competitionid/score', function (req, res, next) {
   res.render('line_score', {id: id, user: req.user, get: req.query})
 })
 
+publicRouter.get('/:competitionid/score/signage/:league', function (req, res, next) {
+  const id = req.params.competitionid
+  const league = req.params.league
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+  
+  res.render('line_score_signage', {id: id, user: req.user, get: req.query, league: league})
+})
+
 publicRouter.get('/view/:runid', function (req, res, next) {
   const id = req.params.runid
   

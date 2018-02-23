@@ -23,10 +23,12 @@ block content
       
       if typeof(user) == "undefined"
         button(onclick="location.href='/login'" class='btn btn-warning btn-lg btn-block')
-            i.fa.fa-sign-in(aria-hidden='true') &nbsp; {{'home.login' | translate}}
+            i.fas.fa-sign-in-alt(aria-hidden='true')
+            &nbsp; {{'home.login' | translate}}
       else
         button(onclick="location.href='/logout'" class='btn btn-outline-danger btn-lg btn-block')
-            i.fa.fa-sign-out(aria-hidden='true') &nbsp; {{'home.logout' | translate}}
+            i.fas.fa-sign-out-alt(aria-hidden='true')
+            &nbsp; {{'home.logout' | translate}}
       br
       br
       
