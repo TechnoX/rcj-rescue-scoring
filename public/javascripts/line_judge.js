@@ -459,6 +459,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.exitBonusP = true
         if ($scope.exitBonus) {
             $scope.startedTime = false
+            date = new Date();
+            $scope.time = prevTime + (date.getTime() - $scope.startUnixTime);
+            prevTime = $scope.time;
             $scope.minutes = Math.floor($scope.time / 60000)
             $scope.seconds = Math.floor(($scope.time % 60000) / 1000)
         }

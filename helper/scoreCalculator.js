@@ -161,5 +161,5 @@ module.exports.calculateMazeScore = function (run) {
     score += victims * 10
   }
   
-  return score
+  return score+","+victims
 }

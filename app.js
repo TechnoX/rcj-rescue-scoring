@@ -44,6 +44,7 @@ var loginRoute = require('./routes/login')
 var adminRoute = require('./routes/admin')
 var localesRoute = require('./routes/locales')
 var interviewRoute = require('./routes/interview')
+var signageRoute = require('./routes/signage')
 
 
 //========================================================================
@@ -145,6 +146,7 @@ app.use('/locales', localesRoute)
 app.use('/line', [lineRoute.public, pass.ensureAuthenticated, lineRoute.private, pass.ensureAdmin, lineRoute.admin])
 app.use('/maze', [mazeRoute.public, pass.ensureAuthenticated, mazeRoute.private, pass.ensureAdmin, mazeRoute.admin])
 app.use('/interview', [interviewRoute.public, pass.ensureAuthenticated, interviewRoute.private, pass.ensureAdmin, interviewRoute.admin])
+app.use('/signage', [signageRoute.public, pass.ensureAuthenticated, signageRoute.private, pass.ensureAdmin, signageRoute.admin])
 app.use('/admin', pass.ensureAdmin, adminRoute)
 
 //========================================================================

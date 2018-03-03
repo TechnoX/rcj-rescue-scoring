@@ -231,7 +231,9 @@
         "score": {
             "rank": "Maze - Rank",
             "all": "Maze - All runs",
-            "sort": "@:line.score.sort"
+            "sort": "@:line.score.sort",
+            "exit": "Exit",
+            "found": "Found"
         },
         "view": {
             "info": "@:line.view.info",

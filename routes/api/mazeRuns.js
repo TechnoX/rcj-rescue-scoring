@@ -73,7 +73,7 @@ function getMazeRuns(req, res) {
     if (req.query['minimum']) {
         query.select("competition round team field status started startTime sign")
     } else {
-        query.select("competition round team field map score time status started comment startTime sign LoPs")
+        query.select("competition round team field map score time status started comment startTime sign LoPs exitBonus foundVictims")
     }
 
 
@@ -423,8 +423,10 @@ privateRouter.put('/:runid', function (req, res, next) {
                         msg: "Could not save run"
                     })
                 }
-
-                dbRun.score = scoreCalculator.calculateMazeScore(dbRun)
+                var retScoreCals = scoreCalculator.calculateMazeScore(dbRun).split(",")
+                
+                dbRun.score = retScoreCals[0]
+                dbRun.foundVictims = retScoreCals[1]
 
                 if (dbRun.score > 0 || dbRun.time.minutes != 0 ||
                     dbRun.time.seconds != 0 || dbRun.status >= 2) {

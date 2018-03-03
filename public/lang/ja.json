@@ -228,7 +228,9 @@
         "score": {
             "rank": "Maze - 順位",
             "all": "Maze - 全競技",
-            "sort": "@:line.score.sort"
+            "sort": "@:line.score.sort",
+            "exit": "脱出",
+            "found": "発見"
         },
         "view": {
             "info": "@:line.view.info",

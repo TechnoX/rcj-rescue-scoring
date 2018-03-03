@@ -10,6 +10,8 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
 
     var runListTimer = null;
     var runListChanged = false;
+    $scope.top3 = true;
+    $scope.time = 26;
     launchSocketIo()
     updateRunList(function () {
         setTimeout(function () {
@@ -25,6 +27,17 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
     $http.get("/api/competitions/" + competitionId).then(function (response) {
         $scope.competition = response.data
     })
+    
+    function updateTime(){
+        $scope.time--;
+        if($scope.time <= 0){
+            if($scope.top3) $scope.time = 30;
+            else $scope.time = 15;
+            $scope.top3 = !$scope.top3;
+        }
+        $scope.$apply();
+    }
+    setInterval(updateTime, 1000);
 
     function updateRunList(callback) {
         $http.get("/api/competitions/" + competitionId +
@@ -143,6 +156,8 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
             if (callback != null && callback.constructor == Function) {
                 callback()
             }
+            var now = new Date();
+            $scope.updateTime = now.toLocaleString();
         })
     }
 
@@ -253,13 +268,11 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
             sum.score += runs[i].score
             sum.time.minutes += runs[i].time.minutes
             sum.time.seconds += runs[i].time.seconds
-            if(sum.time.seconds >= 60){
-                sum.time.minutes++;
-                sum.time.seconds-=60;
-            }
             sum.rescued += runs[i].rescuedLiveVictims + runs[i].rescuedDeadVictims
             sum.lops += runs[i].LoPsNum
         }
+        sum.time.minutes += Math.floor(sum.time.seconds/60);
+        sum.time.seconds %= 60;
 
         return sum
     }

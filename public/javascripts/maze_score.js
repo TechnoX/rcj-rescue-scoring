@@ -8,7 +8,8 @@ app.controller("MazeScoreController", function ($scope, $http) {
 
     var runListTimer = null;
     var runListChanged = false;
-
+    $scope.top3 = true;
+    $scope.time = 26;
     launchSocketIo()
     updateRunList(function () {
         setTimeout(function () {
@@ -24,6 +25,17 @@ app.controller("MazeScoreController", function ($scope, $http) {
     $http.get("/api/competitions/" + competitionId).then(function (response) {
         $scope.competition = response.data
     })
+    
+    function updateTime(){
+        $scope.time--;
+        if($scope.time <= 0){
+            if($scope.top3) $scope.time = 30;
+            else $scope.time = 15;
+            $scope.top3 = !$scope.top3;
+        }
+        $scope.$apply();
+    }
+    setInterval(updateTime, 1000);
 
     function updateRunList(callback) {
         $http.get("/api/competitions/" + competitionId +
@@ -52,11 +64,15 @@ app.controller("MazeScoreController", function ($scope, $http) {
                         mazeTeamRuns[run.team._id].runs.push(run)
                     }
                     var sum = sumBest(mazeTeamRuns[run.team._id].runs)
+                    //console.log(sum)
                     mazeTeamRuns[run.team._id].sumScore = sum.score
                     mazeTeamRuns[run.team._id].sumTime = sum.time
+                    mazeTeamRuns[run.team._id].sumExit = sum.exit
+                    mazeTeamRuns[run.team._id].sumLoPs = sum.lops
+                    mazeTeamRuns[run.team._id].sumFound = sum.found
                 }
             }
-            $scope.mazeRuns.sort(sortRuns)
+            //$scope.mazeRuns.sort(sortRuns)
 
             $scope.mazeRunsTop = []
             for (var i in mazeTeamRuns) {
@@ -66,7 +82,10 @@ app.controller("MazeScoreController", function ($scope, $http) {
                         name: teamRun.team.name
                     },
                     score: teamRun.sumScore,
-                    time: teamRun.sumTime
+                    time: teamRun.sumTime,
+                    lops: teamRun.sumLoPs,
+                    exit: teamRun.sumExit,
+                    found: teamRun.sumFound
                 })
             }
             $scope.mazeRunsTop.sort(sortRuns)
@@ -74,6 +93,8 @@ app.controller("MazeScoreController", function ($scope, $http) {
             if (callback != null && callback.constructor == Function) {
                 callback()
             }
+            var now = new Date();
+            $scope.updateTime = now.toLocaleString();
         })
     }
 
@@ -106,25 +127,29 @@ app.controller("MazeScoreController", function ($scope, $http) {
     }
 
     function sumBest(runs) {
-        if (runs.length == 1) {
-            return runs[0]
-        }
-
-        runs.sort(sortRuns)
-
         let sum = {
             score: 0,
             time: {
                 minutes: 0,
                 seconds: 0
-            }
+            },
+            lops: 0,
+            exit: 0,
+            found: 0
         }
+
+        runs.sort(sortRuns)
 
         for (let i = 0; i < Math.min(8, runs.length); i++) {
             sum.score += runs[i].score
             sum.time.minutes += runs[i].time.minutes
             sum.time.seconds += runs[i].time.seconds
+            sum.lops += runs[i].LoPs
+            if(runs[i].exitBonus) sum.exit++
+            sum.found += runs[i].foundVictims
         }
+        sum.time.minutes += Math.floor(sum.time.seconds/60);
+        sum.time.seconds %= 60;
 
         return sum
     }
@@ -141,7 +166,21 @@ app.controller("MazeScoreController", function ($scope, $http) {
                 } else if (a.time.seconds > b.time.seconds) {
                     return 1
                 } else {
-                    return 0
+                    if(a.exit > b.exit){
+                        return -1;
+                    }else if(a.exit < b.exit){
+                        return 1;
+                    }else if(a.found > b.found){
+                        return -1;
+                    }else if(a.found < b.found){
+                        return 1;
+                    }else if(a.lops > b.lops){
+                        return 1;
+                    }else if(a.lops < b.lops){
+                        return -1;
+                    }else{
+                        return 0;
+                    }
                 }
             }
         } else {
