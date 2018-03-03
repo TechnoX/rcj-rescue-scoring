@@ -9,9 +9,6 @@ const auth = require('../helper/authLevels')
 const ACCESSLEVELS = require('../models/user').ACCESSLEVELS
 
 /* GET home page. */
-publicRouter.get('/', function (req, res) {
-  res.render('line_home', {user: req.user});
-})
 
 publicRouter.get('/:competitionid', function (req, res, next) {
   const id = req.params.competitionid
@@ -33,15 +30,6 @@ publicRouter.get('/:competitionid/score', function (req, res, next) {
   res.render('line_score', {id: id, user: req.user, get: req.query})
 })
 
-publicRouter.get('/:competitionid/score/signage/:league', function (req, res, next) {
-  const id = req.params.competitionid
-  const league = req.params.league
-  if (!ObjectId.isValid(id)) {
-    return next()
-  }
-  
-  res.render('line_score_signage', {id: id, user: req.user, get: req.query, league: league})
-})
 
 publicRouter.get('/view/:runid', function (req, res, next) {
   const id = req.params.runid

@@ -8,11 +8,6 @@ const auth = require('../helper/authLevels')
 const ACCESSLEVELS = require('../models/user').ACCESSLEVELS
 
 /* GET home page. */
-publicRouter.get('/', function (req, res) {
-    res.render('maze_home', {
-        user: req.user
-    });
-})
 publicRouter.get('/:competitionid', function (req, res, next) {
     const id = req.params.competitionid
 
@@ -37,19 +32,6 @@ publicRouter.get('/:competitionid/score', function (req, res, next) {
     })
 })
 
-publicRouter.get('/:competitionid/score/signage', function (req, res, next) {
-    const id = req.params.competitionid
-
-    if (!ObjectId.isValid(id)) {
-        return next()
-    }
-
-    res.render('maze_score_signage', {
-        id: id,
-        get: req.query,
-        user: req.user
-    })
-})
 
 publicRouter.get('/view/:runid', function (req, res, next) {
     const id = req.params.runid
