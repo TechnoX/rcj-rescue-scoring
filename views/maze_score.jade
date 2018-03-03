@@ -16,8 +16,8 @@ append scripts
 
 block location
     a.breadcrumb-item(ng-click="go('/home')") Home
-    a.breadcrumb-item(ng-click="go('/maze')") Maze
-    a.breadcrumb-item(ng-click='go("/maze/"+ competitionId )') {{competition.name}}
+    a.breadcrumb-item(ng-click='go("/home/"+ competitionId )') {{competition.name}}
+    a.breadcrumb-item(ng-click='go("/maze/"+ competitionId )') Maze
     span.breadcrumb-item.active Score
 
 block content

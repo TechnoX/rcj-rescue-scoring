@@ -6,6 +6,7 @@
         "maze": "Rescue Maze",
         "login": "Login",
         "logout": "Logout",
+        "about": "The RCJ Scoring System is a system used by referees in RoboCup Junior Rescue League (Line / Maze). If you are a referee, please login first. For other, please select the competition from the below and proceed.",
         "line_description": "The robot must be durable and intelligent enough to navigate through treacherous terrain with hills, uneven land and rubble without getting stuck. When the robot finally finds the victims, it has to gently and carefully transport the victims to the safe evacuation point where humans can take over the rescue. After the victim rescue, the robot should be able to find its way out of the dangerous area. ",
         "maze_description": "The robot must be durable and intelligent enough to navigate through treacherous terrain with hills, uneven land and rubble without getting stuck. The robot must search for victims, dispense rescue kits, and signal the position of the victims so the humans can take over. ",
         "go_line": "Go Line",

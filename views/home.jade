@@ -18,6 +18,7 @@ block content
           img(src="/images/logo.png" width='40px' height='40px')
           | &nbsp;RCJ Scoring System 2017 for Japan
       br
+      h6 {{'home.about' | translate}}
       br
       br
       
@@ -30,23 +31,6 @@ block content
       br
       br
       button(ng-click="go('/home/' + competition._id)" class='button-s button-bb' ng-repeat='competition in competitions') {{competition.name}}
-      //.row
-        .col-sm-6
-          .card(style='width: 100%;')
-              a(onclick="location.href='/line'")
-                img.card-img-top(src='/images/line.png', alt='Card image cap' style="width:100%; height=auto;")
-              .card-body
-                h4.card-title {{'home.line' | translate}}
-                p.card-text(translate="home.line_description")
-                button(onclick="location.href='/line'" class='btn btn-primary btn-lg btn-block') {{'home.go_line' | translate}}
-        .col-sm-6
-            .card(style='width: 100%;')
-              a(onclick="location.href='/maze'")
-                img.card-img-top(src='/images/maze.png', alt='Card image cap' style="width:100%; height=auto;")
-              .card-body
-                h4.card-title {{'home.maze' | translate}}
-                p.card-text(translate="home.maze_description")
-                button(onclick="location.href='/maze'" class='btn btn-primary btn-lg btn-block') {{'home.go_maze' | translate}}
       br 
       br
       br

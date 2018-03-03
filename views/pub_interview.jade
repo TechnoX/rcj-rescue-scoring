@@ -19,6 +19,7 @@ append css
 
 block location
     a.breadcrumb-item(onclick="location.href='/home'") Home
+    a.breadcrumb-item(ng-click='go("/home/"+ competitionId)') {{competition.name}}
     a.breadcrumb-item(ng-click="go('/interview/' + competitionId)") Interview
     span.breadcrumb-item.active {{team.name}}
 

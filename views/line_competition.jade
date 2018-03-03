@@ -14,8 +14,8 @@ append scripts
 
 block location
   a.breadcrumb-item(ng-click="go('/home')") Home
-  a.breadcrumb-item(ng-click="go('/line')") Line
-  span.breadcrumb-item.active {{competition.name}}
+  a.breadcrumb-item(ng-click="go('/home/'+competitionId)") {{competition.name}}
+  span.breadcrumb-item.active Line
 
 
 block content
@@ -25,18 +25,15 @@ block content
       h1 {{'line.competition.title' | translate}} - {{competition.name}}
       br
       button(ng-click="go('/line/' + competition._id + '/score')" class='btn btn-outline-info btn-lg btn-block') 
-        i.fas.fa-trophy(aria-hidden='true')
-        {{'line.competition.result' | translate}}
+        i.fas.fa-trophy(aria-hidden='true') {{'line.competition.result' | translate}}
       br
       button(ng-click="go('/interview/' + competition._id + '?return=/line/'+competitionId)" class='btn btn-outline-success btn-lg btn-block') 
-        i.fas.fa-microphone(aria-hidden='true')
-        {{'common.interview' | translate}}
+        i.fas.fa-microphone(aria-hidden='true') {{'common.interview' | translate}}
       br
       .refine
         .card.border-dark.mb-3(style='width:100%;')
           .card-header.bg-transparent.border-dark.fa-2x
-            i.fas.fa-search(aria-hidden='true')
-            {{'line.competition.refine.filter' | translate}}
+            i.fas.fa-search(aria-hidden='true') {{'line.competition.refine.filter' | translate}}
           .card-body.text-dark
             h6.card-title {{'line.competition.refine.round' | translate}}
             span(ng-repeat='(key, value) in rounds track by key')

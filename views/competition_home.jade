@@ -35,3 +35,5 @@ block content
                 h4.card-title {{'home.maze' | translate}}
                 p.card-text(translate="home.maze_description")
                 button(onclick="location.href='/maze/' + competitionId" class='btn btn-primary btn-lg btn-block') {{'home.go_maze' | translate}}
+      button(ng-click="go('/interview/' + competition._id + '?return=/home/'+ competition._id)" class='btn btn-outline-success btn-lg btn-block' style="margin-top:20px;margin-bottom:20px;") 
+        i.fas.fa-microphone(aria-hidden='true')  {{'common.interview' | translate}}

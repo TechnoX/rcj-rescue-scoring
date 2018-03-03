@@ -12,6 +12,7 @@ append scripts
 
 block location
     a.breadcrumb-item(onclick="location.href='/home'") Home
+    a.breadcrumb-item(ng-click='go("/home/"+ competitionId)') {{competition.name}}
     span.breadcrumb-item.active Interview
 
 
