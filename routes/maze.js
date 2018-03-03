@@ -37,6 +37,20 @@ publicRouter.get('/:competitionid/score', function (req, res, next) {
     })
 })
 
+publicRouter.get('/:competitionid/score/signage', function (req, res, next) {
+    const id = req.params.competitionid
+
+    if (!ObjectId.isValid(id)) {
+        return next()
+    }
+
+    res.render('maze_score_signage', {
+        id: id,
+        get: req.query,
+        user: req.user
+    })
+})
+
 publicRouter.get('/view/:runid', function (req, res, next) {
     const id = req.params.runid
 

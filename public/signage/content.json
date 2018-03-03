@@ -1,0 +1,61 @@
+[
+    {
+        "duration": 10,
+        "type": "img",
+        "url": "rankingNL.png"
+    },
+    {
+        "duration": 90,
+        "type": "iframe",
+        "url": "http://localhost:3000/line/5a87da95d31efd5b9f6be636/score/signage/NL"
+    },
+    {
+        "duration": 10,
+        "type": "img",
+        "url": "rankingWL.png"
+    },
+    {
+        "duration": 90,
+        "type": "iframe",
+        "url": "http://localhost:3000/line/5a87da95d31efd5b9f6be636/score/signage/WL"
+    },
+    {
+        "duration": 10,
+        "type": "img",
+        "url": "rankingMaze.png"
+    },
+    {
+        "duration": 90,
+        "type": "iframe",
+        "url": "http://localhost:3000/maze/5a87da95d31efd5b9f6be636/score/signage"
+    },
+    {
+        "duration": 20,
+        "type": "img",
+        "url": "systeminfo.png"
+    },
+    {
+        "type": "movie",
+        "url": "prohibited.mp4"
+    }, 
+    {
+        "duration": 20,
+        "type": "img",
+        "url": "field.png"
+    },
+    {
+        "duration": 20,
+        "type": "img",
+        "url": "league.png"
+    },
+    {
+        "type": "movie",
+        "url": "intro.mp4"
+    },
+    {
+        "duration": 20,
+        "type": "iframe",
+        "url": "http://localhost:3000/line/5a87da95d31efd5b9f6be636/score/signage/NL"
+    }
+]
+

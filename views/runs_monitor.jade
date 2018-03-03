@@ -1,0 +1,36 @@
+html(ng-app="ddApp")
+  head
+    title Rescue Runs Monitor
+    script.
+      var competitionId = "#{id}"
+
+
+    include ./includes/common_component.jade
+    script(src="/javascripts/runs_monitor.js")
+    script(src="/javascripts/translate_config.js")
+    link(href="/stylesheets/fredrik.css" rel="stylesheet")
+
+
+    meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0")
+
+  body(ng-controller="ddController")
+    iframe(ng-src='http://localhost:7888/signage', style='width:100%; height:100%; border:none;', ng-if='flagSignage && showSignage')
+    .row(style='height:100%;margin: 0 0 0 0;', ng-if='num')
+      div(class='col-md-{{12/num}} col-sm-{{12/num}}', style='padding:0 0 0 0;', ng-style="{borderRight: $last ? '0px':'solid 5px #000'}" , ng-repeat='n in range(num)')
+        iframe(ng-src='{{getIframeSrc(selectfield[n])}}', style='width:100%; height:100%; border:none;', ng-if='selectfield[n]')
+        label Display field:
+        select(ng-model='selectfield[n]', ng-options='field as field.name for field in fields')
+    br
+    br
+    span Number of display side by side:
+    select(ng-model='num')
+      option(value='1') 1
+      option(value='2') 2
+      option(value='3') 3
+    br
+    label
+      | Display the digital signage when the field is all opened: 
+      input(type='checkbox', ng-model='flagSignage' style="display:inline")
+
+
+

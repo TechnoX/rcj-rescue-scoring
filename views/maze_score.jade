@@ -37,12 +37,19 @@ block content
                 th.text-center {{'common.team' | translate}}
                 th.text-center {{'common.score' | translate}}
                 th.text-center {{'common.time' | translate}}
+                th.text-center {{'maze.score.exit' | translate}}
+                th.text-center {{'common.lops' | translate}}
+                th.text-center {{'maze.score.found' | translate}}
             tbody
               tr(ng-repeat='run in mazeRunsTop track by $index')
                 td.text-center(ng-bind='$index + 1')
                 td.text-center(ng-bind='run.team.name')
                 td.text-center(ng-bind='run.score')
                 td.text-center {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+                td.text-center(ng-bind='run.exit')
+                td.text-center(ng-bind='run.lops')
+                td.text-center(ng-bind='run.found')
+                
       .row
         hr
       .row#allRuns
@@ -59,6 +66,9 @@ block content
                 th.text-center {{'common.field' | translate}}
                 th.text-center {{'common.score' | translate}}
                 th.text-center {{'common.time' | translate}}
+                th.text-center {{'maze.score.exit' | translate}}
+                th.text-center {{'common.lops' | translate}}
+                th.text-center {{'maze.score.found' | translate}}
             tbody
               tr(ng-repeat='run in mazeRuns | orderBy:sortOrder')
                 td.text-center(ng-bind='run.team.name')
@@ -66,3 +76,8 @@ block content
                 td.text-center(ng-bind='run.field.name')
                 td.text-center(ng-bind='run.score')
                 td.text-center {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+                td.text-center
+                    i(class="fas fa-check" aria-hidden="true" style="color:#2ecc71;" ng-if="run.exitBonus")
+                    i(class="fas fa-times" aria-hidden="true" style="color:#e74c3c;" ng-if="!run.exitBonus")
+                td.text-center(ng-bind='run.LoPs')
+                td.text-center(ng-bind='run.foundVictims')
