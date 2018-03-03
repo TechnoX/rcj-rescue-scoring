@@ -23,16 +23,14 @@ block content
       
       if typeof(user) == "undefined"
         button(onclick="location.href='/login'" class='btn btn-warning btn-lg btn-block')
-            i.fas.fa-sign-in-alt(aria-hidden='true')
-            &nbsp; {{'home.login' | translate}}
+            i.fas.fa-sign-in-alt(aria-hidden='true') &nbsp; {{'home.login' | translate}}
       else
         button(onclick="location.href='/logout'" class='btn btn-outline-danger btn-lg btn-block')
-            i.fas.fa-sign-out-alt(aria-hidden='true')
-            &nbsp; {{'home.logout' | translate}}
+            i.fas.fa-sign-out-alt(aria-hidden='true') &nbsp; {{'home.logout' | translate}}
       br
       br
-      
-      .row
+      button(ng-click="go('/home/' + competition._id)" class='button-s button-bb' ng-repeat='competition in competitions') {{competition.name}}
+      //.row
         .col-sm-6
           .card(style='width: 100%;')
               a(onclick="location.href='/line'")
@@ -54,9 +52,9 @@ block content
       br
       if typeof(user) != "undefined"
         if user.admin
-            button(onclick="location.href='/admin'" class='button-s button-bb') {{'home.management' | translate}}
+            button(onclick="location.href='/admin'" class='btn btn-outline-success btn-lg btn-block') {{'home.management' | translate}}
         else
-            button(onclick="location.href='/'" class='button-s button-bb' disabled) {{'home.management' | translate}}
+            button(onclick="location.href='/'" class='btn btn-outline-success btn-lg btn-block' disabled) {{'home.management' | translate}}
             p(translate="home.access_level", translate-values='{account: "'+ user.username + '"}')
       br
       br

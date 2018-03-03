@@ -1,0 +1,37 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'CompetitionHome'
+
+append scripts
+  script.
+    var competitionId = "#{id}"
+  script(src='/javascripts/competition_home.js')
+
+block location
+    a.breadcrumb-item(ng-click="go('/home')") Home
+    span.breadcrumb-item.active {{competition.name}}
+
+block content
+  .row
+    .col-md-1
+    .col-md-10
+      h1 {{competition.name}}
+      .row
+        .col-sm-6
+          .card(style='width: 100%;')
+              a(onclick="location.href='/line/' + competitionId")
+                img.card-img-top(src='/images/line.png', alt='Card image cap' style="width:100%; height=auto;")
+              .card-body
+                h4.card-title {{'home.line' | translate}}
+                p.card-text(translate="home.line_description")
+                button(onclick="location.href='/line/' + competitionId" class='btn btn-primary btn-lg btn-block') {{'home.go_line' | translate}}
+        .col-sm-6
+            .card(style='width: 100%;')
+              a(onclick="location.href='/maze/' + competitionId")
+                img.card-img-top(src='/images/maze.png', alt='Card image cap' style="width:100%; height=auto;")
+              .card-body
+                h4.card-title {{'home.maze' | translate}}
+                p.card-text(translate="home.maze_description")
+                button(onclick="location.href='/maze/' + competitionId" class='btn btn-primary btn-lg btn-block') {{'home.go_maze' | translate}}
