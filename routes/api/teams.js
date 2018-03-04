@@ -497,7 +497,14 @@ privateRouter.get('/pic/:competitionid/:teamid/:pic', function (req, res, next) 
                                     return;
                                 }
                                 
-
+                                var path = __dirname + "/../../TechnicalDocument/NoImage.png";
+                                if(isExistFile(path)){
+                                    fs.readFile(path,function(err,data){
+                                        res.writeHead(200, {'Content-Type': 'image/png' });
+                                        res.end(data);
+                                    });
+                                    return;
+                                }
                                 return res.status(404).send({
                                     msg: "No Pic file for this team"
                                 })

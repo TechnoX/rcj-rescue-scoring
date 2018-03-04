@@ -69,7 +69,35 @@ block content
                 td
                   button(ng-click="go('/maze/view/' + run._id + '?return=/interview/'+competitionId + '/do/'+teamId)" class='btn btn-info' style="width:45%; margin-right:5px;") {{'common.view' | translate}}
       br
-      
+      .row(style="margin-bottom:30px;")
+        .col-md-6
+          .card
+              h3.card-header
+                i.far.fa-images(aria-hidden='true') {{'interview.me_pic' | translate}}
+              .card-body
+                div
+                    a(style="max-width: 100%;height: auto; margin-bottom:20px;" ng-href="/api/teams/pic/{{competitionId}}/{{teamId}}/member{{picMeTime}}" data-lightbox="image")
+                        img.img-thumbnail(style="max-width: 100%;height: auto;margin-bottom:20px;" ng-src="/api/teams/pic/{{competitionId}}/{{teamId}}/member{{picMeTime}}")
+                div(style="background:#ffffb7;border: thin dashed;")
+                    form(style="")
+                      input(type='file', ngf-select='', ng-model='picFileMe', ngf-max-size='5MB', required='', ngf-accept="'image/*'", ngf-pattern="'image/*'",  ngf-multiple='false' capture="environment")
+
+                      button.btn.btn-info(ng-show='picFileMe' ng-click='uploadPicMe(picFileMe,"member")') {{'interview.upload' | translate}}
+                      button.btn.btn-warning(ng-click='picFileMe = null', ng-show='picFileMe') {{'common.cancel' | translate}}
+        .col-md-6
+          .card
+              h3.card-header
+                i.far.fa-images(aria-hidden='true') {{'interview.ma_pic' | translate}}
+              .card-body
+                div
+                    a(style="max-width: 100%;height: auto; margin-bottom:20px;" ng-href="/api/teams/pic/{{competitionId}}/{{teamId}}/machine{{picMaTime}}" data-lightbox="image")
+                        img.img-thumbnail(style="max-width: 100%;height: auto;margin-bottom:20px;" ng-src="/api/teams/pic/{{competitionId}}/{{teamId}}/machine{{picMaTime}}")
+                div(style="background:#ffffb7;border: thin dashed;")
+                    form(style="")
+                      input(type='file', ngf-select='', ng-model='picFileMa', ngf-max-size='5MB', required='', ngf-accept="'image/*'", ngf-pattern="'image/*'",  ngf-multiple='false' capture="environment")
+
+                      button.btn.btn-info(ng-show='picFileMa' ng-click='uploadPicMa(picFileMa,"machine")') {{'interview.upload' | translate}}
+                      button.btn.btn-warning(ng-click='picFileMa = null', ng-show='picFileMa') {{'common.cancel' | translate}}
       #picture.card
           h3.card-header
             i.far.fa-images(aria-hidden='true') {{'interview.ad_pic' | translate}}

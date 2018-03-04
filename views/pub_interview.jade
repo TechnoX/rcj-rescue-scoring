@@ -65,6 +65,24 @@ block content
                   button(ng-click="go('/maze/view/' + run._id + '?return=/interview/'+competitionId + '/pub/'+teamId)" class='btn btn-info' style="width:45%; margin-right:5px;") {{'common.view' | translate}}
       br
       
+      .row(style="margin-bottom:30px;")
+        .col-md-6
+          .card
+              h3.card-header
+                i.far.fa-images(aria-hidden='true') {{'interview.me_pic' | translate}} 【{{'common.private' | translate}}】
+              .card-body
+                div
+                    a(style="max-width: 100%;height: auto; margin-bottom:20px;" ng-href="/api/teams/pic/{{competitionId}}/{{teamId}}/member" data-lightbox="image")
+                        img.img-thumbnail(style="max-width: 100%;height: auto;margin-bottom:20px;" ng-src="/api/teams/pic/{{competitionId}}/{{teamId}}/member")
+        .col-md-6
+          .card
+              h3.card-header
+                i.far.fa-images(aria-hidden='true') {{'interview.ma_pic' | translate}} 【{{'common.private' | translate}}】
+              .card-body
+                div
+                    a(style="max-width: 100%;height: auto; margin-bottom:20px;" ng-href="/api/teams/pic/{{competitionId}}/{{teamId}}/machine" data-lightbox="image")
+                        img.img-thumbnail(style="max-width: 100%;height: auto;margin-bottom:20px;" ng-src="/api/teams/pic/{{competitionId}}/{{teamId}}/machine")
+      
       #picture.card
           h3.card-header
             i.far.fa-images(aria-hidden='true') {{'interview.ad_pic' | translate}} 【{{'common.private' | translate}}】

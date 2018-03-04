@@ -65,6 +65,24 @@ block content
                   button(ng-click="go('/maze/view/' + run._id + '?return=/interview/'+competitionId + '/do/'+teamId)" class='btn btn-info' style="width:45%; margin-right:5px;") {{'common.view' | translate}}
       br
       
+      .row(style="margin-bottom:30px;")
+        .col-md-6
+          .card
+              h3.card-header
+                i.far.fa-images(aria-hidden='true') {{'interview.me_pic' | translate}}
+              .card-body
+                div
+                    a(style="max-width: 100%;height: auto; margin-bottom:20px;" ng-href="/api/teams/pic/{{competitionId}}/{{teamId}}/member{{picMeTime}}" data-lightbox="image")
+                        img.img-thumbnail(style="max-width: 100%;height: auto;margin-bottom:20px;" ng-src="/api/teams/pic/{{competitionId}}/{{teamId}}/member{{picMeTime}}")
+        .col-md-6
+          .card
+              h3.card-header
+                i.far.fa-images(aria-hidden='true') {{'interview.ma_pic' | translate}}
+              .card-body
+                div
+                    a(style="max-width: 100%;height: auto; margin-bottom:20px;" ng-href="/api/teams/pic/{{competitionId}}/{{teamId}}/machine{{picMaTime}}" data-lightbox="image")
+                        img.img-thumbnail(style="max-width: 100%;height: auto;margin-bottom:20px;" ng-src="/api/teams/pic/{{competitionId}}/{{teamId}}/machine{{picMaTime}}")
+                        
       #picture.card(ng-if="#{judge == 1}")
           h3.card-header
             i.far.fa-images(aria-hidden='true') {{'interview.ad_pic' | translate}}

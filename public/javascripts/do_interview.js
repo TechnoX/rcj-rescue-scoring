@@ -3,6 +3,8 @@ var app = angular.module("InterviewTeam", ['pascalprecht.translate', 'ngCookies'
     $scope.teamId = teamId
     $scope.picN = 0;
     $scope.showImg=[];
+    $scope.picMeTime = "";
+    $scope.picMaTime = "";
     for(let i=0;i<50;i++){
         $scope.showImg[i]=true;
     }
@@ -103,6 +105,47 @@ var app = angular.module("InterviewTeam", ['pascalprecht.translate', 'ngCookies'
             getPicN();
             $scope.picFile = null
             //$timeout($scope.showI(i), 1000);
+      },function (resp) {}
+       ,function (evt)  {}
+      );
+    }
+    
+    
+    $scope.uploadPicMe = function(item,i){
+      $scope.member_photo = false;
+      Upload.upload({
+          url:'/api/teams/pic/' + competitionId +'/' + teamId + '/' + i,
+          data: {
+            file: item
+          },
+      })
+      .then(function (resp){
+            //$scope.showImg[i]= false;
+            //console.log("画像アップロード完了");
+            alertify.success('画像アップロード完了！');
+            $scope.picFileMe = null
+            var date = new Date();
+            $scope.picMeTime = "?time=" + date.getTime();
+      },function (resp) {}
+       ,function (evt)  {}
+      );
+    }
+    
+    $scope.uploadPicMa = function(item,i){
+      $scope.member_photo = false;
+      Upload.upload({
+          url:'/api/teams/pic/' + competitionId +'/' + teamId + '/' + i,
+          data: {
+            file: item
+          },
+      })
+      .then(function (resp){
+            //$scope.showImg[i]= false;
+            //console.log("画像アップロード完了");
+            alertify.success('画像アップロード完了！');
+            $scope.picFileMa = null
+            var date = new Date();
+            $scope.picMaTime = "?time=" + date.getTime();
       },function (resp) {}
        ,function (evt)  {}
       );
