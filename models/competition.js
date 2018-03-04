@@ -27,7 +27,39 @@ module.exports.LEAGUES = LEAGUES
 
 
 const competitionSchema = new Schema({
-  name: {type: String, required: true, unique: true}
+  name: {type: String, required: true, unique: true},
+  message: {type: String}
+})
+
+const signageSchema = new Schema({
+  name       : {type: String, required: true}, 
+  content :[{
+      duration: {type: Number, required: true},
+      type: {type: String, required: true},
+      url: {type: String, required: true}
+  }],
+  news : {type: [String]}
+})
+
+signageSchema.pre('save', function (next) {
+  const self = this
+  if (self.isNew) {
+    Round.findOne({
+      competition: self.competition,
+      name       : self.name
+    }, function (err, dbRound) {
+      if (err) {
+        return next(err)
+      } else if (dbRound) {
+        err = new Error('Signage setting with name "' + self.name + '" already exists!')
+        return next(err)
+      } else {
+        return next()
+      }
+    })
+  } else {
+    return next()
+  }
 })
 
 const roundSchema = new Schema({
@@ -135,12 +167,14 @@ fieldSchema.pre('save', function (next) {
 
 
 const Competition = mongoose.model('Competition', competitionSchema)
+const Signage = mongoose.model('Signage', signageSchema)
 const Round = mongoose.model('Round', roundSchema)
 const Team = mongoose.model('Team', teamSchema)
 const Field = mongoose.model('Field', fieldSchema)
 
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
 module.exports.competition = Competition
+module.exports.signage = Signage
 module.exports.round = Round
 module.exports.team = Team
 module.exports.field = Field

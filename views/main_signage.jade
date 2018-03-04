@@ -1,4 +1,27 @@
-doctype html
+//  The MIT License (MIT)
+    Copyright (c) 2013 emahub
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+    refer to: http://opensource.org/licenses/mit-license.php
+
+    ---
+
+    The MIT License
+    Copyright (c) 2013 emahub
+
+    以下に定める条件に従い、本ソフトウェアおよび関連文書のファイル（以下「ソフトウェア」）の複製を取得するすべての人に対し、ソフトウェアを無制限に扱うことを無償で許可します。これには、ソフトウェアの複製を使用、複写、変更、結合、掲載、頒布、サブライセンス、および/または販売する権利、およびソフトウェアを提供する相手に同じことを許可する権利も無制限に含まれます。
+
+    上記の著作権表示および本許諾表示を、ソフトウェアのすべての複製または重要な部分に記載するものとします。
+
+    ソフトウェアは「現状のまま」で、明示であるか暗黙であるかを問わず、何らの保証もなく提供されます。ここでいう保証とは、商品性、特定の目的への適合性、および権利非侵害についての保証も含みますが、それに限定されるものではありません。 作者または著作権者は、契約行為、不法行為、またはそれ以外であろうと、ソフトウェアに起因または関連し、あるいはソフトウェアの使用またはその他の扱いによって生じる一切の請求、損害、その他の義務について何らの責任も負わないものとします。
+
+    参照: http://sourceforge.jp/projects/opensource/wiki/licenses%2FMIT_license
+    doctype html
 html
   head
     meta(charset='utf-8')
@@ -6,9 +29,12 @@ html
     meta(http-equiv='Content-Language', content='ja')
     meta(http-equiv='Content-Style-Type', content='text/css')
     meta(http-equiv='Content-Script-Type', content='text/javascript')
-    link(rel='stylesheet', type='text/css', href='style.css')
-    script(type='text/javascript', src='jquery-1.9.0.min.js')
-    script(type='text/javascript', src='config.js')
+    script(type='text/javascript', src='/components/jquery/dist/jquery.min.js')
+    script(src="/components/socket.io-client/socket.io.js")
+    script.
+        var sigId = "#{sigId}"
+    script(src="/javascripts/main_signage.js")
+    
     //if IE
       script(src='http://html5shiv.googlecode.com/svn/trunk/html5.js')
     title Digital Signage
@@ -20,6 +46,7 @@ html
       html,body {
       height:100%;
       overflow: hidden; /* スクロールバー非表示へ */
+      font-family: sans-serif; 
       }
       #content {
       text-align: center; /* コンテンツ画面を中心に配置 */
@@ -34,155 +61,25 @@ html
       border: 0;
       background-color:#fff;
       }
-    script.
-      var frame = {
-      "iframe": ["#iframe0", "#iframe1"],
-      "img": ["#img0", "#img1"],
-      "movie": ["#movie0", "#movie1"]
-      };
-      var dispId = 0;
-      var dispType = "iframe";
-      var prevType = "iframe";
-      var loadType = "iframe";
-      var contentList = ["dummy"];
-      var i = 0;    // 表示中のコンテンツ番号
-      var duration = 5;    // コンテンツの表示時間
-      function resize(){
-      target = frame[dispType][dispId];
-      scrWidth = $(window).width();
-      scrHeight = $(window).height() - $("#footer").height();
-      $("#content").css({"height": scrHeight});
-      if(dispType == "img"){
-      imgWidth = $(target).width();
-      imgHeight = $(target).height();
-      if( imgWidth/imgHeight < scrWidth/scrHeight ){
-      // スクリーンに対して縦長
-      $(target).css({
-      "width": imgWidth * scrHeight / imgHeight,
-      "height": scrHeight
-      });
-      } else {
-      // スクリーンに対して横長;
-      $(target).css({
-      "width": scrWidth,
-      "height": imgHeight * scrWidth / imgWidth
-      });
+      #content {
+            background-color: #222;
       }
-      } else if(dispType == "iframe"){
-      $(target).css({
-      "width": scrWidth,
-      "height": scrHeight
-      });
-      } else if(dispType == "movie"){
-      $(target).css({
-      "width": scrWidth,
-      "height": scrHeight
-      });
-      }
-      var hspace = scrHeight - $(target).height();
-      $(target).css({
-      "margin-top": hspace > 0 ? hspace / 2 : 0,
-      "margin-bottom": hspace > 0 ? hspace / 2 + 1 : 0
-      });
-      }
-      $(window).load(function(){
-      console.log("window load");
-      resize();
-      $(frame[dispType][dispId]).fadeIn(contentFadeInTime);
-      });
-      $(window).resize(function(){
-      resize();
-      });
-      $(document).ready(function(){
-      /* コンテンツ画面の実装 */
-      function loadContent(data){
-      contentList = data;
-      console.log(contentList);
-      }
-      timestamp = (contentJsonUrl.indexOf("?") == -1 ? "?" : "&")+"timestamp="+(new Date()).getTime();
-      $.getJSON(contentJsonUrl+timestamp, null, loadContent);
-      var state = 0;    // 0: load 1: change content 2: go to state0
-      var passedsec = 0;    // 経過時間
-      var timestamp;	// JSON取得時のキャッシュを防ぐためにURLにtimestampを含ませる
-      setInterval(function () {
-      passedsec++;
-      console.log(passedsec + "       Status: "+ state);
-      if(state == 0){
-      console.log("load");
-      loadType = contentList[i]["type"];
-      $(frame[loadType][1-dispId]).attr('src', contentList[i]["url"]);
-      state = 1;
-      if(i+1==contentList.length){
-      timestamp = (contentJsonUrl.indexOf("?") == -1 ? "?" : "&")+"timestamp="+(new Date()).getTime();
-      $.getJSON(contentJsonUrl+timestamp, null, loadContent);
-      }
-      } else if(state == 1){
-      if(passedsec > duration - 1){
-      state = 2;
-      passedsec = 0;
-      console.log("change");
-      dispId = 1-dispId;
-      dispType = loadType;
-      $(frame[dispType][dispId]).css({
-      "width": "",
-      "height": ""
-      });
-      resize();
-      $(frame[dispType][dispId]).delay(contentFadeOutTime).fadeIn(contentFadeInTime);
-      $(frame[prevType][1-dispId]).fadeOut(contentFadeOutTime);
-      if(dispType == "movie"){
-      //再生開始
-      $(frame[dispType][dispId])[0].play();
-      $(frame[dispType][dispId])[0].addEventListener("ended", function(){
-      console.log("Movie End!");
-      passedsec = 600;
-      }, false);
-      duration = 600;
-      }else{
-      duration = contentList[i]["duration"];
-      }
-      prevType = dispType;
-      if(i+1==contentList.length) i = 0; else i++;
-      }
-      } else if(state == 2){
-      if(passedsec >= 1){
-      state = 0;
-      passedsec = 0;
-      }
-      }
-      }, 1000);
-      /* ニュースバーの実装 */
-      function loadNews(data){
-      newsList = data;
-      console.log(newsList);
-      }
-      var newsList = Array();
-      var newsOrder = 0;
-      var newsElm = ["#news0", "#news1"];
-      var newsState = 0;
-      var newsWidth = $("#footer").width();
-      $.getJSON(newsJsonUrl, null, loadNews);
-      $(newsElm[newsState]).css({left:(newsWidth),display:'block',opacity:'0'}).
-      animate({left:'0',opacity:'1'},newsEffectSpeed,newsEasing);
-      setInterval(function(){
-      $(newsElm[newsState]).animate({left:(-(newsWidth)),opacity:'0'},newsEffectSpeed,newsEasing);
-      newsState = 1 - newsState;
-      $(newsElm[newsState]).text(newsList[newsOrder]);
-      newsOrder++;
-      if(newsOrder == newsList.length){
-      timestamp = (newsJsonUrl.indexOf("?") == -1 ? "?" : "&")+"timestamp="+(new Date()).getTime();
-      $.getJSON(newsJsonUrl+timestamp, null, loadNews);
-      newsOrder = 0;
-      }
-      $(newsElm[newsState]).css({left:(newsWidth),display:'block',opacity:'0'}).
-      animate({left:'0',opacity:'1'},newsEffectSpeed,newsEasing);
-      },newsSwitchDelay);
-      });
+      #footer {
+            background-color: #DF7401;
+            color: #fff;
+            font-family: "sans-serif";
+            font-size: 30pt;
+            height: 55px;
+            padding-top: 30px;
+            padding-left: 0.5em;
+      }        
+
+
   body
     #container
       #content
-        iframe#iframe0(src='boot.html', scrolling='no', style='display:none;')
-        iframe#iframe1(src='boot.html', scrolling='no', style='display:none;')
+        iframe#iframe0(src='/signage_content/boot.html', scrolling='no', style='display:none;')
+        iframe#iframe1(src='/signage_content/boot.html', scrolling='no', style='display:none;')
         img#img0(src='', style='display:none;')
         img#img1(src='', style='display:none;')
         div(style='text-align:center;')

@@ -3,6 +3,7 @@ html(ng-app="ddApp")
     title Rescue Runs Monitor
     script.
       var competitionId = "#{id}"
+      var sigId = "#{sigId}"
 
 
     include ./includes/common_component.jade
@@ -14,7 +15,7 @@ html(ng-app="ddApp")
     meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0")
 
   body(ng-controller="ddController")
-    iframe(ng-src='http://localhost:7888/signage', style='width:100%; height:100%; border:none;', ng-if='flagSignage && showSignage')
+    iframe(ng-src='{{signageSrc}}', style='width:100%; height:100%; border:none;', ng-if='flagSignage && showSignage')
     .row(style='height:100%;margin: 0 0 0 0;', ng-if='num')
       div(class='col-md-{{12/num}} col-sm-{{12/num}}', style='padding:0 0 0 0;', ng-style="{borderRight: $last ? '0px':'solid 5px #000'}" , ng-repeat='n in range(num)')
         iframe(ng-src='{{getIframeSrc(selectfield[n])}}', style='width:100%; height:100%; border:none;', ng-if='selectfield[n]')

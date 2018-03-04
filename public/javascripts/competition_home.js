@@ -4,6 +4,9 @@ app.controller("CompetitionHomeController", ['$scope', '$http', '$translate', fu
     $http.get("/api/competitions/" + competitionId).then(function (response) {
         $scope.competition = response.data
     })
+    $http.get("/api/signage").then(function (response) {
+        $scope.signs = response.data
+    })
 
     
     

@@ -6,9 +6,15 @@ var allFieldOpen = 0;
 // function referenced by the drop target
 app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', '$cookies', function ($scope, $uibModal, $log, $timeout, $http, $cookies) {
 
-
+    $scope.signageSrc = ""
     $scope.selectfield = [];
-    $scope.showSignage = false;
+    if(sigId){
+        $scope.signageSrc = "/signage/" + sigId;
+        $scope.flagSignage = true;
+    }else{
+        $scope.flagSignage = false;
+    }
+    
     $http.get("/api/competitions/" + competitionId +
         "/LineNL/fields").then(function (response) {
         $scope.fields = response.data
@@ -60,7 +66,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 }
             } else {
                 allFieldOpen *= 0;
-                console.log("HAAAAA");
             }
         })
     }

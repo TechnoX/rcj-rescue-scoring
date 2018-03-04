@@ -9,20 +9,32 @@ const auth = require('../helper/authLevels')
 const ACCESSLEVELS = require('../models/user').ACCESSLEVELS
 
 /* GET home page. */
-privateRouter.get('/:competitionid', function (req, res) {
-  const id = req.params.competitionid
-  if(auth.authCompetition(req.user,id,ACCESSLEVELS.VIEW)) res.render('main_signage', {id: id, user: req.user})
-  else res.render('access_denied', {user: req.user})
+
+adminRouter.get('/setting', function (req, res) {
+  res.render('signage_setting', {user: req.user})
+})
+adminRouter.get('/setting/editor', function (req, res) {
+  res.render('signage_editor', {user: req.user})
+})
+adminRouter.get('/setting/editor/:id', function (req, res){
+  const id = req.params.id
+  res.render('signage_editor', {user: req.user , id: id})
 })
 
-privateRouter.get('/:competitionid/run', function (req, res, next) {
+privateRouter.get('/:sigId', function (req, res) {
+  const sigId = req.params.sigId
+  res.render('main_signage', {user: req.user, sigId: sigId})
+})
+
+privateRouter.get('/:competitionid/run/:sigId', function (req, res, next) {
   const id = req.params.competitionid
+  const sigId = req.params.sigId
   
   if (!ObjectId.isValid(id)) {
     return next()
   }
   
-  if(auth.authCompetition(req.user,id,ACCESSLEVELS.VIEW)) res.render('runs_monitor', {id: id, user: req.user})
+  if(auth.authCompetition(req.user,id,ACCESSLEVELS.VIEW)) res.render('runs_monitor', {id: id, user: req.user,sigId: sigId})
   else res.render('access_denied', {user: req.user})
 })
 
