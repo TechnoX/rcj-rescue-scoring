@@ -243,7 +243,13 @@ block content
               h3.card-header
                 i.far.fa-file-pdf(aria-hidden='true') {{'interview.attach' | translate}}
               .card-body
-                    iframe(ng-src="{{'/components/pdfjs/web/viewer.html?file=/api/teams/pdf/' + competitionId + '/' +teamId}}" style="width:100%; height:600px;" )
+                    iframe(ng-src="{{'/components/pdfjs/web/viewer.html?file=/api/teams/pdf/' + competitionId + '/' +teamId+'/doc'}}" style="width:100%; height:600px;" )
+          br
+          #poster.card
+              h3.card-header
+                i.far.fa-file-pdf(aria-hidden='true') {{'interview.poster' | translate}}
+              .card-body
+                    iframe(ng-src="{{'/components/pdfjs/web/viewer.html?file=/api/teams/pdf/' + competitionId + '/' +teamId+'/poster'}}" style="width:100%; height:600px;" )
 
       br
       br

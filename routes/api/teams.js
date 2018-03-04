@@ -383,9 +383,10 @@ adminRouter.post('/document/pub/:competitionid/:teamid', function (req, res, nex
 })
 
 
-publicRouter.get('/pdf/:competitionid/:teamid', function (req, res, next) {
+publicRouter.get('/pdf/:competitionid/:teamid/:filename', function (req, res, next) {
   const id = req.params.competitionid
   const tid = req.params.teamid
+  const filename = req.params.filename
   
   if (!ObjectId.isValid(id)) {
     return next()
@@ -408,14 +409,15 @@ publicRouter.get('/pdf/:competitionid/:teamid', function (req, res, next) {
                                 err: err.message
                             })
                         } else if (dbTeam && (dbTeam.docPublic || auth.authCompetition(req.user,id,ACCESSLEVELS.JUDGE))) {
-                            var path = __dirname + "/../../TechnicalDocument/" + dbCompe.name + "/" + dbTeam.name + "/doc.pdf"
+                            var path = __dirname + "/../../TechnicalDocument/" + dbCompe.name + "/" + dbTeam.name + "/"+ filename +".pdf"
                             if(isExistFile(path)){
                                 var file = fs.createReadStream(path);
                                 var stat = fs.statSync(path);
                                 res.setHeader('Content-Length', stat.size);
                                 res.setHeader('Content-Type', 'application/pdf');
-                                res.setHeader('Content-Disposition', 'attachment; filename=doc.pdf');
+                                res.setHeader('Content-Disposition', 'attachment; filename='+ filename +'.pdf');
                                 file.pipe(res);
+                                return
                             }else{
                                 return res.status(404).send({
                                     msg: "No PDF file for this team"
