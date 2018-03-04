@@ -497,7 +497,7 @@ privateRouter.get('/pic/:competitionid/:teamid/:pic', function (req, res, next) 
                                     return;
                                 }
                                 
-                                var path = __dirname + "/../../TechnicalDocument/NoImage.png";
+                                var path = __dirname + "/../../public/images/NoImage.png";
                                 if(isExistFile(path)){
                                     fs.readFile(path,function(err,data){
                                         res.writeHead(200, {'Content-Type': 'image/png' });
