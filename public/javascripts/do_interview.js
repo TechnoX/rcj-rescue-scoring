@@ -146,6 +146,11 @@ var app = angular.module("InterviewTeam", ['pascalprecht.translate', 'ngCookies'
             $scope.picFileMa = null
             var date = new Date();
             $scope.picMaTime = "?time=" + date.getTime();
+            $http.put("/api/teams/" + competitionId +
+                "/"+teamId, {
+                    inspected: true
+                }).then(function (response) {
+            })
       },function (resp) {}
        ,function (evt)  {}
       );
