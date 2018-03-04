@@ -2,7 +2,7 @@
     <!-- Navbar content -->
 
     <div class="col-md-6 col-sm4 col-12">
-        <li class="navbar-brand" href="#"><i class="fa fa-spinner fa-spin fa-fw"></i> {{team}}</li>
+        <li class="navbar-brand" href="#"><i class="fa fa-spinner fa-spin fa-fw"></i> {{team.name}}</li>
     </div>
     <div class="col-md-3 col-sm4 col-7">
         <i class="fas fa-calculator fa-2x" aria-hidden="true"></i>
@@ -21,15 +21,15 @@
             <h3 class="card-header"><i class="fas fa-info-circle" aria-hidden="true"></i> {{'line.judge.info' | translate}}</h3>
             <table class="table" style="margin-bottom:0;">
                 <tbody>
-                    <tr>
+                    <tr ng-style="{backgroundColor: checkTeam? '#e1f7d5' : '#ffbdbd'}" ng-click="toggleCheckTeam()">
                         <th>
                             {{'common.team' | translate}}
                         </th>
                         <td>
-                            <h1><b>{{team}}</b></h1>
+                            <h1><b>{{team.name}}</b></h1>
                         </td>
                     </tr>
-                    <tr>
+                    <tr ng-style="{backgroundColor: checkRound? '#e1f7d5' : '#ffbdbd'}"  ng-click="toggleCheckRound()">
                         <th>
                             {{'common.round' | translate}}
                         </th>
@@ -66,7 +66,28 @@
         </div>
         <br>
         <br>
-        <button class="btn btn-success" type="button" ng-click="infochecked()"><i class="fas fa-check-circle fa-2x" aria-hidden="true"> {{'line.judge.confirm' | translate}}</i></button>
+        <div class="row" style="margin-bottom:30px">
+            <div class="col-md-6">
+                <div class="card">
+                    <h3 class="card-header"><i class="far fa-images" aria-hidden="true">{{'interview.me_pic' | translate}}</i></h3>
+                    <div class="card-body" ng-style="{backgroundColor: checkMember? '#e1f7d5' : '#ffbdbd'}"  ng-click="toggleCheckMember()">
+                       <img class="img-thumbnail" style="max-width: 100%;height: auto;margin-bottom:20px" ng-src="/api/teams/pic/{{competition._id}}/{{team._id}}/member" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <h3 class="card-header"><i class="far fa-images" aria-hidden="true">{{'interview.ma_pic' | translate}}</i></h3>
+                    <div class="card-body" ng-style="{backgroundColor: checkMachine? '#e1f7d5' : '#ffbdbd'}" ng-click="toggleCheckMachine()">
+                        <div>
+                            <img class="img-thumbnail" style="max-width: 100%;height: auto;margin-bottom:20px" ng-src="/api/teams/pic/{{competition._id}}/{{team._id}}/machine" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p ng-show="!(checkTeam && checkRound && checkMember && checkMachine)">{{'line.judge.tap_red' | translate}}</p>
+        <button class="btn btn-success" type="button" ng-click="infochecked()" ng-disabled="!(checkTeam && checkRound && checkMember && checkMachine)"><i class="fas fa-check-circle fa-2x" aria-hidden="true"> {{'line.judge.confirm' | translate}}</i></button>
     </div>
     <div ng-show="checked">
         <div class="row">
@@ -78,28 +99,28 @@
                     {{'line.judge.ready' | translate}}<br><strong style="font-size:20px;">{{'line.judge.push_start' | translate}}</strong>
                 </div>
                 <div class="card" ng-if="league == 'LineWL'" ng-show="!startedScoring || fromSign">
-                  <h4 class="card-header"><i class="fas fa-ambulance" aria-hidden="true"></i> {{'line.judge.select_elevel' | translate}}</h4>
-                  <div class="card-body">
-                    <div class="row">
-                        <div class="col-6" style="position: relative;" ng-click="changeLevel(1)">
-                            
-                            <img src="/images/level1.png" class="img-thumbnail" width=100% ng-style="{'background-color': evacuationLevel==1?'#2ecc71':'#95a5a6' , 'opacity':evacuationLevel==1?'1':'0.4' }">
-                            <div style="position:absolute; top:10px; left:30px;">{{'line.judge.low' | translate}}</div>
-                            <div style="position:absolute; bottom:10px; right:25px;" ng-show="evacuationLevel==1"><i class="far fa-3x fa-check-circle " aria-hidden="true" style="color:#27ae60;"></i></div>
-                            
-                        </div>
-                        <div class="col-6"  style="position: relative;" ng-click="changeLevel(2)">
-                            <img src="/images/level2.png" class="img-thumbnail" width=100% ng-style="{'background-color': evacuationLevel==2?'#2ecc71':'#95a5a6' , 'opacity':evacuationLevel==2?'1':'0.4' }">
-                            <div style="position:absolute; top:10px; left:30px;">{{'line.judge.high' | translate}}</div>
-                            <div style="position:absolute; bottom:10px; right:25px;" ng-show="evacuationLevel==2"><i class="far fa-3x fa-check-circle" aria-hidden="true" style="color:#27ae60;"></i></div>
+                    <h4 class="card-header"><i class="fas fa-ambulance" aria-hidden="true"></i> {{'line.judge.select_elevel' | translate}}</h4>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6" style="position: relative;" ng-click="changeLevel(1)">
 
+                                <img src="/images/level1.png" class="img-thumbnail" width=100% ng-style="{'background-color': evacuationLevel==1?'#2ecc71':'#95a5a6' , 'opacity':evacuationLevel==1?'1':'0.4' }">
+                                <div style="position:absolute; top:10px; left:30px;">{{'line.judge.low' | translate}}</div>
+                                <div style="position:absolute; bottom:10px; right:25px;" ng-show="evacuationLevel==1"><i class="far fa-3x fa-check-circle " aria-hidden="true" style="color:#27ae60;"></i></div>
+
+                            </div>
+                            <div class="col-6" style="position: relative;" ng-click="changeLevel(2)">
+                                <img src="/images/level2.png" class="img-thumbnail" width=100% ng-style="{'background-color': evacuationLevel==2?'#2ecc71':'#95a5a6' , 'opacity':evacuationLevel==2?'1':'0.4' }">
+                                <div style="position:absolute; top:10px; left:30px;">{{'line.judge.high' | translate}}</div>
+                                <div style="position:absolute; bottom:10px; right:25px;" ng-show="evacuationLevel==2"><i class="far fa-3x fa-check-circle" aria-hidden="true" style="color:#27ae60;"></i></div>
+
+                            </div>
                         </div>
                     </div>
-                  </div>
                 </div>
                 <br>
 
-                
+
                 <div class="alert alert-warning" role="alert" ng-show="!startedScoring">
                     {{'line.judge.tap_tile' |translate}}<br> {{'line.judge.remaining' | translate}} <strong style="font-size:30px;">{{numberOfDropTiles - placedDropTiles}}</strong>
                 </div>
@@ -191,14 +212,14 @@
                         <div class="card-body">
                             <p class="card-text">{{'line.judge.exit' | translate}}<span class="badge badge-info">20　points</span></p>
                             <div class="col-md-12" style="position: relative;" ng-click="changeExitBonus()">
-                            <img src="/images/line_bonus.png" class="img-thumbnail" width=186.3px height=118px ng-style="{'background-color': exitBonus?'#2ecc71':'#D91E18'}">
-                            <div style="position:absolute; top:25px; left:65px;">
-                                <img src="/images/loader2.gif" class="" ng-show="exitBonusP" style="" width= 70px height=70px>
-                                <i class="fas fa-check fa-fw fa-5x" ng-show="exitBonus && !exitBonusP" style="color:#27ae60; opacity:0.9;"></i>
-                                <i class="fas fa-times fa-fw fa-5x" ng-show="!exitBonus && !exitBonusP" style="padding-top:4px; color:#e74c3c; opacity:0.9;"></i>
-                          </div>
-                            
-                        </div>
+                                <img src="/images/line_bonus.png" class="img-thumbnail" width=186.3px height=118px ng-style="{'background-color': exitBonus?'#2ecc71':'#D91E18'}">
+                                <div style="position:absolute; top:25px; left:65px;">
+                                    <img src="/images/loader2.gif" class="" ng-show="exitBonusP" style="" width=7 0px height=70px>
+                                    <i class="fas fa-check fa-fw fa-5x" ng-show="exitBonus && !exitBonusP" style="color:#27ae60; opacity:0.9;"></i>
+                                    <i class="fas fa-times fa-fw fa-5x" ng-show="!exitBonus && !exitBonusP" style="padding-top:4px; color:#e74c3c; opacity:0.9;"></i>
+                                </div>
+
+                            </div>
                         </div>
 
                     </div>
@@ -211,26 +232,26 @@
             <div class="col-md-7 col-lg-8 tilearea">
                 <div style="text-align:left;float:left;">
                     <div class="btn-group">
-                      <span class="input-group-addon"><i class="fas fa-arrows-alt-v" aria-hidden="true"></i></span>
-                      <button type="button" class="btn btn-outline-dark" ng-click="changeFloor(zz)" ng-repeat="zz in range(height)" ng-class="{active: zz == z}">&nbsp;{{zz}}&nbsp;</button>
+                        <span class="input-group-addon"><i class="fas fa-arrows-alt-v" aria-hidden="true"></i></span>
+                        <button type="button" class="btn btn-outline-dark" ng-click="changeFloor(zz)" ng-repeat="zz in range(height)" ng-class="{active: zz == z}">&nbsp;{{zz}}&nbsp;</button>
                     </div>
                 </div>
                 <div style="text-align:right;float:right;">
                     <div class="btn-group">
-                      <button type="button" class="btn btn-outline-dark" ng-click="tileRot(-90)">&nbsp;<i class="fas fa-undo" aria-hidden="true"></i>&nbsp;</button>
-                      <button type="button" class="btn btn-outline-dark" ng-click="tileRot(90)">&nbsp;<i class="fas fa-redo" aria-hidden="true"></i>&nbsp;</button>
+                        <button type="button" class="btn btn-outline-dark" ng-click="tileRot(-90)">&nbsp;<i class="fas fa-undo" aria-hidden="true"></i>&nbsp;</button>
+                        <button type="button" class="btn btn-outline-dark" ng-click="tileRot(90)">&nbsp;<i class="fas fa-redo" aria-hidden="true"></i>&nbsp;</button>
                     </div>
                 </div>
                 <div style="clear:both;"></div>
                 <div class="mx-auto" style="margin-top:5px;" id="wrapTile">
                     <div ng-repeat="r in range(length)" ng-if="sRotate==0" style="display: flex;">
                         <div style="text-align:center;">
-                        <div ng-repeat="c in range(width)" class="slot">
-                            <tile tile="mtiles[c+','+r+','+z]" ng-click="doScoring(c,r,z)"></tile>
-                        </div>
+                            <div ng-repeat="c in range(width)" class="slot">
+                                <tile tile="mtiles[c+','+r+','+z]" ng-click="doScoring(c,r,z)"></tile>
                             </div>
+                        </div>
                     </div>
-                   <div ng-repeat="r in range(length)" ng-if="sRotate==180" style="display: flex;">
+                    <div ng-repeat="r in range(length)" ng-if="sRotate==180" style="display: flex;">
                         <div ng-repeat="c in range(width)" class="slot">
                             <tile tile="mtiles[width - c -1+','+(length - r -1)+','+z]" ng-click="doScoring(width - c -1,length - r -1,z)"></tile>
                         </div>
@@ -255,7 +276,7 @@
 
                 <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleScoring()"><i class="far fa-clipboard" aria-hidden="true"> {{ startedScoring ? 'line.judge.run_end' : 'line.judge.run_start' | translate }}</i></button>
                 <button class="btn btn-success" style="margin:0 10px 10px 0;" type="button" ng-click="toggleTime()"><i class="fas fa-stopwatch" aria-hidden="true"> {{ startedTime ? 'line.judge.tim_stop' : 'line.judge.tim_start' |translate }}</i></button>
-                    
+
             </div>
             <div class="col-md-12 confirmation">
                 <div>

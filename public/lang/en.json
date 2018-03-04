@@ -143,6 +143,7 @@
             "before": "Before the start of the run record, please confirm that the following information is correct.",
             "info": "@:line.view.info",
             "to": "@:line.view.to",
+            "tap_red": "After confirming that each item is correct, please tap the red part.",
             "confirm": "I confirmed!!",
             "run_start": "Run Record Start",
             "run_end": "Run Record End",
@@ -261,6 +262,7 @@
         "judge": {
             "before": "@:line.judge.before",
             "info": "@:line.view.info",
+            "tap_red": "@:line.judge.tap_red",
             "confirm": "@:line.judge.confirm",
             "push_timer": "@:line.judge.push_timer",
             "tim_start": "@:line.judge.tim_start",

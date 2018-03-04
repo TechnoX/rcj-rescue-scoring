@@ -23,6 +23,27 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.startUnixTime = 0;
     var date = new Date();
     var prevTime = 0;
+    
+    $scope.checkTeam = $scope.checkRound = $scope.checkMember = $scope.checkMachine = false;
+    $scope.toggleCheckTeam = function(){
+        $scope.checkTeam = !$scope.checkTeam;
+        playSound(sClick);
+    }
+    $scope.toggleCheckRound = function(){
+        $scope.checkRound = !$scope.checkRound;
+        playSound(sClick);
+    }
+    $scope.toggleCheckMember = function(){
+        $scope.checkMember = !$scope.checkMember;
+        playSound(sClick);
+    }
+    $scope.toggleCheckMachine = function(){
+        $scope.checkMachine = !$scope.checkMachine;
+        playSound(sClick);
+    }
+    $scope.checks = function(){
+        return ($scope.checkTeam & $scope.checkRound & $scope.checkMember & $scope.checkMachine)
+    }
 
 
     $scope.lopProcessing = false;
@@ -50,7 +71,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.field = response.data.field.name;
         $scope.round = response.data.round.name;
         $scope.score = response.data.score;
-        $scope.team = response.data.team.name;
+        $scope.team = response.data.team;
         $scope.league = response.data.team.league;
         $scope.competition = response.data.competition;
         $scope.LoPs = response.data.LoPs;
@@ -171,6 +192,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.checked = true;
         $timeout($scope.tile_size, 10);
         $timeout($scope.tile_size, 200);
+        scrollTo( 0, 0 ) ;
     }
     $scope.decrement = function () {
         playSound(sClick);
