@@ -204,6 +204,108 @@
                         <tile tile="mtiles[r+','+ (length - c-1) +','+z]" ng-click="showElements(r,length-c-1,z)"></tile>
                     </div>
                 </div>
+            <br>
+            <h2 style="text-align:center;">{{score - checkTotal() - ((rescuedLiveVictims * (30 + (evacuationLevel-1)*10)) + (rescuedDeadVictims * (15 + (evacuationLevel-1)*5)) + (20 * exitBonus))}} {{'common.point' |translate}}</h2>
+        </div>
+    </div>
+    </div>
+
+    <h2>{{'line.sign.checkPointScore' | translate}}</h2>
+
+    <div class="row" 　style="margin-bottom:50px;text-align:center;display: flex;flex-wrap: wrap;">
+        <div class="col-md-3" ng-repeat="cp in checkPointDistance track by $index">
+            <div class="alert" ng-class="{'alert-success': cp.status , 'alert-danger': !cp.status}" style="margin-bottom:30px;text-align:center;" role="alert">
+                <div style="min-height:100px">
+                    <h6 style="text-align:center;">
+                        {{$index==0?'line.sign.start':'line.sign.checkpoint'|translate}}
+                        <b style="font-size:20px;color:#FF8300;">{{$index==0?'':$index}}</b>
+                    </h6>
+                    <i class="fas fa-road fa-2x"> {{cp.dis}}</i> {{'common.tile' | translate}}
+                    <br>
+                    <div ng-if="$index>0"><i class="fas fa-step-forward fa-2x"> {{LoPs[$index-1]}}</i> {{'common.times' | translate}}</div>
+                    <i class="fas fa-2x" ng-if="$index==0"></i>
+                </div>
+                <h1>{{cp.point}} {{'common.point' | translate}}</h1>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="alert alert-warning" style="margin-bottom:30px;text-align:center;" role="alert">
+                <div style="min-height:100px">
+                    <h3>{{'line.sign.checkpoint'|translate}} {{'common.stotal' | translate}}</h3>
+                </div>
+
+                <h1>{{checkTotal()}} {{'common.point' | translate}}</h1>
+            </div>
+        </div>
+    </div>
+
+    <h2>{{'line.sign.rescue' | translate}} / {{'line.sign.exitBonus' | translate}}</h2>
+    <div class="alert alert-info" style="margin-bottom:50px;text-align:center;" role="alert">
+        <div class="row">
+            <div class="col-md-2">
+                <p style="height:30px;">{{'line.sign.live' | translate}}</p>
+                <i class="fas fa-child fa-2x"> {{rescuedLiveVictims}}</i><br><br>
+                <h1>{{rescuedLiveVictims * (30 + (evacuationLevel-1)*10)}} {{'common.point' | translate}}</h1>
+            </div>
+            <div class="col-md-1">
+                <p style="height:30px;"></p>
+                <h1>+</h1>
+            </div>
+            <div class="col-md-2">
+                <p style="height:30px;">{{'line.sign.dead' | translate}}</p>
+                <i class="fas fa-child fa-2x"> {{rescuedDeadVictims}}</i><br><br>
+                <h1>{{rescuedDeadVictims * (15 + (evacuationLevel-1)*5)}} {{'common.point' | translate}}</h1>
+            </div>
+            <div class="col-md-1">
+                <p style="height:30px;"></p>
+                <h1>+</h1>
+            </div>
+            <div class="col-md-2">
+                <p style="text-align:center;height:30px;">{{'line.sign.exitBonus' | translate}}</p>
+                <i class="fas fa-home fa-2x"> {{exitBonus}}</i><br><br>
+                <h1>{{ 20 * exitBonus}} {{'common.point' | translate}}</h1>
+            </div>
+            <div class="col-md-1">
+                <p style="height:30px;"></p>
+                <h1>=</h1>
+            </div>
+            <div class="col-md-3">
+                <p style="height:30px;">{{'common.stotal' | translate}}</p>
+                <h1>{{(rescuedLiveVictims * (30 + (evacuationLevel-1)*10)) + (rescuedDeadVictims * (15 + (evacuationLevel-1)*5)) + (20 * exitBonus)}} {{'common.point' | translate}}</h1>
+            </div>
+        </div>
+    </div>
+
+    <h2>{{'line.sign.calc' | translate}}</h2>
+    <div class="alert alert-dark" style="margin-bottom:50px;text-align:center;" role="alert">
+        <div class="row">
+            <div class="col-md-2">
+                <p style="height:30px;">{{'line.sign.item' | translate}}</p>
+                <h1>{{score - checkTotal() - ((rescuedLiveVictims * (30 + (evacuationLevel-1)*10)) + (rescuedDeadVictims * (15 + (evacuationLevel-1)*5)) + (20 * exitBonus))}} {{'common.point' | translate}}</h1>
+            </div>
+            <div class="col-md-1">
+                <p style="height:30px;"></p>
+                <h1>+</h1>
+            </div>
+            <div class="col-md-2">
+                <p style="height:30px;">{{'line.sign.checkPointScore' | translate}}</p>
+                <h1>{{checkTotal()}} {{'common.point' | translate}}</h1>
+            </div>
+            <div class="col-md-1">
+                <p style="height:30px;"></p>
+                <h1>+</h1>
+            </div>
+            <div class="col-md-2">
+                <p style="text-align:center;height:30px;">{{'line.sign.rescue' | translate}} / {{'line.sign.exitBonus' | translate}}</p>
+                <h1>{{(rescuedLiveVictims * (30 + (evacuationLevel-1)*10)) + (rescuedDeadVictims * (15 + (evacuationLevel-1)*5)) + (20 * exitBonus)}} {{'common.point' | translate}}</h1>
+            </div>
+            <div class="col-md-1">
+                <p style="height:30px;"></p>
+                <h1>=</h1>
+            </div>
+            <div class="col-md-3">
+                <p style="height:30px;"></p>
+                <h1>{{score}} {{'common.point' | translate}}</h1>
             </div>
         </div>
     </div>

@@ -47,11 +47,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
 
     $scope.z = 0;
-    
+        
     // Scoring elements of the tiles
     $scope.stiles = [];
     // Map (images etc.) for the tiles
     $scope.mtiles = [];
+    
+    $scope.checkPointDistance = [];
 
 
     if (typeof runId !== 'undefined') {
@@ -81,6 +83,29 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.minutes = data.time.minutes;
                 $scope.seconds = data.time.seconds;
                 $scope.retired = data.retired;
+                
+                 
+                $scope.checkPointDistance = [];
+                let tmp = {
+                    dis: 1,
+                    status: $scope.showedUp,
+                    point: 3*$scope.showedUp
+                }
+                $scope.checkPointDistance.push(tmp);
+                let prevCheckPoint = 0;
+                let j = 0;
+                for(let i in $scope.stiles){
+                    if($scope.stiles[i].isDropTile){
+                        let tmp = {
+                            dis: i - prevCheckPoint,
+                            status: $scope.stiles[i].scored,
+                            point: (i - prevCheckPoint) * $scope.stiles[i].scored * $scope.LoPsCountPoint($scope.LoPs[j])
+                        }
+                        $scope.checkPointDistance.push(tmp);
+                        prevCheckPoint = i;
+                        j++;
+                    }
+                }
                 $scope.$apply();
                 console.log("Updated view from socket.io");
             });
@@ -155,6 +180,29 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                         response.data.tiles[i].y + ',' +
                         response.data.tiles[i].z] = response.data.tiles[i];
                 }
+                
+                $scope.checkPointDistance = [];
+                let tmp = {
+                    dis: 1,
+                    status: $scope.showedUp,
+                    point: 3*$scope.showedUp
+                }
+                $scope.checkPointDistance.push(tmp);
+                let prevCheckPoint = 0;
+                let j = 0;
+                for(let i in $scope.stiles){
+                    if($scope.stiles[i].isDropTile){
+                        let tmp = {
+                            dis: i - prevCheckPoint,
+                            status: $scope.stiles[i].scored,
+                            point: (i - prevCheckPoint) * $scope.stiles[i].scored * $scope.LoPsCountPoint($scope.LoPs[j])
+                        }
+                        $scope.checkPointDistance.push(tmp);
+                        prevCheckPoint = i;
+                        j++;
+                    }
+                }
+                
                 $timeout($scope.tile_size, 0);
                 $timeout($scope.tile_size, 500);
                 $timeout($scope.tile_size, 1000);
@@ -170,6 +218,21 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.go('/home/access_denied');
             }
         });
+    }
+    
+    $scope.LoPsCountPoint = function (n){
+        if(n == 0) return 3;
+        if(n == 1) return 2;
+        if(n == 2) return 1;
+        return 0;
+    }
+    
+    $scope.checkTotal = function(){
+        let ret = 0;
+        for(let i in $scope.checkPointDistance){
+            ret += $scope.checkPointDistance[i].point;
+        }
+        return ret;
     }
 
 
@@ -215,6 +278,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.changeFloor = function (z){
         playSound(sClick);
         $scope.z = z;
+        $timeout($scope.tile_size, 100);
+        
     }
     
     $scope.tileRot = function (r){
@@ -435,7 +500,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $('.slot').css('height', tilesize);
             $('.slot').css('width', tilesize);
             $('.chnumtxt').css('font-size', tilesize / 6);
-            
+            $('.tile-point').css('font-size', tilesize/2 + "px");
             if($scope.sRotate%180 == 0){
                 $('#wrapTile').css('width', (tilesize+3)*width);
             }else{
@@ -595,6 +660,35 @@ app.directive('tile', function () {
                     return "undone";
                 else
                     return "";
+            }
+            
+            $scope.tilePoint = function (tile) {
+                // If this is a non-existent tile
+                if ((!tile || tile.index.length == 0) && !isStart(tile))
+                    return ;
+
+                // If this tile has no scoring elements we should just return empty string
+                if (tile.items.obstacles == 0 &&
+                    tile.items.speedbumps == 0 &&
+                    tile.tileType.gaps == 0 &&
+                    tile.tileType.intersections == 0 &&
+                    !$scope.$parent.stiles[tile.index[0]].isDropTile && !isStart(tile)
+                ) {
+                    return;
+                }
+
+                // Number of successfully passed times
+                var successfully = 0;
+
+                for (var i = 0; i < tile.index.length; i++) {
+                    if ($scope.$parent.stiles[tile.index[i]].scored) {
+                        successfully += tile.items.obstacles*10;
+                        successfully += tile.items.speedbumps*5;
+                        successfully += tile.tileType.gaps*10;
+                        successfully += tile.tileType.intersections*15;
+                    }
+                }
+                return successfully;
             }
 
             $scope.rotateRamp = function (direction) {
@@ -777,6 +871,8 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, 
     };
 
 });
+
+
 
 $(window).on('beforeunload', function () {
     socket.emit('unsubscribe', 'runs/' + runId);

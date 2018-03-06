@@ -66,6 +66,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.exitBonus = data.exitBonus;
                 $scope.score = data.score;
                 $scope.LoPs = data.LoPs;
+                $scope.foundVictims = data.foundVictims;
+                $scope.distKits = data.distKits;
 
                 // Verified time by timekeeper
                 $scope.minutes = data.time.minutes;
@@ -97,6 +99,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.competition = response.data.competition.name;
             $scope.competition_id = response.data.competition._id;
             $scope.LoPs = response.data.LoPs;
+            $scope.foundVictims = response.data.foundVictims;
+            $scope.distKits = response.data.distKits;
 
             // Verified time by timekeeper
             $scope.minutes = response.data.time.minutes;
@@ -146,9 +150,18 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         });
     }
     
+    $scope.reliability = function(){
+        return Math.max(($scope.foundVictims + $scope.distKits - $scope.LoPs)*10,0);
+    }
+    
+    $scope.reliabilityLoPs = function(){
+        return Math.min(($scope.foundVictims + $scope.distKits)*10, $scope.LoPs*10);
+    }
+    
     $scope.changeFloor = function (z){
         playSound(sClick);
         $scope.z = z;
+        $timeout($scope.tile_size, 100);
     }
     
     $scope.tileRot = function (r){
@@ -363,6 +376,154 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         else
             return "";
     }
+    
+    $scope.tilePoint = function (x, y, z, isTile) {
+        // If this is a non-existent tile
+        var cell = $scope.cells[x + ',' + y + ',' + z];
+        var victimPoint = cell.isLinear ? 10:25;
+        console.log(victimPoint);
+        
+        if (!cell)
+            return;
+        if (!isTile)
+            return;
+
+        if (!$scope.tiles[x + ',' + y + ',' + z]) {
+            $scope.tiles[x + ',' + y + ',' + z] = {
+                scoredItems: {
+                    speedbump: false,
+                    checkpoint: false,
+                    rampBottom: false,
+                    rampTop: false,
+                    victims: {
+                        top: false,
+                        right: false,
+                        left: false,
+                        bottom: false
+                    },
+                    rescueKits: {
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        left: 0
+                    }
+                }
+            };
+        }
+        var tile = $scope.tiles[x + ',' + y + ',' + z];
+
+        // Current "score" for this tile
+        var current = 0;
+
+
+        if (cell.tile.speedbump) {
+            if (tile.scoredItems.speedbump) {
+                current+=5;
+            }
+        }
+        if (cell.tile.checkpoint) {
+            if (tile.scoredItems.checkpoint) {
+                current+=10;
+            }
+        }
+        if (cell.tile.rampBottom) {
+            if (tile.scoredItems.rampBottom) {
+                current+=10;
+            }
+        }
+        if (cell.tile.rampTop) {
+            if (tile.scoredItems.rampTop) {
+                current+=20;
+            }
+        }
+        switch (cell.tile.victims.top) {
+            case 'Heated':
+                current += victimPoint * (tile.scoredItems.victims.top ||
+                    tile.scoredItems.rescueKits.top > 0);
+                current += 10*Math.min(tile.scoredItems.rescueKits.top , 1);
+                break;
+            case 'H':
+                current += victimPoint * (tile.scoredItems.victims.top ||
+                    tile.scoredItems.rescueKits.top > 0);
+                current += 10*Math.min(tile.scoredItems.rescueKits.top , 2);
+                break;
+            case 'S':
+                current += victimPoint * (tile.scoredItems.victims.top ||
+                    tile.scoredItems.rescueKits.top > 0);
+                current += 10*Math.min(tile.scoredItems.rescueKits.top , 1);
+                break;
+            case 'U':
+                current += victimPoint * (tile.scoredItems.victims.top ||
+                    tile.scoredItems.rescueKits.top > 0);
+                break;
+        }
+        switch (cell.tile.victims.right) {
+            case 'Heated':
+                current += victimPoint * (tile.scoredItems.victims.right ||
+                    tile.scoredItems.rescueKits.right > 0);
+                current += 10*Math.min(tile.scoredItems.rescueKits.right , 1);
+                break;
+            case 'H':
+                current += victimPoint * (tile.scoredItems.victims.right ||
+                    tile.scoredItems.rescueKits.right > 0);
+                current += 10*Math.min(tile.scoredItems.rescueKits.right , 2);
+                break;
+            case 'S':
+                current += victimPoint * (tile.scoredItems.victims.right ||
+                    tile.scoredItems.rescueKits.right > 0);
+                current += 10*Math.min(tile.scoredItems.rescueKits.right , 1);
+                break;
+            case 'U':
+                current += victimPoint * (tile.scoredItems.victims.right ||
+                    tile.scoredItems.rescueKits.right > 0);
+                break;
+        }
+        switch (cell.tile.victims.bottom) {
+            case 'Heated':
+                current += victimPoint * (tile.scoredItems.victims.bottom ||
+                    tile.scoredItems.rescueKits.bottom > 0);
+                current += 10*Math.min(tile.scoredItems.rescueKits.bottom , 1);
+                break;
+            case 'H':
+                current += victimPoint * (tile.scoredItems.victims.bottom ||
+                    tile.scoredItems.rescueKits.bottom > 0);
+                current += 10*Math.min(tile.scoredItems.rescueKits.bottom , 2);
+                break;
+            case 'S':
+                current += victimPoint * (tile.scoredItems.victims.bottom ||
+                    tile.scoredItems.rescueKits.bottom > 0);
+                current += 10*Math.min(tile.scoredItems.rescueKits.bottom , 1);
+                break;
+            case 'U':
+                current += victimPoint * (tile.scoredItems.victims.bottom ||
+                    tile.scoredItems.rescueKits.bottom > 0);
+                break;
+        }
+        switch (cell.tile.victims.left) {
+            case 'Heated':
+                current += victimPoint * (tile.scoredItems.victims.left ||
+                    tile.scoredItems.rescueKits.left > 0);
+                current += 10*Math.min(tile.scoredItems.rescueKits.left , 1);
+                break;
+            case 'H':
+                current += victimPoint * (tile.scoredItems.victims.left ||
+                    tile.scoredItems.rescueKits.left > 0);
+                current += 10*Math.min(tile.scoredItems.rescueKits.left , 2);
+                break;
+            case 'S':
+                current += victimPoint * (tile.scoredItems.victims.left ||
+                    tile.scoredItems.rescueKits.left > 0);
+                current += 10*Math.min(tile.scoredItems.rescueKits.left , 1);
+                break;
+            case 'U':
+                current += victimPoint * (tile.scoredItems.victims.left ||
+                    tile.scoredItems.rescueKits.left > 0);
+                break;
+        }
+
+
+        return current;
+    }
 
     $scope.cellClick = function (x, y, z, isWall, isTile) {
         var cell = $scope.cells[x + ',' + y + ',' + z];
@@ -534,6 +695,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $('.tile-image').css('width', tilesize);
             $('.tile-font').css('font-size', tilesize - 10);
             $('.cell').css('padding', tilesize/12);
+            $('.tile-point').css('font-size', tilesize/2 + "px");
+            $('.tile-point').css('line-height', tilesize + "px");
             if (b.height() == 0) $timeout($scope.tile_size, 500);
             
             if($scope.sRotate%180 == 0){

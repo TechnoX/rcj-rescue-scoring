@@ -68,7 +68,11 @@
         "public": "公開",
         "private": "非公開",
         "selectAll": "全選択",
-        "delS": "選択した競技を削除"
+        "delS": "選択した競技を削除",
+        "tile": "タイル",
+        "times": "回",
+        "total": "合計",
+        "stotal": "小計"
     },
     "accessDenied":{
         "title" : "アクセス拒絶",
@@ -214,7 +218,11 @@
             "submit": "競技データを送信",
             "no_sign": "競技データを送信する前に，全ての署名を行なってください．",
             "confirm": "'YES'をタップすると，競技データが確定されます．これ以降の修正はできません．",
-            "complete": "競技データを送信しました．以上で競技は終了です．お疲れ様でした．"
+            "complete": "競技データを送信しました．以上で競技は終了です．お疲れ様でした．",
+            "checkPointScore": "チェックポイント得点",
+            "exitBonus": "脱出ボーナス",
+            "calc": "得点計算",
+            "item": "項目得点"
 
         }
     },
@@ -310,7 +318,12 @@
             "to_judge": "@:line.sign.to_judge",
             "no_sign": "@:line.sign.no_sign",
             "confirm": "@:line.sign.confirm",
-            "complete": "@:line.sign.complete"
+            "complete": "@:line.sign.complete",
+            "reliability": "信頼性ボーナス",
+            "rescue": "救助数",
+            "kits": "配置成功数",
+            "calc": "得点計算",
+            "item": "項目得点"
         }
     },
     "admin": {

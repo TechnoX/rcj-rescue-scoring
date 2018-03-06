@@ -62,7 +62,11 @@
         "public": "Public",
         "private": "Private",
         "selectAll": "Select all runs",
-        "delS": "Delete selected runs"
+        "delS": "Delete selected runs",
+        "tile": "tiles",
+        "times": "times",
+        "total": "total",
+        "stotal": "Sub Total"
     },
     "accessDenied":{
         "title" : "Access denied",
@@ -211,7 +215,11 @@
             "submit": "Subit Run Data",
             "no_sign": "Please write it before submit run data.",
             "confirm": "If you click 'YES', the run data will record.  After that you cannot change the run.",
-            "complete": "Recording succeeded"
+            "complete": "Recording succeeded",
+            "checkPointScore": "Check Point Score",
+            "exitBonus": "Exit Bonus",
+            "calc": "Score calculation",
+            "item": "Item points"
 
         }
     },
@@ -307,7 +315,12 @@
             "to_judge": "@:line.sign.to_judge",
             "no_sign": "@:line.sign.no_sign",
             "confirm": "@:line.sign.confirm",
-            "complete": "@:line.sign.complete"
+            "complete": "@:line.sign.complete",
+            "reliability": "Reliability Bonus",
+            "rescue": "Successful victim identification",
+            "kits": "Successful rescue deployment",
+            "calc": "Score calculation",
+            "item": "Item points"
         }
     },
     "admin": {

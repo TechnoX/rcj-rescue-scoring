@@ -1,4 +1,4 @@
-<nav class="navbar" style="background-color: #3498db; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%">
+<nav class="navbar" style="background-color: #3498db; color: #ecf0f1; position: fixed; top: 0; z-index:60 ;  width: 100%">
     <!-- Navbar content -->
 
       <div class="col-md-6 col-sm4 col-12">
@@ -114,7 +114,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-8 col-lg-9 tilearea">
+        <div class="col-md-8 col-lg-9 tilearea"  style="margin-top:0px;">
                 <div style="text-align:left;float:left;">
                     <div class="btn-group">
                       <span class="input-group-addon"><i class="fas fa-arrows-alt-v" aria-hidden="true"></i></span>
@@ -129,6 +129,7 @@
                 </div>
                 <div style="clear:both;"></div>
                 <div class="mx-auto" style="margin-top:5px;" id="wrapTile">
+                    <h2 ng-show="!(length&&width)" style="text-align:center">{{'common.loading' | translate}}</h2>
                     <table class="map" ng-if="sRotate == 0">
                         <tr ng-repeat="r in range(2*length + 1)">
                             <td class="cell" ng-repeat="c in range(2*width + 1)" ng-class="{'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall, 'checkpoint': cells[c+','+r+','+z].tile.checkpoint, 'black': cells[c+','+r+','+z].tile.black, 'linear': cells[c+','+r+','+z].isLinear}" ng-click="cellClick(c, r, z, $odd != $parent.$odd, $odd && $parent.$odd)">
@@ -155,9 +156,11 @@
                                     <img ng-src="/images/u_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'U'">
                                     <img ng-src="/images/u_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'U'">
 
-                                    <i class="fas fa-check fa-fw tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'done'" style="padding-top:4px; color:#27ae60; opacity:0.9;"></i>
-                                    <i class="fas fa-play fa-fw fa-rotate-270 tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'halfdone'" style="padding-top:4px; color:#f4d03f; opacity:0.9;"></i>
-                                    <i class="fas fa-times fa-fw tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'undone'" style="padding-top:6px; color:#e74c3c; opacity:0.9;"></i>
+                                    <i class="fas fa-check fa-fw tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'done'" style="padding-top:4px; color:#27ae60; opacity:0.7;"></i>
+                                    <i class="fas fa-play fa-fw fa-rotate-270 tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'halfdone'" style="padding-top:4px; color:#f4d03f; opacity:0.7;"></i>
+                                    <i class="fas fa-times fa-fw tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'undone'" style="padding-top:6px; color:#e74c3c; opacity:0.7;"></i>
+                                    
+                                    <p class="tile-point" ng-if="tileStatus(c,r,z,$odd && $parent.$odd)" style="color:#000; opacity:1;z-index:50;position: relative;text-align:center;">{{tilePoint(c,r,z,$odd && $parent.$odd)}}</p>
                                 </div>
                             </td>
                         </tr>
@@ -189,9 +192,11 @@
                                     <img ng-src="/images/u_left.png" class="tile-image" ng-show="cells[r+','+(2*length - c)+','+z].tile.victims.bottom == 'U'">
                                     <img ng-src="/images/u_top.png" class="tile-image" ng-show="cells[r+','+(2*length - c)+','+z].tile.victims.left == 'U'">
 
-                                    <i class="fas fa-check fa-fw tile-image tile-font" ng-show="tileStatus(r,(2*length - c),z,$odd && $parent.$odd) == 'done'" style="padding-top:4px; color:#27ae60; opacity:0.9;"></i>
-                                    <i class="fas fa-play fa-fw fa-rotate-270 tile-image tile-font" ng-show="tileStatus(r,(2*length - c),z,$odd && $parent.$odd) == 'halfdone'" style="padding-top:4px; color:#f4d03f; opacity:0.9;"></i>
-                                    <i class="fas fa-times fa-fw tile-image tile-font" ng-show="tileStatus(r,(2*length - c),z,$odd && $parent.$odd) == 'undone'" style="padding-top:6px; color:#e74c3c; opacity:0.9;"></i>
+                                    <i class="fas fa-check fa-fw tile-image tile-font" ng-show="tileStatus(r,(2*length - c),z,$odd && $parent.$odd) == 'done'" style="padding-top:4px; color:#27ae60; opacity:0.7;"></i>
+                                    <i class="fas fa-play fa-fw fa-rotate-270 tile-image tile-font" ng-show="tileStatus(r,(2*length - c),z,$odd && $parent.$odd) == 'halfdone'" style="padding-top:4px; color:#f4d03f; opacity:0.7;"></i>
+                                    <i class="fas fa-times fa-fw tile-image tile-font" ng-show="tileStatus(r,(2*length - c),z,$odd && $parent.$odd) == 'undone'" style="padding-top:6px; color:#e74c3c; opacity:0.7;"></i>
+                                    
+                                    <p class="tile-point" ng-if="tileStatus(r,(2*length - c),z,$odd && $parent.$odd)" style="color:#000; opacity:1;z-index:50;position: relative;text-align:center;">{{tilePoint(r,(2*length - c),z,$odd && $parent.$odd)}}</p>
                                 </div>
                             </td>
                         </tr>
@@ -223,9 +228,11 @@
                                     <img ng-src="/images/u_top.png" class="tile-image" ng-show="cells[2*width - c+','+(2*length - r)+','+z].tile.victims.bottom == 'U'">
                                     <img ng-src="/images/u_right.png" class="tile-image" ng-show="cells[2*width - c+','+(2*length - r)+','+z].tile.victims.left == 'U'">
 
-                                    <i class="fas fa-check fa-fw tile-image tile-font" ng-show="tileStatus(2*width - c,2*length - r,z,$odd && $parent.$odd) == 'done'" style="padding-top:4px; color:#27ae60; opacity:0.9;"></i>
-                                    <i class="fas fa-play fa-fw fa-rotate-270 tile-image tile-font" ng-show="tileStatus(2*width - c,2*length - r,z,$odd && $parent.$odd) == 'halfdone'" style="padding-top:4px; color:#f4d03f; opacity:0.9;"></i>
-                                    <i class="fas fa-times fa-fw tile-image tile-font" ng-show="tileStatus(2*width - c,2*length - r,z,$odd && $parent.$odd) == 'undone'" style="padding-top:6px; color:#e74c3c; opacity:0.9;"></i>
+                                    <i class="fas fa-check fa-fw tile-image tile-font" ng-show="tileStatus(2*width - c,2*length - r,z,$odd && $parent.$odd) == 'done'" style="padding-top:4px; color:#27ae60; opacity:0.7;"></i>
+                                    <i class="fas fa-play fa-fw fa-rotate-270 tile-image tile-font" ng-show="tileStatus(2*width - c,2*length - r,z,$odd && $parent.$odd) == 'halfdone'" style="padding-top:4px; color:#f4d03f; opacity:0.7;"></i>
+                                    <i class="fas fa-times fa-fw tile-image tile-font" ng-show="tileStatus(2*width - c,2*length - r,z,$odd && $parent.$odd) == 'undone'" style="padding-top:6px; color:#e74c3c; opacity:0.7;"></i>
+                                    
+                                    <p class="tile-point" ng-if="tileStatus(2*width - c,2*length - r,z,$odd && $parent.$odd)" style="color:#000; opacity:1;z-index:50;position: relative;text-align:center;">{{tilePoint(2*width - c,2*length - r,z,$odd && $parent.$odd)}}</p>
                                 </div>
                             </td>
                         </tr>
@@ -257,16 +264,90 @@
                                     <img ng-src="/images/u_right.png" class="tile-image" ng-show="cells[2*width - r+','+c+','+z].tile.victims.bottom == 'U'">
                                     <img ng-src="/images/u_bottom.png" class="tile-image" ng-show="cells[2*width - r+','+c+','+z].tile.victims.left == 'U'">
 
-                                    <i class="fas fa-check fa-fw tile-image tile-font" ng-show="tileStatus(2*width - r,c,z,$odd && $parent.$odd) == 'done'" style="padding-top:4px; color:#27ae60; opacity:0.9;"></i>
-                                    <i class="fas fa-play fa-fw fa-rotate-270 tile-image tile-font" ng-show="tileStatus(2*width - r,c,z,$odd && $parent.$odd) == 'halfdone'" style="padding-top:4px; color:#f4d03f; opacity:0.9;"></i>
-                                    <i class="fas fa-times fa-fw tile-image tile-font" ng-show="tileStatus(2*width - r,c,z,$odd && $parent.$odd) == 'undone'" style="padding-top:6px; color:#e74c3c; opacity:0.9;"></i>
+                                    <i class="fas fa-check fa-fw tile-image tile-font" ng-show="tileStatus(2*width - r,c,z,$odd && $parent.$odd) == 'done'" style="padding-top:4px; color:#27ae60; opacity:0.7;"></i>
+                                    <i class="fas fa-play fa-fw fa-rotate-270 tile-image tile-font" ng-show="tileStatus(2*width - r,c,z,$odd && $parent.$odd) == 'halfdone'" style="padding-top:4px; color:#f4d03f; opacity:0.7;"></i>
+                                    <i class="fas fa-times fa-fw tile-image tile-font" ng-show="tileStatus(2*width - r,c,z,$odd && $parent.$odd) == 'undone'" style="padding-top:6px; color:#e74c3c; opacity:0.7;"></i>
+                                    
+                                    <p class="tile-point" ng-if="tileStatus(2*width - r,c,z,$odd && $parent.$odd)" style="color:#000; opacity:1;z-index:50;position: relative;text-align:center;">{{tilePoint(2*width - r,c,z,$odd && $parent.$odd)}}</p>
                                 </div>
                             </td>
                         </tr>
                     </table>
                 </div>
-            </div>
+            <br>
+            <h2 style="text-align:center;">{{score - foundVictims * 10 * exitBonus - reliability()}} {{'common.point' |translate}}</h2>
+        </div>
     </div>
+    <h2>{{'maze.sign.reliability' | translate}}</h2>
+    <div class="alert alert-info" style="margin-bottom:30px;text-align:center;" role="alert">
+        <div class="row">
+            <div class="col-md-2">
+                    <p style="text-align:center;height:40px;">{{'maze.sign.rescue' | translate}}</p>
+                    <i class="fas fa-child fa-2x" aria-hidden="true"> : {{foundVictims}}<br><br>
+                    {{foundVictims * 10}} {{'common.point' | translate}}
+                    </i>
+            </div>
+            <div class="col-md-1">
+                <h1 style="line-height:140px;text-align:center;">+</h1>
+            </div>
+            <div class="col-md-2">
+                    <p style="text-align:center;height:40px;">{{'maze.sign.kits' | translate}}</p>
+                    <i class="fas fa-medkit fa-2x" aria-hidden="true"> : {{distKits}}<br><br>
+                    {{distKits * 10}} {{'common.point' | translate}}
+                    </i>
+            </div>
+            <div class="col-md-1">
+                <h1 style="line-height:140px;text-align:center;">-</h1>
+            </div>
+            <div class="col-md-2">
+                    <p style="text-align:center;height:40px;">{{'maze.sign.total_lops' | translate}}</p>
+                    <i class="fas fa-step-forward fa-2x" aria-hidden="true"> : {{LoPs}}<br><br>
+                    {{reliabilityLoPs()}} {{'common.point' | translate}}
+                    </i>
+            </div>
+            <div class="col-md-1">
+                <h1 style="line-height:140px;text-align:center;">=</h1>
+            </div>
+            <div class="col-md-3">
+                <h1 style="line-height:140px;text-align:center;">{{reliability()}} {{'common.point' | translate}}</h1>
+            </div>
+        </div>
+    </div>
+    <h2>{{'maze.sign.calc' | translate}}</h2>
+    <div class="alert alert-warning" style="margin-bottom:80px;text-align:center;" role="alert">
+        <div class="row">
+            <div class="col-md-2">
+                    <p style="height:30px;">{{'maze.sign.item' | translate}}</p>
+                    <h1>{{score - foundVictims * 10 * exitBonus - reliability()}} {{'common.point' | translate}}</h1>
+            </div>
+            <div class="col-md-1">
+                <p style="height:30px;"></p>
+                <h1>+</h1>
+            </div>
+            <div class="col-md-2">
+                    <p style="height:30px;">{{'maze.sign.reliability' | translate}}</p>
+                    <h1>{{reliability()}} {{'common.point' | translate}}</h1>
+            </div>
+            <div class="col-md-1">
+                <p style="height:30px;"></p>
+                <h1>+</h1>
+            </div>
+            <div class="col-md-2">
+                    <p style="text-align:center;height:30px;">{{'maze.sign.return' | translate}}</p>
+                    <h1>{{foundVictims * 10 * exitBonus}} {{'common.point' | translate}}</h1>
+            </div>
+            <div class="col-md-1">
+                <p style="height:30px;"></p>
+                <h1>=</h1>
+            </div>
+            <div class="col-md-3">
+                <p style="height:30px;"></p>
+                <h1>{{score}} {{'common.point' | translate}}</h1>
+            </div>
+        </div>
+    </div>
+
+
     <div class="alert alert-success" style="margin:50 0 0 0;" role="alert">
         <div class="row">
             <div class="col-md-6">
