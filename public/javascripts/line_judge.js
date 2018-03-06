@@ -478,7 +478,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         playSound(sClick);
         $scope.exitBonus = !$scope.exitBonus
         $scope.exitBonusP = true
-        if ($scope.exitBonus) {
+        if ($scope.exitBonus && $scope.startedTime) {
             $scope.startedTime = false
             date = new Date();
             $scope.time = prevTime + (date.getTime() - $scope.startUnixTime);
