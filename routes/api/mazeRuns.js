@@ -427,6 +427,7 @@ privateRouter.put('/:runid', function (req, res, next) {
                 
                 dbRun.score = retScoreCals[0]
                 dbRun.foundVictims = retScoreCals[1]
+                dbRun.distKits = retScoreCals[2]
 
                 if (dbRun.score > 0 || dbRun.time.minutes != 0 ||
                     dbRun.time.seconds != 0 || dbRun.status >= 2) {
