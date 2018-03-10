@@ -82,10 +82,10 @@ block content
         img(src="/images/loader2.gif")
         p {{now}} / {{total}} {{"admin.lineRunBulk.inpro" | translate}}
       center(ng-if="completed" style="color:#2ecc71;")
-        i.fa.fa-check-circle-o.fa-5x(aria-hidden="true")
+        i.far.fa-check-circle.fa-5x(aria-hidden="true")
         p {{total}} {{"admin.lineRunBulk.complete" | translate}}
       center(ng-if="error" style="color:#e74c3c;")
-        i.fa.fa-exclamation-circle.fa-5x(aria-hidden="true")
+        i.fas.fa-exclamation-circle.fa-5x(aria-hidden="true")
         p {{now}} / {{total}} ERROR
       br
       br
