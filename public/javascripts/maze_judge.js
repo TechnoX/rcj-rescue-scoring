@@ -190,7 +190,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.infochecked = function () {
         playSound(sClick);
         $scope.checked = true;
-        $timeout($scope.tile_size, 10);
+        //$timeout($scope.tile_size, 10);
         $timeout($scope.tile_size, 200);
         scrollTo( 0, 0 ) ;
     }
@@ -266,7 +266,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.saveEverything();
                 swal(txt_timeup, txt_timeup_mes, "info");
             }
-            $timeout(tick, 100);
+            $timeout(tick, 1000);
         }
     }
 

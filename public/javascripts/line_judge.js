@@ -189,7 +189,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
                 $timeout($scope.tile_size, 0);
                 $timeout($scope.tile_size, 500);
-                $timeout($scope.tile_size, 1000);
+                //$timeout($scope.tile_size, 1000);
                 $timeout($scope.tile_size, 1500);
                 $timeout($scope.tile_size, 3000);
                 $http.put("/api/runs/line/" + runId, {
@@ -256,8 +256,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.infochecked = function () {
         playSound(sClick);
         $scope.checked = true;
-        $timeout($scope.tile_size, 10);
-        $timeout($scope.tile_size, 500);
+        //$timeout($scope.tile_size, 10);
+        //$timeout($scope.tile_size, 500);
         scrollTo( 0, 0 ) ;
     }
 
@@ -417,7 +417,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.saveEverything();
                 swal(txt_timeup, txt_timeup_mes, "info");
             }
-            $timeout(tick, 100);
+            $timeout(tick, 1000);
         }
 
 
@@ -591,8 +591,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $http.put("/api/runs/line/" +
                     runId, httpdata).then(function (response) {
                     $scope.score = response.data.score;
-                    $timeout($scope.tile_size, 10);
-                    $timeout($scope.tile_size, 500);
+                    //$timeout($scope.tile_size, 10);
+                    //$timeout($scope.tile_size, 500);
                 }, function (response) {
                     console.log("Error: " + response.statusText);
                 });

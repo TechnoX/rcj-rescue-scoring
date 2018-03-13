@@ -205,7 +205,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 
                 $timeout($scope.tile_size, 0);
                 $timeout($scope.tile_size, 500);
-                $timeout($scope.tile_size, 1000);
+                //$timeout($scope.tile_size, 1000);
                 $timeout($scope.tile_size, 1500);
                 $timeout($scope.tile_size, 3000);
 
@@ -530,9 +530,6 @@ $(window).on('load resize', function () {
 }]).directive("tileLoadFinished", function ($timeout) {
     return function (scope, element, attrs) {
         if (scope.$last) {
-            $timeout(function () {
-                $scope.tile_size();
-            }, 0);
             $timeout(function () {
                 $scope.tile_size();
             }, 500);
