@@ -115,7 +115,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.width = response.data.width;
                 $scope.length = response.data.length;
                 for (var i = 0; i < response.data.cells.length; i++) {
-                    console.log(i)
+                    //console.log(i)
                     $scope.cells[response.data.cells[i].x + ',' +
                         response.data.cells[i].y + ',' +
                         response.data.cells[i].z] = response.data.cells[i];
@@ -359,7 +359,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         // If this is a non-existent tile
         var cell = $scope.cells[x + ',' + y + ',' + z];
         var victimPoint = cell.isLinear ? 10:25;
-        console.log(victimPoint);
+        //console.log(victimPoint);
         
         if (!cell)
             return;

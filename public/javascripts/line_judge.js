@@ -257,7 +257,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         playSound(sClick);
         $scope.checked = true;
         //$timeout($scope.tile_size, 10);
-        //$timeout($scope.tile_size, 500);
+        $timeout($scope.tile_size, 200);
+        $timeout($scope.tile_size, 2000);
         scrollTo( 0, 0 ) ;
     }
 
@@ -854,7 +855,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             }
 
             $('#card_area').css('height', (window.innerHeight - 60));
-            if (b.height() == 0) $timeout($scope.tile_size, 500);
+            //if (b.height() == 0) $timeout($scope.tile_size, 500);
         } catch (e) {
             $timeout($scope.tile_size, 500);
         }

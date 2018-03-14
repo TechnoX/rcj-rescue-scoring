@@ -192,6 +192,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.checked = true;
         //$timeout($scope.tile_size, 10);
         $timeout($scope.tile_size, 200);
+        $timeout($scope.tile_size, 2000);
         scrollTo( 0, 0 ) ;
     }
     $scope.decrement = function () {
@@ -720,7 +721,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $('.tile-image').css('width', tilesize);
             $('.tile-font').css('font-size', tilesize - 10);
             $('.cell').css('padding', tilesize/12);
-            if (b.height() == 0) $timeout($scope.tile_size, 500);
+            
             
             if($scope.sRotate%180 == 0){
                 $('#wrapTile').css('width', (tilesize+10)*width+11);
