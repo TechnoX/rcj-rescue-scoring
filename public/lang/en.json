@@ -42,6 +42,8 @@
         "view": "View",
         "sign": "Sign",
         "judge": "Judge",
+        "approval": "Approval",
+        "action": "Action",
         "point": "points",
         "league": "League",
         "competition": "Competiton",

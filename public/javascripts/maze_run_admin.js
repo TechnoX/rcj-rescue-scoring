@@ -93,7 +93,7 @@ var app = angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap
 
         $scope.selectAll = function () {
             angular.forEach($scope.runs, function (run) {
-                run.checked = true;
+                if($scope.list_filter(run)) run.checked = true;
             });
         }
 
@@ -105,30 +105,107 @@ var app = angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap
             if (chk) $scope.removeRun(chk.join(","));
         }
 
-        $scope.removeRun = function (runid) {
-            swal({
+        $scope.removeRun = async function (runIds) {
+            const {
+                value: operation
+            } = await swal({
                 title: "Delete Run?",
                 text: "Are you sure you want to remove the run?",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonText: "Yes, delete it!",
-                confirmButtonColor: "#ec6c62"
-            }).then((result) => {
-                if (result.value) {
-                    $http.delete("/api/runs/maze/" + runid).then(function (response) {
-                        console.log(response)
-                        updateRunList()
-                    }, function (error) {
-                        console.log(error)
-                    })
+                confirmButtonColor: "#ec6c62",
+                input: 'text',
+                inputPlaceholder: 'Enter "DELETE" here',
+                inputValidator: (value) => {
+                    return value != 'DELETE' && 'You need to write "DELETE" !'
                 }
             })
+
+            if (operation) {
+                $http.delete("/api/runs/maze/" + runIds).then(function (response) {
+                    console.log(response)
+                    updateRunList()
+                }, function (error) {
+                    console.log(error)
+                })
+            }
+
+
         }
+        var showAllRounds = true
+        var showAllFields = true
+        var showAllTeams = true
+        $scope.teamName = ""
+
+        $scope.$watch('Rrounds', function (newValue, oldValue) {
+            showAllRounds = true
+            //console.log(newValue)
+            for (let round in newValue) {
+                if (newValue.hasOwnProperty(round)) {
+                    if (newValue[round]) {
+                        showAllRounds = false
+                        return
+                    }
+                }
+            }
+        }, true)
+        $scope.$watch('Rfields', function (newValue, oldValue) {
+            //console.log(newValue)
+            showAllFields = true
+            for (let field in newValue) {
+                if (newValue.hasOwnProperty(field)) {
+                    if (newValue[field]) {
+                        showAllFields = false
+                        return
+                    }
+                }
+            }
+        }, true)
+        $scope.$watch('teamName', function (newValue, oldValue) {
+            if (newValue == '') showAllTeams = true
+            else showAllTeams = false
+            return
+        }, true)
+
+        $scope.list_filter = function (value, index, array) {
+            return (showAllRounds || $scope.Rrounds[value.round.name]) &&
+                (showAllFields || $scope.Rfields[value.field.name]) && (showAllTeams || ~value.team.name.indexOf($scope.teamName))
+        }
+
 
         function updateRunList() {
             $http.get("/api/competitions/" + competitionId +
                 "/maze/runs?populate=true").then(function (response) {
                 $scope.runs = response.data
+                
+                var rounds = {}
+                var fields = {}
+                for (var i = 0; i < $scope.runs.length; i++) {
+                    try {
+                        var round = $scope.runs[i].round.name
+                        if (!rounds.hasOwnProperty(round)) {
+                            rounds[round] = false
+                        }
+                    } catch (e) {
+
+                    }
+
+                    try {
+                        var field = $scope.runs[i].field.name
+
+                        if (!fields.hasOwnProperty(field)) {
+                            fields[field] = false
+                        }
+                    } catch (e) {
+
+                    }
+
+
+                }
+
+                $scope.Rrounds = rounds
+                $scope.Rfields = fields
             })
         }
 

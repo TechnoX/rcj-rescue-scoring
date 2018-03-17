@@ -67,6 +67,27 @@ block content
             td
               button(ng-click='addRun()') {{"admin.mazeRun.add" | translate}}
       a(ng-href='/admin/{{competitionId}}/maze/runs/bulk') {{"admin.mazeRun.bulk" | translate}}
+      
+      .refine
+        .card.border-dark.mb-3(style='width:100%;')
+          .card-header.bg-transparent.border-dark.fa-2x
+            i.fas.fa-search(aria-hidden='true') {{'line.competition.refine.filter' | translate}}
+          .card-body.text-dark
+            h6.card-title {{'line.competition.refine.round' | translate}}
+            span(ng-repeat='(key, value) in Rrounds track by key')
+              input(type='checkbox' ng-model='Rrounds[key]' id="checkR_{{key}}")
+              label.checkbox(for="checkR_{{key}}") {{key}}
+            hr
+            h6.card-title {{'line.competition.refine.field' | translate}}
+            span(ng-repeat='(key, value) in Rfields track by key')
+              input(type='checkbox' ng-model='Rfields[key]' id="checkF_{{key}}")
+              label.checkbox(for="checkF_{{key}}") {{key}}
+            hr
+            h6.card-title {{'line.competition.refine.team' | translate}}
+            .input-group
+              span#basic-addon1.input-group-addon
+                i.fas.fa-users(aria-hidden='true')
+              input.form-control(type='text', placeholder='Team name', aria-label='Username', aria-describedby='basic-addon1' ng-model='teamName')
       div
           button(ng-click="selectAll()" class='btn btn-primary' style="margin: 5px 5px 5px 5px;") {{"admin.mazeRun.selectAll" | translate}}
           button(ng-click="removeSelectedRun()" class='btn btn-danger' style="margin: 5px 5px 5px 5px;") {{"admin.mazeRun.delS" | translate}}
@@ -87,13 +108,10 @@ block content
             th {{"common.time" | translate}}
             th {{"admin.mazeRun.status" | translate}}
             th {{"common.comment" | translate}}
-            th
-            th
-            th
             //th
             th {{"common.operation" | translate}}
         tbody
-          tr(ng-repeat='run in runs | orderBy:"[startTime,round.name,field.name,team.name]"' runs-read-finished='')
+          tr(ng-repeat='run in runs | filter:list_filter | orderBy:"[startTime,round.name,field.name,team.name]"' runs-read-finished='')
             td
                 input(type='checkbox' ng-model='run.checked' style="display:initial;")
             td(ng-bind='run.startTime | date:"dd EEE HH:mm"' ng-style="{'background-color':run.status==5?'#bdafdb':''}" )
@@ -111,14 +129,16 @@ block content
               span(ng-if="run.status==5") {{"admin.mazeRun.st5" | translate}}
             td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
               button(uib-popover="{{run.comment}}" popover-trigger="'outsideClick'" type="button" class="btn btn-default" ng-disabled="run.comment==''") {{"common.comment" | translate}}
+            
             td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
-              button(ng-click="go('/maze/view/' + run._id)" class='btn btn-info') {{"common.view" | translate}}
-            td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
-              button(ng-click="go_sign(run._id)" class='btn btn-warning') {{"common.sign" | translate}}
-            td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
-              button(ng-click="go_judge(run._id)" class='btn btn-danger') {{"common.judge" | translate}}
-            //td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
-              button(ng-click="go_approval(run._id)" class='btn btn-secondary') Approval
-            td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
-              a(href="" ng-click='removeRun(run._id)') {{"common.delete" | translate}}
+              //a(href="" ng-click='removeRun(run._id)') {{"common.delete" | translate}}
+              .dropdown
+                  button#dropdownMenu.btn.btn-secondary.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') {{"common.action" | translate}}
+                  .dropdown-menu(aria-labelledby='dropdownMenu')
+                    button.dropdown-item(type='button' ng-click="go('/maze/view/' + run._id)") {{"common.view" | translate}}
+                    button.dropdown-item(type='button' ng-click="go_judge(run._id)") {{"common.judge" | translate}}
+                    button.dropdown-item(type='button' ng-click="go_sign(run._id)") {{"common.sign" | translate}}
+                    button.dropdown-item(type='button' ng-click="go_approval(run._id)") {{"common.approval" | translate}}
+                    .dropdown-divider
+                    button.dropdown-item(type='button' ng-click='removeRun(run._id)') {{"common.delete" | translate}}
 
