@@ -6,14 +6,18 @@ var allFieldOpen = 0;
 // function referenced by the drop target
 app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', '$cookies', function ($scope, $uibModal, $log, $timeout, $http, $cookies) {
 
-    $scope.signageSrc = ""
+    $scope.sigGroup = '0';
+    $scope.signageSrc = function(){
+        return "/signage/" + sigId + "/" + $scope.sigGroup;
+    }
     $scope.selectfield = [];
     if(sigId){
-        $scope.signageSrc = "/signage/" + sigId;
         $scope.flagSignage = true;
     }else{
         $scope.flagSignage = false;
     }
+    
+    
     
     $http.get("/api/competitions/" + competitionId +
         "/LineNL/fields").then(function (response) {
