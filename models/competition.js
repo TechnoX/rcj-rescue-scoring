@@ -36,7 +36,9 @@ const signageSchema = new Schema({
   content :[{
       duration: {type: Number, required: true},
       type: {type: String, required: true},
-      url: {type: String, required: true}
+      url: {type: String, required: true},
+      group : {type: String , default: '0'},
+      disable: {type: Boolean, default: false}
   }],
   news : {type: [String]}
 })
@@ -44,13 +46,12 @@ const signageSchema = new Schema({
 signageSchema.pre('save', function (next) {
   const self = this
   if (self.isNew) {
-    Round.findOne({
-      competition: self.competition,
+    Signage.findOne({
       name       : self.name
-    }, function (err, dbRound) {
+    }, function (err, dbSignage) {
       if (err) {
         return next(err)
-      } else if (dbRound) {
+      } else if (dbSignage) {
         err = new Error('Signage setting with name "' + self.name + '" already exists!')
         return next(err)
       } else {

@@ -35,7 +35,9 @@ app.controller('SignEditorController', ['$scope', '$uibModal', '$log', '$http', 
         var content = {
             duration : 0,
             type : "img",
-            url : ""
+            url : "",
+            group: "0",
+            disable: false
         }
         $scope.contents.splice(number,0,content);
     }

@@ -21,9 +21,10 @@ adminRouter.get('/setting/editor/:id', function (req, res){
   res.render('signage_editor', {user: req.user , id: id})
 })
 
-privateRouter.get('/:sigId', function (req, res) {
+privateRouter.get('/:sigId/:group', function (req, res) {
   const sigId = req.params.sigId
-  res.render('main_signage', {user: req.user, sigId: sigId})
+  const group = req.params.group
+  res.render('main_signage', {user: req.user, sigId: sigId,group: group})
 })
 
 privateRouter.get('/:competitionid/run/:sigId', function (req, res, next) {

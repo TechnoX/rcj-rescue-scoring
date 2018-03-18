@@ -12,7 +12,7 @@ var frame = {
     "img": ["#img0", "#img1"],
     "movie": ["#movie0", "#movie1"]
 };
-var dispId = 0;
+var dispId = 1;
 var dispType = "iframe";
 var prevType = "iframe";
 var loadType = "iframe";
@@ -77,7 +77,15 @@ if (document.readyState === "complete" ||
 }
 /* コンテンツ画面の実装 */
 function loadContent(data) {
-    contentList = data.content;
+    let tmp = data.content;
+    let output = [];
+    console.log(tmp);
+    for(let tm of tmp){
+        if(!tm.disable){
+            if(group == 0 || tm.group == 0 || tm.group == group) output.push(tm);
+        }
+    }
+    contentList = output;
     console.log(contentList);
 }
 
