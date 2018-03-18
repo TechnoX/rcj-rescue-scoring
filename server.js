@@ -92,6 +92,7 @@ else {*/
   require('./routes/api/lineRuns').connectSocketIo(io)
   require('./routes/api/mazeRuns').connectSocketIo(io)
   require('./routes/api/signage').connectSocketIo(io)
+  require('./routes/api/kiosk').connectSocketIo(io)
   
   /**
    * Listen on provided port, on all network interfaces.

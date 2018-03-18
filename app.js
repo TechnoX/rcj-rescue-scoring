@@ -62,6 +62,7 @@ var apiMazeRunsRoute = require('./routes/api/mazeRuns')
 var apiCompetitionsRoute = require('./routes/api/competitions')
 var apiUserRoute = require('./routes/api/users')
 var apiSignageRoute = require('./routes/api/signage')
+var apiKioskRoute = require('./routes/api/kiosk')
 
 
 //========================================================================
@@ -133,6 +134,8 @@ app.use('/api/runs/maze', [apiMazeRunsRoute.public, pass.ensureLoginApi, apiMaze
 app.use('/api/competitions', [apiCompetitionsRoute.public, pass.ensureLoginApi, apiCompetitionsRoute.private, pass.ensureAdminApi, apiCompetitionsRoute.admin])
 app.use('/api/users', [pass.ensureAdminApi, apiUserRoute.admin , pass.ensureSuperApi , apiUserRoute.super])
 app.use('/api/signage', [pass.ensureAdminApi, apiSignageRoute.admin,pass.ensureLoginApi, apiSignageRoute.private])
+app.use('/api/kiosk', [pass.ensureAdminApi, apiKioskRoute.admin])
+
 
 //========================================================================
 //                          Website static pages(ish)
