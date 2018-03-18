@@ -26,10 +26,35 @@ var app = angular.module("TeamAdmin", ['pascalprecht.translate', 'ngCookies']).c
             console.log(error)
         })
     }
-    
+
     $scope.selectAll = function () {
         angular.forEach($scope.teams, function (team) {
             team.checked = true;
+        });
+    }
+
+    $scope.set_kiosk = function (team) {
+        if(team.league == 'Maze'){
+            $http.get("/api/kiosk/1/run/maze/" + competitionId + "/" + team._id).then(function (response) {
+
+        }, function (response) {
+            console.log("Error: " + response.statusText);
+        });
+        }else{
+            $http.get("/api/kiosk/1/run/line/" + competitionId + "/" + team._id).then(function (response) {
+
+        }, function (response) {
+            console.log("Error: " + response.statusText);
+        });
+        }
+        
+    }
+
+    $scope.reset_kiosk = function (runid) {
+        $http.get("/api/kiosk/1/NA").then(function (response) {
+
+        }, function (response) {
+            console.log("Error: " + response.statusText);
         });
     }
 
@@ -40,17 +65,25 @@ var app = angular.module("TeamAdmin", ['pascalprecht.translate', 'ngCookies']).c
         });
         $scope.removeTeam(chk.join(","));
     }
+    
+    $scope.removeTeam = async function (teamId) {
+            const {
+                value: operation
+            } = await swal({
+                title: "Remove team?",
+                text: "Are you sure you want to remove?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Remove it!",
+                confirmButtonColor: "#ec6c62",
+                input: 'text',
+                inputPlaceholder: 'Enter "DELETE" here',
+                inputValidator: (value) => {
+                    return value != 'DELETE' && 'You need to write "DELETE" !'
+                }
+            })
 
-    $scope.removeTeam = function (teamId) {
-        swal({
-            title: "Remove team?",
-            text: "Are you sure you want to remove?",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Remove it!",
-            confirmButtonColor: "#ec6c62"
-        }).then((result) => {
-            if (result.value) {
+            if (operation) {
                 $http.delete("/api/teams/" + teamId).then(function (response) {
                     console.log(response)
                     updateTeamList()
@@ -58,8 +91,9 @@ var app = angular.module("TeamAdmin", ['pascalprecht.translate', 'ngCookies']).c
                     console.log(error)
                 })
             }
-        })
-    }
+
+
+        }
 
     function updateTeamList() {
         $http.get("/api/competitions/" + competitionId +
