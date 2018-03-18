@@ -18,7 +18,7 @@ const url = require('url');
 var socketIo
 
 module.exports.connectSocketIo = function (io) {
-  socketIo = io
+    socketIo = io
 }
 
 /**
@@ -50,173 +50,192 @@ module.exports.connectSocketIo = function (io) {
 publicRouter.get('/', getLineRuns)
 
 function getLineRuns(req, res) {
-  const competition = req.query.competition || req.params.competition
-  
-  var query
-  if (competition != null && competition.constructor === String) {
-    if (req.query['ended'] == 'false') {
-      query = lineRun.find({
-        competition: competition,
-        status     : {$lte: 1},
-        "sign.captain" : {$eq: ""}
-      })
+    const competition = req.query.competition || req.params.competition
+
+    var query
+    if (competition != null && competition.constructor === String) {
+        if (req.query['ended'] == 'false') {
+            query = lineRun.find({
+                competition: competition,
+                status: {
+                    $lte: 1
+                },
+                "sign.captain": {
+                    $eq: ""
+                }
+            })
+        } else {
+            query = lineRun.find({
+                competition: competition
+            })
+        }
+
+    } else if (Array.isArray(competition)) {
+        query = lineRun.find({
+            competition: {
+                $in: competition.filter(ObjectId.isValid)
+            }
+        })
     } else {
-      query = lineRun.find({
-        competition: competition
-      })
+        query = lineRun.find({})
     }
-    
-  } else if (Array.isArray(competition)) {
-    query = lineRun.find({
-      competition: {
-        $in: competition.filter(ObjectId.isValid)
-      }
-    })
-  } else {
-    query = lineRun.find({})
-  }
-  
-  if (req.query['minimum']) {
-    query.select("competition round team field status started startTime sign")
-  } else {
-    query.select("competition round team field map score time status started rescuedLiveVictims rescuedDeadVictims LoPs comment startTime sign")
-  }
-  
-  
-  if (req.query['populate'] !== undefined && req.query['populate']) {
-    query.populate([
-      {
-        path  : "competition",
-        select: "name"
+
+    if (req.query['minimum']) {
+        query.select("competition round team field status started startTime sign")
+    } else if (req.query['timetable']) {
+        query.select("round team field startTime group")
+        query.populate([
+            {
+                path: "team",
+                select: "name league"
       },
-      {
-        path  : "round",
-        select: "name"
+            {
+                path: "round",
+                select: "name"
       },
-      {
-        path  : "team",
-        select: "name league"
-      },
-      {
-        path  : "field",
-        select: "name"
-      },
-      {
-        path  : "map",
-        select: "name"
+            {
+                path: "field",
+                select: "name league"
       }
     ])
-  }
-  
-  query.lean().exec(function (err, dbRuns) {
-    if (err) {
-      logger.error(err)
-      res.status(400).send({
-        msg: "Could not get runs"
-      })
-    } else if (dbRuns) {
-      
-      // Hide map and field from public
-      for (let i = 0; i < dbRuns.length; i++) {
-        var authResult = auth.authViewRun(req.user, dbRuns[i], ACCESSLEVELS.NONE + 1)
-        if (authResult == 0) {
-          delete dbRuns[i].map
-          delete dbRuns[i].field
-          delete dbRuns[i].comment
-          delete dbRuns[i].sign
-        }
-        else if(authResult ==2){
-          delete dbRuns[i].comment
-          delete dbRuns[i].sign
-        }
-      }
-      res.status(200).send(dbRuns)
+    } else {
+        query.select("competition round team field map score time status started rescuedLiveVictims rescuedDeadVictims LoPs comment startTime sign")
     }
-  })
+
+
+    if (req.query['populate'] !== undefined && req.query['populate']) {
+        query.populate([
+            {
+                path: "competition",
+                select: "name"
+      },
+            {
+                path: "round",
+                select: "name"
+      },
+            {
+                path: "team",
+                select: "name league"
+      },
+            {
+                path: "field",
+                select: "name league"
+      },
+            {
+                path: "map",
+                select: "name"
+      }
+    ])
+    }
+
+    query.lean().exec(function (err, dbRuns) {
+        if (err) {
+            logger.error(err)
+            res.status(400).send({
+                msg: "Could not get runs"
+            })
+        } else if (dbRuns) {
+
+            // Hide map and field from public
+            for (let i = 0; i < dbRuns.length; i++) {
+                var authResult = auth.authViewRun(req.user, dbRuns[i], ACCESSLEVELS.NONE + 1)
+                if (authResult == 0) {
+                    delete dbRuns[i].map
+                    delete dbRuns[i].field
+                    delete dbRuns[i].comment
+                    delete dbRuns[i].sign
+                } else if (authResult == 2) {
+                    delete dbRuns[i].comment
+                    delete dbRuns[i].sign
+                }
+            }
+            res.status(200).send(dbRuns)
+        }
+    })
 }
 module.exports.getLineRuns = getLineRuns
 
 publicRouter.get('/latest', getLatestLineRun)
 
 function getLatestLineRun(req, res) {
-  const competition = req.query.competition || req.params.competition
-  const field = req.query.field || req.params.field
-  const fields = req.query.fields
-  
-  var selection = {
-    competition: competition,
-    field      : field
-  }
-  if (selection.competition == undefined) {
-    delete selection.competition
-  }
-  if (selection.field == undefined) {
-    delete selection.field
-  }
-  
-  if (fields != null) {
-    selection.field = {
-      $in: fields
+    const competition = req.query.competition || req.params.competition
+    const field = req.query.field || req.params.field
+    const fields = req.query.fields
+
+    var selection = {
+        competition: competition,
+        field: field
     }
-  }
-  
-  var query = lineRun.findOne(selection).sort("-updatedAt")
-  
-  if (req.query['populate'] !== undefined && req.query['populate']) {
-    query.populate(["round", "team", "field", "competition", {
-      path    : 'tiles',
-      populate: {
-        path: 'tileType'
-      }
+    if (selection.competition == undefined) {
+        delete selection.competition
+    }
+    if (selection.field == undefined) {
+        delete selection.field
+    }
+
+    if (fields != null) {
+        selection.field = {
+            $in: fields
+        }
+    }
+
+    var query = lineRun.findOne(selection).sort("-updatedAt")
+
+    if (req.query['populate'] !== undefined && req.query['populate']) {
+        query.populate(["round", "team", "field", "competition", {
+            path: 'tiles',
+            populate: {
+                path: 'tileType'
+            }
     }])
-  }
-  
-  query.lean().exec(function (err, dbRun) {
-    if (err) {
-      logger.error(err)
-      res.status(400).send({
-        msg: "Could not get run"
-      })
-    } else if (dbRun) {
-      // Hide map and field from public
-      if (!auth.authViewRun(req.user, dbRun, ACCESSLEVELS.NONE + 1)) {
-        delete dbRun.map
-        delete dbRun.field
-        delete dbRun.comment
-        delete dbRun.sign
-      }
-      res.status(200).send(dbRun)
     }
-  })
+
+    query.lean().exec(function (err, dbRun) {
+        if (err) {
+            logger.error(err)
+            res.status(400).send({
+                msg: "Could not get run"
+            })
+        } else if (dbRun) {
+            // Hide map and field from public
+            if (!auth.authViewRun(req.user, dbRun, ACCESSLEVELS.NONE + 1)) {
+                delete dbRun.map
+                delete dbRun.field
+                delete dbRun.comment
+                delete dbRun.sign
+            }
+            res.status(200).send(dbRun)
+        }
+    })
 }
 module.exports.getLatestLineRun = getLatestLineRun
 
 publicRouter.get('/find/:competitionid/:field/:status', function (req, res, next) {
-  var id = req.params.competitionid
-  var field_id = req.params.field
-  var status = req.params.status
-  if (!ObjectId.isValid(id)) {
-    return next()
-  }
-  if (!ObjectId.isValid(field_id)) {
-    return next()
-  }
-  var query = lineRun.find({
-    competition: id,
-    field      : field_id,
-    status     : status
-  }, "field team competition status")
-  query.populate(["team"])
-  query.exec(function (err, data) {
-    if (err) {
-      logger.error(err)
-      res.status(400).send({
-        msg: "Could not get runs"
-      })
-    } else {
-      res.status(200).send(data)
+    var id = req.params.competitionid
+    var field_id = req.params.field
+    var status = req.params.status
+    if (!ObjectId.isValid(id)) {
+        return next()
     }
-  })
+    if (!ObjectId.isValid(field_id)) {
+        return next()
+    }
+    var query = lineRun.find({
+        competition: id,
+        field: field_id,
+        status: status
+    }, "field team competition status")
+    query.populate(["team"])
+    query.exec(function (err, data) {
+        if (err) {
+            logger.error(err)
+            res.status(400).send({
+                msg: "Could not get runs"
+            })
+        } else {
+            res.status(200).send(data)
+        }
+    })
 })
 
 
@@ -260,45 +279,44 @@ publicRouter.get('/find/:competitionid/:field/:status', function (req, res, next
  * @apiError (400) {String} msg The error message
  */
 publicRouter.get('/:runid', function (req, res, next) {
-  const id = req.params.runid
-  
-  if (!ObjectId.isValid(id)) {
-    return next()
-  }
-  
-  const query = lineRun.findById(id, "-__v")
-  
-  if (req.query['populate'] !== undefined && req.query['populate']) {
-    query.populate(["round", "team", "field", "competition", {
-      path    : 'tiles',
-      populate: {
-        path: 'tileType'
-      }
-    }])
-  }
-  
-  query.lean().exec(function (err, dbRun) {
-    if (err) {
-      logger.error(err)
-      return res.status(400).send({
-        err: err.message,
-        msg: "Could not get run"
-      })
-    } else if (dbRun) {
-      // Hide map and field from public
-      var authResult = auth.authViewRun(req.user, dbRun, ACCESSLEVELS.NONE + 1)
-      if (authResult == 0) {
-          return res.status(401).send({
-                                msg: "You have no authority to access this api!!"
-              })
-        }
-        else if(authResult ==2){
-          delete dbRun.comment
-          delete dbRun.sign
-        }
-      return res.status(200).send(dbRun)
+    const id = req.params.runid
+
+    if (!ObjectId.isValid(id)) {
+        return next()
     }
-  })
+
+    const query = lineRun.findById(id, "-__v")
+
+    if (req.query['populate'] !== undefined && req.query['populate']) {
+        query.populate(["round", "team", "field", "competition", {
+            path: 'tiles',
+            populate: {
+                path: 'tileType'
+            }
+    }])
+    }
+
+    query.lean().exec(function (err, dbRun) {
+        if (err) {
+            logger.error(err)
+            return res.status(400).send({
+                err: err.message,
+                msg: "Could not get run"
+            })
+        } else if (dbRun) {
+            // Hide map and field from public
+            var authResult = auth.authViewRun(req.user, dbRun, ACCESSLEVELS.NONE + 1)
+            if (authResult == 0) {
+                return res.status(401).send({
+                    msg: "You have no authority to access this api!!"
+                })
+            } else if (authResult == 2) {
+                delete dbRun.comment
+                delete dbRun.sign
+            }
+            return res.status(200).send(dbRun)
+        }
+    })
 })
 
 /**
@@ -334,123 +352,187 @@ publicRouter.get('/:runid', function (req, res, next) {
  * @apiError (400) {String} msg The error message
  */
 privateRouter.put('/:runid', function (req, res, next) {
-  const id = req.params.runid
-  if (!ObjectId.isValid(id)) {
-    return next()
-  }
-  
-  const run = req.body
-  
-  // Exclude fields that are not allowed to be publicly changed
-  delete run._id
-  delete run.__v
-  delete run.map
-  delete run.competition
-  delete run.round
-  delete run.team
-  delete run.field
-  delete run.score
-  
-  //logger.debug(run)
-  
-  lineRun.findById(id)
-  //.select("-_id -__v -competition -round -team -field -score")
-    .populate({
-      path    : 'map',
-      populate: {
-        path: 'tiles.tileType'
-      }
-    })
-    .exec(function (err, dbRun) {
-      if (err) {
-        logger.error(err)
-        res.status(400).send({
-          msg: "Could not get run",
-          err: err.message
-        })
-      } else if (dbRun) {
-          if(!auth.authCompetition(req.user , dbRun.competition , ACCESSLEVELS.JUDGE)){
-              return res.status(401).send({
-                                msg: "You have no authority to access this api!!"
-              })
-          }
-        if (run.tiles != null && run.tiles.constructor === Object) { // Handle dict as "sparse" array
-          const tiles = run.tiles
-          run.tiles = []
-          Object.keys(tiles).forEach(function (key) {
-            if (!isNaN(key)) {
-              run.tiles[key] = tiles[key]
+    const id = req.params.runid
+    if (!ObjectId.isValid(id)) {
+        return next()
+    }
+
+    const run = req.body
+
+    // Exclude fields that are not allowed to be publicly changed
+    delete run._id
+    delete run.__v
+    delete run.map
+    delete run.competition
+    delete run.round
+    delete run.team
+    delete run.field
+    delete run.score
+
+    //logger.debug(run)
+
+    lineRun.findById(id)
+        //.select("-_id -__v -competition -round -team -field -score")
+        .populate({
+            path: 'map',
+            populate: {
+                path: 'tiles.tileType'
             }
-          })
-        }
-        
-        if (run.LoPs != null && run.LoPs.length != dbRun.LoPs.length) {
-          dbRun.LoPs.length = run.LoPs.length
-        }
-        
-        // Recursively updates properties in "dbObj" from "obj"
-        const copyProperties = function (obj, dbObj) {
-          for (let prop in obj) {
-            if (obj.constructor == Array ||
-                (obj.hasOwnProperty(prop) &&
-                 (dbObj.hasOwnProperty(prop) ||
-                  (dbObj.get !== undefined &&
-                   dbObj.get(prop) !== undefined)))) { // Mongoose objects don't have hasOwnProperty
-              if (typeof obj[prop] == 'object' && dbObj[prop] != null) { // Catches object and array
-                copyProperties(obj[prop], dbObj[prop])
-                
-                if (dbObj.markModified !== undefined) {
-                  dbObj.markModified(prop)
+        })
+        .exec(function (err, dbRun) {
+            if (err) {
+                logger.error(err)
+                res.status(400).send({
+                    msg: "Could not get run",
+                    err: err.message
+                })
+            } else if (dbRun) {
+                if (!auth.authCompetition(req.user, dbRun.competition, ACCESSLEVELS.JUDGE)) {
+                    return res.status(401).send({
+                        msg: "You have no authority to access this api!!"
+                    })
                 }
-              } else if (obj[prop] !== undefined) {
-                //logger.debug("copy " + prop)
-                dbObj[prop] = obj[prop]
-              }
-            } else {
-              return new Error("Illegal key: " + prop)
+                if (run.tiles != null && run.tiles.constructor === Object) { // Handle dict as "sparse" array
+                    const tiles = run.tiles
+                    run.tiles = []
+                    Object.keys(tiles).forEach(function (key) {
+                        if (!isNaN(key)) {
+                            run.tiles[key] = tiles[key]
+                        }
+                    })
+                }
+
+                if (run.LoPs != null && run.LoPs.length != dbRun.LoPs.length) {
+                    dbRun.LoPs.length = run.LoPs.length
+                }
+
+                // Recursively updates properties in "dbObj" from "obj"
+                const copyProperties = function (obj, dbObj) {
+                    for (let prop in obj) {
+                        if (obj.constructor == Array ||
+                            (obj.hasOwnProperty(prop) &&
+                                (dbObj.hasOwnProperty(prop) ||
+                                    (dbObj.get !== undefined &&
+                                        dbObj.get(prop) !== undefined)))) { // Mongoose objects don't have hasOwnProperty
+                            if (typeof obj[prop] == 'object' && dbObj[prop] != null) { // Catches object and array
+                                copyProperties(obj[prop], dbObj[prop])
+
+                                if (dbObj.markModified !== undefined) {
+                                    dbObj.markModified(prop)
+                                }
+                            } else if (obj[prop] !== undefined) {
+                                //logger.debug("copy " + prop)
+                                dbObj[prop] = obj[prop]
+                            }
+                        } else {
+                            return new Error("Illegal key: " + prop)
+                        }
+                    }
+                }
+
+                err = copyProperties(run, dbRun)
+
+                if (err) {
+                    logger.error(err)
+                    return res.status(400).send({
+                        err: err.message,
+                        msg: "Could not save run"
+                    })
+                }
+
+                dbRun.score = scoreCalculator.calculateLineScore(dbRun)
+
+                if (dbRun.score > 0 || dbRun.time.minutes != 0 ||
+                    dbRun.time.seconds != 0 || dbRun.status >= 2) {
+                    dbRun.started = true
+                } else {
+                    dbRun.started = false
+                }
+
+                dbRun.save(function (err) {
+                    if (err) {
+                        logger.error(err)
+                        return res.status(400).send({
+                            err: err.message,
+                            msg: "Could not save run"
+                        })
+                    } else {
+                        if (socketIo !== undefined) {
+                            socketIo.sockets.in('runs/line/' + dbRun.competition).emit('changed')
+                            socketIo.sockets.in('runs/' + dbRun._id).emit('data', dbRun)
+                        }
+                        return res.status(200).send({
+                            msg: "Saved run",
+                            score: dbRun.score
+                        })
+                    }
+                })
             }
-          }
-        }
-        
-        err = copyProperties(run, dbRun)
-        
-        if (err) {
-          logger.error(err)
-          return res.status(400).send({
-            err: err.message,
-            msg: "Could not save run"
-          })
-        }
-        
-        dbRun.score = scoreCalculator.calculateLineScore(dbRun)
-        
-        if (dbRun.score > 0 || dbRun.time.minutes != 0 ||
-            dbRun.time.seconds != 0 || dbRun.status >= 2) {
-          dbRun.started = true
-        } else {
-          dbRun.started = false
-        }
-        
-        dbRun.save(function (err) {
-          if (err) {
-            logger.error(err)
-            return res.status(400).send({
-              err: err.message,
-              msg: "Could not save run"
-            })
-          } else {
-            if (socketIo !== undefined) {
-              socketIo.sockets.in('runs/line/' + dbRun.competition).emit('changed')
-              socketIo.sockets.in('runs/' + dbRun._id).emit('data', dbRun)
-            }
-            return res.status(200).send({
-              msg  : "Saved run",
-              score: dbRun.score
-            })
-          }
         })
-      }
-    })
+})
+
+
+adminRouter.get('/apteam/:cid/:teamid/:group', function (req, res, next) {
+    const cid = req.params.cid
+    const team = req.params.teamid
+    const group = req.params.group
+    if (!ObjectId.isValid(cid)) {
+        return next()
+    }
+    if (!ObjectId.isValid(team)) {
+        return next()
+    }
+
+    if (!auth.authCompetition(req.user, cid, ACCESSLEVELS.ADMIN)) {
+        return res.status(401).send({
+            msg: "You have no authority to access this api!!"
+        })
+    }
+
+
+
+    lineRun.find({
+            'competition': cid,
+            'group': group
+        })
+        .exec(function (err, dbRun) {
+            if (err) {
+                logger.error(err)
+                res.status(400).send({
+                    msg: "Could not get run",
+                    err: err.message
+                })
+            } else if (dbRun) {
+                var resp = [];
+                for (let run of dbRun) {
+                    run.team = team;
+                    run.group = null;
+                    run.save(function (err) {
+                        if (err) {
+                            logger.error(err)
+                            return res.status(400).send({
+                                err: err.message,
+                                msg: "Could not save run"
+                            })
+                        } else {
+                        }
+                    })
+                    let col = {
+                      time: run.startTime,
+                      field: run.field
+                    };
+                    resp.push(col);
+                }
+                //res.send(dbRun);
+                //logger.debug(dbRun);
+
+               
+                        return res.status(200).send({
+                            msg: "Saved change",
+                            data: resp
+                        })
+            }
+        })
 })
 
 /**
@@ -466,43 +548,45 @@ privateRouter.put('/:runid', function (req, res, next) {
  * @apiError (400) {String} err The error message
  */
 adminRouter.delete('/:runids', function (req, res) {
-  var ids = req.params.runids.split(",");
-  if (!ObjectId.isValid(ids[0])) {
-    return next()
-  }
-  lineRun.findById(ids[0])
-    .select("competition")
-    .exec(function (err, dbRun) {
-      if (err) {
-        logger.error(err)
-        res.status(400).send({
-          msg: "Could not get run",
-          err: err.message
+    var ids = req.params.runids.split(",");
+    if (!ObjectId.isValid(ids[0])) {
+        return next()
+    }
+    lineRun.findById(ids[0])
+        .select("competition")
+        .exec(function (err, dbRun) {
+            if (err) {
+                logger.error(err)
+                res.status(400).send({
+                    msg: "Could not get run",
+                    err: err.message
+                })
+            } else if (dbRun) {
+                if (!auth.authCompetition(req.user, dbRun.competition, ACCESSLEVELS.ADMIN)) {
+                    return res.status(401).send({
+                        msg: "You have no authority to access this api"
+                    })
+                }
+            }
+            lineRun.remove({
+                '_id': {
+                    $in: ids
+                },
+                'competition': dbRun.competition
+            }, function (err) {
+                if (err) {
+                    logger.error(err)
+                    res.status(400).send({
+                        msg: "Could not remove run",
+                        err: err.message
+                    })
+                } else {
+                    res.status(200).send({
+                        msg: "Run has been removed!"
+                    })
+                }
+            })
         })
-      } else if (dbRun) {
-          if(!auth.authCompetition(req.user , dbRun.competition , ACCESSLEVELS.ADMIN)){
-              return res.status(401).send({
-                                msg: "You have no authority to access this api"
-              })
-          }
-      }
-      lineRun.remove({
-        '_id': {$in : ids},
-        'competition': dbRun.competition
-      }, function (err) {
-        if (err) {
-          logger.error(err)
-          res.status(400).send({
-            msg: "Could not remove run",
-            err: err.message
-          })
-        } else {
-          res.status(200).send({
-            msg: "Run has been removed!"
-          })
-        }
-      })
-    })
 })
 
 /**
@@ -523,43 +607,54 @@ adminRouter.delete('/:runids', function (req, res) {
  * @apiError (400) {String} err The error message
  */
 adminRouter.post('/', function (req, res) {
-  const run = req.body
-  if(!auth.authCompetition(req.user , run.competition , ACCESSLEVELS.ADMIN)){
-      return res.status(401).send({
-                        msg: "You have no authority to access this api"
-      })
-  }
-  
-  new lineRun({
-    competition: run.competition,
-    round      : run.round,
-    team       : run.team,
-    field      : run.field,
-    map        : run.map,
-    startTime  : run.startTime
-  }).save(function (err, data) {
-    if (err) {
-      logger.error(err)
-      return res.status(400).send({
-        msg: "Error saving run in db",
-        err: err.message
-      })
-    } else {
-      res.location("/api/runs/" + data._id)
-      return res.status(201).send({
-        err: "New run has been saved",
-        id : data._id
-      })
+    const run = req.body
+    if (!auth.authCompetition(req.user, run.competition, ACCESSLEVELS.ADMIN)) {
+        return res.status(401).send({
+            msg: "You have no authority to access this api"
+        })
     }
-  })
+    if (run.team) {
+        var regist = {
+            competition: run.competition,
+            round: run.round,
+            team: run.team,
+            field: run.field,
+            map: run.map,
+            startTime: run.startTime
+        }
+    } else {
+        var regist = {
+            competition: run.competition,
+            round: run.round,
+            group: run.group,
+            field: run.field,
+            map: run.map,
+            startTime: run.startTime
+        }
+    }
+    new lineRun(regist).save(function (err, data) {
+        if (err) {
+            logger.error(err)
+            return res.status(400).send({
+                msg: "Error saving run in db",
+                err: err.message
+            })
+        } else {
+            res.location("/api/runs/" + data._id)
+            return res.status(201).send({
+                err: "New run has been saved",
+                id: data._id
+            })
+        }
+    })
 })
 
 
 publicRouter.all('*', function (req, res, next) {
-  next()
+    next()
 })
 privateRouter.all('*', function (req, res, next) {
-  next()
+    next()
 })
 
 module.exports.public = publicRouter

@@ -72,7 +72,23 @@ function getMazeRuns(req, res) {
 
     if (req.query['minimum']) {
         query.select("competition round team field status started startTime sign")
-    } else {
+    }else if (req.query['timetable']) {
+        query.select("round team field startTime group")
+        query.populate([
+            {
+                path: "team",
+                select: "name league"
+      },
+            {
+                path: "round",
+                select: "name"
+      },
+            {
+                path: "field",
+                select: "name league"
+      }
+    ])
+    }  else {
         query.select("competition round team field map score time status started comment startTime sign LoPs exitBonus foundVictims")
     }
 
@@ -459,6 +475,69 @@ privateRouter.put('/:runid', function (req, res, next) {
 })
 
 
+adminRouter.get('/apteam/:cid/:teamid/:group', function (req, res, next) {
+    const cid = req.params.cid
+    const team = req.params.teamid
+    const group = req.params.group
+    if (!ObjectId.isValid(cid)) {
+        return next()
+    }
+    if (!ObjectId.isValid(team)) {
+        return next()
+    }
+
+    if (!auth.authCompetition(req.user, cid, ACCESSLEVELS.ADMIN)) {
+        return res.status(401).send({
+            msg: "You have no authority to access this api!!"
+        })
+    }
+
+
+
+    mazeRun.find({
+            'competition': cid,
+            'group': group
+        })
+        .exec(function (err, dbRun) {
+            if (err) {
+                logger.error(err)
+                res.status(400).send({
+                    msg: "Could not get run",
+                    err: err.message
+                })
+            } else if (dbRun) {
+                var resp = [];
+                for (let run of dbRun) {
+                    run.team = team;
+                    run.group = null;
+                    run.save(function (err) {
+                        if (err) {
+                            logger.error(err)
+                            return res.status(400).send({
+                                err: err.message,
+                                msg: "Could not save run"
+                            })
+                        } else {
+                        }
+                    })
+                    let col = {
+                      time: run.startTime,
+                      field: run.field
+                    };
+                    resp.push(col);
+                }
+                //res.send(dbRun);
+                //logger.debug(dbRun);
+
+               
+                        return res.status(200).send({
+                            msg: "Saved change",
+                            data: resp
+                        })
+            }
+        })
+})
+
 privateRouter.put('/map/:runid', function (req, res, next) {
     const id = req.params.runid
     if (!ObjectId.isValid(id)) {
@@ -605,14 +684,26 @@ adminRouter.post('/', function (req, res) {
             msg: "You have no authority to access this api"
         })
     }
-    new mazeRun({
-        competition: run.competition,
-        round: run.round,
-        team: run.team,
-        field: run.field,
-        map: run.map,
-        startTime: run.startTime
-    }).save(function (err, data) {
+    if (run.team) {
+        var regist = {
+            competition: run.competition,
+            round: run.round,
+            team: run.team,
+            field: run.field,
+            map: run.map,
+            startTime: run.startTime
+        }
+    } else {
+        var regist = {
+            competition: run.competition,
+            round: run.round,
+            group: run.group,
+            field: run.field,
+            map: run.map,
+            startTime: run.startTime
+        }
+    }
+    new mazeRun(regist).save(function (err, data) {
         if (err) {
             logger.error(err)
             return res.status(400).send({
