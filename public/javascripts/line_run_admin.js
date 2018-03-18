@@ -261,6 +261,22 @@ var app = angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap
                 }
             })
         }
+        
+        $scope.set_kiosk = function (runid){
+            $http.get("/api/kiosk/1/line_checkpoint/"+runid).then(function (response) {
+                        
+            }, function (response) {
+                console.log("Error: " + response.statusText);
+            });
+        }
+        
+        $scope.reset_kiosk = function (runid){
+            $http.get("/api/kiosk/1/NA").then(function (response) {
+                        
+            }, function (response) {
+                console.log("Error: " + response.statusText);
+            });
+        }
 
 
         $scope.go = function (path) {

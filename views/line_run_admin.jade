@@ -93,6 +93,7 @@ block content
           button(ng-click="selectAll()" class='btn btn-primary' style="margin: 5px 5px 5px 5px;") {{"admin.lineRun.selectAll" | translate}}
           button(ng-click="removeSelectedRun()" class='btn btn-danger' style="margin: 5px 5px 5px 5px;") {{"admin.lineRun.delS" | translate}}
           button(ng-click="go('/admin/'+ competitionId +'/line/runs/monitor')" class='btn btn-success' style="margin: 5px 5px 5px 5px; text-align:right;") {{"admin.lineRun.monitor" | translate}}
+          button(ng-click="reset_kiosk()" class='btn btn-secondary' style="margin: 5px 5px 5px 5px; text-align:right;") Reset Kiosk
       center
         .loader
           img(src="/images/loader2.gif")
@@ -121,6 +122,7 @@ block content
             td(ng-bind='run.score' ng-style="{'background-color':run.status==5?'#bdafdb':''}")
             td(ng-bind="run.time.minutes*60*1000+run.time.seconds*1000 | date:'mm:ss'" ng-style="{'background-color':run.status==5?'#bdafdb':''}")
             td(ng-style="{'background-color':run.status==4?'#ffadad':''}")
+              span(ng-if="run.status==-1") チェックポイント未設定
               span(ng-if="run.status==0") {{"admin.lineRun.st0" | translate}}
               span(ng-if="run.status==1") {{"admin.lineRun.st1" | translate}}
               span(ng-if="run.status==2") {{"admin.lineRun.st2" | translate}}
@@ -142,7 +144,7 @@ block content
               .dropdown
                   button#dropdownMenu.btn.btn-secondary.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') {{"common.action" | translate}}
                   .dropdown-menu(aria-labelledby='dropdownMenu')
-                    button.dropdown-item(type='button' ng-click="go('/line/view/' + run._id)") Kioskにチェクポイント設定画面を表示
+                    button.dropdown-item(type='button' ng-click="set_kiosk(run._id)") Kioskにチェクポイント設定画面を表示
                     button.dropdown-item(type='button' ng-click="go('/line/view/' + run._id)") {{"common.view" | translate}}
                     button.dropdown-item(type='button' ng-click="go_judge(run._id)") {{"common.judge" | translate}}
                     button.dropdown-item(type='button' ng-click="go_sign(run._id)") {{"common.sign" | translate}}

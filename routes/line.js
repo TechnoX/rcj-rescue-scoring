@@ -59,6 +59,15 @@ publicRouter.get('/viewcurrent', function (req, res) {
   res.render('line_view_current')
 })
 
+privateRouter.get('/checkpoint/:runid', function (req, res, next) {
+  const id = req.params.runid
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+  //logger.debug(req)
+  res.render('line_checkpoint', {id: id})
+})
+
 privateRouter.get('/judge/:runid', function (req, res, next) {
   const id = req.params.runid
   if (!ObjectId.isValid(id)) {
