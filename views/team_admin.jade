@@ -41,6 +41,7 @@ block content
       div
           button(ng-click="selectAll()" class='btn btn-primary' style="margin: 5px 5px 5px 5px;") {{"common.selectAll" | translate}}
           button(ng-click="removeSelectedTeam()" class='btn btn-danger' style="margin: 5px 5px 5px 5px;") {{"common.delS" | translate}}
+          button(ng-click="reset_kiosk()" class='btn btn-secondary' style="margin: 5px 5px 5px 5px; text-align:right;") Reset Kiosk
       table.custom
         thead
             tr
@@ -55,5 +56,10 @@ block content
               td(ng-bind='team.name')
               td(ng-bind='team.league')
               td
-                a(href="" ng-click='removeTeam(team._id)') {{"common.delete" | translate}}
+                .dropdown
+                  button#dropdownMenu.btn.btn-secondary.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') {{"common.action" | translate}}
+                  .dropdown-menu(aria-labelledby='dropdownMenu')
+                    button.dropdown-item(type='button' ng-click="set_kiosk(team)") Kioskに競技枠設定画面を表示
+                    .dropdown-divider
+                    button.dropdown-item(type='button' ng-click='removeTeam(team._id)') {{"common.delete" | translate}}
       
