@@ -44,8 +44,37 @@ var app = angular.module("RunAdmin", ['pascalprecht.translate', 'ngCookies']).co
             if(data.name === key)return data._id;
         }
         swal("Error", key + " is not exist!", "error");
+        console.log("ERROR : " + key);
         return -1;
     }
+    
+    function findT(array,key){
+        for(let data of array){
+            if(data.name === key)return data._id;
+        }
+        var group = parseInt(key);
+        if(isNaN(group)){
+            swal("Error", key + " is not exist!", "error");
+            return -1;
+        }
+        else{
+            return null;
+        }
+    }
+    
+    function findTG(array,key){
+        for(let data of array){
+            if(data.name === key)return null;
+        }
+        var group = parseInt(key);
+        if(!isNaN(group)){
+            
+            return group;
+        }
+        swal("Error", key + " is not exist!", "error");
+        return -1;
+    }
+
 
     $scope.addRun = function () {
         $scope.processing = true;
@@ -65,7 +94,8 @@ var app = angular.module("RunAdmin", ['pascalprecht.translate', 'ngCookies']).co
 
         var run = {
             round: find($scope.rounds,obj[$scope.now][0]),
-            team: find($scope.teams,obj[$scope.now][1]),
+            team: findT($scope.teams,obj[$scope.now][1]),
+            group: findTG($scope.teams,obj[$scope.now][1]),
             field: find($scope.fields,obj[$scope.now][3]),
             map: find($scope.maps,obj[$scope.now][2]),
             competition: competitionId,
