@@ -21,6 +21,8 @@ npm install
 bower install
 node server.js
 ```
+It is important that MongoDB is running! This can be achieved by typing `mongod` in another terminal. Sometimes it has to be executed as superuser.
+
 After that, the server should run on your local machine, accessible at `localhost:3000`. You can log in as an administrator with the user/password combination
 ```
 admin
