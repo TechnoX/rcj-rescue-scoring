@@ -1,4 +1,7 @@
 "use strict"
+const NAME = "Line"
+module.exports.NAME = NAME
+
 const _ = require('underscore')
 const mongoose = require('mongoose')
 const timestamps = require('mongoose-timestamp')

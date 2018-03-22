@@ -7,7 +7,10 @@ var publicRouter = express.Router()
 var privateRouter = express.Router()
 var adminRouter = express.Router()
 var competitiondb = require('../../models/competition')
+var teamdb = require('../../models/team')
+var rundb = require('../../models/run')
 var query = require('../../helper/query-helper')
+var leagues = require('../../leagues')
 var validator = require('validator')
 var async = require('async')
 var ObjectId = require('mongoose').Types.ObjectId
@@ -16,11 +19,11 @@ var fs = require('fs')
 
 
 publicRouter.get('/', function (req, res) {
-  query.doFindResultSortQuery(req, res, null, null, competitiondb.team)
+  query.doFindResultSortQuery(req, res, null, null, teamdb.team)
 })
 
 publicRouter.get('/leagues', function (req, res) {
-  res.send(competitiondb.team.schema.path('league').enumValues)
+  res.send(leagues.names)
 })
 
 publicRouter.get('/:teamid', function (req, res, next) {
@@ -30,7 +33,7 @@ publicRouter.get('/:teamid', function (req, res, next) {
     return next()
   }
   
-  query.doIdQuery(req, res, id, "", competitiondb.team)
+  query.doIdQuery(req, res, id, "", teamdb.team)
 })
 
 publicRouter.get('/:teamid/runs', function (req, res, next) {
@@ -40,7 +43,7 @@ publicRouter.get('/:teamid/runs', function (req, res, next) {
     return next()
   }
   
-  competitiondb.run.find({team: id}, function (err, data) {
+  rundb.run.find({team: id}, function (err, data) {
     if (err) {
       logger.error(err)
       res.status(400).send({msg: "Could not get runs", err: err.message})
@@ -57,7 +60,7 @@ adminRouter.delete('/:teamid', function (req, res, next) {
     return next()
   }
   
-  competitiondb.team.remove({_id: id}, function (err) {
+  teamdb.team.remove({_id: id}, function (err) {
     if (err) {
       logger.error(err)
       res.status(400).send({msg: "Could not remove team", err: err.message})
@@ -69,8 +72,8 @@ adminRouter.delete('/:teamid', function (req, res, next) {
 
 adminRouter.post('/', function (req, res) {
   var team = req.body
-  
-  var newTeam = new competitiondb.team({
+  console.log(competitiondb.competition.path('leagues'))
+  var newTeam = new teamdb.team({
     name       : team.name,
     league     : team.league,
     competition: team.competition

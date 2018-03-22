@@ -3,14 +3,14 @@
 const logger = require('../config/logger').mainLogger
 
 const line = require('./line')
-const maze = require('./maze/index')
+const maze = require('./maze')
 
 module.exports.LINE = line
 module.exports.MAZE = maze
 
 var leagues = {}
-leagues[line.NAME] = line
-leagues[maze.NAME] = maze
+leagues[line.name] = line
+leagues[maze.name] = maze
 
 module.exports.leagues = leagues
 

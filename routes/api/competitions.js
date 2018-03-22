@@ -7,6 +7,7 @@ const publicRouter = express.Router()
 const privateRouter = express.Router()
 const adminRouter = express.Router()
 const competitiondb = require('../../models/competition')
+const teamdb = require('../../models/team')
 const runsApi = require('./runs')
 const lineMapsApi = require('./lineMaps')
 const mazeMapsApi = require('./mazeMaps')
@@ -56,7 +57,7 @@ publicRouter.get('/:competition/teams', function (req, res, next) {
     return next()
   }
   
-  competitiondb.team.find({
+  teamdb.team.find({
     competition: id
   }).lean().exec(function (err, data) {
     if (err) {
@@ -82,8 +83,8 @@ publicRouter.get('/:competition/:league/teams', function (req, res, next) {
   if (LEAGUES.indexOf(league) == -1) {
     return next()
   }
-  
-  competitiondb.team.find({
+
+  teamdb.team.find({
     competition: id,
     league     : league
   }).lean().exec(function (err, data) {
@@ -107,8 +108,8 @@ publicRouter.get('/:competitionid/teams/:league/:name', function (req, res, next
   if (!ObjectId.isValid(id)) {
     return next()
   }
-  
-  competitiondb.team.find({
+
+  teamdb.team.find({
     "competition": id,
     "name"       : name,
     "league"     : league
