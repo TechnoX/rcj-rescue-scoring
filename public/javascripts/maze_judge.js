@@ -61,6 +61,17 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.checked = true;
         $timeout($scope.tile_size, 10);
         $timeout($scope.tile_size, 200);
+    }else{
+        $http.put("/api/runs/maze/" + runId, {
+            status: 1
+        }).then(function (response) {
+
+        }, function (response) {
+            console.log("Error: " + response.statusText);
+            if (response.status == 401) {
+                $scope.go('/home/access_denied');
+            }
+        });
     }
 
     $http.get("/api/runs/maze/" + runId +
@@ -92,17 +103,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
         $scope.loadMap(response.data.map);
 
-
-        $http.put("/api/runs/maze/" + runId, {
-            status: 1
-        }).then(function (response) {
-
-        }, function (response) {
-            console.log("Error: " + response.statusText);
-            if (response.status == 401) {
-                $scope.go('/home/access_denied');
-            }
-        });
 
     }, function (response) {
         console.log("Error: " + response.statusText);
@@ -719,6 +719,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $('.tile-image-container').css('width', tilesize);
             $('.tile-image').css('height', tilesize);
             $('.tile-image').css('width', tilesize);
+            $('.tile').css('height', tilesize);
+            $('.tile').css('width', tilesize);
             $('.tile-font').css('font-size', tilesize - 10);
             $('.cell').css('padding', tilesize/12);
             

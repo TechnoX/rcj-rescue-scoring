@@ -106,6 +106,18 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.fromSign = true;
         $timeout($scope.tile_size, 10);
         $timeout($scope.tile_size, 200);
+    }else{
+        $http.put("/api/runs/line/" + runId, {
+                    status: 1
+                    //tiles : $scope.stiles
+                }).then(function (response) {
+
+                }, function (response) {
+                    console.log("Error: " + response.statusText);
+                    if (response.status == 401) {
+                        $scope.go('/home/access_denied');
+                    }
+                });
     }
 
     function loadNewRun() {
@@ -192,17 +204,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 //$timeout($scope.tile_size, 1000);
                 $timeout($scope.tile_size, 1500);
                 $timeout($scope.tile_size, 3000);
-                $http.put("/api/runs/line/" + runId, {
-                    status: 1
-                    //tiles : $scope.stiles
-                }).then(function (response) {
-
-                }, function (response) {
-                    console.log("Error: " + response.statusText);
-                    if (response.status == 401) {
-                        $scope.go('/home/access_denied');
-                    }
-                });
 
 
             }, function (response) {
