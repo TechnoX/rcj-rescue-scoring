@@ -1,0 +1,82 @@
+//- -*- tab-width: 2 -*-
+
+html(ng-app="Clock")
+  head
+    title 競技時計
+    script.
+      var competitionId = "#{id}"
+      var teamId = "#{tid}"
+      
+    style.
+        table.time{
+          border-collapse:collapse;
+          margin:0 auto;
+          width: 100%;
+          text-align:center;
+        }
+        .time td,th{
+          padding:10px;
+          text-align:center!important;
+        }
+        .time th{
+          color:#fff;
+          background:#17184b;
+        }
+        .time tr:nth-child(odd){
+          background:#bbc8e6;
+        }
+        .time td{
+          border-bottom:3px solid #1e50a2;
+        }
+        
+        .running {
+            font-size:5vh;
+            height: 23vh;
+            background-color:#ff7675;
+            margin: 2vh;
+            border-radius : 2vh;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .next {
+            font-size:5vh;
+            height: 23vh;
+            background-color:#81ecec;
+            margin: 2vh;
+            border-radius : 2vh;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+
+    include ./includes/common_component.jade
+    script(src='/javascripts/clock.js')
+    script(src="/javascripts/translate_config.js")
+    link(href="/stylesheets/fredrik.css" rel="stylesheet")
+
+
+    meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0")
+
+  body(ng-controller="ClockController" style="width: 100%;background-color:#eee;")
+    div(style="width:100%;")
+        span(style="font-size:35vh;text-align:center;display: inline-block;width:100%;") {{time | date:"HH:mm:ss"}}
+        .row
+            div(class='col-{{12/num}}', style='padding:0 0 0 0;', ng-style="{borderRight: $last ? '0px':'solid 5px #000'}" , ng-repeat='n in range(num)')
+                div(style="height:7vh;background-color:#fa983a;")
+                    span(style="font-size:5vh;color:#fff;margin-left:50px;") フィールド {{selectfield[n].name}}
+                div(style="padding-left: 15px;padding-right: 15px;" ng-repeat="run in runs[selectfield[n]._id] | orderBy:'[startTime]' | limitTo: 2")
+                    div(ng-class="{running:run.status>1 , next:run.status<=1}")
+                        span(style="font-size:5vh;margin-left:10px;") {{run.startTime | date:"hh:mm"}} ~
+                        span(style="font-size:5vh;margin-left:30px;") {{run.teamCode}}
+                        br
+                        span(style="font-size:13vh;margin-left:10px;overflow:hidden;text-align:center;") {{run.teamName}}
+                div(style="padding-left: 15px;padding-right: 15px;margin-top:50px;")
+                    label Display field:
+                    select(ng-model='selectfield[n]', ng-options='field as field.name for field in fields')
+        span Number of display side by side:
+        select(ng-model='num')
+          option(value='1') 1
+          option(value='2') 2
+          option(value='3') 3

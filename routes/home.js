@@ -18,6 +18,11 @@ router.get('/:competitionid', function (req, res, next) {
   res.render('competition_home', {id: id, user: req.user})
 })
 
+router.get('/:competitionid/clock', function (req, res, next) {
+    const id = req.params.competitionid
+    res.render('clock',{id: id, user: req.user})
+})
+
 router.get('/access_denied', function (req, res) {
   res.render('access_denied', {user: req.user});
 })
