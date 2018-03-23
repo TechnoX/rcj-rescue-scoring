@@ -17,6 +17,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.flagSignage = false;
     }
     
+    $scope.vet = 1;
     
     
     $http.get("/api/competitions/" + competitionId +
