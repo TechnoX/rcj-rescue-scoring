@@ -1,4 +1,5 @@
 var app = angular.module("LineCompetition", ['pascalprecht.translate', 'ngCookies']);
+var socket;
 app.controller("LineCompetitionController", ['$scope', '$http', '$translate', function ($scope, $http, $translate) {
     $scope.competitionId = competitionId
     $scope.isJudge = isJudge
@@ -33,46 +34,90 @@ app.controller("LineCompetitionController", ['$scope', '$http', '$translate', fu
     $http.get("/api/competitions/" + competitionId).then(function (response) {
         $scope.competition = response.data
     })
+    
+    // launch socket.io
+    socket = io(window.location.origin, {
+        transports: ['websocket']
+    });
+    if (typeof competitionId !== 'undefined') {
+        socket.emit('subscribe', 'runs/line/' + competitionId + '/status');
+
+        socket.on('Lchanged', function (data) {
+            $scope.update_list();
+            $scope.$apply();
+            //console.log($scope.runs);
+            console.log("Updated view from socket.io");
+        });
+    }
+    
+    function objectSort(object) {
+        var sorted = {};
+        var arr = [];
+        for (key in object) {
+            if (object.hasOwnProperty(key)) {
+                arr.push(key);
+            }
+        }
+        arr.sort();
+        //arr.reverse();
+
+        for (var i = 0; i < arr.length; i++) {
+            sorted[arr[i]] = object[arr[i]];
+        }
+        return sorted;
+    }
 
     $scope.update_list = function () {
         $http.get("/api/competitions/" + competitionId +
             "/line/runs?populate=true&minimum=true&ended=" +
             $scope.show_ended).then(function (response) {
             var runs = response.data
+            
+            for (let run of runs) {
+                if (!run.team) {
+                    run.team = {
+                        'name': ""
+                    };
+                }
+            }
+            
             $scope.runs = runs
 
             // TODO: This should be done with Set, needs polyfill?
-            var rounds = {}
-            var fields = {}
-            for (var i = 0; i < runs.length; i++) {
-                try {
-                    var round = runs[i].round.name
-                    if (!rounds.hasOwnProperty(round)) {
-                        rounds[round] = false
+            if(!$scope.rounds && !$scope.fields){
+                var rounds = {}
+                var fields = {}
+                for (var i = 0; i < runs.length; i++) {
+                    try {
+                        var round = runs[i].round.name
+                        if (!rounds.hasOwnProperty(round)) {
+                            rounds[round] = false
+                        }
+                    } catch (e) {
+
                     }
-                } catch (e) {
+
+                    try {
+                        var field = runs[i].field.name
+
+                        if (!fields.hasOwnProperty(field)) {
+                            fields[field] = false
+                        }
+                    } catch (e) {
+
+                    }
+
 
                 }
 
-                try {
-                    var field = runs[i].field.name
-
-                    if (!fields.hasOwnProperty(field)) {
-                        fields[field] = false
-                    }
-                } catch (e) {
-
-                }
-
-
+                $scope.rounds = objectSort(rounds)
+                $scope.fields = objectSort(fields)
             }
 
-            $scope.rounds = rounds
-            $scope.fields = fields
-
-            //console.log($scope.teams)
-        })
+        });
+    
     }
+
 
     $scope.$watch('rounds', function (newValue, oldValue) {
         showAllRounds = true
@@ -116,10 +161,12 @@ app.controller("LineCompetitionController", ['$scope', '$http', '$translate', fu
 
 
     $scope.go = function (path) {
+        socket.emit('unsubscribe', 'runs/line/' + competitionId + '/status');
         window.location = path
     }
 
     $scope.go_judge = function (path, team_name) {
+        socket.emit('unsubscribe', 'runs/line/' + competitionId + '/status');
         swal({
             title: team_name,
             text: val_go_judge,
@@ -138,3 +185,7 @@ app.controller("LineCompetitionController", ['$scope', '$http', '$translate', fu
         swal("Oops!", val_no_judge, "error");
     }
 }]);
+
+$(window).on('beforeunload', function () {
+    socket.emit('unsubscribe', 'runs/line/' + competitionId + '/status');
+});
