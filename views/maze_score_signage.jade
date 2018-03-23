@@ -31,8 +31,8 @@ block content
             .col-9
                img(ng-src="/images/ranking/{{$index+1}}.png" style="height:29vh;float: left;")
                div(style="margin-left:35vh;")
-                   div(style="position:relative; top:3vh; font-size: 6vh;") {{run.team.name.split(' ')[0]}}
-                   div(style="position:relative; top:5vh; font-size:10vh;") {{run.team.name.split(' ')[1]}}
+                   div(style="position:relative; top:3vh; font-size: 6vh;") {{run.teamCode}}
+                       div(style="position:relative; top:5vh; font-size:10vh; overflow: hidden;text-overflow: ellipsis;white-space: nowrap;") {{run.teamName}}
 
 
             .col-3

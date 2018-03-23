@@ -43,6 +43,23 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
         $http.get("/api/competitions/" + competitionId +
             "/line/runs?populate=true").then(function (response) {
             var runs = response.data
+            
+            for(let run of runs){
+                try{
+                    var teamname = run.team.name.split(' ');
+                    run.teamCode = teamname[0];
+                    run.teamName = teamname[1];
+                    for(let i = 2; i < teamname.length;i++){
+                        run.teamName = run.teamName + " " + teamname[i];
+                    }
+
+                }
+                catch(e){
+
+                }
+            }
+            
+            
 
             //console.log(runs)
 
