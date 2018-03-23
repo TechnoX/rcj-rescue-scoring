@@ -219,4 +219,6 @@ router.get('/kiosk/:kioskNum', function (req, res, next) {
   res.render('kiosk', {num: num, user: req.user})
 })
 
+
+
 module.exports = router
