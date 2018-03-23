@@ -119,7 +119,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.retired = data.retired;
                 $scope.LoPs_total = 0;
                 $scope.status = data.status;
-                for (var i = 0; i < $scope.LoPs.length; i++) {
+                for (let i = 0; i < $scope.LoPs.length; i++) {
                     $scope.LoPs_total += $scope.LoPs[i];
                 }
                 $scope.$apply();
@@ -163,7 +163,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             // Scoring elements of the tiles
             $scope.stiles = response.data.tiles;
 
-            for (var i = 0; i < response.data.tiles.length; i++) {
+            for (let i = 0; i < response.data.tiles.length; i++) {
                 if (response.data.tiles[i].isDropTile) {
                     $scope.actualUsedDropTiles++;
                     f = true;
@@ -191,7 +191,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 while($scope.stiles.length < response.data.indexCount){
                     $scope.stiles.push(ntile);
                 }
-                for (var i = 0; i < response.data.tiles.length; i++) {
+                for (let i = 0; i < response.data.tiles.length; i++) {
                     $scope.mtiles[response.data.tiles[i].x + ',' +
                         response.data.tiles[i].y + ',' +
                         response.data.tiles[i].z] = response.data.tiles[i];
@@ -216,7 +216,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.getOpacity = function (x, y) {
         var stackedTiles = 0;
-        for (var z = 0; z < $scope.height; z++) {
+        for (let z = 0; z < $scope.height; z++) {
             if ($scope.mtiles[x + ',' + y + ',' + z])
                 stackedTiles++;
         }
@@ -236,7 +236,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             return;
 
 
-        for (var i = 0; i < mtile.index.length; i++) {
+        for (let i = 0; i < mtile.index.length; i++) {
             if ($scope.stiles[mtile.index[i]].isDropTile) {
                 isDropTile = true;
             }
@@ -562,7 +562,7 @@ function tile_size() {
     $(function () {
         try {
             var tilesize_w = (window.innerWidth - 2*width) / width;
-            var tilesize_h = (window.innerHeight -230) / length;
+            var tilesize_h = (window.innerHeight -180) / length;
             console.log('tilesize_w:' + tilesize_w);
             console.log('tilesize_h:' + tilesize_h);
             if (tilesize_h > tilesize_w) var tilesize = tilesize_w;

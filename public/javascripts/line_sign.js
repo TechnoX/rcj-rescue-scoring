@@ -145,7 +145,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             // Scoring elements of the tiles
             $scope.stiles = response.data.tiles;
 
-            for (var i = 0; i < response.data.tiles.length; i++) {
+            for (let i = 0; i < response.data.tiles.length; i++) {
                 if (response.data.tiles[i].isDropTile) {
                     $scope.actualUsedDropTiles++;
                     marker[i] = true;
@@ -175,7 +175,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 while($scope.stiles.length < response.data.indexCount){
                     $scope.stiles.push(ntile);
                 }
-                for (var i = 0; i < response.data.tiles.length; i++) {
+                for (let i = 0; i < response.data.tiles.length; i++) {
                     $scope.mtiles[response.data.tiles[i].x + ',' +
                         response.data.tiles[i].y + ',' +
                         response.data.tiles[i].z] = response.data.tiles[i];

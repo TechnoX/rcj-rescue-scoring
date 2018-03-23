@@ -41,7 +41,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.seconds = data.time.seconds;
 
                 // Scoring elements of the tiles
-                for (var i = 0; i < data.tiles.length; i++) {
+                for (let i = 0; i < data.tiles.length; i++) {
                     $scope.tiles[data.tiles[i].x + ',' +
                         data.tiles[i].y + ',' +
                         data.tiles[i].z] = data.tiles[i];
@@ -89,7 +89,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             }catch(err){}
 
             // Scoring elements of the tiles
-            for (var i = 0; i < response.data.tiles.length; i++) {
+            for (let i = 0; i < response.data.tiles.length; i++) {
                 $scope.tiles[response.data.tiles[i].x + ',' +
                     response.data.tiles[i].y + ',' +
                     response.data.tiles[i].z] = response.data.tiles[i];
@@ -114,7 +114,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 
                 $scope.width = response.data.width;
                 $scope.length = response.data.length;
-                for (var i = 0; i < response.data.cells.length; i++) {
+                for (let i = 0; i < response.data.cells.length; i++) {
                     //console.log(i)
                     $scope.cells[response.data.cells[i].x + ',' +
                         response.data.cells[i].y + ',' +
@@ -141,7 +141,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.range = function (n) {
         arr = [];
-        for (var i = 0; i < n; i++) {
+        for (let i = 0; i < n; i++) {
             arr.push(i);
         }
         return arr;
@@ -592,6 +592,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $('.tile-image-container').css('width', tilesize);
             $('.tile-image').css('height', tilesize);
             $('.tile-image').css('width', tilesize);
+            $('.tile').css('height', tilesize);
+            $('.tile').css('width', tilesize);
             $('.tile-font').css('font-size', tilesize - 10);
             $('.tile-point').css('font-size', tilesize/2 + "px");
             $('.tile-point').css('line-height', tilesize + "px");
