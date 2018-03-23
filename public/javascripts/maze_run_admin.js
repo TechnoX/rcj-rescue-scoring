@@ -93,7 +93,7 @@ var app = angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap
 
         $scope.selectAll = function () {
             angular.forEach($scope.runs, function (run) {
-                if($scope.list_filter(run)) run.checked = true;
+                if ($scope.list_filter(run)) run.checked = true;
             });
         }
 
@@ -174,38 +174,64 @@ var app = angular.module("RunAdmin", ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap
         }
 
 
+        function objectSort(object) {
+            var sorted = {};
+            var arr = [];
+            for (key in object) {
+                if (object.hasOwnProperty(key)) {
+                    arr.push(key);
+                }
+            }
+            arr.sort();
+            //arr.reverse();
+
+            for (var i = 0; i < arr.length; i++) {
+                sorted[arr[i]] = object[arr[i]];
+            }
+            return sorted;
+        }
+
         function updateRunList() {
             $http.get("/api/competitions/" + competitionId +
                 "/maze/runs?populate=true").then(function (response) {
-                $scope.runs = response.data
-                
-                var rounds = {}
-                var fields = {}
-                for (var i = 0; i < $scope.runs.length; i++) {
-                    try {
-                        var round = $scope.runs[i].round.name
-                        if (!rounds.hasOwnProperty(round)) {
-                            rounds[round] = false
-                        }
-                    } catch (e) {
-
+                var runs = response.data;
+                for (let run of runs) {
+                    if (!run.team) {
+                        run.team = {
+                            'name': ""
+                        };
                     }
-
-                    try {
-                        var field = $scope.runs[i].field.name
-
-                        if (!fields.hasOwnProperty(field)) {
-                            fields[field] = false
-                        }
-                    } catch (e) {
-
-                    }
-
-
                 }
+                $scope.runs = runs;
+                if (!$scope.Rrounds && !$scope.Rfields) {
+                    var rounds = {}
+                    var fields = {}
+                    for (var i = 0; i < $scope.runs.length; i++) {
+                        try {
+                            var round = $scope.runs[i].round.name
+                            if (!rounds.hasOwnProperty(round)) {
+                                rounds[round] = false
+                            }
+                        } catch (e) {
 
-                $scope.Rrounds = rounds
-                $scope.Rfields = fields
+                        }
+
+                        try {
+                            var field = $scope.runs[i].field.name
+
+                            if (!fields.hasOwnProperty(field)) {
+                                fields[field] = false
+                            }
+                        } catch (e) {
+
+                        }
+
+
+                    }
+
+                    $scope.Rrounds = objectSort(rounds)
+                    $scope.Rfields = objectSort(fields)
+                }
             })
         }
 
