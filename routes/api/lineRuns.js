@@ -358,6 +358,8 @@ privateRouter.put('/:runid', function (req, res, next) {
     }
 
     const run = req.body
+    
+    var statusUpdate = false;
 
     // Exclude fields that are not allowed to be publicly changed
     delete run._id
@@ -429,6 +431,8 @@ privateRouter.put('/:runid', function (req, res, next) {
                         }
                     }
                 }
+                
+                if(run.status != dbRun.status) statusUpdate = true;
 
                 err = copyProperties(run, dbRun)
 
@@ -460,6 +464,9 @@ privateRouter.put('/:runid', function (req, res, next) {
                         if (socketIo !== undefined) {
                             socketIo.sockets.in('runs/line/' + dbRun.competition).emit('changed')
                             socketIo.sockets.in('runs/' + dbRun._id).emit('data', dbRun)
+                            if(statusUpdate){
+                                socketIo.sockets.in('runs/line/' + dbRun.competition + '/status').emit('Lchanged')
+                            }
                         }
                         return res.status(200).send({
                             msg: "Saved run",

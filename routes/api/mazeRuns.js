@@ -341,6 +341,7 @@ privateRouter.put('/:runid', function (req, res, next) {
 
     const run = req.body
 
+    var statusUpdate = false;
     // Exclude fields that are not allowed to be publicly changed
     delete run._id
     delete run.__v
@@ -431,6 +432,9 @@ privateRouter.put('/:runid', function (req, res, next) {
                 }
 
                 delete run.tiles
+                
+                if(run.status != dbRun.status) statusUpdate = true;
+                
                 err = copyProperties(run, dbRun)
                 if (err) {
                     logger.error(err)
@@ -461,8 +465,12 @@ privateRouter.put('/:runid', function (req, res, next) {
                         })
                     } else {
                         if (socketIo !== undefined) {
+                            delete dbRun.sign;
                             socketIo.sockets.in('runs/maze/' + dbRun.competition).emit('changed')
                             socketIo.sockets.in('runs/' + dbRun._id).emit('data', dbRun)
+                            if(statusUpdate){
+                                socketIo.sockets.in('runs/maze/' + dbRun.competition + '/status').emit('Mchanged')
+                            }
                         }
                         return res.status(200).send({
                             msg: "Saved run",
