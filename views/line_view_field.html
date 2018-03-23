@@ -35,21 +35,17 @@
 <br>
 <div class="alert alert-info" role="alert" ng-show="exist">
     <div class="row">
-        <div class="col-6">
+        <div class="col-4">
             <i class="fas fa-step-forward" aria-hidden="true"> : {{LoPs_total}} times</i>
         </div>
-        <div class="col-6">
+        <div class="col-4">
             <i class="fas fa-ambulance" aria-hidden="true"> : L: {{rescuedLiveVictims}} 　D: {{rescuedDeadVictims}}</i>
+        </div>
+        <div class="col-4">
+            <span ng-show="evacuationLevel==1">Level: 1</span>
+            <span ng-show="evacuationLevel==2">Level: 2</span>
         </div>
     </div>
 
-</div>
-<div class="row" ng-show="exist">
-    <div class="col-12">
-        <h3>
-            <span class="badge badge-danger" ng-show="evacuationLevel==1">{{"line.view.low" | translate}}</span>
-            <span class="badge badge-danger" ng-show="evacuationLevel==2">{{"line.view.high" | translate}}</span>
-        </h3>
-    </div>
 </div>
 
