@@ -89,7 +89,9 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
                         if (nipponTeamRuns[run.team._id] === undefined) {
                             nipponTeamRuns[run.team._id] = {
                                 team: {
-                                    name: run.team.name
+                                    name: run.team.name,
+                                    code: run.teamCode,
+                                    name_only: run.teamName
                                 },
                                 runs: [run]
                             }
@@ -112,7 +114,9 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
                         if (worldTeamRuns[run.team._id] === undefined) {
                             worldTeamRuns[run.team._id] = {
                                 team: {
-                                    name: run.team.name
+                                    name: run.team.name,
+                                    code: run.teamCode,
+                                    name_only: run.teamName
                                 },
                                 runs: [run]
                             }
@@ -140,9 +144,7 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
             for (var i in nipponTeamRuns) {
                 var teamRun = nipponTeamRuns[i]
                 $scope.nipponRunsTop.push({
-                    team: {
-                        name: teamRun.team.name
-                    },
+                    team: teamRun.team,
                     score: teamRun.sumScore,
                     time: teamRun.sumTime,
                     rescuedVictims: teamRun.sumRescue,
@@ -157,9 +159,7 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
             for (var i in worldTeamRuns) {
                 var teamRun = worldTeamRuns[i]
                 $scope.worldRunsTop.push({
-                    team: {
-                        name: teamRun.team.name
-                    },
+                    team: teamRun.team,
                     score: teamRun.sumScore,
                     time: teamRun.sumTime,
                     rescuedVictims: teamRun.sumRescue,

@@ -70,7 +70,9 @@ app.controller("MazeScoreController", function ($scope, $http) {
                     if (mazeTeamRuns[run.team._id] === undefined) {
                         mazeTeamRuns[run.team._id] = {
                             team: {
-                                name: run.team.name
+                                name: run.team.name,
+                                code: run.teamCode,
+                                name_only: run.teamName
                             },
                             runs: [run]
                         }
@@ -92,9 +94,7 @@ app.controller("MazeScoreController", function ($scope, $http) {
             for (var i in mazeTeamRuns) {
                 var teamRun = mazeTeamRuns[i]
                 $scope.mazeRunsTop.push({
-                    team: {
-                        name: teamRun.team.name
-                    },
+                    team: teamRun.team,
                     score: teamRun.sumScore,
                     time: teamRun.sumTime,
                     lops: teamRun.sumLoPs,
