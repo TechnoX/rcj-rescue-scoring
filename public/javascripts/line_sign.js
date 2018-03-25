@@ -507,7 +507,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $('#wrapTile').css('width', (tilesize+3)*length);
             }
 
-            $('#card_area').css('height', (window.innerHeight - 60));
+            $('#card_area').css('height', (window.innerHeight - 130));
             if (b.height() == 0) $timeout($scope.tile_size, 500);
         } catch (e) {
             $timeout($scope.tile_size, 500);
