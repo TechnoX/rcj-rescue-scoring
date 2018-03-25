@@ -9,8 +9,7 @@ append scripts
     var competitionId = "#{id}"
     var get = !{JSON.stringify(get)}
   script(src = '/components/datatables/media/js/jquery.dataTables.min.js')
-  script(src = '/components/angular-datatables/dist/angular-datatables.min.js')
-  script(src="/components/socket.io-client/socket.io.js")
+  script(src = '/components/angular-datatables/demo/src/archives/dist/angular-datatables.min.js')
   script(src='/javascripts/line_score.js')
 
 
@@ -24,8 +23,7 @@ block content
   .row
   .col-md12
     button.btn.btn-secondary(style='margin:0 10px 10px 0;', type='button', ng-click="go('/line/' + competitionId)")
-      i.fas.fa-undo(aria-hidden='true')
-      {{'common.back' | translate}}
+      i.fas.fa-undo(aria-hidden='true') {{'common.back' | translate }}
   //.row
     .col-12
       .alert.alert-info(role='alert')
