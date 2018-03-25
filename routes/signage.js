@@ -21,9 +21,21 @@ adminRouter.get('/setting/editor/:id', function (req, res){
   res.render('signage_editor', {user: req.user , id: id})
 })
 
+privateRouter.get('/:competitionid/run', function (req, res, next) {
+  const id = req.params.competitionid
+  
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+  
+  if(auth.authCompetition(req.user,id,ACCESSLEVELS.VIEW)) res.render('runs_monitor', {id: id, user: req.user})
+  else res.render('access_denied', {user: req.user})
+})
+
 privateRouter.get('/:sigId/:group', function (req, res) {
   const sigId = req.params.sigId
   const group = req.params.group
+  
   res.render('main_signage', {user: req.user, sigId: sigId,group: group})
 })
 
