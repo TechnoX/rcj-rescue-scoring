@@ -7,6 +7,7 @@ var env = require('node-env-file')
 env('process.env')
 
 var express = require('express')
+var morgan = require('morgan');
 const compression = require('compression')
 var path = require('path')
 var fs = require('fs')
@@ -82,11 +83,20 @@ app.use(function (req, res, next) {
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'jade')
 
+
+/*
+ * Log
+*/
+//app.use(morgan('short'));
+
+
+
+
 /*
  * Config
  */
 // uncomment after placing your favicon in /public
-//app.use(favicon(__dirname + '/public/favicon.ico'))
+app.use(favicon(path.join(__dirname, 'public/images', 'favicon.ico')))
 //app.use(logger('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
@@ -180,7 +190,6 @@ app.use(function (req, res, next) {
 //========================================================================
 
 app.use(function (err, req, res, next) {
-
     // is at base, send to login
     if (req.originalUrl === "/") {
         res.redirect("home")

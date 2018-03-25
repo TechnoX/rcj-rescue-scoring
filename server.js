@@ -83,11 +83,11 @@ else {*/
   io.on('connection', function (socket) {
     socket.on('subscribe', function (data) {
       socket.join(data)
-      logger.debug("Client joined room:" + data + '         (PORT: '+ port + ')')
+      logger.debug(port +" : Client joined room:" + data)
     })
     socket.on('unsubscribe', function (data) {
       socket.leave(data)
-      logger.debug("Client detached room:" + data + '         (PORT: '+ port + ')')
+      logger.debug(port +" : Client detached room:" + data)
     })
   })
 
