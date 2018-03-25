@@ -48,22 +48,22 @@ else {*/
   var app = require('./app')
   var http = require('http')
   var fs = require('fs')
-  
+
   /**
    * Get port from environment and store in Express.
    */
-  
+
   // XXX: Is this used anywhere?
-  var port = parseInt(process.env.WEB_HOSTPORT, 10) || 80
+  var port = (parseInt(process.env.WEB_HOSTPORT, 10) || 80) + parseInt(process.env.NODE_APP_INSTANCE || 0);
   app.set('port', port)
-  
+
   /**
    * Create HTTP server.
    */
   var server = http.createServer(app)
-  
+
    //https conf
-  
+
 //  var options = {
 //     key: fs.readFileSync('./config/ssl/privkey.pem'),
 //     cert: fs.readFileSync('./config/ssl/new.cert.cert')
@@ -72,20 +72,22 @@ else {*/
 //  https.listen(parseInt(process.env.HTTPS_HOSTPORT, 10) || 443)
 //  https.on('error', onError)
 //  https.on('listening', onListening)
-  
-  
+
+
   // socket.io stuff
-  
+
   var io = require('socket.io')(server)
-  
+  var redis = require('socket.io-redis');
+  io.adapter(redis({host: 'localhost', port: 6379}));
+
   io.on('connection', function (socket) {
     socket.on('subscribe', function (data) {
       socket.join(data)
-      logger.debug("Client joined room:" + data)
+      logger.debug("Client joined room:" + data + '         (PORT: '+ port + ')')
     })
     socket.on('unsubscribe', function (data) {
       socket.leave(data)
-      logger.debug("Client detached room:" + data)
+      logger.debug("Client detached room:" + data + '         (PORT: '+ port + ')')
     })
   })
 
@@ -93,26 +95,26 @@ else {*/
   require('./routes/api/mazeRuns').connectSocketIo(io)
   require('./routes/api/signage').connectSocketIo(io)
   require('./routes/api/kiosk').connectSocketIo(io)
-  
+
   /**
    * Listen on provided port, on all network interfaces.
    */
-  
-  server.listen(parseInt(process.env.WEB_HOSTPORT, 10) || 80)
+
+  server.listen(port)
   server.on('error', onError)
   server.on('listening', onListening)
-  
+
 
   /**
    * Event listener for HTTP server "error" event.
    */
-  
+
   function onError(error) {
-  
+
   if (error.syscall !== 'listen') {
     throw error
   }
-  
+
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
@@ -127,11 +129,11 @@ else {*/
       throw error
     }
   }
-  
+
   /**
    * Event listener for HTTP server "listening" event.
    */
-  
+
   function onListening() {
       logger.info('Webserver listening on port ' + server.address().port)
   }

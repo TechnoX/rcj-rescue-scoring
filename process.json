@@ -1,0 +1,6 @@
+{
+  "name": "rcj-scoring-cluster",
+  "script": "server.js",
+  "exec_mode": "fork_mode",
+  "instances": 0
+}
