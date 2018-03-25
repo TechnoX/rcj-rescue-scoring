@@ -32,7 +32,7 @@
     "angular-translate-loader-static-files": "^2.17.0",
     "angular-translate-handler-log": "^2.17.0",
     "angular-cookies": "^1.6.9",
-    "bootstrap": "^4.0.0",
+    "bootstrap": "^4.0.0-beta",
     "angular-bootstrap": "git://github.com/rrrobo/ab-for-rcj.git",
     "bootstrap-fileinput": "^4.4.7",
     "pdfjs": "https://github.com/mozilla/pdf.js/releases/download/v1.10.88/pdfjs-1.10.88-dist.zip",
