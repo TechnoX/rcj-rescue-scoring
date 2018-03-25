@@ -1,405 +1,813 @@
 // register the directive with your app module
-var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'rzModule']);
+var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'pascalprecht.translate', 'ngCookies']);
 var marker = {};
 var socket;
 // function referenced by the drop target
-app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', function ($scope, $uibModal, $log, $timeout, $http) {
-  $scope.sliderOptions = {
-    floor           : 0,
-    ceil            : 0,
-    showSelectionBar: true,
-    showTicksValues : true
-  };
-  
-  $scope.visType = "slider";
-  $scope.z = 0;
-  $scope.tiles = {};
-  if (typeof runId !== 'undefined') {
-    loadNewRun();
-  }
-  
-  (function launchSocketIo() {
-    // launch socket.io
-    socket = io(window.location.origin, {transports: ['websocket']});
-    if (typeof runId !== 'undefined') {
-      $scope.actualUsedDropTiles = 0;
-      socket.emit('subscribe', 'runs/' + runId);
-      socket.on('data', function (data) {
-        console.log(data);
-        for (var i = 0; i < data.tiles.length; i++) {
-          $scope.tiles[data.tiles[i].x + ',' +
-                       data.tiles[i].y + ',' +
-                       data.tiles[i].z].scoredItems = data.tiles[i].scoredItems;
-        }
-        $scope.tiles[data.startTile.x + ',' +
-                     data.startTile.y + ',' +
-                     data.startTile.z].start = data.showedUp;
-        $scope.rescuedLiveVictims = data.rescuedLiveVictims;
-        $scope.rescuedDeadVictims = data.rescuedDeadVictims;
-        $scope.rescueLevel = data.rescueLevel;
-        $scope.escapeEvacuationZone = data.escapeEvacuationZone;
-        $scope.score = data.score;
-        $scope.showedUp = data.showedUp;
-        $scope.LoPs = data.LoPs;
-        $scope.minutes = data.time.minutes;
-        $scope.seconds = data.time.seconds;
-        $scope.retired = data.retired;
-        $scope.$apply();
-        console.log("Updated view from socket.io");
-      });
-    }
-    
-    if (typeof fieldId !== 'undefined') {
-      socket.emit('subscribe', 'fields/' + fieldId);
-      socket.on('data', function (data) {
-//                if(typeof runId === 'undefined') || runId != data.newRun){ // TODO: FIX!
-        console.log("Judge changed to a new run");
-        runId = data.newRun;
-        loadNewRun();
-//                }
-      });
-      
-      
-    }
-    
-  })();
-  
-  
-  function loadNewRun() {
-    $http.get("/api/runs/" + runId +
-              "?populate=true").then(function (response) {
-      $scope.height = response.data.height;
-      $scope.sliderOptions.ceil = $scope.height - 1;
-      $scope.width = response.data.width;
-      $scope.length = response.data.length;
-      width = response.data.width;
-      length = response.data.length;
-      $scope.team = response.data.team;
-      $scope.field = response.data.field;
-      $scope.competition = response.data.competition;
-      $scope.round = response.data.round;
-      $scope.retired = response.data.retired;
-      $scope.numberOfDropTiles = response.data.numberOfDropTiles;
-      ;
-      $scope.rescuedLiveVictims = response.data.rescuedLiveVictims;
-      $scope.rescuedDeadVictims = response.data.rescuedDeadVictims;
-      $scope.escapeEvacuationZone = response.data.escapeEvacuationZone;
-      $scope.rescueLevel = response.data.rescueLevel;
-      
-      for (var i = 0; i < response.data.tiles.length; i++) {
-        $scope.tiles[response.data.tiles[i].x + ',' +
-                     response.data.tiles[i].y + ',' +
-                     response.data.tiles[i].z] = response.data.tiles[i];
-        if (response.data.tiles[i].scoredItems.dropTiles.length > 0) {
-          $scope.placedDropTiles++;
-          $scope.actualUsedDropTiles += response.data.tiles[i].scoredItems.dropTiles.length;
-          for (var j = 0; j < response.data.tiles[i].index.length; j++) {
-            marker[response.data.tiles[i].index[j]] = true;
-          }
-        }
-      }
-      $scope.tiles[response.data.startTile.x + ',' +
-                   response.data.startTile.y + ',' +
-                   response.data.startTile.z].start = response.data.showedUp;
-      $scope.score = response.data.score;
-      $scope.showedUp = response.data.showedUp;
-      $scope.LoPs = response.data.LoPs;
-      // Verified time by timekeeper
-      $scope.minutes = response.data.time.minutes;
-      $scope.seconds = response.data.time.seconds;
-      $scope.cap_sig = response.data.sign.captain;
-      $scope.ref_sig = response.data.sign.referee;
-      $scope.refas_sig = response.data.sign.referee_as;
-      
-      console.log($scope.tiles);
-    }, function (response) {
-      console.log("Error: " + response.statusText);
-    });
-  }
-  
-  
-  $scope.range = function (n) {
-    arr = [];
-    for (var i = 0; i < n; i++) {
-      arr.push(i);
-    }
-    return arr;
-  }
-  
-  $scope.getOpacity = function (x, y) {
-    var stackedTiles = 0;
-    for (var z = 0; z < $scope.height; z++) {
-      if ($scope.tiles[x + ',' + y + ',' + z])
-        stackedTiles++;
-    }
-    return 1.0 / stackedTiles;
-  }
-  
-  $scope.go = function (path) {
-    socket.emit('unsubscribe', 'runs/' + runId);
-    window.location = path
-  }
-  
-  $scope.totalNumberOf = function (objects) {
-    return objects.gaps + objects.speedbumps + objects.obstacles +
-           objects.intersections;
-  }
-  
-  $scope.showElements = function (x, y, z) {
-    var tile = $scope.tiles[x + ',' + y + ',' + z];
-    // If this is not a created tile
-    if (!tile)
-      return;
-    
-    
-    var total = $scope.totalNumberOf(tile.items);
-    
-    // If the run is not started, we can place drop pucks on this tile
-    
-    // Add the number of possible passes for drop tiles
-    if (tile.scoredItems.dropTiles.length > 0) {
-      total += tile.scoredItems.dropTiles.length;
-    }
-    if (tile.start != null)total++;
-    
-    if (total == 0) {
-      return;
-    } else if (total > 1) {
-      $scope.open(x, y, z);
-      // Save data from modal when closing it
-    } else {
-      return;
-    }
-  }
-  
-  
-  $scope.open = function (x, y, z) {
-    var modalInstance = $uibModal.open({
-      animation  : true,
-      templateUrl: '/templates/line_view_modal.html',
-      controller : 'ModalInstanceCtrl',
-      size       : 'sm',
-      resolve    : {
-        tile: function () {
-          return $scope.tiles[x + ',' + y + ',' + z];
-        }
-      }
-    }).closed.then(function (result) {
-      console.log("Closed modal");
-    });
-  };
-  
-  $scope.success_message = function () {
-    swal({
-      title: 'Recorded!',
-      text : 'Recording to public server succeeded',
-      type : 'success'
-    }, function () {
-      $scope.go("/admin/" + $scope.competition._id + "/runs/");
-    });
-    console.log("Success!!");
-  }
-  
-  $scope.send_public = function () {
-    swal({
-      title             : "Approval?",
-      text              : "Click 'Yes' to send the run data to the public server.",
-      type              : "warning",
-      showCancelButton  : true,
-      confirmButtonText : "Yes, approval it!",
-      confirmButtonColor: "#ec6c62"
-    }, function () {
-      var run = {}
-      run.height = $scope.height;
-      run.width = $scope.width;
-      run.length = $scope.length;
-      run.rescuedVictims = $scope.rescuedVictims;
-      run.tiles = $scope.tiles;
-      run.showedUp = $scope.showedUp;
-      run.LoPs = $scope.LoPs;
-      run.time = {};
-      run.time.minutes = $scope.minutes;
-      run.time.seconds = $scope.seconds;
-      run.retired = $scope.retired;
-      run.status = 5;
-      $http.post("https://example.com/" + runId +
-                 "/update/token", run).then(function (response) {
-        var run = {}
-        run.status = 5;
-        $http.post("/api/runs/" + runId +
-                   "/update", run).then(function (response) {
-          setTimeout($scope.success_message, 500);
-        }, function (response) {
-          swal("Oops", "It could not be sent normally. Please call the system manager.", "error");
-          console.log("Error: " + response.statusText);
-        });
-        
-        
-      }, function (response) {
-        swal("Oops", "It could not be sent normally. Please call the system manager.", "error");
-        console.log("Error: " + response.statusText);
-      });
-      
-    });
-    
-    
-  }
-  
-  
-}]).directive("tileLoadFinished", function ($timeout) {
-  return function (scope, element, attrs) {
-    if (scope.$last) {
-      $timeout(function () {
-        tile_size();
-      }, 0);
-      $timeout(function () {
-        tile_size();
-      }, 500);
-      $timeout(function () {
-        tile_size();
-      }, 1000);
-    }
-  }
-});
+app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', '$cookies', function ($scope, $uibModal, $log, $timeout, $http, $cookies) {
+
+            $scope.z = 0;
+            // Scoring elements of the tiles
+            $scope.stiles = [];
+            // Map (images etc.) for the tiles
+            $scope.mtiles = [];
+
+            $scope.checkPointDistance = [];
+
+            //$cookies.remove('sRotate')
+            if ($cookies.get('sRotate')) {
+                $scope.sRotate = Number($cookies.get('sRotate'));
+            } else $scope.sRotate = 0;
 
 
-app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, tile) {
-  $scope.tile = tile;
-  $scope.ok = function () {
-    $uibModalInstance.close();
-  };
-});
-
-app.directive('tile', function () {
-  return {
-    scope      : {
-      tile: '='
-    },
-    restrict   : 'E',
-    templateUrl: '/templates/tile.html',
-    link       : function ($scope, element, attrs) {
-      
-      $scope.checkpointNumber = function (tile) {
-        var ret_txt = "";
-        if (!tile)return;
-        for (var i = 0; i < tile.index.length; i++) {
-          if (marker[tile.index[i]]) {
-            var count = 0;
-            for (var j = 0; j < tile.index[i]; j++) {
-              if (marker[j])count++;
+            if (typeof runId !== 'undefined') {
+                loadNewRun();
             }
-            count++;
-            if (i != 0)ret_txt += '&'
-            ret_txt += count;
-          }
-          else {
-            return;
-          }
-        }
-        return ret_txt;
-      }
-      
-      $scope.tileStatus = function (tile) {
-        // If this is a non-existent tile
-        if (!tile)
-          return;
-        var successfully = 0;
-        var possible = 0;
-        
-        var count = function (list) {
-          for (var i = 0; i < list.length; i++) {
-            if (list[i])
-              successfully++;
-            possible++;
-          }
-        }
-        count(tile.scoredItems.gaps);
-        count(tile.scoredItems.speedbumps);
-        count(tile.scoredItems.intersections);
-        count(tile.scoredItems.obstacles);
-        if (tile.scoredItems.dropTiles.length > 0)
-          count(tile.scoredItems.dropTiles);
-        
-        if ((possible > 0 && successfully == possible) || tile.start)
-          return "done";
-        else if (successfully > 0)
-          return "halfdone";
-        else if (possible > 0 || (tile.start != null && !tile.start))
-          return "undone";
-        else
-          return "";
-      }
-      
-      $scope.rotateRamp = function (direction) {
-        switch (direction) {
-          case "bottom":
-            return "rot0";
-          case "top":
-            return "rot180";
-          case "left":
-            return "rot90";
-          case "right":
-            return "rot270";
-        }
-      }
-    }
-  };
-});
 
-function tile_size() {
-  $(function () {
-    try {
-      var b = $('.tilearea');
-      console.log('コンテンツ本体：' + b.height() + '×' + b.width());
-      console.log('window：' + window.innerHeight);
-      var tilesize_w = ($('.tilearea').width() - 50) / width;
-      var tilesize_h = (window.innerHeight * 0.7) / length;
-      console.log('tilesize_w:' + tilesize_w);
-      console.log('tilesize_h:' + tilesize_h);
-      if (tilesize_h > tilesize_w)var tilesize = tilesize_w;
-      else var tilesize = tilesize_h;
-      $('tile').css('height', tilesize);
-      $('tile').css('width', tilesize);
-      $('.tile-image').css('height', tilesize);
-      $('.tile-image').css('width', tilesize);
-      $('.slot').css('height', tilesize);
-      $('.slot').css('width', tilesize);
-      $('#card_area').css('height', (window.innerHeight - 150));
-      $('.chnumtxt').css('font-size', tilesize / 6);
-      if (b.height() == 0)setTimeout("tile_size()", 500);
-    }
-    
-    catch (e) {
-      setTimeout("tile_size()", 500);
-    }
-    
-    
-  });
-}
+            (function launchSocketIo() {
+                // launch socket.io
+                socket = io(window.location.origin, {
+                    transports: ['websocket']
+                });
+                if (typeof runId !== 'undefined') {
+                    $scope.actualUsedDropTiles = 0;
+                    socket.emit('subscribe', 'runs/' + runId);
+
+                    socket.on('data', function (data) {
+                        console.log(data);
+                        $scope.rescuedLiveVictims = data.rescuedLiveVictims;
+                        $scope.rescuedDeadVictims = data.rescuedDeadVictims;
+                        $scope.evacuationLevel = data.evacuationLevel;
+                        $scope.exitBonus = data.exitBonus;
+                        $scope.stiles = data.tiles;
+                        $scope.score = data.score;
+                        $scope.showedUp = data.showedUp;
+                        $scope.LoPs = data.LoPs;
+                        $scope.minutes = data.time.minutes;
+                        $scope.seconds = data.time.seconds;
+                        $scope.retired = data.retired;
+
+                        $scope.checkPointDistance = [];
+                        let tmp = {
+                            dis: 1,
+                            status: $scope.showedUp,
+                            point: 3 * $scope.showedUp
+                        }
+                        $scope.checkPointDistance.push(tmp);
+                        let prevCheckPoint = 0;
+                        let j = 0;
+                        for (let i in $scope.stiles) {
+                            if ($scope.stiles[i].isDropTile) {
+                                let tmp = {
+                                    dis: i - prevCheckPoint,
+                                    status: $scope.stiles[i].scored,
+                                    point: (i - prevCheckPoint) * $scope.stiles[i].scored * $scope.LoPsCountPoint($scope.LoPs[j])
+                                }
+                                $scope.checkPointDistance.push(tmp);
+                                prevCheckPoint = i;
+                                j++;
+                            }
+                        }
+                        $scope.$apply();
+                        console.log("Updated view from socket.io");
+                    });
+                }
 
 
-var currentWidth = -1;
-
-$(window).on('load resize', function () {
-  if (currentWidth == window.innerWidth) {
-    return;
-  }
-  currentWidth = window.innerWidth;
-  var height = $('.navbar').height();
-  $('body').css('padding-top', height + 40);
-  tile_size();
-  
-});
-$(window).on('beforeunload', function () {
-  socket.emit('unsubscribe', 'runs/' + runId);
-});
+            })();
 
 
-let lastTouch = 0;
-document.addEventListener('touchend', event => {
-  const now = window.performance.now();
-  if (now - lastTouch <= 500) {
-    event.preventDefault();
-  }
-  lastTouch = now;
-}, true);
+            function loadNewRun() {
+
+                $http.get("/api/runs/line/" + runId +
+                    "?populate=true").then(function (response) {
+                    //console.log(response.data);
+                    $scope.LoPs = response.data.LoPs;
+                    $scope.evacuationLevel = response.data.evacuationLevel;
+                    $scope.exitBonus = response.data.exitBonus;
+                    $scope.field = response.data.field.name;
+                    $scope.rescuedDeadVictims = response.data.rescuedDeadVictims;
+                    $scope.rescuedLiveVictims = response.data.rescuedLiveVictims;
+                    $scope.score = response.data.score;
+                    $scope.showedUp = response.data.showedUp;
+                    $scope.started = response.data.started;
+                    $scope.round = response.data.round.name;
+                    $scope.team = response.data.team.name;
+                    $scope.league = response.data.team.league;
+                    $scope.competition = response.data.competition.name;
+                    $scope.competition_id = response.data.competition._id;
+                    $scope.retired = response.data.retired;
+                    // Verified time by timekeeper
+                    $scope.minutes = response.data.time.minutes;
+                    $scope.seconds = response.data.time.seconds;
+
+                    try {
+                        $scope.cap_sig = response.data.sign.captain;
+                        $scope.ref_sig = response.data.sign.referee;
+                        $scope.refas_sig = response.data.sign.referee_as;
+
+                        $scope.comment = response.data.comment;
+                    } catch (err) {}
+                    // Scoring elements of the tiles
+                    $scope.stiles = response.data.tiles;
+
+                    for (let i = 0; i < response.data.tiles.length; i++) {
+                        if (response.data.tiles[i].isDropTile) {
+                            $scope.actualUsedDropTiles++;
+                            marker[i] = true;
+                        }
+                    }
+
+                    // Get the map
+                    $http.get("/api/maps/line/" + response.data.map +
+                        "?populate=true").then(function (response) {
+                        console.log(response.data);
+
+                        $scope.height = response.data.height;
+
+                        $scope.width = response.data.width;
+                        $scope.length = response.data.length;
+                        width = response.data.width;
+                        length = response.data.length;
+                        $scope.startTile = response.data.startTile;
+                        $scope.numberOfDropTiles = response.data.numberOfDropTiles;;
+                        $scope.mtiles = {};
+                        var ntile = {
+                            scored: false,
+                            isDropTile: false
+                        }
+
+                        while ($scope.stiles.length < response.data.indexCount) {
+                            $scope.stiles.push(ntile);
+                        }
+
+                        for (let i = 0; i < response.data.tiles.length; i++) {
+                            $scope.mtiles[response.data.tiles[i].x + ',' +
+                                response.data.tiles[i].y + ',' +
+                                response.data.tiles[i].z] = response.data.tiles[i];
+                        }
+
+                        $scope.checkPointDistance = [];
+                        let tmp = {
+                            dis: 1,
+                            status: $scope.showedUp,
+                            point: 3 * $scope.showedUp
+                        }
+                        $scope.checkPointDistance.push(tmp);
+                        let prevCheckPoint = 0;
+                        let j = 0;
+                        for (let i in $scope.stiles) {
+                            if ($scope.stiles[i].isDropTile) {
+                                let tmp = {
+                                    dis: i - prevCheckPoint,
+                                    status: $scope.stiles[i].scored,
+                                    point: (i - prevCheckPoint) * $scope.stiles[i].scored * $scope.LoPsCountPoint($scope.LoPs[j])
+                                }
+                                $scope.checkPointDistance.push(tmp);
+                                prevCheckPoint = i;
+                                j++;
+                            }
+                        }
+
+                        $timeout($scope.tile_size, 0);
+                        $timeout($scope.tile_size, 500);
+                        $timeout($scope.tile_size, 1000);
+                        $timeout($scope.tile_size, 1500);
+                        $timeout($scope.tile_size, 3000);
+
+                    }, function (response) {
+                        console.log("Error: " + response.statusText);
+                    });
+                }, function (response) {
+                    console.log("Error: " + response.statusText);
+                    if (response.status == 401) {
+                        $scope.go('/home/access_denied');
+                    }
+                });
+            }
+
+            $scope.LoPsCountPoint = function (n) {
+                if (n == 0) return 3;
+                if (n == 1) return 2;
+                if (n == 2) return 1;
+                return 0;
+            }
+
+            $scope.checkTotal = function () {
+                let ret = 0;
+                for (let i in $scope.checkPointDistance) {
+                    ret += $scope.checkPointDistance[i].point;
+                }
+                return ret;
+            }
+
+
+            $scope.range = function (n) {
+                arr = [];
+                for (var i = 0; i < n; i++) {
+                    arr.push(i);
+                }
+                return arr;
+            }
+
+            $scope.getOpacity = function (x, y) {
+                var stackedTiles = 0;
+                for (var z = 0; z < $scope.height; z++) {
+                    if ($scope.mtiles[x + ',' + y + ',' + z])
+                        stackedTiles++;
+                }
+                return 1.0 / stackedTiles;
+            }
+
+            $scope.getParam = function (key) {
+                var str = location.search.split("?");
+                if (str.length < 2) {
+                    return "";
+                }
+
+                var params = str[1].split("&");
+                for (var i = 0; i < params.length; i++) {
+                    var keyVal = params[i].split("=");
+                    if (keyVal[0] == key && keyVal.length == 2) {
+                        return decodeURIComponent(keyVal[1]);
+                    }
+                }
+                return "";
+            }
+
+            $scope.go = function (path) {
+                socket.emit('unsubscribe', 'runs/' + runId);
+                window.location = path
+            }
+
+
+            $scope.changeFloor = function (z) {
+                $scope.z = z;
+                $timeout($scope.tile_size, 100);
+            }
+
+            $scope.tileRot = function (r) {
+                $scope.sRotate += r;
+                if ($scope.sRotate >= 360) $scope.sRotate -= 360;
+                else if ($scope.sRotate < 0) $scope.sRotate += 360;
+                $timeout($scope.tile_size, 0);
+
+                $cookies.put('sRotate', $scope.sRotate, {
+                    path: '/'
+                });
+            }
+
+            $scope.showElements = function (x, y, z) {
+                var mtile = $scope.mtiles[x + ',' + y + ',' + z];
+                var isDropTile = false;
+                // If this is not a created tile
+                if (!mtile || mtile.index.length == 0)
+                    return;
+
+
+                for (var i = 0; i < mtile.index.length; i++) {
+                    if ($scope.stiles[mtile.index[i]].isDropTile) {
+                        isDropTile = true;
+                    }
+                }
+
+
+                var total = (mtile.items.obstacles > 0 ||
+                    mtile.items.speedbumps > 0 ||
+                    mtile.tileType.gaps > 0 ||
+                    mtile.tileType.intersections > 0) * mtile.index.length;
+                // Add the number of possible passes for drop tiles
+                if (isDropTile) {
+                    total += mtile.index.length;
+                }
+
+                if (total > 1) {
+                    // Show modal
+                    $scope.open(x, y, z);
+                }
+            }
+
+            $scope.send_public = function () {
+                swal({
+                    title: "Approval?",
+                    text: "Click 'Yes' to send the run data to the public server.",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, approval it!",
+                    confirmButtonColor: "#ec6c62"
+                }).then((result) => {
+                    if (result.value) {
+                        var run = {}
+                        run.LoPs = $scope.LoPs;
+                        run.evacuationLevel = $scope.evacuationLevel;
+                        run.exitBonus = $scope.exitBonus;
+                        run.rescuedDeadVictims = $scope.rescuedDeadVictims;
+                        run.rescuedLiveVictims = $scope.rescuedLiveVictims;
+                        run.showedUp = $scope.showedUp;
+                        run.started = $scope.started;
+                        run.tiles = $scope.stiles;
+                        run.time = {
+                            minutes: $scope.minutes,
+                            seconds: $scope.seconds
+                        };
+                        run.retired = $scope.retired;
+                        run.status = 5;
+                        $http.put("https://rcjscore.cf/api/runs/line/" + runId, run).then(function (response) {
+                            var run = {}
+                            run.status = 5;
+                            $http.put("/api/runs/line/" + runId, run).then(function (response) {
+                                setTimeout($scope.success_message, 500);
+                            }, function (response) {
+                                swal("Oops", "It could not be sent normally. Please call the system manager.(Local)", "error");
+                                console.log("Error: " + response.statusText);
+                            });
+
+
+                        }, function (response) {
+                            swal("Oops", "It could not be sent normally. Please call the system manager.(Public)", "error");
+                            console.log("Error: " + response.statusText);
+                        });
+
+                }
+            });
+            }
+
+                $scope.open = function (x, y, z) {
+                    var modalInstance = $uibModal.open({
+                        animation: true,
+                        templateUrl: '/templates/line_view_modal.html',
+                        controller: 'ModalInstanceCtrl',
+                        size: 'lm',
+                        resolve: {
+                            mtile: function () {
+                                return $scope.mtiles[x + ',' + y + ',' + z];
+                            },
+                            stiles: function () {
+                                return $scope.stiles;
+                            },
+                            sRotate: function () {
+                                return $scope.sRotate;
+                            },
+                            startTile: function () {
+                                return $scope.startTile;
+                            },
+                            nineTile: function () {
+                                var nine = []
+                                if ($scope.sRotate == 0) {
+                                    nine[0] = $scope.mtiles[(x - 1) + ',' + (y - 1) + ',' + z];
+                                    nine[1] = $scope.mtiles[(x) + ',' + (y - 1) + ',' + z];
+                                    nine[2] = $scope.mtiles[(x + 1) + ',' + (y - 1) + ',' + z];
+                                    nine[3] = $scope.mtiles[(x - 1) + ',' + (y) + ',' + z];
+                                    nine[4] = $scope.mtiles[(x) + ',' + (y) + ',' + z];
+                                    nine[5] = $scope.mtiles[(x + 1) + ',' + (y) + ',' + z];
+                                    nine[6] = $scope.mtiles[(x - 1) + ',' + (y + 1) + ',' + z];
+                                    nine[7] = $scope.mtiles[(x) + ',' + (y + 1) + ',' + z];
+                                    nine[8] = $scope.mtiles[(x + 1) + ',' + (y + 1) + ',' + z];
+                                } else if ($scope.sRotate == 180) {
+                                    nine[8] = $scope.mtiles[(x - 1) + ',' + (y - 1) + ',' + z];
+                                    nine[7] = $scope.mtiles[(x) + ',' + (y - 1) + ',' + z];
+                                    nine[6] = $scope.mtiles[(x + 1) + ',' + (y - 1) + ',' + z];
+                                    nine[5] = $scope.mtiles[(x - 1) + ',' + (y) + ',' + z];
+                                    nine[4] = $scope.mtiles[(x) + ',' + (y) + ',' + z];
+                                    nine[3] = $scope.mtiles[(x + 1) + ',' + (y) + ',' + z];
+                                    nine[2] = $scope.mtiles[(x - 1) + ',' + (y + 1) + ',' + z];
+                                    nine[1] = $scope.mtiles[(x) + ',' + (y + 1) + ',' + z];
+                                    nine[0] = $scope.mtiles[(x + 1) + ',' + (y + 1) + ',' + z];
+                                } else if ($scope.sRotate == 90) {
+                                    nine[2] = $scope.mtiles[(x - 1) + ',' + (y - 1) + ',' + z];
+                                    nine[5] = $scope.mtiles[(x) + ',' + (y - 1) + ',' + z];
+                                    nine[8] = $scope.mtiles[(x + 1) + ',' + (y - 1) + ',' + z];
+                                    nine[1] = $scope.mtiles[(x - 1) + ',' + (y) + ',' + z];
+                                    nine[4] = $scope.mtiles[(x) + ',' + (y) + ',' + z];
+                                    nine[7] = $scope.mtiles[(x + 1) + ',' + (y) + ',' + z];
+                                    nine[0] = $scope.mtiles[(x - 1) + ',' + (y + 1) + ',' + z];
+                                    nine[3] = $scope.mtiles[(x) + ',' + (y + 1) + ',' + z];
+                                    nine[6] = $scope.mtiles[(x + 1) + ',' + (y + 1) + ',' + z];
+                                } else if ($scope.sRotate == 270) {
+                                    nine[6] = $scope.mtiles[(x - 1) + ',' + (y - 1) + ',' + z];
+                                    nine[3] = $scope.mtiles[(x) + ',' + (y - 1) + ',' + z];
+                                    nine[0] = $scope.mtiles[(x + 1) + ',' + (y - 1) + ',' + z];
+                                    nine[7] = $scope.mtiles[(x - 1) + ',' + (y) + ',' + z];
+                                    nine[4] = $scope.mtiles[(x) + ',' + (y) + ',' + z];
+                                    nine[1] = $scope.mtiles[(x + 1) + ',' + (y) + ',' + z];
+                                    nine[8] = $scope.mtiles[(x - 1) + ',' + (y + 1) + ',' + z];
+                                    nine[5] = $scope.mtiles[(x) + ',' + (y + 1) + ',' + z];
+                                    nine[2] = $scope.mtiles[(x + 1) + ',' + (y + 1) + ',' + z];
+                                }
+                                return nine;
+                            }
+                        }
+                    }).closed.then(function (result) {
+                        console.log("Closed modal");
+                    });
+                };
+
+                $scope.tile_size = function () {
+                    try {
+                        var b = $('.tilearea');
+                        //console.log('コンテンツ本体：' + b.height() + '×' + b.width());
+                        //console.log('window：' + window.innerHeight);
+                        if ($scope.sRotate % 180 == 0) {
+                            var tilesize_w = ($('.tilearea').width() - 2 * width) / width;
+                            var tilesize_h = (window.innerHeight - 110) / length;
+                        } else {
+                            var tilesize_w = ($('.tilearea').width() - 2 * length) / length;
+                            var tilesize_h = (window.innerHeight - 110) / width;
+                        }
+
+                        //console.log('tilesize_w:' + tilesize_w);
+                        //console.log('tilesize_h:' + tilesize_h);
+                        if (tilesize_h > tilesize_w) var tilesize = tilesize_w;
+                        else var tilesize = tilesize_h;
+                        $('tile').css('height', tilesize);
+                        $('tile').css('width', tilesize);
+                        $('.tile-image').css('height', tilesize);
+                        $('.tile-image').css('width', tilesize);
+                        $('.tile-font').css('font-size', tilesize - 10);
+                        $('.tile-font-1-25').css('font-size', tilesize / 2.5);
+                        $('.slot').css('height', tilesize);
+                        $('.slot').css('width', tilesize);
+                        $('.chnumtxt').css('font-size', tilesize / 8);
+                        $('.tile-point').css('font-size', tilesize / 2 + "px");
+
+                        if ($scope.sRotate % 180 == 0) {
+                            $('#wrapTile').css('width', (tilesize + 3) * width);
+                        } else {
+                            $('#wrapTile').css('width', (tilesize + 3) * length);
+                        }
+
+                        $('#card_area').css('height', (window.innerHeight - 60));
+                        if (b.height() == 0) $timeout($scope.tile_size, 500);
+                    } catch (e) {
+                        $timeout($scope.tile_size, 500);
+                    }
+                }
+
+
+                var currentWidth = -1;
+
+
+                $(window).on('load resize', function () {
+                    if (currentWidth == window.innerWidth) {
+                        return;
+                    }
+                    currentWidth = window.innerWidth;
+                    $scope.tile_size();
+
+                });
+
+
+            }]).directive("tileLoadFinished", function ($timeout) {
+            return function (scope, element, attrs) {
+                if (scope.$last) {
+                    $timeout(function () {
+                        $scope.tile_size();
+                    }, 0);
+                    $timeout(function () {
+                        $scope.tile_size();
+                    }, 500);
+                    $timeout(function () {
+                        $scope.tile_size();
+                    }, 3000);
+                }
+            }
+        });
+
+
+        app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, stiles, nineTile, sRotate, startTile) {
+            $scope.mtile = mtile;
+            $scope.sRotate = sRotate;
+            $scope.stiles = stiles;
+            $scope.nineTile = nineTile;
+            $scope.words = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth"];
+            $scope.next = [];
+            for (var i = 0, d; d = mtile.next[i]; i++) {
+                var sp = d.split(",");
+
+                if (mtile.x == Number(sp[0]) && mtile.y - 1 == Number(sp[1])) {
+                    //console.log("TOP");
+                    switch (sRotate) {
+                        case 0:
+                            $scope.next.top = mtile.index[i];
+                            break;
+                        case 90:
+                            $scope.next.right = mtile.index[i];
+                            break;
+                        case 180:
+                            $scope.next.bottom = mtile.index[i];
+                            break;
+                        case 270:
+                            $scope.next.left = mtile.index[i];
+                            break;
+                    }
+
+                }
+                if (mtile.x + 1 == Number(sp[0]) && mtile.y == Number(sp[1])) {
+                    //console.log("RIGHT");
+                    switch (sRotate) {
+                        case 0:
+                            $scope.next.right = mtile.index[i];
+                            break;
+                        case 90:
+                            $scope.next.bottom = mtile.index[i];
+                            break;
+                        case 180:
+                            $scope.next.left = mtile.index[i];
+                            break;
+                        case 270:
+                            $scope.next.top = mtile.index[i];
+                            break;
+                    }
+                }
+                if (mtile.x == Number(sp[0]) && mtile.y + 1 == Number(sp[1])) {
+                    //console.log("BOTTOM");
+                    switch (sRotate) {
+                        case 0:
+                            $scope.next.bottom = mtile.index[i];
+                            break;
+                        case 90:
+                            $scope.next.left = mtile.index[i];
+                            break;
+                        case 180:
+                            $scope.next.top = mtile.index[i];
+                            break;
+                        case 270:
+                            $scope.next.right = mtile.index[i];
+                            break;
+                    }
+                }
+                if (mtile.x - 1 == Number(sp[0]) && mtile.y == Number(sp[1])) {
+                    //console.log("LEFT");
+                    switch (sRotate) {
+                        case 0:
+                            $scope.next.left = mtile.index[i];
+                            break;
+                        case 90:
+                            $scope.next.top = mtile.index[i];
+                            break;
+                        case 180:
+                            $scope.next.right = mtile.index[i];
+                            break;
+                        case 270:
+                            $scope.next.bottom = mtile.index[i];
+                            break;
+                    }
+                }
+
+            }
+
+            $scope.tilerotate = function (tilerot) {
+                console.log(tilerot);
+                if (!tilerot) return $scope.sRotate;
+                var ro = tilerot + $scope.sRotate;
+                if (ro >= 360) ro -= 360;
+                else if (ro < 0) ro += 360;
+                console.log(ro);
+                return ro;
+            }
+
+            $scope.isDropTile = function (tile) {
+                if (!tile || tile.index.length == 0)
+                    return;
+                return $scope.stiles[tile.index[0]].isDropTile;
+            }
+
+            $scope.isStart = function (tile) {
+                console.log(tile);
+                if (!tile)
+                    return;
+                return tile.x == startTile.x &&
+                    tile.y == startTile.y &&
+                    tile.z == startTile.z;
+            }
+
+            $scope.rotateRamp = function (direction) {
+                var ro;
+                switch (direction) {
+                    case "bottom":
+                        ro = 0;
+                        break;
+                    case "top":
+                        ro = 180;
+                        break;
+                    case "left":
+                        ro = 90;
+                        break;
+                    case "right":
+                        ro = 270;
+                        break;
+                }
+                ro += $scope.sRotate;
+                if (ro >= 360) ro -= 360;
+                else if (ro < 0) ro += 360;
+                switch (ro) {
+                    case 0:
+                        return;
+                    case 180:
+                        return "fa-rotate-180";
+                    case 90:
+                        return "fa-rotate-90";
+                    case 270:
+                        return "fa-rotate-270";
+                }
+            }
+            $scope.ok = function () {
+                $uibModalInstance.close();
+            };
+        });
+
+        app.directive('tile', function () {
+            return {
+                scope: {
+                    tile: '='
+                },
+                restrict: 'E',
+                templateUrl: '/templates/tile.html',
+                link: function ($scope, element, attrs) {
+                    $scope.tilerotate = function (tilerot) {
+                        if (!tilerot) return $scope.$parent.sRotate;
+                        var ro = tilerot + $scope.$parent.sRotate;
+                        if (ro >= 360) ro -= 360;
+                        else if (ro < 0) ro += 360;
+                        return ro;
+                    }
+                    $scope.tileNumber = function (tile) {
+                        $scope.tileN = 1;
+                        var ret_txt = "";
+                        if (!tile) return;
+
+                        var possible = 0;
+
+                        var count = function (list) {
+                            for (var i = 0; i < list.length; i++) {
+                                possible++;
+                            }
+                        }
+                        count(tile.scoredItems.gaps);
+                        count(tile.scoredItems.speedbumps);
+                        count(tile.scoredItems.intersections);
+                        count(tile.scoredItems.obstacles);
+                        if (possible != 0) return;
+
+                        for (var i = 0; i < tile.index.length; i++) {
+                            if (i != 0) ret_txt += ','
+                            ret_txt += tile.index[i] + 1;
+                        }
+                        return ret_txt;
+                    }
+                    $scope.checkpointNumber = function (tile) {
+                        var ret_txt = "";
+                        if (!tile) return;
+                        for (var i = 0; i < tile.index.length; i++) {
+                            if (marker[tile.index[i]]) {
+                                var count = 0;
+                                for (var j = 0; j < tile.index[i]; j++) {
+                                    if (marker[j]) count++;
+                                }
+                                count++;
+                                if (i != 0) ret_txt += '&'
+                                ret_txt += count;
+                            } else {
+                                return;
+                            }
+                        }
+                        return ret_txt;
+                    }
+
+
+                    $scope.isDropTile = function (tile) {
+                        if ((!tile || tile.index.length == 0) && !isStart(tile))
+                            return;
+                        return $scope.$parent.stiles[tile.index[0]].isDropTile;
+                    }
+
+                    $scope.isStart = function (tile) {
+                        if (!tile)
+                            return;
+                        return tile.x == $scope.$parent.startTile.x &&
+                            tile.y == $scope.$parent.startTile.y &&
+                            tile.z == $scope.$parent.startTile.z;
+                    }
+
+                    function isStart(tile) {
+                        if (!tile)
+                            return;
+                        return tile.x == $scope.$parent.startTile.x &&
+                            tile.y == $scope.$parent.startTile.y &&
+                            tile.z == $scope.$parent.startTile.z;
+                    }
+
+                    $scope.tileStatus = function (tile) {
+                        // If this is a non-existent tile
+                        if (!tile || tile.index.length == 0)
+                            return;
+
+                        // If this tile has no scoring elements we should just return empty string
+                        if (tile.items.obstacles == 0 &&
+                            tile.items.speedbumps == 0 &&
+                            tile.tileType.gaps == 0 &&
+                            tile.tileType.intersections == 0 &&
+                            !$scope.$parent.stiles[tile.index[0]].isDropTile && !isStart(tile)
+                        ) {
+                            return;
+                        }
+
+                        // Number of successfully passed times
+                        var successfully = 0;
+                        // Number of times it is possible to pass this tile
+                        var possible = tile.index.length;
+
+                        for (var i = 0; i < tile.index.length; i++) {
+                            if ($scope.$parent.stiles[tile.index[i]].scored) {
+                                successfully++;
+                            }
+                        }
+                        if (tile.processing)
+                            return "processing";
+                        else if ((possible > 0 && successfully == possible) ||
+                            (isStart(tile) && $scope.$parent.showedUp))
+                            return "done";
+                        else if (successfully > 0)
+                            return "halfdone";
+                        else if (possible > 0 || (isStart(tile) && !$scope.$parent.showedUp))
+                            return "undone";
+                        else
+                            return "";
+                    }
+
+                    $scope.tilePoint = function (tile) {
+                        // If this is a non-existent tile
+                        if ((!tile || tile.index.length == 0) && !isStart(tile))
+                            return;
+
+                        // If this tile has no scoring elements we should just return empty string
+                        if (tile.items.obstacles == 0 &&
+                            tile.items.speedbumps == 0 &&
+                            tile.tileType.gaps == 0 &&
+                            tile.tileType.intersections == 0 &&
+                            !$scope.$parent.stiles[tile.index[0]].isDropTile && !isStart(tile)
+                        ) {
+                            return;
+                        }
+
+                        // Number of successfully passed times
+                        var successfully = 0;
+
+                        for (var i = 0; i < tile.index.length; i++) {
+                            if ($scope.$parent.stiles[tile.index[i]].scored) {
+                                successfully += tile.items.obstacles * 10;
+                                successfully += tile.items.speedbumps * 5;
+                                successfully += tile.tileType.gaps * 10;
+                                successfully += tile.tileType.intersections * 15;
+                            }
+                        }
+                        return successfully;
+                    }
+
+                    $scope.rotateRamp = function (direction) {
+                        var ro;
+                        switch (direction) {
+                            case "bottom":
+                                ro = 0;
+                                break;
+                            case "top":
+                                ro = 180;
+                                break;
+                            case "left":
+                                ro = 90;
+                                break;
+                            case "right":
+                                ro = 270;
+                                break;
+                        }
+                        ro += $scope.$parent.sRotate;
+                        if (ro >= 360) ro -= 360;
+                        else if (ro < 0) ro += 360;
+                        switch (ro) {
+                            case 0:
+                                return;
+                            case 180:
+                                return "fa-rotate-180";
+                            case 90:
+                                return "fa-rotate-90";
+                            case 270:
+                                return "fa-rotate-270";
+                        }
+                    }
+
+                }
+            };
+        });
+
+
+        $(window).on('beforeunload', function () {
+            socket.emit('unsubscribe', 'runs/' + runId);
+        });
+
+
+        let lastTouch = 0; document.addEventListener('touchend', event => {
+            const now = window.performance.now();
+            if (now - lastTouch <= 500) {
+                event.preventDefault();
+            }
+            lastTouch = now;
+        }, true);
