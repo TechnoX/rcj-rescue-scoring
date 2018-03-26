@@ -259,7 +259,7 @@ publicRouter.get('/document/:competitionid/:teamid', function (req, res, next) {
                                         err: err.message
                                     })
                                 } else if (dbTeam) {
-                                    if (auth.authCompetition(req.user, id, ACCESSLEVELS.JUDGE)) {
+                                    if (auth.authCompetition(req.user, id, ACCESSLEVELS.VIEW)) {
                                         var path = __dirname + "/../../TechnicalDocument/" + dbCompe.name + "/" + dbTeam.name + "/content.json"
                                     } else if (dbTeam.docPublic) {
                                         var path = __dirname + "/../../TechnicalDocument/" + dbCompe.name + "/" + dbTeam.name + "/content_public.json"
@@ -428,7 +428,7 @@ adminRouter.post('/document/pub/:competitionid/:teamid', function (req, res, nex
 })
 
 
-publicRouter.get('/pdf/:competitionid/:teamid/:filename', function (req, res, next) {
+privateRouter.get('/pdf/:competitionid/:teamid/:filename', function (req, res, next) {
     const id = req.params.competitionid
     const tid = req.params.teamid
     const filename = req.params.filename
@@ -458,7 +458,7 @@ publicRouter.get('/pdf/:competitionid/:teamid/:filename', function (req, res, ne
                                         msg: "Could not get team",
                                         err: err.message
                                     })
-                                } else if (dbTeam && (dbTeam.docPublic || auth.authCompetition(req.user, id, ACCESSLEVELS.JUDGE))) {
+                                } else if (dbTeam && (dbTeam.docPublic || auth.authCompetition(req.user, id, ACCESSLEVELS.VIEW))) {
                                     var path = __dirname + "/../../TechnicalDocument/" + dbCompe.name + "/" + dbTeam.name + "/" + filename + ".pdf"
                                     if (isExistFile(path)) {
                                         var file = fs.createReadStream(path);
@@ -502,7 +502,7 @@ privateRouter.get('/pic/:competitionid/:teamid/:pic', function (req, res, next) 
     if (!ObjectId.isValid(tid)) {
         return next()
     }
-    if (auth.authCompetition(req.user, id, ACCESSLEVELS.JUDGE)) {
+    if (auth.authCompetition(req.user, id, ACCESSLEVELS.VIEW)) {
         competitiondb.competition.findOne({
                 _id: id
             })
@@ -600,7 +600,7 @@ privateRouter.get('/pic/:competitionid/:teamid', function (req, res, next) {
     if (!ObjectId.isValid(tid)) {
         return next()
     }
-    if (auth.authCompetition(req.user, id, ACCESSLEVELS.JUDGE)) {
+    if (auth.authCompetition(req.user, id, ACCESSLEVELS.VIEW)) {
         competitiondb.competition.findOne({
                 _id: id
             })
