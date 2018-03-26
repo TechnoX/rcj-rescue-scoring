@@ -146,12 +146,15 @@ function onReady() {
     /* ニュースバーの実装 */
     function loadNews(data) {
         newsList = data.news;
-        console.log(newsList);
+        if(newsList.length == 0) newsHide = true;
+        else newsHide = false;
+        console.log(newsHide);
     }
     var newsList = Array();
     var newsOrder = 0;
     var newsElm = ["#news0", "#news1"];
     var newsState = 0;
+    var newsHide = false;
     var newsWidth = $("#footer").width();
     timestamp = (newsJsonUrl.indexOf("?") == -1 ? "?" : "&") + "timestamp=" + (new Date()).getTime();
     $.getJSON(newsJsonUrl + timestamp, null, loadNews);
@@ -170,9 +173,17 @@ function onReady() {
             opacity: '0'
         }, newsEffectSpeed, newsEasing);
         newsState = 1 - newsState;
+        if(newsHide){
+            $('#footer').css('height', '0px');
+            resize();
+        }
+        else{
+            $('#footer').css('height', '55px');
+            resize();
+        }
         $(newsElm[newsState]).text(newsList[newsOrder]);
         newsOrder++;
-        if (newsOrder == newsList.length) {
+        if (newsOrder >= newsList.length) {
             timestamp = (newsJsonUrl.indexOf("?") == -1 ? "?" : "&") + "timestamp=" + (new Date()).getTime();
             $.getJSON(newsJsonUrl + timestamp, null, loadNews);
             newsOrder = 0;
