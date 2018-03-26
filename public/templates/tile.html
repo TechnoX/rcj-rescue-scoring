@@ -1,13 +1,13 @@
-<p class="text-right chnumtxt" style="font-size: 10px; color: #f39c12; z-index:2;position: relative; padding: 2 2 0 0;" ng-show="isDropTile(tile)">{{checkpointNumber(tile)}}</p>
+<p class="text-right chnumtxt" style="font-size: 10px; color: #f39c12; z-index:2;position: relative; padding: 2 2 0 0;" >{{checkpointNumber(tile)}}</p>
 
 <!--<p class="text-right chnumtxt" style="font-size: 10px; color: #2c3e50; z-index:2;position: relative; padding: 2 2 0 0;" ng-show="tileN">{{tileNumber(tile)}}</p>-->
 
 <img ng-src="/images/tiles/{{tile.tileType.image}}"  class="rot{{tilerotate(tile.rot)}} tile-image" ng-class="{'drop-tile': isDropTile(tile) || isStart(tile)}" ng-show="tile.tileType.image">
-<i class="fas fa-minus fa-fw tile-image tile-font-1-25" ng-show="tile.items.speedbumps>0" style="text-align:left; padding:-5px 0px; color:#abb2b9; opacity:0.7;"></i>
-<i class="fas fa-minus fa-fw tile-image tile-font-1-25" ng-show="tile.items.speedbumps>1" style="text-align:left; padding:10px 0px; color:#abb2b9; opacity:0.7;"></i>
-<i class="fas fa-minus fa-fw tile-image tile-font-1-25" ng-show="tile.items.speedbumps>2" style="text-align:left; padding:20px 0px; color:#abb2b9; opacity:0.7;"></i>
-<i class="fas fa-minus fa-fw tile-image tile-font-1-25" ng-show="tile.items.speedbumps>3" style="text-align:left; padding:30px 0px; color:#abb2b9; opacity:0.7;"></i>
-<i class="fas fa-minus fa-fw tile-image tile-font-1-25" ng-show="tile.items.speedbumps>4" style="text-align:left; padding:40px 0px; color:#abb2b9; opacity:0.7;"></i>
+<i class="fas fa-minus fa-fw tile-image tile-font-1-25" ng-show="tile.items.speedbumps>0" style="text-align:left; padding:0px 2px; color:#abb2b9; opacity:0.7;"></i>
+<i class="fas fa-minus fa-fw tile-image tile-font-1-25" ng-show="tile.items.speedbumps>1" style="text-align:left; padding:10px 2px; color:#abb2b9; opacity:0.7;"></i>
+<i class="fas fa-minus fa-fw tile-image tile-font-1-25" ng-show="tile.items.speedbumps>2" style="text-align:left; padding:20px 2px; color:#abb2b9; opacity:0.7;"></i>
+<i class="fas fa-minus fa-fw tile-image tile-font-1-25" ng-show="tile.items.speedbumps>3" style="text-align:left; padding:30px 2px; color:#abb2b9; opacity:0.7;"></i>
+<i class="fas fa-minus fa-fw tile-image tile-font-1-25" ng-show="tile.items.speedbumps>4" style="text-align:left; padding:40px 2px; color:#abb2b9; opacity:0.7;"></i>
 
 
 <i class="fas fa-cube fa-fw tile-image tile-font-1-25" ng-show="tile.items.obstacles>0" style="text-align:right; padding:1px 2px; color:#6e2c00; opacity:0.9;"></i>
