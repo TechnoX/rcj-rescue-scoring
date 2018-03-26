@@ -378,10 +378,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $('.tile-image').css('height', tilesize);
             $('.tile-image').css('width', tilesize);
             $('.tile-font').css('font-size', tilesize - 10);
-            $('.tile-font-1-25').css('font-size', tilesize / 2.5);
+            $('.tile-font-1-25').css('font-size', tilesize / 3);
             $('.slot').css('height', tilesize);
             $('.slot').css('width', tilesize);
-            $('.chnumtxt').css('font-size', tilesize / 8);
+            $('.chnumtxt').css('font-size', tilesize / 6);
             $('.tile-point').css('font-size', tilesize/2 + "px");
 
             if ($scope.sRotate % 180 == 0) {
