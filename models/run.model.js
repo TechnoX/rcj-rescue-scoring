@@ -1,11 +1,15 @@
 "use strict"
 const mongoose = require('mongoose')
+mongoose.Promise = require('bluebird')
 const timestamps = require('mongoose-timestamp')
 const idValidator = require('mongoose-id-validator')
 const validator = require('validator')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
 const async = require('async')
+
+const httpStatus = require('http-status')
+const APIError = require('../helpers/APIError')
 
 const logger = require('../config/logger').mainLogger
 
@@ -100,14 +104,6 @@ runSchema.pre('save', function (next) {
   }
 })
 
-runSchema.plugin(timestamps)
-runSchema.plugin(idValidator)
-
-const Run = mongoose.model('Run', runSchema)
-
-/** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
-module.exports.run = Run
-
 // What is allowed to be changed
 module.exports.model = {
   judges: {type: Array, child: {type: String}, extendable: true},
@@ -138,3 +134,44 @@ module.exports.model = {
   score: {type: Number} // Delete this in submodels to calculate score on backend
 }
 
+/**
+ * Statics
+ */
+runSchema.statics = {
+  /**
+   * Get run
+   * @param {ObjectId} id - The objectId of run.
+   * @returns {Promise<Post, APIError>}
+   */
+  get(id) {
+    return this.findById(id)
+      .exec()
+      .then((post) => {
+        if (post) {
+          return post;
+        }
+        const err = new APIError('No such run exists!', httpStatus.NOT_FOUND);
+        return Promise.reject(err);
+      });
+  },
+
+  /**
+   * List posts in descending order of 'createdAt' timestamp.
+   * @param {number} skip - Number of posts to be skipped.
+   * @param {number} limit - Limit number of posts to be returned.
+   * @returns {Promise<Post[]>}
+   */
+  list({ skip = 0, limit = 50 } = {}) {
+    return this.find()
+      .sort({ createdAt: -1 })
+      .skip(+skip)
+      .limit(+limit)
+      .exec();
+  }
+};
+
+runSchema.plugin(timestamps)
+runSchema.plugin(idValidator)
+
+/** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
+module.exports = mongoose.model('Run', runSchema)

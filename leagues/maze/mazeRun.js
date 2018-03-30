@@ -8,7 +8,7 @@ const validator = require('validator')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
 
-const rundb = require('./../../models/run')
+const rundb = require('./../../models/run.model')
 const mazeMapdb = require('./mazeMap')
 
 const logger = require('../../config/logger').mainLogger
@@ -83,7 +83,7 @@ mazeRunSchema.pre('save', function (next) {
   })
 })
 
-const MazeRun = rundb.run.discriminator(NAME, mazeRunSchema, rundb.options)
+const MazeRun = rundb.discriminator(NAME, mazeRunSchema, rundb.options)
 
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
 module.exports.mazeRun = MazeRun

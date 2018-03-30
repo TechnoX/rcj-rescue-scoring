@@ -37,7 +37,7 @@ env('process.env')
 
 const logger = require('../config/logger').mainLogger
 var mongoose = require('mongoose')
-var crypto = require('../helper/crypto')
+var crypto = require('../helpers/crypto')
 // validator for email and so on
 var validator = require('validator')
 

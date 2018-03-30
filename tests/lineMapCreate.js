@@ -1,4 +1,4 @@
-const lineMapdb = require('../leagues/line/lineMap')
+/*const lineMapdb = require('../leagues/line/lineMap')
 
 new lineMapdb.lineMap({
   competition      : "59759831aa67ba5178a2751e",
@@ -102,4 +102,4 @@ new lineMapdb.lineMap({
   numberOfDropTiles: 3
 }).save(function (err) {
   console.error(err)
-})
+})*/

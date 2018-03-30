@@ -1,4 +1,4 @@
-const pathFinder = require('../leagues/line/pathFinder')
+/*const pathFinder = require('../leagues/line/pathFinder')
 
 
 pathFinder({
@@ -156,3 +156,4 @@ pathFinder({
     startTile: {x: 1, y: 1, z: 1}
   }
 )
+*/

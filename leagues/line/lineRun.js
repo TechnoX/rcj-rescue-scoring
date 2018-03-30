@@ -7,7 +7,7 @@ const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
 const async = require('async')
 
-const rundb = require('./../../models/run')
+const rundb = require('./../../models/run.model')
 const lineMapdb = require('./lineMap')
 
 const logger = require('../../config/logger').mainLogger
@@ -65,12 +65,13 @@ lineRunSchema.pre('save', function (next) {
   })
 })
 
-const LineRun = rundb.run.discriminator("LineRun", lineRunSchema)
+const LineRun = rundb.discriminator("LineRun", lineRunSchema)
 
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
 module.exports.lineRun = LineRun
 
 // What is allowed to be changed
+/*
 module.exports.model = _.extend(rundb.model, {
   tiles             : {
     type      : Array,
@@ -91,4 +92,4 @@ module.exports.model = _.extend(rundb.model, {
   exitBonus         : {type: Boolean},
   rescuedLiveVictims: {type: Number},
   rescuedDeadVictims: {type: Number}
-})
+})*/

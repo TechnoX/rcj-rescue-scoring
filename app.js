@@ -29,6 +29,8 @@ var passport = require('passport')
 var session = require('express-session')
 var connectMongo = require('connect-mongo')(session)
 
+var getEndpoints = require("express-list-endpoints")
+
 //========================================================================
 //                          Routes require
 //========================================================================
@@ -53,8 +55,9 @@ const apiMazeMapsRoute = require('./routes/api/mazeMaps')
 const apiTeamsRoute = require('./routes/api/teams')
 const apiRoundsRoute = require('./routes/api/rounds')
 const apiFieldsRoute = require('./routes/api/fields')
-const apiRunsRoute = require('./routes/api/runs')
+const apiRunsRoute = require('./routes/api/run.route')
 const apiCompetitionsRoute = require('./routes/api/competitions')
+
 
 //========================================================================
 //                          Configuration
@@ -116,6 +119,11 @@ app.use('/api/rounds', [apiRoundsRoute.public, pass.ensureLoginApi, apiRoundsRou
 app.use('/api/fields', [apiFieldsRoute.public, pass.ensureLoginApi, apiFieldsRoute.private, pass.ensureAdminApi, apiFieldsRoute.admin])
 app.use('/api/runs', [apiRunsRoute.public, pass.ensureLoginApi, apiRunsRoute.private, pass.ensureAdminApi, apiRunsRoute.admin])
 app.use('/api/competitions', [apiCompetitionsRoute.public, pass.ensureLoginApi, apiCompetitionsRoute.private, pass.ensureAdminApi, apiCompetitionsRoute.admin])
+
+var apiEndpoints = getEndpoints(app)
+app.use('/api', express.Router().get('/', function (req, res) {
+  res.status(200).send(apiEndpoints)
+}))
 
 //========================================================================
 //                          Website static pages(ish)

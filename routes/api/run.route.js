@@ -9,11 +9,12 @@ const ObjectId = require('mongoose').Types.ObjectId
 const logger = require('../../config/logger').mainLogger
 const fs = require('fs')
 const pathFinder = require('../../leagues/line/pathFinder')
-const auth = require('../../helper/authLevels')
+const auth = require('../../helpers/authLevels')
 const ACCESSLEVELS = require('../../models/user').ACCESSLEVELS
 
-const run = require('../../models/run').run
-const baseModel = require('../../models/run').model
+const runCtrl = require('../../controllers/run.controller')
+const run = require('../../models/run.model').run
+const baseModel = require('../../models/run.model').model
 const lineRun = require('../../leagues/line/lineRun').lineRun
 const leagues = require('../../leagues')
 
@@ -22,6 +23,37 @@ var socketIo
 module.exports.connectSocketIo = function (io) {
   socketIo = io
 }
+
+adminRouter.route('/')
+/** POST /api/runs/ - Create run */
+  .post()
+
+publicRouter.route('/:id')
+/** GET /api/runs/:runid - Get run */
+  .get(runCtrl.get)
+
+
+privateRouter.route('/:id')
+/** PUT /api/runs/:runid - Update run */
+  .put()
+
+adminRouter.route('/:id')
+/** DELETE /api/runs/:runit - Delete run */
+  .delete()
+
+publicRouter.all('*', function (req, res, next) {
+  next()
+})
+privateRouter.all('*', function (req, res, next) {
+  next()
+})
+
+module.exports.public = publicRouter
+module.exports.private = privateRouter
+module.exports.admin = adminRouter
+
+/***** END FILE HERE *****/
+
 
 /**
  * @api {get} /runs/line Get runs
@@ -508,15 +540,3 @@ adminRouter.post('/', function (req, res) {
     })
   }
 )
-
-
-publicRouter.all('*', function (req, res, next) {
-  next()
-})
-privateRouter.all('*', function (req, res, next) {
-  next()
-})
-
-module.exports.public = publicRouter
-module.exports.private = privateRouter
-module.exports.admin = adminRouter
