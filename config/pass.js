@@ -9,7 +9,7 @@
 //========================================================================
 var passport = require('passport')
 var LocalStrategy = require('passport-local').Strategy;
-var userdb = require('../models/user');
+var userdb = require('../models/user.model');
 
 //========================================================================
 //                          Configuration

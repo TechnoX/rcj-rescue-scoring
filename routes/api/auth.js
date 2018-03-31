@@ -5,7 +5,7 @@
 var express = require('express')
 var router = express.Router()
 var validator = require('validator')
-var userdb = require('../../models/user')
+var userdb = require('../../models/user.model')
 var passport = require('passport')
 var logger = require('../../config/logger').mainLogger;
 

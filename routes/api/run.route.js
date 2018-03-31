@@ -10,7 +10,7 @@ const logger = require('../../config/logger').mainLogger
 const fs = require('fs')
 const pathFinder = require('../../leagues/line/pathFinder')
 const auth = require('../../helpers/authLevels')
-const ACCESSLEVELS = require('../../models/user').ACCESSLEVELS
+const ACCESSLEVELS = require('../../models/user.model').ACCESSLEVELS
 
 const runCtrl = require('../../controllers/run.controller')
 const run = require('../../models/run.model').run

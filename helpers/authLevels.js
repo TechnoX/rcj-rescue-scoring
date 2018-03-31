@@ -1,7 +1,7 @@
 "use strict"
 const logger = require('../config/logger').mainLogger
 
-const ACCESSLEVELS = require('../models/user').ACCESSLEVELS
+const ACCESSLEVELS = require('../models/user.model').ACCESSLEVELS
 
 /**
  * View only started runs to public

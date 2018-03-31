@@ -48,7 +48,7 @@ var ObjectId = Schema.Types.ObjectId
 
 const ACCESSLEVELS = {
   SUPERADMIN: 15,
-  ADMIN     : 10,
+  LOCALADMIN: 10,
   JUDGE     : 5,
   NONE      : 0
 }
@@ -65,12 +65,11 @@ module.exports.ACCESSLEVELS = ACCESSLEVELS
  * @param {Boolean} admin - If the user is admin or not
  */
 var userSchema = new Schema({
-  username       : {type: String, required: true, unique: true},
-  password       : {type: String, required: true, select: false},
-  salt           : {type: String, select: false},
-  admin          : {type: Boolean, default: false}, // deprecated
-  superDuperAdmin: {type: Boolean, default: false},
-  competitions   : [{
+  username    : {type: String, required: true, unique: true},
+  password    : {type: String, required: true, select: false},
+  salt        : {type: String, select: false},
+  superAdmin  : {type: Boolean, default: false},
+  competitions: [{
     id         : {
       type    : ObjectId,
       ref     : 'Competition',
@@ -110,33 +109,7 @@ userSchema.pre('save', function (next) {
   } else {
     return next()
   }
-});
-
-/**
- * Method used for updating the password. If you want to update the password use this metod, do not
- * use .save() method. Since it doesn't take care of salt and so on.
- *
- * @alias module:models/user.updatePassword
- * @this user
- * @param {String} password - The password you want
- * @param {updatePasswordCb} cb - The callback function
- */
-userSchema.methods.updatePassword = function (password, cb) {
-  var user = this;
-  
-  crypto.generateHashWithSalt(password, function (err, hashedString, saltUsed) {
-    console.log(err);
-    if (err) {
-      return cb(err);
-    }
-    
-    user.salt = saltUsed;
-    user.password = hashedString;
-    user.save();
-    
-    return cb(null);
-  })
-}
+})
 
 /**
  * Method used for checking if the password matches the user
@@ -161,10 +134,10 @@ module.exports.user = User;
 //User.remove({}, function (err) {
 
 var testUser = new User({
-  username       : "admin",
+  username  : "admin",
   //password       : "adminpass",
-  admin          : true,
-  superDuperAdmin: true
+  admin     : true,
+  superAdmin: true
 });
 var testUser2 = new User({
   username    : "judge",
@@ -183,8 +156,7 @@ User.findOne({username: testUser.username}, function (err, dbUser) {
     if (testUser.password != null) {
       dbUser.password = testUser.password
     }
-    dbUser.admin = testUser.admin
-    dbUser.superDuperAdmin = testUser.superDuperAdmin
+    dbUser.superAdmin = testUser.superAdmin
     dbUser.competitions = testUser.competitions
     
     //logger.debug(dbUser)
@@ -211,8 +183,7 @@ User.findOne({username: testUser2.username}, function (err, dbUser) {
     if (testUser2.password != null) {
       dbUser.password = testUser2.password
     }
-    dbUser.admin = testUser2.admin
-    dbUser.superDuperAdmin = testUser2.superDuperAdmin
+    dbUser.superAdmin = testUser2.superAdmin
     dbUser.competitions = testUser2.competitions
     
     dbUser.save(function (err) {
@@ -231,5 +202,3 @@ User.findOne({username: testUser2.username}, function (err, dbUser) {
     });
   }
 })
-
-//})
