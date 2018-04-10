@@ -156,17 +156,16 @@ runSchema.statics = {
   },
 
   /**
-   * List posts in descending order of 'createdAt' timestamp.
-   * @param {number} skip - Number of posts to be skipped.
-   * @param {number} limit - Limit number of posts to be returned.
-   * @returns {Promise<Post[]>}
+   *
+   * @param {ObjectId} id - The objectId of run.
+   * @param {Object} data - Run with updated data
+   * @returns {Promise<Post, APIError>}
    */
-  list({ skip = 0, limit = 50 } = {}) {
-    return this.find()
-      .sort({ createdAt: -1 })
-      .skip(+skip)
-      .limit(+limit)
-      .exec();
+  update(id, data) {
+
+    // TODO: Do filtering of data here?
+
+    return this.findByIdAndUpdate(id, data).exec()
   }
 };
 
