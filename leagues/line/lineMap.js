@@ -11,7 +11,7 @@ const logger = require('../../config/logger').mainLogger
 
 const pathFinder = require('./pathFinder')
 
-const mapdb = require('../../models/map')
+const mapdb = require('../../models/map.model')
 const LineRun = require('./lineRun').lineRun
 
 /**

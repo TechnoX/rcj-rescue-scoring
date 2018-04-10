@@ -1,6 +1,6 @@
 "use strict"
 const mongoose = require('mongoose')
-const mongooseInteger = require('mongoose-integer')
+mongoose.Promise = require('bluebird')
 const idValidator = require('mongoose-id-validator')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
@@ -51,10 +51,41 @@ mapSchema.pre('save', function (next) {
   }
 })
 
-mapSchema.plugin(mongooseInteger)
+/**
+ * Statics
+ */
+mapSchema.statics = {
+  /**
+   * Get run
+   * @param {ObjectId} id - The objectId of map.
+   * @returns {Promise<Map, APIError>}
+   */
+  get(id) {
+    return this.findById(id)
+      .exec()
+      .then((map) => {
+        if (map) {
+          return map;
+        }
+        const err = new APIError('No such map exists!', httpStatus.NOT_FOUND);
+        return Promise.reject(err);
+      });
+  },
+
+  /**
+   *
+   * @param {ObjectId} id - The objectId of map.
+   * @param {Object} data - Map with updated data
+   * @returns {Promise<Post, APIError>}
+   */
+  update(id, data) {
+
+    // TODO: Do filtering of data here?
+
+    return this.findByIdAndUpdate(id, data).exec()
+  }
+}
+
 mapSchema.plugin(idValidator)
 
-const Map = mongoose.model('Map', mapSchema)
-
-/** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
-module.exports.map = Map
+const Map = module.exports = mongoose.model('Map', mapSchema)

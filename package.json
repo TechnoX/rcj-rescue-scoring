@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node server.js",
-    "test": "mocha tests/"
+    "test" : "mocha --exit",
+    "tests": "mocha tests/"
   },
   "dependencies": {
     "async": "^2.1.5",

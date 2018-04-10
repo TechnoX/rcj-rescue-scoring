@@ -8,7 +8,7 @@ const async = require('async')
 
 const logger = require('../../config/logger').mainLogger
 
-const mapdb = require('../../models/map')
+const mapdb = require('../../models/map.model')
 const mazeFill = require('./mazeFill')
 
 const VICTIMS = ['H', 'S', 'U', "Heated", "None"]
