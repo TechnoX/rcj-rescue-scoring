@@ -5,6 +5,9 @@ const idValidator = require('mongoose-id-validator')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
 
+const httpStatus = require('http-status')
+const APIError = require('../helpers/APIError')
+
 const logger = require('../config/logger').mainLogger
 
 const mapSchema = new Schema({
@@ -65,11 +68,11 @@ mapSchema.statics = {
       .exec()
       .then((map) => {
         if (map) {
-          return map;
+          return map
         }
-        const err = new APIError('No such map exists!', httpStatus.NOT_FOUND);
-        return Promise.reject(err);
-      });
+        const err = new APIError('No such map exists!', httpStatus.NOT_FOUND)
+        return Promise.reject(err)
+      })
   },
 
   /**
@@ -82,7 +85,15 @@ mapSchema.statics = {
 
     // TODO: Do filtering of data here?
 
-    return this.findByIdAndUpdate(id, data).exec()
+    return this.findByIdAndUpdate(id, data, {new: true})
+      .exec()
+      .then((map) => {
+      if (map) {
+        return map
+      }
+      const err = new Error('No such map exists!')
+      return Promise.reject(err)
+    })
   }
 }
 

@@ -73,10 +73,40 @@ describe('map.model', function () {
   it('get map', function (done) {
     Map.get(map.id)
       .then((data) => {
-        console.log(data)
+        //console.log(data)
+        assert(data)
         return done()
-      }).catch((err) => {
-      return done(err)
-    })
+      })
+      .catch((err) => {
+        return done(err)
+      })
+  })
+
+  it('update map', function (done) {
+    Map.update(map.id, {finished: true})
+      .then((data) => {
+        //console.log(data)
+        assert(data)
+        assert.equal(data.finished, true)
+        return done()
+      })
+      .catch((err) => {
+        return done(err)
+      })
+  })
+})
+
+describe('map.model failing', function () {
+  it('fail update missing map', function (done) {
+    Map.update("5accf7a4efea3c6abcceb21a", {finished: true})
+      .then((data) => {
+        //console.log(data)
+        assert(!data)
+        return done()
+      })
+      .catch((err) => {
+        assert(err)
+        return done()
+      })
   })
 })
