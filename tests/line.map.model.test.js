@@ -7,8 +7,10 @@ const async = require('async')
 const League = require('../models/league.model')
 const Competition = require('../models/competition.model')
 const Map = require('../models/map.model')
+const LineMap = require('../models/line.map.model')
+const TileType = require('../leagues/line/tileType').tileType
 
-describe('map.model', function () {
+describe('line.map.model', function () {
   before(function (done) {
     async.parallel([
         (callback) => {
@@ -23,6 +25,11 @@ describe('map.model', function () {
         },
         (callback) => {
           Map.remove({}, (err) => {
+            return callback(err)
+          })
+        },
+        (callback) => {
+          LineMap.remove({}, (err) => {
             return callback(err)
           })
         }
@@ -56,11 +63,20 @@ describe('map.model', function () {
   })
 
   var map
-  it('create map', function (done) {
-    map = new Map({
-      name       : "TestMap",
-      competition: competition._id,
-      league     : line._id
+  it('create line map', function (done) {
+    map = new LineMap({
+      name             : "TestMap",
+      competition      : competition._id,
+      league           : line._id,
+      height           : 1,
+      width            : 2,
+      length           : 3,
+      startTile        : {
+        x: 0,
+        y: 0,
+        z: 0
+      },
+      numberOfDropTiles: 1
     })
 
     assert(!map.errors)
@@ -83,30 +99,15 @@ describe('map.model', function () {
   })
 
   it('update map', function (done) {
-    Map.update(map.id, {finished: true})
+    Map.update(map.id, {name: "TestMap2"})
       .then((data) => {
         //console.log(data)
         assert(data)
-        assert.equal(data.finished, true)
+        assert.equal(data.name, "TestMap2")
         return done()
       })
       .catch((err) => {
         return done(err)
-      })
-  })
-})
-
-describe('map.model failing', function () {
-  it('fail update missing map', function (done) {
-    Map.update("5accf7a4efea3c6abcceb21a", {finished: true})
-      .then((data) => {
-        //console.log(data)
-        assert(!data)
-        return done()
-      })
-      .catch((err) => {
-        assert(err)
-        return done()
       })
   })
 })

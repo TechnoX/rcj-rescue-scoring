@@ -23,7 +23,7 @@ const mapSchema = new Schema({
     required: true,
     index   : true
   },
-  name       : {type: String, required: true},
+  name       : {type: String, trim: true, required: true},
   finished   : {type: Boolean, default: false}
 })
 mapSchema.index({competition: 1, league: 1})
@@ -52,6 +52,7 @@ mapSchema.pre('save', function (next) {
       }
     })
   }
+  return next()
 })
 
 /**
@@ -61,7 +62,7 @@ mapSchema.statics = {
   /**
    * Get run
    * @param {ObjectId} id - The objectId of map.
-   * @returns {Promise<Map, APIError>}
+   * @returns {Promise<Map, Error>}
    */
   get(id) {
     return this.findById(id)
@@ -70,7 +71,7 @@ mapSchema.statics = {
         if (map) {
           return map
         }
-        const err = new APIError('No such map exists!', httpStatus.NOT_FOUND)
+        const err = new Error('No such map exists!')
         return Promise.reject(err)
       })
   },
@@ -79,21 +80,33 @@ mapSchema.statics = {
    *
    * @param {ObjectId} id - The objectId of map.
    * @param {Object} data - Map with updated data
-   * @returns {Promise<Post, APIError>}
+   * @returns {Promise<Map, Error>}
    */
   update(id, data) {
-
-    // TODO: Do filtering of data here?
-
-    return this.findByIdAndUpdate(id, data, {new: true})
+    // Select only _id property as we are only interested in getting a mongoose object
+    return this.findById(id, "_id")
       .exec()
       .then((map) => {
-      if (map) {
-        return map
-      }
-      const err = new Error('No such map exists!')
-      return Promise.reject(err)
-    })
+        if (map) {
+          let filteredData = map.updateFilter(data)
+          map.set(filteredData)
+          return map.save()
+        }
+        const err = new Error('No such map exists!')
+        return Promise.reject(err)
+      })
+  }
+}
+
+mapSchema.methods = {
+  updateFilter(data) {
+    let filteredData = {
+      name    : data.name,
+      finished: data.finished
+    }
+
+    // Stringify and parse to remove undefined properties
+    return JSON.parse(JSON.stringify(filteredData))
   }
 }
 

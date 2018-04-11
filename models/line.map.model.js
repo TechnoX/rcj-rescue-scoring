@@ -7,12 +7,12 @@ const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
 const async = require('async')
 
-const logger = require('../../config/logger').mainLogger
+const logger = require('../config/logger').mainLogger
 
-const pathFinder = require('./pathFinder')
+const pathFinder = require('../leagues/line/pathFinder')
 
 const Map = require('./map.model')
-const LineRun = require('./lineRun').lineRun
+//const LineRun = require('./lineRun').lineRun
 
 /**
  *
@@ -66,58 +66,57 @@ const lineMapSchema = new Schema({
 
 lineMapSchema.pre('save', function (next) {
   var self = this
-  
-  self.populate('tiles.tileType', function (err, populatedMap) {
-    if (err) {
-      return next(err)
-    } else {
-      self = populatedMap
-      //logger.debug(self)
-      
-      if (self.finished) {
+
+  if (self.finished) {
+    // TODO: Fix getting document from db before running pathFinder
+    self.populate('tiles.tileType', function (err, populatedMap) {
+      if (err) {
+        return next(err)
+      } else {
+        self = populatedMap
+        //logger.debug(self)
         try {
           pathFinder(self)
         } catch (err) {
           logger.error(err)
           self.finished = false
         }
+        return next()
       }
-      
-      if (self.isNew || self.isModified("name")) {
-        LineMap.findOne({
-          competition: self.competition,
-          name       : self.name
-        }).populate("competition", "name").exec(function (err, dbMap) {
-          if (err) {
-            return next(err)
-          } else if (dbMap) {
-            err = new Error('Map "' + dbMap.name +
-                            '" already exists in competition "' +
-                            dbMap.competition.name + '"!')
-            return next(err)
-          } else {
-            return next()
-          }
-        })
-      } else {
-        LineRun.findOne({
-          map    : self._id,
-          started: true
-        }).lean().exec(function (err, dbRun) {
-          if (err) {
-            return next(err)
-          } else if (dbRun) {
-            err = new Error('Map "' + self.name +
-                            '" used in started runs, cannot modify!')
-            return next(err)
-          } else {
-            return next()
-          }
-        })
-      }
-    }
-  })
+    })
+  } else {
+    return next()
+  }
 })
+
+/*
+ Workaround for calling overridden methods in base model
+ To call for example method foo(arg1, arg2) do
+ base.foo.call(this, arg1, arg2)
+ To bind "this" to the current document
+ */
+const base = Map.schema.methods
+lineMapSchema.methods = {
+  updateFilter(data) {
+    let filteredData = base.updateFilter.call(this, data)
+
+    Object.assign(filteredData, {
+      height           : data.height,
+      width            : data.width,
+      length           : data.length,
+      tiles            : data.tiles, // TODO: Refine this
+      startTile        : data.startTile ? {
+        x: data.startTile.x,
+        y: data.startTile.y,
+        z: data.startTile.z
+      } : undefined,
+      numberOfDropTiles: data.numberOfDropTiles
+    })
+
+    // Stringify and parse to remove undefined properties
+    return JSON.parse(JSON.stringify(filteredData))
+  }
+}
 
 lineMapSchema.plugin(mongooseInteger)
 lineMapSchema.plugin(idValidator)
