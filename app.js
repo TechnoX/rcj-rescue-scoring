@@ -106,7 +106,7 @@ app.use(passport.initialize())
 app.use(passport.session())
 */
 app.use(jwt({
-  secret: 'hello world !',
+  secret: 'hello world !', // FIXME: should be a secret to everybody!
   credentialsRequired: false
 }))
 

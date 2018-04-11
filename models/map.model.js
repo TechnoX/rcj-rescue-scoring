@@ -10,6 +10,9 @@ const APIError = require('../helpers/APIError')
 
 const logger = require('../config/logger').mainLogger
 
+const Competition = require('./competition.model') // XXX: Temporary
+const League = require('./league.model') // XXX: Temporary
+
 const mapSchema = new Schema({
   competition: {
     type    : ObjectId,
@@ -51,8 +54,9 @@ mapSchema.pre('save', function (next) {
         return next()
       }
     })
+  } else {
+    return next()
   }
-  return next()
 })
 
 /**

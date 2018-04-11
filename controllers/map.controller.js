@@ -17,6 +17,7 @@ module.exports.get = (req, res, next) => {
 
 module.exports.create = (req, res, next) => {
   logger.debug(req.user)
+  //mongoose.model(req.params.type)
   new Map(req.body)
     .save()
     .then((map) => {
@@ -27,7 +28,7 @@ module.exports.create = (req, res, next) => {
       })
     })
     .catch((err) => {
-      logger.error(err)
+      //logger.error(err)
       res.status(400).send({
         msg: "Error saving map",
         err: err.message

@@ -9,27 +9,36 @@ const jwt = require('jsonwebtoken') // used to create, sign, and verify tokens
 
 module.exports.login = (req, res, next) => {
 
-  User.findOne({username: req.body.username}, "+password +salt", function (err, user) {
-    if (err) return res.status(500).send('Error on the server.')
-    if (!user) return res.status(404).send('No user found.')
+  User.findOne({username: req.body.username})
+    .select("+password +salt")
+    .exec()
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send('No user found.')
+      }
+      else {
+        // check if the password is valid
+        user.comparePassword(req.body.password, (passwordIsValid) => {
+            if (!passwordIsValid) return res.status(401).send({
+              auth : false,
+              token: null
+            })
 
-    // check if the password is valid
-    user.comparePassword(req.body.password, (passwordIsValid) => {
-      if (!passwordIsValid) return res.status(401).send({
-        auth : false,
-        token: null
-      })
+            // if user is found and password is valid
+            // create a token
+            var token = jwt.sign({id: user._id}, 'hello world !', { // FIXME: Secret
+              expiresIn: 86400 // expires in 24 hours
+            })
 
-      // if user is found and password is valid
-      // create a token
-      var token = jwt.sign({id: user._id}, 'hello world !', {
-        expiresIn: 86400 // expires in 24 hours
-      })
-
-      // return the information including token as JSON
-      res.status(200).send({auth: true, token: token})
+            // return the information including token as JSON
+            return res.status(200).send({auth: true, token: token})
+          }
+        )
+      }
     })
-  })
+    .catch((err) => {
+      return res.status(500).send('Error on the server.')
+    })
 }
 
 module.exports.logout = (req, res, next) => {
