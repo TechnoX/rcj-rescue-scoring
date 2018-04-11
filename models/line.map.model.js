@@ -68,7 +68,10 @@ lineMapSchema.pre('save', function (next) {
   var self = this
 
   if (self.finished) {
-    // TODO: Fix getting document from db before running pathFinder
+    if (!self.isInit("tiles")) {
+      // TODO: Fix getting document from db before running pathFinder
+    }
+
     self.populate('tiles.tileType', function (err, populatedMap) {
       if (err) {
         return next(err)

@@ -126,16 +126,15 @@ userSchema.methods.comparePassword = function (candidatePassword, cb) {
 }
 
 userSchema.plugin(timestamps);
-var User = mongoose.model('User', userSchema);
 
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
-module.exports.user = User;
+const User = module.exports = mongoose.model('User', userSchema)
 
 //User.remove({}, function (err) {
 
 var testUser = new User({
   username  : "admin",
-  //password       : "adminpass",
+  password  : "adminpass",
   admin     : true,
   superAdmin: true
 });
@@ -164,6 +163,9 @@ User.findOne({username: testUser.username}, function (err, dbUser) {
     dbUser.save(function (err) {
       if (err) {
         logger.error(err)
+      }
+      else {
+        console.log("set admin password");
       }
     })
   } else {

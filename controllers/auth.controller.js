@@ -1,16 +1,15 @@
 "use strict"
-const VerifyToken = require('./VerifyToken')
 const User = require('../models/user.model')
 
 /**
  * Configure JWT
  */
 const jwt = require('jsonwebtoken') // used to create, sign, and verify tokens
-const config = require('../config') // get config file
+//const config = require('../config') // get config file
 
 module.exports.login = (req, res, next) => {
 
-  User.findOne({username: req.body.username}, function (err, user) {
+  User.findOne({username: req.body.username}, "+password +salt", function (err, user) {
     if (err) return res.status(500).send('Error on the server.')
     if (!user) return res.status(404).send('No user found.')
 
@@ -23,7 +22,7 @@ module.exports.login = (req, res, next) => {
 
       // if user is found and password is valid
       // create a token
-      var token = jwt.sign({id: user._id}, config.secret, {
+      var token = jwt.sign({id: user._id}, 'hello world !', {
         expiresIn: 86400 // expires in 24 hours
       })
 

@@ -15,9 +15,6 @@ const ACCESSLEVELS = require('../../models/user.model').ACCESSLEVELS
 const runCtrl = require('../../controllers/run.controller')
 const run = require('../../models/run.model').run
 const baseModel = require('../../models/run.model').model
-const lineRun = require('../../leagues/line/lineRun').lineRun
-const leagues = require('../../leagues')
-
 var socketIo
 
 module.exports.connectSocketIo = function (io) {

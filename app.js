@@ -25,6 +25,7 @@ var mongoose = require('mongoose')
 // auth
 var pass = require('./config/pass')
 var passport = require('passport')
+const jwt = require('express-jwt')
 // session
 var session = require('express-session')
 var connectMongo = require('connect-mongo')(session)
@@ -49,14 +50,15 @@ const adminRoute = require('./routes/admin')
 //                          Api routes
 //========================================================================
 
-const apiAuthRoute = require('./routes/api/auth')
-const apiLineMapsRoute = require('./routes/api/lineMaps')
-const apiMazeMapsRoute = require('./routes/api/mazeMaps')
-const apiTeamsRoute = require('./routes/api/teams')
-const apiRoundsRoute = require('./routes/api/rounds')
-const apiFieldsRoute = require('./routes/api/fields')
-const apiRunsRoute = require('./routes/api/run.route')
-const apiCompetitionsRoute = require('./routes/api/competitions')
+const apiAuthRoute = require('./routes/api/auth.route')
+const apiMapsRoute = require('./routes/api/map.route')
+//const apiLineMapsRoute = require('./routes/api/lineMaps')
+//const apiMazeMapsRoute = require('./routes/api/mazeMaps')
+//const apiTeamsRoute = require('./routes/api/teams')
+//const apiRoundsRoute = require('./routes/api/rounds')
+//const apiFieldsRoute = require('./routes/api/fields')
+//const apiRunsRoute = require('./routes/api/run.route')
+//const apiCompetitionsRoute = require('./routes/api/competitions')
 
 
 //========================================================================
@@ -93,6 +95,7 @@ app.use(express.static(path.join(__dirname, 'public')))
  * Session and passport for auth
  */
 // init passport and session
+/*
 app.use(session({
   store : new connectMongo({
     mongooseConnection: mongoose.connection
@@ -101,6 +104,11 @@ app.use(session({
 }))
 app.use(passport.initialize())
 app.use(passport.session())
+*/
+app.use(jwt({
+  secret: 'hello world !',
+  credentialsRequired: false
+}))
 
 
 //========================================================================
@@ -112,13 +120,14 @@ app.use(passport.session())
 //========================================================================
 
 app.use('/api/auth', apiAuthRoute)
-app.use('/api/maps/line', [apiLineMapsRoute.public, pass.ensureLoginApi, apiLineMapsRoute.private, pass.ensureAdminApi, apiLineMapsRoute.admin])
-app.use('/api/maps/maze', [apiMazeMapsRoute.public, pass.ensureLoginApi, apiMazeMapsRoute.private, pass.ensureAdminApi, apiMazeMapsRoute.admin])
-app.use('/api/teams', [apiTeamsRoute.public, pass.ensureLoginApi, apiTeamsRoute.private, pass.ensureAdminApi, apiTeamsRoute.admin])
-app.use('/api/rounds', [apiRoundsRoute.public, pass.ensureLoginApi, apiRoundsRoute.private, pass.ensureAdminApi, apiRoundsRoute.admin])
-app.use('/api/fields', [apiFieldsRoute.public, pass.ensureLoginApi, apiFieldsRoute.private, pass.ensureAdminApi, apiFieldsRoute.admin])
-app.use('/api/runs', [apiRunsRoute.public, pass.ensureLoginApi, apiRunsRoute.private, pass.ensureAdminApi, apiRunsRoute.admin])
-app.use('/api/competitions', [apiCompetitionsRoute.public, pass.ensureLoginApi, apiCompetitionsRoute.private, pass.ensureAdminApi, apiCompetitionsRoute.admin])
+app.use('/api/maps', apiMapsRoute)
+//app.use('/api/maps/line', [apiLineMapsRoute.public, pass.ensureLoginApi, apiLineMapsRoute.private, pass.ensureAdminApi, apiLineMapsRoute.admin])
+//app.use('/api/maps/maze', [apiMazeMapsRoute.public, pass.ensureLoginApi, apiMazeMapsRoute.private, pass.ensureAdminApi, apiMazeMapsRoute.admin])
+//app.use('/api/teams', [apiTeamsRoute.public, pass.ensureLoginApi, apiTeamsRoute.private, pass.ensureAdminApi, apiTeamsRoute.admin])
+//app.use('/api/rounds', [apiRoundsRoute.public, pass.ensureLoginApi, apiRoundsRoute.private, pass.ensureAdminApi, apiRoundsRoute.admin])
+//app.use('/api/fields', [apiFieldsRoute.public, pass.ensureLoginApi, apiFieldsRoute.private, pass.ensureAdminApi, apiFieldsRoute.admin])
+//app.use('/api/runs', [apiRunsRoute.public, pass.ensureLoginApi, apiRunsRoute.private, pass.ensureAdminApi, apiRunsRoute.admin])
+//app.use('/api/competitions', [apiCompetitionsRoute.public, pass.ensureLoginApi, apiCompetitionsRoute.private, pass.ensureAdminApi, apiCompetitionsRoute.admin])
 
 var apiEndpoints = getEndpoints(app)
 app.use('/api', express.Router().get('/', function (req, res) {
