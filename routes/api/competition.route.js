@@ -1,19 +1,32 @@
-//========================================================================
-//                          Libraries
-//========================================================================
-
+"use strict"
 const express = require('express')
-const publicRouter = express.Router()
-const privateRouter = express.Router()
-const adminRouter = express.Router()
-const competitiondb = require('../../models/competition.model')
-const runsApi = require('./run.route')
-const lineMapsApi = require('./lineMaps')
-const mazeMapsApi = require('./mazeMaps')
-const async = require('async')
-const ObjectId = require('mongoose').Types.ObjectId
+const router = express.Router()
 const logger = require('../../config/logger').mainLogger
-const fs = require('fs')
+
+const competitionCtrl = require('../../controllers/competition.controller')
+const mapCtrl = require('../../controllers/map.controller')
+
+router.route('/')
+/** GET /api/competitions/ - List competitions */
+  .get(competitionCtrl.list)
+
+  /** POST /api/competitions/ - Create competition */
+  .post(competitionCtrl.create)
+
+router.route('/:id')
+/** GET /api/competitions/:id - Get competition */
+  .get(competitionCtrl.get)
+
+  /** PUT /api/competitions/:id - Update competition */
+  .put(competitionCtrl.update)
+
+  /** DELETE /api/competitions/:id - Delete competition */
+  .delete(competitionCtrl.remove)
+
+
+module.exports = router
+
+return;
 
 publicRouter.get('/', function (req, res) {
   competitiondb.competition.find({}).lean().exec(function (err, data) {

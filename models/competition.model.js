@@ -9,6 +9,7 @@ const logger = require('../config/logger').mainLogger
 
 const competitionSchema = new Schema({
   name   : {type: String, required: true, unique: true, index: true},
+  hidden : {type: Boolean, default: false},
   leagues: [{
     type: ObjectId,
     ref : 'League'
@@ -20,9 +21,9 @@ const competitionSchema = new Schema({
  */
 competitionSchema.statics = {
   /**
-   * Get run
+   * Get competition
    * @param {ObjectId} id - The objectId of competition.
-   * @returns {Promise<Competition, APIError>}
+   * @returns {Promise<Competition, Error>}
    */
   get(id) {
     return this.findById(id)
@@ -31,9 +32,19 @@ competitionSchema.statics = {
         if (competition) {
           return competition
         }
-        const err = new APIError('No such competition exists!', httpStatus.NOT_FOUND)
+        const err = new Error('No such competition exists!')
         return Promise.reject(err)
       })
+  },
+
+  /**
+   * List competitions
+   * @returns {Promise<[Competition], Error>}
+   */
+  list() {
+    return this.find({}, "_id name")
+      .lean()
+      .exec()
   }
 }
 

@@ -5,9 +5,6 @@ const idValidator = require('mongoose-id-validator')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
 
-const httpStatus = require('http-status')
-const APIError = require('../helpers/APIError')
-
 const logger = require('../config/logger').mainLogger
 
 const Competition = require('./competition.model') // XXX: Temporary
@@ -62,6 +59,8 @@ mapSchema.pre('save', function (next) {
       .catch((err) => {
         return next(err)
       })
+  } else {
+    return next()
   }
 })
 
@@ -93,8 +92,7 @@ mapSchema.statics = {
    * @returns {Promise<Map, Error>}
    */
   update(id, data) {
-    // Select only _id property as we are only interested in getting a mongoose object
-    return this.findById(id, "_id")
+    return this.findById(id)
       .exec()
       .then((map) => {
         if (map) {

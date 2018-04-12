@@ -9,6 +9,7 @@ const jwt = require('jsonwebtoken') // used to create, sign, and verify tokens
 
 module.exports.login = (req, res, next) => {
 
+  // TODO: Move parts of this down to model
   User.findOne({username: req.body.username})
     .select("+password +salt")
     .exec()

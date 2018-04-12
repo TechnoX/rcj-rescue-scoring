@@ -53,6 +53,7 @@ const lineMapSchema = new Schema({
       }
     },
     index    : {type: [Number], min: 0},
+    // TODO: Make better way to define floor changes
     levelUp  : {type: String, enum: ["top", "right", "bottom", "left"]},
     levelDown: {type: String, enum: ["top", "right", "bottom", "left"]}
   }],

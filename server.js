@@ -89,7 +89,7 @@ else {*/
     })
   })
 
-  require('./routes/api/run.route').connectSocketIo(io)
+  //require('./routes/api/run.route').connectSocketIo(io)
   
   
   /**

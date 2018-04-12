@@ -86,10 +86,11 @@ module.exports.update = (req, res, next) => {
   const role = access.getUserRole(req.user, {competition: map.competition})
   
   if (access.isGte(role, ROLES.ADMIN)) {
-    Map.update(map)
+    Map.update(id, map)
       .then((dbMap) => {
         return res.status(200).json({
-          msg: "Map has been saved!"
+          msg: "Map has been saved!",
+          data: dbMap
         })
       })
       .catch((err) => {
