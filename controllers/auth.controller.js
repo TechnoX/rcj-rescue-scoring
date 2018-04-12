@@ -26,9 +26,15 @@ module.exports.login = (req, res, next) => {
 
             // if user is found and password is valid
             // create a token
-            var token = jwt.sign({id: user._id}, 'hello world !', { // FIXME: Secret
-              expiresIn: 86400 // expires in 24 hours
-            })
+            var token = jwt.sign(
+              {
+                id          : user._id,
+                superAdmin  : user.superAdmin,
+                competitions: user.competitions
+              },
+              'hello world !', // FIXME: Secret
+              {expiresIn: 86400} // expires in 24 hours
+            )
 
             // return the information including token as JSON
             return res.status(200).send({auth: true, token: token})

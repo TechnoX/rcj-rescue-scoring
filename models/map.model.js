@@ -99,6 +99,23 @@ mapSchema.statics = {
         const err = new Error('No such map exists!')
         return Promise.reject(err)
       })
+  },
+
+  /**
+   *
+   * @param {ObjectId} id - The objectId of map.
+   * @returns {Promise<Map, Error>}
+   */
+  remove(id) {
+    return this.findByIdAndRemove(id)
+      .exec()
+      .then((map) => {
+        if (map) {
+          return map
+        }
+        const err = new Error('No such map exists!')
+        return Promise.reject(err)
+      })
   }
 }
 

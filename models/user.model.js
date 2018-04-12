@@ -35,6 +35,7 @@
 var env = require('node-env-file')
 env('process.env')
 
+const _ = require('lodash');
 const logger = require('../config/logger').mainLogger
 var mongoose = require('mongoose')
 var crypto = require('../helpers/crypto')
@@ -46,13 +47,7 @@ var timestamps = require('mongoose-timestamp')
 var Schema = mongoose.Schema
 var ObjectId = Schema.Types.ObjectId
 
-const ACCESSLEVELS = {
-  SUPERADMIN: 15,
-  LOCALADMIN: 10,
-  JUDGE     : 5,
-  NONE      : 0
-}
-module.exports.ACCESSLEVELS = ACCESSLEVELS
+const ROLES = require('../helpers/accessLevels').ROLES
 
 
 /**
@@ -75,16 +70,10 @@ var userSchema = new Schema({
       ref     : 'Competition',
       required: true
     },
-    accessLevel: {
-      type   : Number,
-      default: ACCESSLEVELS.NONE,
-      min    : ACCESSLEVELS.NONE,
-      max    : ACCESSLEVELS.SUPERADMIN,
-      /*validate: {
-       validator: function (l) {
-       return ACCESSLEVELS.indexOf(l) != -1
-       }
-       }*/
+    role: {
+      type   : String,
+      default: ROLES.NONE,
+      enum   : _.values(ROLES)
     }
   }]
   
@@ -135,7 +124,6 @@ const User = module.exports = mongoose.model('User', userSchema)
 var testUser = new User({
   username  : "admin",
   password  : "adminpass",
-  admin     : true,
   superAdmin: true
 });
 var testUser2 = new User({
@@ -143,10 +131,10 @@ var testUser2 = new User({
   //password    : "judgepass",
   competitions: [{
     id         : "5976b89445524f1e629f63f5",
-    accessLevel: ACCESSLEVELS.JUDGE
+    role: ROLES.JUDGE
   }, {
     id         : "59759831aa67ba5178a2751e",
-    accessLevel: ACCESSLEVELS.JUDGE
+    role: ROLES.JUDGE
   }]
 });
 
@@ -163,9 +151,6 @@ User.findOne({username: testUser.username}, function (err, dbUser) {
     dbUser.save(function (err) {
       if (err) {
         logger.error(err)
-      }
-      else {
-        console.log("set admin password");
       }
     })
   } else {

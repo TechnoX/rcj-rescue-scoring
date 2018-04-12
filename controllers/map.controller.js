@@ -1,13 +1,21 @@
 "use strict"
+const glob = require('glob-fs')()
 const logger = require('../config/logger').mainLogger
 const Map = require('../models/map.model')
 
-module.exports.load = (params) => {
-  return Map.get(params.id)
-}
+const access = require('../helpers/accessLevels')
+const ROLES = access.ROLES
+
+/*
+ let mapModels = glob.readdirSync(
+ '*.map.model.js',
+ {cwd: __dirname + '/../models/'}
+ )
+ const TYPES = module.exports.TYPES = mapModels.map(filename => filename.replace('.map.model.js', ''))
+ */
 
 module.exports.get = (req, res, next) => {
-  return this.load(req.params)
+  return Map.get(req.params.id)
     .then(run => {
       return res.status(200).send(run)
     }).catch(err => {
@@ -17,14 +25,34 @@ module.exports.get = (req, res, next) => {
 
 module.exports.create = (req, res, next) => {
   logger.debug(req.user)
-  //mongoose.model(req.params.type)
-  new Map(req.body)
-    .save()
-    .then((map) => {
-      res.location("/api/maps/" + map._id)
+
+  const map = req.body
+  const role = access.getUserRole(req.user, {competition: map.competition})
+  
+  if (access.isLt(role, ROLES.ADMIN)) {
+    return res.status(401).send({msg: "Unauthorized"})
+  }
+
+  let mapModel
+  if (map.type) {
+    try {
+      mapModel = require('../models/' + req.body.type + '.map.model')
+    } catch (e) {
+      if (e.code !== 'MODULE_NOT_FOUND') {
+        throw e
+      }
+      mapModel = Map
+    }
+  } else {
+    mapModel = Map
+  }
+
+  mapModel.create(map)
+    .then((dbMap) => {
+      res.location("/api/maps/" + dbMap._id)
       res.status(201).send({
         msg: "New map has been saved",
-        id : map._id
+        id : dbMap._id
       })
     })
     .catch((err) => {
@@ -36,19 +64,50 @@ module.exports.create = (req, res, next) => {
     })
 }
 
-module.exports.update = (params) => {
-  return this.load(params).then(run => {
-    run.title = params.data.title
-    run.content = params.data.content
-    return run.save()
-  })
+module.exports.update = (req, res, next) => {
+  const map = req.body
+
+  // Not guaranteed map.competition is sent in, should fetch from db then?
+  const role = access.getUserRole(req.user, {competition: map.competition})
+  
+  if (access.isGte(role, ROLES.ADMIN)) {
+    Map.update(map)
+      .then((dbMap) => {
+        res.status(200).send({
+          msg: "Map has been saved!"
+        })
+      })
+      .catch((err) => {
+        //logger.error(err)
+        res.status(400).send({
+          msg: "Error saving map",
+          err: err.message
+        })
+      })
+  } else {
+    return res.status(401).send({msg: "Unauthorized"})
+  }
 }
 
-module.exports.list = (params) => {
-  const {limit = 50, skip = 0} = params;
-  return Map.list({limit, skip})
-}
+module.exports.remove = (req, res, next) => {
+  const role = access.getUserRole(req.user)
 
-module.exports.remove = (params) => {
-  return this.load(params).then(post => post.remove())
+  if (access.isGte(role, ROLES.ADMIN)) {
+    Map.remove(req.params.id)
+      .then(() => {
+        res.status(200).send({
+          msg: "Map has been removed!"
+        })
+      })
+      .catch((err) => {
+        //logger.error(err)
+        res.status(400).send({
+          msg: "Error saving map",
+          err: err.message
+        })
+      })
+  } else {
+    // TODO: Fetch map and check if user roles match competition
+    return res.status(401).send({msg: "Unauthorized"})
+  }
 }
