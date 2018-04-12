@@ -1,14 +1,10 @@
 "use strict"
-const _ = require('underscore')
 const mongoose = require('mongoose')
 const idValidator = require('mongoose-id-validator')
-const validator = require('validator')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
 
 const logger = require('../config/logger').mainLogger
-
-const leagues = require("./../leagues")
 
 const teamSchema = new Schema({
   competition: {
@@ -26,10 +22,11 @@ const teamSchema = new Schema({
   name       : {type: String, required: true}
 })
 teamSchema.index({competition: 1, league: 1})
+teamSchema.index({competition: 1, league: 1, name: 1}, {unique: true})
 
 teamSchema.pre('save', function (next) {
   const self = this
-  if (self.isNew) {
+  if (self.isNew || self.isModified("name")) {
     Team.findOne({
       competition: self.competition,
       name       : self.name,
@@ -49,9 +46,29 @@ teamSchema.pre('save', function (next) {
   }
 })
 
+/**
+ * Statics
+ */
+teamSchema.statics = {
+  /**
+   * Get team
+   * @param {ObjectId} id - The objectId of team.
+   * @returns {Promise<Team, Error>}
+   */
+  get(id) {
+    return this.findById(id)
+      .exec()
+      .then((team) => {
+        if (team) {
+          return team
+        }
+        const err = new Error('No such team exists!')
+        return Promise.reject(err)
+      })
+  }
+}
+
 teamSchema.plugin(idValidator)
 
-const Team = mongoose.model('Team', teamSchema)
-
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
-module.exports.team = Team
+const Team = module.exports = mongoose.model('Team', teamSchema)
