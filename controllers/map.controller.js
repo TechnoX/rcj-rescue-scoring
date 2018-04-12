@@ -1,6 +1,7 @@
 "use strict"
 const glob = require('glob-fs')()
 const requireGlob = require('require-glob')
+const ObjectId = require('mongoose').Types.ObjectId
 const logger = require('../config/logger').mainLogger
 const Map = require('../models/map.model')
 
@@ -18,9 +19,15 @@ const ROLES = access.ROLES
 const typeModels = requireGlob.sync('../models/*.map.model.js')
 
 module.exports.get = (req, res, next) => {
-  return Map.get(req.params.id)
-    .then(run => {
-      return res.status(200).send(run)
+  const id = req.params.id
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  return Map.get(id)
+    .then(dbMap => {
+      return res.status(200).send(dbMap)
     }).catch(err => {
       return next(err)
     })
@@ -67,6 +74,12 @@ module.exports.create = (req, res, next) => {
 }
 
 module.exports.update = (req, res, next) => {
+  const id = req.params.id
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
   const map = req.body
 
   // Not guaranteed map.competition is sent in, should fetch from db then?
@@ -92,6 +105,12 @@ module.exports.update = (req, res, next) => {
 }
 
 module.exports.remove = (req, res, next) => {
+  const id = req.params.id
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
   const role = access.getUserRole(req.user)
 
   if (access.isGte(role, ROLES.ADMIN)) {
