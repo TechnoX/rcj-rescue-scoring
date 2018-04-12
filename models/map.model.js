@@ -30,9 +30,12 @@ const mapSchema = new Schema({
   finished   : {type: Boolean, default: false}
 })
 mapSchema.index({competition: 1, league: 1})
+mapSchema.index({competition: 1, league: 1, name: 1}, {unique: true})
 
 mapSchema.pre('save', function (next) {
   var self = this
+
+  // TODO: Don't allow changes if map is used in started runs
 
   if (self.isNew || self.isModified("name")) {
     Map.findOne({
@@ -44,23 +47,21 @@ mapSchema.pre('save', function (next) {
         {path: 'competition', select: 'name'},
         {path: 'league', select: 'name'}
       ])
-      .exec(function (err, dbMap) {
-        if (err) {
-          return next(err)
-        } else if (dbMap) {
-          err = new Error('Map "' +
-                          dbMap.name +
-                          '" already exists in league "' +
-                          dbMap.league.name +
-                          '" in competition "' +
-                          dbMap.competition.name + '"!')
-          return next(err)
-        } else {
-          return next()
+      .exec()
+      .then((dbMap) => {
+        if (dbMap) {
+          const err = new Error(
+            'Map "' + dbMap.name +
+            '" already exists in league "' + dbMap.league.name +
+            '" in competition "' + dbMap.competition.name + '"!'
+          )
+          return Promise.reject(err)
         }
+        return next()
       })
-  } else {
-    return next()
+      .catch((err) => {
+        return next(err)
+      })
   }
 })
 
