@@ -1,5 +1,6 @@
 "use strict"
 const glob = require('glob-fs')()
+const requireGlob = require('require-glob')
 const logger = require('../config/logger').mainLogger
 const Map = require('../models/map.model')
 
@@ -13,6 +14,8 @@ const ROLES = access.ROLES
  )
  const TYPES = module.exports.TYPES = mapModels.map(filename => filename.replace('.map.model.js', ''))
  */
+
+const typeModels = requireGlob.sync('../models/*.map.model.js')
 
 module.exports.get = (req, res, next) => {
   return Map.get(req.params.id)
@@ -35,13 +38,12 @@ module.exports.create = (req, res, next) => {
 
   let mapModel
   if (map.type) {
-    try {
-      mapModel = require('../models/' + req.body.type + '.map.model')
-    } catch (e) {
-      if (e.code !== 'MODULE_NOT_FOUND') {
-        throw e
-      }
-      mapModel = Map
+    mapModel = typeModels[map.type + "MapModel"]
+    if (mapModel == null) {
+      return res.status(400).send({
+        msg: "Error saving map",
+        err: "Invalid map type: " + map.type
+      })
     }
   } else {
     mapModel = Map

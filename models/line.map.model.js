@@ -14,6 +14,8 @@ const pathFinder = require('../leagues/line/pathFinder')
 const Map = require('./map.model')
 //const LineRun = require('./lineRun').lineRun
 
+const TileType = require('./tileType.model') // XXX: Temporary
+
 /**
  *
  *@constructor
