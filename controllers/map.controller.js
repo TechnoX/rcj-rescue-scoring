@@ -27,7 +27,7 @@ module.exports.get = (req, res, next) => {
 
   return Map.get(id)
     .then(dbMap => {
-      return res.status(200).send(dbMap)
+      return res.status(200).json(dbMap)
     }).catch(err => {
       return next(err)
     })
@@ -40,14 +40,14 @@ module.exports.create = (req, res, next) => {
   const role = access.getUserRole(req.user, {competition: map.competition})
   
   if (access.isLt(role, ROLES.ADMIN)) {
-    return res.status(401).send({msg: "Unauthorized"})
+    return res.status(401).json({msg: "Unauthorized"})
   }
 
   let mapModel
   if (map.type) {
     mapModel = typeModels[map.type.toLowerCase() + "MapModel"]
     if (mapModel == null) {
-      return res.status(400).send({
+      return res.status(400).json({
         msg: "Error saving map",
         err: "Invalid map type: " + map.type
       })
@@ -59,14 +59,14 @@ module.exports.create = (req, res, next) => {
   mapModel.create(map)
     .then((dbMap) => {
       res.location("/api/maps/" + dbMap._id)
-      res.status(201).send({
+      res.status(201).json({
         msg: "New map has been saved",
         id : dbMap._id
       })
     })
     .catch((err) => {
       //logger.error(err)
-      res.status(400).send({
+      res.status(400).json({
         msg: "Error saving map",
         err: err.message
       })
@@ -88,19 +88,19 @@ module.exports.update = (req, res, next) => {
   if (access.isGte(role, ROLES.ADMIN)) {
     Map.update(map)
       .then((dbMap) => {
-        res.status(200).send({
+        return res.status(200).json({
           msg: "Map has been saved!"
         })
       })
       .catch((err) => {
         //logger.error(err)
-        res.status(400).send({
+        return res.status(400).json({
           msg: "Error saving map",
           err: err.message
         })
       })
   } else {
-    return res.status(401).send({msg: "Unauthorized"})
+    return res.status(401).json({msg: "Unauthorized"})
   }
 }
 
@@ -116,19 +116,19 @@ module.exports.remove = (req, res, next) => {
   if (access.isGte(role, ROLES.ADMIN)) {
     Map.remove(req.params.id)
       .then(() => {
-        res.status(200).send({
+        res.status(200).json({
           msg: "Map has been removed!"
         })
       })
       .catch((err) => {
         //logger.error(err)
-        res.status(400).send({
+        res.status(400).json({
           msg: "Error saving map",
           err: err.message
         })
       })
   } else {
     // TODO: Fetch map and check if user roles match competition
-    return res.status(401).send({msg: "Unauthorized"})
+    return res.status(401).json({msg: "Unauthorized"})
   }
 }
