@@ -39,10 +39,13 @@ competitionSchema.statics = {
 
   /**
    * List competitions
+   * @param {Boolean} includeHidden - List all competitions, including hidden
    * @returns {Promise<[Competition], Error>}
    */
-  list() {
-    return this.find({}, "_id name")
+  list(includeHidden) {
+    const query = includeHidden ? {} : {hidden : false}
+
+    return this.find(query, "_id name")
       .lean()
       .exec()
   }

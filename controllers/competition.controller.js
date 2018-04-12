@@ -7,7 +7,7 @@ const access = require('../helpers/accessLevels')
 const ROLES = access.ROLES
 
 module.exports.list = (req, res, next) => {
-  return Competition.list()
+  return Competition.list(req.user)
     .then(dbComps => {
       return res.status(200).json(dbComps)
     }).catch(err => {
