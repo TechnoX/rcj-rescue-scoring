@@ -27,7 +27,7 @@ module.exports.get = (req, res, next) => {
 }
 
 module.exports.create = (req, res, next) => {
-  logger.debug(req.user)
+  //logger.debug(req.user)
 
   const map = req.body
   const role = access.getUserRole(req.user, {competition: map.competition})
@@ -38,7 +38,7 @@ module.exports.create = (req, res, next) => {
 
   let mapModel
   if (map.type) {
-    mapModel = typeModels[map.type + "MapModel"]
+    mapModel = typeModels[map.type.toLowerCase() + "MapModel"]
     if (mapModel == null) {
       return res.status(400).send({
         msg: "Error saving map",
