@@ -17,7 +17,7 @@ const mapSchema = new Schema({
     required: true,
     index   : true
   },
-  league     : {
+  league     : { // XXX: Should maybe not bind maps to this?
     type    : ObjectId,
     ref     : 'League',
     required: true,
