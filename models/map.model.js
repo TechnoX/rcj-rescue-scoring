@@ -39,21 +39,26 @@ mapSchema.pre('save', function (next) {
       competition: self.competition,
       league     : self.league,
       name       : self.name
-    }).populate("competition.name league.name").exec(function (err, dbMap) {
-      if (err) {
-        return next(err)
-      } else if (dbMap) {
-        err = new Error('Map "' +
-                        dbMap.name +
-                        '" already exists in league "' +
-                        dbMap.league.name +
-                        '" in competition "' +
-                        dbMap.competition.name + '"!')
-        return next(err)
-      } else {
-        return next()
-      }
     })
+      .populate([
+        {path: 'competition', select: 'name'},
+        {path: 'league', select: 'name'}
+      ])
+      .exec(function (err, dbMap) {
+        if (err) {
+          return next(err)
+        } else if (dbMap) {
+          err = new Error('Map "' +
+                          dbMap.name +
+                          '" already exists in league "' +
+                          dbMap.league.name +
+                          '" in competition "' +
+                          dbMap.competition.name + '"!')
+          return next(err)
+        } else {
+          return next()
+        }
+      })
   } else {
     return next()
   }
