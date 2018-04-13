@@ -79,6 +79,42 @@ fieldSchema.statics = {
       .select("_id name")
       .lean()
       .exec()
+  },
+  
+  /**
+   *
+   * @param {ObjectId} id - The objectId of field.
+   * @param {Object} data - Field with updated data
+   * @returns {Promise<Field, Error>}
+   */
+  update(id, data) {
+    return this.findById(id)
+      .exec()
+      .then((field) => {
+        if (field) {
+          field.set(data)
+          return field.save()
+        }
+        const err = new Error('No such field exists!')
+        return Promise.reject(err)
+      })
+  },
+  
+  /**
+   *
+   * @param {ObjectId} id - The objectId of field.
+   * @returns {Promise<Field, Error>}
+   */
+  remove(id) {
+    return this.findByIdAndRemove(id)
+      .exec()
+      .then((field) => {
+        if (field) {
+          return field
+        }
+        const err = new Error('No such field exists!')
+        return Promise.reject(err)
+      })
   }
 }
 

@@ -50,6 +50,42 @@ competitionSchema.statics = {
       .select("_id name")
       .lean()
       .exec()
+  },
+  
+  /**
+   *
+   * @param {ObjectId} id - The objectId of competition.
+   * @param {Object} data - Competition with updated data
+   * @returns {Promise<Competition, Error>}
+   */
+  update(id, data) {
+    return this.findById(id)
+      .exec()
+      .then((competition) => {
+        if (competition) {
+          competition.set(data)
+          return competition.save()
+        }
+        const err = new Error('No such competition exists!')
+        return Promise.reject(err)
+      })
+  },
+  
+  /**
+   *
+   * @param {ObjectId} id - The objectId of competition.
+   * @returns {Promise<Competition, Error>}
+   */
+  remove(id) {
+    return this.findByIdAndRemove(id)
+      .exec()
+      .then((competition) => {
+        if (competition) {
+          return competition
+        }
+        const err = new Error('No such competition exists!')
+        return Promise.reject(err)
+      })
   }
 }
 

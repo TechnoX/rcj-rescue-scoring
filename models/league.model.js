@@ -8,6 +8,7 @@ const logger = require('../config/logger').mainLogger
 
 const leagueSchema = new Schema({
   name: {type: String, required: true, unique: true, index: true}
+  // Todo: Here should be definition of which sub-models to use for map and run?
 })
 
 /**
@@ -15,7 +16,7 @@ const leagueSchema = new Schema({
  */
 leagueSchema.statics = {
   /**
-   * Get run
+   * Get league
    * @param {ObjectId} id - The objectId of league.
    * @returns {Promise<League, APIError>}
    */
@@ -26,7 +27,55 @@ leagueSchema.statics = {
         if (league) {
           return league
         }
-        const err = new APIError('No such competition exists!', httpStatus.NOT_FOUND)
+        const err = new Error('No such league exists!')
+        return Promise.reject(err)
+      })
+  },
+  
+  /**
+   * List leagues
+   * @returns {Promise<[League], Error>}
+   */
+  list(query = {}) {
+    return this
+      .find(query)
+      .select("_id name")
+      .lean()
+      .exec()
+  },
+  
+  /**
+   *
+   * @param {ObjectId} id - The objectId of league.
+   * @param {Object} data - League with updated data
+   * @returns {Promise<League, Error>}
+   */
+  update(id, data) {
+    return this.findById(id)
+      .exec()
+      .then((league) => {
+        if (league) {
+          league.set(data)
+          return league.save()
+        }
+        const err = new Error('No such league exists!')
+        return Promise.reject(err)
+      })
+  },
+
+  /**
+   *
+   * @param {ObjectId} id - The objectId of league.
+   * @returns {Promise<League, Error>}
+   */
+  remove(id) {
+    return this.findByIdAndRemove(id)
+      .exec()
+      .then((league) => {
+        if (league) {
+          return league
+        }
+        const err = new Error('No such league exists!')
         return Promise.reject(err)
       })
   }

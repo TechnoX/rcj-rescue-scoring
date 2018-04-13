@@ -77,6 +77,42 @@ teamSchema.statics = {
       .select("_id name")
       .lean()
       .exec()
+  },
+
+  /**
+   *
+   * @param {ObjectId} id - The objectId of team.
+   * @param {Object} data - Team with updated data
+   * @returns {Promise<Team, Error>}
+   */
+  update(id, data) {
+    return this.findById(id)
+      .exec()
+      .then((team) => {
+        if (team) {
+          team.set(data)
+          return team.save()
+        }
+        const err = new Error('No such team exists!')
+        return Promise.reject(err)
+      })
+  },
+  
+  /**
+   *
+   * @param {ObjectId} id - The objectId of team.
+   * @returns {Promise<Team, Error>}
+   */
+  remove(id) {
+    return this.findByIdAndRemove(id)
+      .exec()
+      .then((team) => {
+        if (team) {
+          return team
+        }
+        const err = new Error('No such team exists!')
+        return Promise.reject(err)
+      })
   }
 }
 
