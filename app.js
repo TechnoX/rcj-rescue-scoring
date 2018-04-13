@@ -131,14 +131,8 @@ app.use('/api/fields', apiFieldsRoute)
 app.use('/api/teams', apiTeamsRoute)
 app.use('/api/maps', apiMapsRoute)
 app.use('/api/runs', apiRunsRoute)
-//app.use('/api/maps/line', [apiLineMapsRoute.public, pass.ensureLoginApi, apiLineMapsRoute.private, pass.ensureAdminApi, apiLineMapsRoute.admin])
-//app.use('/api/maps/maze', [apiMazeMapsRoute.public, pass.ensureLoginApi, apiMazeMapsRoute.private, pass.ensureAdminApi, apiMazeMapsRoute.admin])
-//app.use('/api/teams', [apiTeamsRoute.public, pass.ensureLoginApi, apiTeamsRoute.private, pass.ensureAdminApi, apiTeamsRoute.admin])
-//app.use('/api/rounds', [apiRoundsRoute.public, pass.ensureLoginApi, apiRoundsRoute.private, pass.ensureAdminApi, apiRoundsRoute.admin])
-//app.use('/api/fields', [apiFieldsRoute.public, pass.ensureLoginApi, apiFieldsRoute.private, pass.ensureAdminApi, apiFieldsRoute.admin])
-//app.use('/api/runs', [apiRunsRoute.public, pass.ensureLoginApi, apiRunsRoute.private, pass.ensureAdminApi, apiRunsRoute.admin])
-//app.use('/api/competitions', [apiCompetitionsRoute.public, pass.ensureLoginApi, apiCompetitionsRoute.private, pass.ensureAdminApi, apiCompetitionsRoute.admin])
 
+// XXX: FOR DEVELOPMENT ONLY
 var apiEndpoints = getEndpoints(app)
 app.use('/api', express.Router().get('/', function (req, res) {
   res.status(200).send(apiEndpoints)
@@ -148,6 +142,7 @@ app.use('/api', express.Router().get('/', function (req, res) {
 //                          Website static pages(ish)
 //========================================================================
 
+// TODO: Replace pass auth
 app.use('/login', pass.ensureNotAuthenticated, loginRoute)
 app.use('/logout', pass.ensureAuthenticated, function (req, res, next) {
   req.logout()
