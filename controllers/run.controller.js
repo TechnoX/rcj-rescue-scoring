@@ -52,6 +52,11 @@ module.exports.get = (req, res, next) => {
     })
 }
 
+module.exports.getLatest = (req, res, next) => {
+  // TODO: Implement
+  return next()
+}
+
 module.exports.create = (req, res, next) => {
   //logger.debug(req.user)
 
@@ -108,7 +113,7 @@ module.exports.update = (req, res, next) => {
     Run.update(id, run)
       .then((dbRun) => {
         return res.status(200).json({
-          msg: "Run has been saved!",
+          msg : "Run has been saved!",
           data: dbRun
         })
       })

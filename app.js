@@ -59,16 +59,11 @@ const adminRoute = require('./routes/admin')
 
 const apiAuthRoute = require('./routes/api/auth.route')
 const apiCompetitionsRoute = require('./routes/api/competition.route')
+const apiRoundsRoute = require('./routes/api/round.route')
 const apiFieldsRoute = require('./routes/api/field.route')
 const apiTeamsRoute = require('./routes/api/team.route')
 const apiMapsRoute = require('./routes/api/map.route')
-//const apiLineMapsRoute = require('./routes/api/lineMaps')
-//const apiMazeMapsRoute = require('./routes/api/mazeMaps')
-//const apiTeamsRoute = require('./routes/api/teams')
-//const apiRoundsRoute = require('./routes/api/rounds')
-//const apiFieldsRoute = require('./routes/api/fields')
-//const apiRunsRoute = require('./routes/api/run.route')
-//const apiCompetitionsRoute = require('./routes/api/competitions')
+const apiRunsRoute = require('./routes/api/run.route')
 
 
 //========================================================================
@@ -131,9 +126,11 @@ app.use(jwt({
 
 app.use('/api/auth', apiAuthRoute)
 app.use('/api/competitions', apiCompetitionsRoute)
+app.use('/api/rounds', apiRoundsRoute)
 app.use('/api/fields', apiFieldsRoute)
 app.use('/api/teams', apiTeamsRoute)
 app.use('/api/maps', apiMapsRoute)
+app.use('/api/runs', apiRunsRoute)
 //app.use('/api/maps/line', [apiLineMapsRoute.public, pass.ensureLoginApi, apiLineMapsRoute.private, pass.ensureAdminApi, apiLineMapsRoute.admin])
 //app.use('/api/maps/maze', [apiMazeMapsRoute.public, pass.ensureLoginApi, apiMazeMapsRoute.private, pass.ensureAdminApi, apiMazeMapsRoute.admin])
 //app.use('/api/teams', [apiTeamsRoute.public, pass.ensureLoginApi, apiTeamsRoute.private, pass.ensureAdminApi, apiTeamsRoute.admin])

@@ -4,6 +4,7 @@ const router = express.Router()
 const logger = require('../../config/logger').mainLogger
 
 const teamCtrl = require('../../controllers/team.controller')
+const runRoute = require('./run.route')
 
 router.route('/')
 /** GET /api/maps/ - List teams */
@@ -21,6 +22,8 @@ router.route('/:teamId')
 
   /** DELETE /api/teams/:id - Delete team */
   .delete(teamCtrl.remove)
+
+router.use('/:teamId/runs', runRoute)
 
 
 module.exports = router

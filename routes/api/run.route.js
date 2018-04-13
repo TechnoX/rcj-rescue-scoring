@@ -22,6 +22,9 @@ router.route('/:runId')
   /** DELETE /api/runs/:id - Delete run */
   .delete(runCtrl.remove)
 
+router.route('/latest')
+/** GET /api/runs/latest - Get latest run */
+  .get(runCtrl.getLatest)
 
 module.exports = router
 

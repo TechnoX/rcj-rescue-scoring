@@ -5,28 +5,37 @@ const logger = require('../../config/logger').mainLogger
 
 const competitionCtrl = require('../../controllers/competition.controller')
 const mapRoute = require('./map.route')
+const fieldRoute = require('./field.route')
 const teamRoute = require('./team.route')
+const roundRoute = require('./round.route')
+const runRoute = require('./run.route')
 
 router.route('/')
 /** GET /api/competitions/ - List competitions */
   .get(competitionCtrl.list)
-
+  
   /** POST /api/competitions/ - Create competition */
   .post(competitionCtrl.create)
 
 router.route('/:competitionId')
 /** GET /api/competitions/:id - Get competition */
   .get(competitionCtrl.get)
-
+  
   /** PUT /api/competitions/:id - Update competition */
   .put(competitionCtrl.update)
-
+  
   /** DELETE /api/competitions/:id - Delete competition */
   .delete(competitionCtrl.remove)
 
 router.use('/:competitionId/maps', mapRoute)
 
+router.use('/:competitionId/fields', fieldRoute)
+
 router.use('/:competitionId/teams', teamRoute)
+
+router.use('/:competitionId/rounds', roundRoute)
+
+router.use('/:competitionId/runs', runRoute)
 
 
 module.exports = router

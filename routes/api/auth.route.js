@@ -2,11 +2,10 @@
 //                          Libraries
 //========================================================================
 
-var express = require('express')
-var router = express.Router()
-var validator = require('validator')
+const express = require('express')
+const router = express.Router()
 const authCtrl = require('../../controllers/auth.controller')
-var logger = require('../../config/logger').mainLogger;
+const logger = require('../../config/logger').mainLogger;
 
 //========================================================================
 //                          auth(mixed) Api endpoints
