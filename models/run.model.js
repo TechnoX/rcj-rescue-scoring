@@ -147,6 +147,18 @@ runSchema.statics = {
         return Promise.reject(err)
       })
   },
+
+  /**
+   * Get latest run
+   * @returns {Promise<Run, Error>}
+   */
+  getLatest(query = {}) {
+    return this
+      .findOne(query)
+      .sort("-updatedAt") // TODO: Might only want to look at started runs?
+      .lean()
+      .exec()
+  },
   
   
   /**
