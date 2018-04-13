@@ -65,7 +65,17 @@ teamSchema.statics = {
         const err = new Error('No such team exists!')
         return Promise.reject(err)
       })
-  }
+  },
+
+  /**
+   * List teams
+   * @returns {Promise<[Team], Error>}
+   */
+  list() {
+    return this.find({})
+      .lean()
+      .exec()
+  },
 }
 
 teamSchema.plugin(idValidator)

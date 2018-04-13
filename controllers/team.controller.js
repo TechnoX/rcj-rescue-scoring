@@ -7,8 +7,12 @@ const access = require('../helpers/accessLevels')
 const ROLES = access.ROLES
 
 module.exports.list = (req, res, next) => {
-  // TODO: Filter list by competition (and other criteria)
-  return Team.list()
+  let query = {}
+  if (req.params.competitionId && ObjectId.isValid(req.params.competitionId)) {
+    query.competition = req.params.competitionId
+  }
+
+  return Team.list(query)
     .then(dbTeams => {
       return res.status(200).json(dbTeams)
     }).catch(err => {
@@ -17,7 +21,7 @@ module.exports.list = (req, res, next) => {
 }
 
 module.exports.get = (req, res, next) => {
-  const id = req.params.id
+  const id = req.params.teamId
 
   if (!ObjectId.isValid(id)) {
     return next()
@@ -60,7 +64,7 @@ module.exports.create = (req, res, next) => {
 }
 
 module.exports.update = (req, res, next) => {
-  const id = req.params.id
+  const id = req.params.teamId
 
   if (!ObjectId.isValid(id)) {
     return next()
@@ -92,7 +96,7 @@ module.exports.update = (req, res, next) => {
 }
 
 module.exports.remove = (req, res, next) => {
-  const id = req.params.id
+  const id = req.params.teamId
 
   if (!ObjectId.isValid(id)) {
     return next()

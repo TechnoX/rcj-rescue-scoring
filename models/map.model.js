@@ -85,6 +85,19 @@ mapSchema.statics = {
       })
   },
 
+
+  /**
+   * List maps
+   * @returns {Promise<[Map], Error>}
+   */
+  list(query = {}) {
+    return this
+      .find(query)
+      .select("_id name")
+      .lean()
+      .exec()
+  },
+
   /**
    *
    * @param {ObjectId} id - The objectId of map.

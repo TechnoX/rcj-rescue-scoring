@@ -18,8 +18,27 @@ const ROLES = access.ROLES
 
 const typeModels = requireGlob.sync('../models/*.map.model.js')
 
+module.exports.list = (req, res, next) => {
+  let query = {}
+  if (req.params.competitionId && ObjectId.isValid(req.params.competitionId)) {
+    query.competition = req.params.competitionId
+  }
+
+  // Todo: make this work, should have better type identifier in model
+  if (req.params.type) {
+    query.type = req.params.type
+  }
+
+  return Map.list(query)
+    .then(dbMaps => {
+      return res.status(200).json(dbMaps)
+    }).catch(err => {
+      return next(err)
+    })
+}
+
 module.exports.get = (req, res, next) => {
-  const id = req.params.id
+  const id = req.params.mapId
 
   if (!ObjectId.isValid(id)) {
     return next()
@@ -74,7 +93,7 @@ module.exports.create = (req, res, next) => {
 }
 
 module.exports.update = (req, res, next) => {
-  const id = req.params.id
+  const id = req.params.mapId
 
   if (!ObjectId.isValid(id)) {
     return next()
@@ -89,7 +108,7 @@ module.exports.update = (req, res, next) => {
     Map.update(id, map)
       .then((dbMap) => {
         return res.status(200).json({
-          msg: "Map has been saved!",
+          msg : "Map has been saved!",
           data: dbMap
         })
       })
@@ -106,7 +125,7 @@ module.exports.update = (req, res, next) => {
 }
 
 module.exports.remove = (req, res, next) => {
-  const id = req.params.id
+  const id = req.params.mapId
 
   if (!ObjectId.isValid(id)) {
     return next()

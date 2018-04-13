@@ -4,7 +4,8 @@ const router = express.Router()
 const logger = require('../../config/logger').mainLogger
 
 const competitionCtrl = require('../../controllers/competition.controller')
-const mapCtrl = require('../../controllers/map.controller')
+const mapRoute = require('./map.route')
+const teamRoute = require('./team.route')
 
 router.route('/')
 /** GET /api/competitions/ - List competitions */
@@ -13,7 +14,7 @@ router.route('/')
   /** POST /api/competitions/ - Create competition */
   .post(competitionCtrl.create)
 
-router.route('/:id')
+router.route('/:competitionId')
 /** GET /api/competitions/:id - Get competition */
   .get(competitionCtrl.get)
 
@@ -22,6 +23,10 @@ router.route('/:id')
 
   /** DELETE /api/competitions/:id - Delete competition */
   .delete(competitionCtrl.remove)
+
+router.use('/:competitionId/maps', mapRoute)
+
+router.use('/:competitionId/teams', teamRoute)
 
 
 module.exports = router

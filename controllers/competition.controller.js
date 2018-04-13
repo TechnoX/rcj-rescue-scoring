@@ -16,7 +16,7 @@ module.exports.list = (req, res, next) => {
 }
 
 module.exports.get = (req, res, next) => {
-  const id = req.params.id
+  const id = req.params.competitionId
 
   if (!ObjectId.isValid(id)) {
     return next()
@@ -59,7 +59,7 @@ module.exports.create = (req, res, next) => {
 }
 
 module.exports.update = (req, res, next) => {
-  const id = req.params.id
+  const id = req.params.competitionId
 
   if (!ObjectId.isValid(id)) {
     return next()
@@ -90,7 +90,7 @@ module.exports.update = (req, res, next) => {
 }
 
 module.exports.remove = (req, res, next) => {
-  const id = req.params.id
+  const id = req.params.competitionId
 
   if (!ObjectId.isValid(id)) {
     return next()

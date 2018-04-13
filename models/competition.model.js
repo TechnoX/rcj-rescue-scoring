@@ -43,9 +43,11 @@ competitionSchema.statics = {
    * @returns {Promise<[Competition], Error>}
    */
   list(includeHidden) {
-    const query = includeHidden ? {} : {hidden : false}
+    const query = includeHidden ? {} : {hidden: false}
 
-    return this.find(query, "_id name")
+    return this
+      .find(query)
+      .select("_id name")
       .lean()
       .exec()
   }

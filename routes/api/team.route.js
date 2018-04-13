@@ -6,10 +6,13 @@ const logger = require('../../config/logger').mainLogger
 const teamCtrl = require('../../controllers/team.controller')
 
 router.route('/')
+/** GET /api/maps/ - List teams */
+  .get(teamCtrl.list)
+
   /** POST /api/teams/ - Create team */
   .post(teamCtrl.create)
 
-router.route('/:id')
+router.route('/:teamId')
 /** GET /api/teams/:id - Get team */
   .get(teamCtrl.get)
 

@@ -6,17 +6,20 @@ const logger = require('../../config/logger').mainLogger
 const mapCtrl = require('../../controllers/map.controller')
 
 router.route('/')
-/** POST /api/maps/ - Create map */
+/** GET /api/maps/ - List maps */
+  .get(mapCtrl.list)
+
+  /** POST /api/maps/ - Create map */
   .post(mapCtrl.create)
 
-router.route('/:id')
-/** GET /api/maps/:id - Get run */
+router.route('/:mapId')
+/** GET /api/maps/:id - Get map */
   .get(mapCtrl.get)
   
-  /** PUT /api/maps/:id - Update run */
+  /** PUT /api/maps/:id - Update map */
   .put(mapCtrl.update)
   
-  /** DELETE /api/maps/:id - Delete run */
+  /** DELETE /api/maps/:id - Delete map */
   .delete(mapCtrl.remove)
 
 
