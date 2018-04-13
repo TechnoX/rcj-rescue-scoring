@@ -52,6 +52,7 @@ const adminRoute = require('./routes/admin')
 
 const apiAuthRoute = require('./routes/api/auth.route')
 const apiCompetitionsRoute = require('./routes/api/competition.route')
+const apiFieldsRoute = require('./routes/api/field.route')
 const apiTeamsRoute = require('./routes/api/team.route')
 const apiMapsRoute = require('./routes/api/map.route')
 //const apiLineMapsRoute = require('./routes/api/lineMaps')
@@ -98,17 +99,17 @@ app.use(express.static(path.join(__dirname, 'public')))
  */
 // init passport and session
 /*
-app.use(session({
-  store : new connectMongo({
-    mongooseConnection: mongoose.connection
-  }),
-  secret: 'rcjscoring'
-}))
-app.use(passport.initialize())
-app.use(passport.session())
-*/
+ app.use(session({
+ store : new connectMongo({
+ mongooseConnection: mongoose.connection
+ }),
+ secret: 'rcjscoring'
+ }))
+ app.use(passport.initialize())
+ app.use(passport.session())
+ */
 app.use(jwt({
-  secret: 'hello world !', // FIXME: should be a secret to everybody!
+  secret             : 'hello world !', // FIXME: should be a secret to everybody!
   credentialsRequired: false
 }))
 
@@ -123,6 +124,7 @@ app.use(jwt({
 
 app.use('/api/auth', apiAuthRoute)
 app.use('/api/competitions', apiCompetitionsRoute)
+app.use('/api/fields', apiFieldsRoute)
 app.use('/api/teams', apiTeamsRoute)
 app.use('/api/maps', apiMapsRoute)
 //app.use('/api/maps/line', [apiLineMapsRoute.public, pass.ensureLoginApi, apiLineMapsRoute.private, pass.ensureAdminApi, apiLineMapsRoute.admin])
