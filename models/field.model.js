@@ -15,7 +15,7 @@ const fieldSchema = new Schema({
     required: true,
     index   : true
   },
-  league     : {
+  league     : { // XXX: Should this be bound?
     type    : ObjectId,
     ref     : 'League',
     required: true,
@@ -24,6 +24,7 @@ const fieldSchema = new Schema({
   name       : {type: String, required: true}
 })
 fieldSchema.index({competition: 1, league: 1})
+fieldSchema.index({competition: 1, league: 1, name: 1}, {unique: true})
 
 fieldSchema.pre('save', function (next) {
   const self = this
@@ -47,9 +48,41 @@ fieldSchema.pre('save', function (next) {
   }
 })
 
+/**
+ * Statics
+ */
+fieldSchema.statics = {
+  /**
+   * Get field
+   * @param {ObjectId} id - The objectId of field.
+   * @returns {Promise<Field, Error>}
+   */
+  get(id) {
+    return this.findById(id)
+      .exec()
+      .then((field) => {
+        if (field) {
+          return field
+        }
+        const err = new Error('No such field exists!')
+        return Promise.reject(err)
+      })
+  },
+  
+  /**
+   * List fields
+   * @returns {Promise<[Field], Error>}
+   */
+  list(query = {}) {
+    return this
+      .find(query)
+      .select("_id name")
+      .lean()
+      .exec()
+  }
+}
+
 fieldSchema.plugin(idValidator)
 
-const Field = mongoose.model('Field', fieldSchema)
-
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
-module.exports.field = Field
+const Field = module.exports.field = mongoose.model('Field', fieldSchema)

@@ -71,11 +71,13 @@ teamSchema.statics = {
    * List teams
    * @returns {Promise<[Team], Error>}
    */
-  list() {
-    return this.find({})
+  list(query = {}) {
+    return this
+      .find(query)
+      .select("_id name")
       .lean()
       .exec()
-  },
+  }
 }
 
 teamSchema.plugin(idValidator)
