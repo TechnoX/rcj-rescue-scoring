@@ -1,7 +1,5 @@
 "use strict"
 const mongoose = require('mongoose')
-mongoose.Promise = require('bluebird')
-const idValidator = require('mongoose-id-validator')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
 
@@ -147,7 +145,5 @@ mapSchema.methods = {
     return JSON.parse(JSON.stringify(filteredData))
   }
 }
-
-mapSchema.plugin(idValidator)
 
 const Map = module.exports = mongoose.model('Map', mapSchema)

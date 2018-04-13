@@ -1,9 +1,6 @@
 "use strict"
 const mongoose = require('mongoose')
-const mongooseInteger = require('mongoose-integer')
-const validator = require('validator')
 const Schema = mongoose.Schema
-const async = require('async')
 
 const logger = require('../config/logger').mainLogger
 
@@ -31,12 +28,8 @@ const tileTypeSchema = new Schema({
   }
 })
 
-tileTypeSchema.plugin(mongooseInteger)
-
-const TileType = mongoose.model('TileType', tileTypeSchema)
-
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
-module.exports.tileType = TileType
+const TileType = module.exports = mongoose.model('TileType', tileTypeSchema)
 
 const tileTypes = [
   {

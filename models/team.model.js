@@ -1,6 +1,5 @@
 "use strict"
 const mongoose = require('mongoose')
-const idValidator = require('mongoose-id-validator')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
 
@@ -115,8 +114,6 @@ teamSchema.statics = {
       })
   }
 }
-
-teamSchema.plugin(idValidator)
 
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
 const Team = module.exports = mongoose.model('Team', teamSchema)

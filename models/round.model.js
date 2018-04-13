@@ -1,14 +1,9 @@
 "use strict"
-const _ = require('underscore')
 const mongoose = require('mongoose')
-const idValidator = require('mongoose-id-validator')
-const validator = require('validator')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
 
 const logger = require('../config/logger').mainLogger
-
-const leagues = require("./../leagues")
 
 const roundSchema = new Schema({
   competition: {
@@ -119,8 +114,6 @@ roundSchema.statics = {
       })
   }
 }
-
-roundSchema.plugin(idValidator)
 
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
 const Round = module.exports = mongoose.model('Round', roundSchema)

@@ -20,7 +20,14 @@ var async = require('async')
 // db
 var db = require('./config/db')
 
-var mongoose = require('mongoose')
+const mongoose = require('mongoose')
+const mongooseInteger = require('mongoose-integer')
+const idValidator = require('mongoose-id-validator')
+
+mongoose.Promise = require('bluebird')
+
+mongoose.plugin(mongooseInteger)
+mongoose.plugin(idValidator)
 
 // auth
 var pass = require('./config/pass')

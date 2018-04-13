@@ -18,6 +18,24 @@ const ROLES = access.ROLES
 
 const typeModels = requireGlob.sync('../models/*.run.model.js')
 
+module.exports.list = (req, res, next) => {
+  let query = {}
+  if (req.params.competitionId && ObjectId.isValid(req.params.competitionId)) {
+    query.competition = req.params.competitionId
+  }
+
+  // Todo: make this work, should have better type identifier in model
+  if (req.params.type) {
+    query.type = req.params.type
+  }
+
+  return Run.list(query)
+    .then(dbRuns => {
+      return res.status(200).json(dbRuns)
+    }).catch(err => {
+      return next(err)
+    })
+}
 
 module.exports.get = (req, res, next) => {
   const id = req.params.id

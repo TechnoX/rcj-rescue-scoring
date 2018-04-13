@@ -1,7 +1,5 @@
 "use strict"
 const mongoose = require('mongoose')
-mongoose.Promise = require('bluebird')
-const idValidator = require('mongoose-id-validator')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
 
@@ -88,8 +86,6 @@ competitionSchema.statics = {
       })
   }
 }
-
-competitionSchema.plugin(idValidator)
 
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
 const Competition = module.exports = mongoose.model('Competition', competitionSchema)

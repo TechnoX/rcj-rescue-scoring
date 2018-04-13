@@ -1,8 +1,5 @@
 "use strict"
 const mongoose = require('mongoose')
-const mongooseInteger = require('mongoose-integer')
-const idValidator = require('mongoose-id-validator')
-const validator = require('validator')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
 const async = require('async')
@@ -122,9 +119,6 @@ lineMapSchema.methods = {
     return JSON.parse(JSON.stringify(filteredData))
   }
 }
-
-lineMapSchema.plugin(mongooseInteger)
-lineMapSchema.plugin(idValidator)
 
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
 const LineMap = module.exports = Map.discriminator("LineMap", lineMapSchema)

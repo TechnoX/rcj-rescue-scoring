@@ -1,54 +1,31 @@
 "use strict"
 const express = require('express')
-const publicRouter = express.Router()
-const privateRouter = express.Router()
-const adminRouter = express.Router()
-const validator = require('validator')
-const async = require('async')
-const ObjectId = require('mongoose').Types.ObjectId
+const router = express.Router()
 const logger = require('../../config/logger').mainLogger
-const fs = require('fs')
-const pathFinder = require('../../leagues/line/pathFinder')
-const auth = require('../../helpers/authLevels')
-const ACCESSLEVELS = require('../../models/user.model').ACCESSLEVELS
 
 const runCtrl = require('../../controllers/run.controller')
-const run = require('../../models/run.model').run
-const baseModel = require('../../models/run.model').model
-var socketIo
 
-module.exports.connectSocketIo = function (io) {
-  socketIo = io
-}
+router.route('/')
+/** GET /api/runs/ - List runs */
+  .get(runCtrl.list)
 
-adminRouter.route('/')
-/** POST /api/runs/ - Create run */
-  .post()
+  /** POST /api/runs/ - Create run */
+  .post(runCtrl.create)
 
-publicRouter.route('/:id')
-/** GET /api/runs/:runid - Get run */
+router.route('/:runId')
+/** GET /api/runs/:id - Get run */
   .get(runCtrl.get)
 
+  /** PUT /api/runs/:id - Update run */
+  .put(runCtrl.update)
 
-privateRouter.route('/:id')
-/** PUT /api/runs/:runid - Update run */
-  .put()
+  /** DELETE /api/runs/:id - Delete run */
+  .delete(runCtrl.remove)
 
-adminRouter.route('/:id')
-/** DELETE /api/runs/:runit - Delete run */
-  .delete()
 
-publicRouter.all('*', function (req, res, next) {
-  next()
-})
-privateRouter.all('*', function (req, res, next) {
-  next()
-})
+module.exports = router
 
-module.exports.public = publicRouter
-module.exports.private = privateRouter
-module.exports.admin = adminRouter
-
+return;
 /***** END FILE HERE *****/
 
 

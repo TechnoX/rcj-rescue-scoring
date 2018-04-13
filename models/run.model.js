@@ -1,12 +1,8 @@
 "use strict"
 const mongoose = require('mongoose')
-mongoose.Promise = require('bluebird')
 const timestamps = require('mongoose-timestamp')
-const idValidator = require('mongoose-id-validator')
-const validator = require('validator')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
-const async = require('async')
 
 const logger = require('../config/logger').mainLogger
 
@@ -21,11 +17,11 @@ const runSchema = new Schema({
   round      : {type: ObjectId, ref: 'Round', required: true, index: true},
   team       : {type: ObjectId, ref: 'Team', required: true, index: true},
   field      : {type: ObjectId, ref: 'Field', required: true, index: true},
-
+  
   judges: [{type: ObjectId, ref: 'User'}],
-
+  
   LoPs: {type: [Number], min: 0},
-
+  
   score    : {type: Number, min: 0, default: 0},
   showedUp : {type: Boolean, default: false},
   time     : {
@@ -66,31 +62,31 @@ runSchema.pre('save', function (next) {
             return next(err)
           } else {
             const competitionId = results.competition.id
-
+            
             if (popRun.round.competition != competitionId) {
               return next(new Error("Round does not match competition!"))
             }
-
+            
             if (popRun.team.competition != competitionId) {
               return next(new Error("Team does not match competition!"))
             }
-
+            
             if (popRun.field.competition != competitionId) {
               return next(new Error("Field does not match competition!"))
             }
-
+            
             if (popRun.round.league != self.league) {
               return next(new Error("Round does not match league!"))
             }
-
+            
             if (popRun.team.league != self.league) {
               return next(new Error("Team does not match league!"))
             }
-
+            
             if (popRun.field.league != self.league) {
               return next(new Error("Field does not match league!"))
             }
-
+            
             return next()
           }
         })
@@ -104,9 +100,9 @@ runSchema.pre('save', function (next) {
 // What is allowed to be changed
 module.exports.model = {
   judges: {type: Array, child: {type: String}, extendable: true},
-
+  
   LoPs: {type: Array, child: {type: Number}, extendable: true},
-
+  
   showedUp : {type: Boolean},
   time     : {
     type : Object,
@@ -127,7 +123,7 @@ module.exports.model = {
   started  : {type: Boolean},
   comment  : {type: String},
   startTime: {type: Number},
-
+  
   score: {type: Number} // Delete this in submodels to calculate score on backend
 }
 
@@ -151,8 +147,8 @@ runSchema.statics = {
         return Promise.reject(err)
       })
   },
-
-
+  
+  
   /**
    * List runs
    * @returns {Promise<[Run], Error>}
@@ -164,7 +160,7 @@ runSchema.statics = {
       .lean()
       .exec()
   },
-
+  
   /**
    *
    * @param {ObjectId} id - The objectId of run.
@@ -184,7 +180,7 @@ runSchema.statics = {
         return Promise.reject(err)
       })
   },
-
+  
   /**
    *
    * @param {ObjectId} id - The objectId of run.
@@ -210,14 +206,13 @@ runSchema.methods = {
       name    : data.name,
       finished: data.finished
     }
-
+    
     // Stringify and parse to remove undefined properties
     return JSON.parse(JSON.stringify(filteredData))
   }
 }
 
 runSchema.plugin(timestamps)
-runSchema.plugin(idValidator)
 
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
 module.exports = mongoose.model('Run', runSchema)

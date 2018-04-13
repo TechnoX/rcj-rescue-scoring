@@ -3,11 +3,10 @@ const mongoose = require('mongoose')
 const validator = require('validator')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
-const async = require('async')
 
 const Run = require('./run.model')
 
-const logger = require('../../config/logger').mainLogger
+const logger = require('../config/logger').mainLogger
 
 
 const lineRunSchema = new Schema({
@@ -92,9 +91,6 @@ lineRunSchema.methods = {
     return JSON.parse(JSON.stringify(filteredData))
   }
 }
-
-lineRunSchema.plugin(mongooseInteger)
-lineRunSchema.plugin(idValidator)
 
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
 const LineRun = module.exports = Run.discriminator("LineRun", lineRunSchema)
