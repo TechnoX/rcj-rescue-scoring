@@ -8,9 +8,6 @@ const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
 const async = require('async')
 
-const httpStatus = require('http-status')
-const APIError = require('../helpers/APIError')
-
 const logger = require('../config/logger').mainLogger
 
 const runSchema = new Schema({
@@ -141,33 +138,83 @@ runSchema.statics = {
   /**
    * Get run
    * @param {ObjectId} id - The objectId of run.
-   * @returns {Promise<Post, APIError>}
+   * @returns {Promise<Run, Error>}
    */
   get(id) {
     return this.findById(id)
       .exec()
-      .then((post) => {
-        if (post) {
-          return post;
+      .then((run) => {
+        if (run) {
+          return run
         }
-        const err = new APIError('No such run exists!', httpStatus.NOT_FOUND);
-        return Promise.reject(err);
-      });
+        const err = new Error('No such run exists!')
+        return Promise.reject(err)
+      })
+  },
+
+
+  /**
+   * List runs
+   * @returns {Promise<[Run], Error>}
+   */
+  list(query = {}) {
+    return this
+      .find(query)
+      .select("_id name")
+      .lean()
+      .exec()
   },
 
   /**
    *
    * @param {ObjectId} id - The objectId of run.
    * @param {Object} data - Run with updated data
-   * @returns {Promise<Post, APIError>}
+   * @returns {Promise<Run, Error>}
    */
   update(id, data) {
+    return this.findById(id)
+      .exec()
+      .then((run) => {
+        if (run) {
+          let filteredData = run.updateFilter(data)
+          run.set(filteredData)
+          return run.save()
+        }
+        const err = new Error('No such run exists!')
+        return Promise.reject(err)
+      })
+  },
 
-    // TODO: Do filtering of data here?
-
-    return this.findByIdAndUpdate(id, data).exec()
+  /**
+   *
+   * @param {ObjectId} id - The objectId of run.
+   * @returns {Promise<Run, Error>}
+   */
+  remove(id) {
+    return this.findByIdAndRemove(id)
+      .exec()
+      .then((run) => {
+        if (run) {
+          return run
+        }
+        const err = new Error('No such run exists!')
+        return Promise.reject(err)
+      })
   }
-};
+}
+
+runSchema.methods = {
+  updateFilter(data) {
+    // TODO: Update filter
+    let filteredData = {
+      name    : data.name,
+      finished: data.finished
+    }
+
+    // Stringify and parse to remove undefined properties
+    return JSON.parse(JSON.stringify(filteredData))
+  }
+}
 
 runSchema.plugin(timestamps)
 runSchema.plugin(idValidator)
