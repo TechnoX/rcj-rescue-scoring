@@ -2,7 +2,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
-const async = require('async')
 
 const logger = require('../config/logger').mainLogger
 
