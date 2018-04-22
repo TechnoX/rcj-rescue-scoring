@@ -29,7 +29,7 @@ module.exports.calculateLineScore = function (run) {
     if (tile.scored) {
       if (tile.isDropTile) {
         let tileCount = i - lastDropTile
-        score += Math.max(tileCount * (3 - run.LoPs[dropTileCount]), 0)
+        score += Math.max(tileCount * (5 - 2 * run.LoPs[dropTileCount]), 0)
       }
       
       score += mapTiles[i].tileType.gaps * 10
@@ -45,22 +45,22 @@ module.exports.calculateLineScore = function (run) {
   }
   
   if (run.evacuationLevel == 1) {
-    score += run.rescuedLiveVictims * 30
-    score += run.rescuedDeadVictims * 15
+    score += run.rescuedLiveVictims * Math.max(30 - 5 * run.LoPs[dropTileCount], 0)
+    score += run.rescuedDeadVictims * Math.max(15 - 5 * run.LoPs[dropTileCount], 0)
     
   } else if (run.evacuationLevel == 2) {
-    score += run.rescuedLiveVictims * 40
-    score += run.rescuedDeadVictims * 20
+    score += run.rescuedLiveVictims * Math.max(40 - 5 * run.LoPs[dropTileCount], 0)
+    score += run.rescuedDeadVictims * Math.max(20 - 5 * run.LoPs[dropTileCount], 0)
   }
   
   if (run.exitBonus) {
     score += 20
   }
   
-  // 3 points for placing robot on first droptile (start)
+  // 5 points for placing robot on first droptile (start)
   // Implicit showedUp if anything else is scored
   if (run.showedUp || score > 0) {
-    score += 3
+    score += 5
   }
   
   return score
