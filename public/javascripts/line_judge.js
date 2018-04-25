@@ -4,7 +4,7 @@ var marker = {};
 
 // function referenced by the drop target
 app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', function ($scope, $uibModal, $log, $timeout, $http) {
-  
+  $scope.Math = window.Math;
   
   $scope.z = 0;
   $scope.placedDropTiles = 0;
@@ -174,8 +174,12 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }, function (response) {
       console.log("Error: " + response.statusText);
     });
-    if ($scope.LoPs[index] >= 3 &&
-        !last) swal("LoPs Count > 3", "The team *may* move to next checkpoint tile now.", "info");
+    if ($scope.LoPs[index] >= 3 && !last) {
+      swal("LoPs Count >= 3", "The team *may* move to next checkpoint tile now.", "info");
+    }
+    if ($scope.LoPs[index] * 5 >= (30 + ($scope.evacuationLevel - 1) * 10) && last) {
+      swal("LoPs Count >= " + ($scope.evacuationLevel == 2 ? "8" : "6"), "Victim rescues no longer score points!", "info");
+    }
   }
   
   $scope.decVictims = function (type) {
