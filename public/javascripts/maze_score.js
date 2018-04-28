@@ -116,6 +116,8 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
       sum.score += runs[i].score
       sum.time.minutes += runs[i].time.minutes
       sum.time.seconds += runs[i].time.seconds
+      sum.time.minutes += Math.floor(sum.time.seconds / 60)
+      sum.time.seconds %= 60
     }
     
     return sum
