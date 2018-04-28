@@ -112,7 +112,7 @@ angular.module("MazeScore", ['datatables']).controller("MazeScoreController", fu
       }
     }
     
-    for (let i = 0; i < Math.min(3, runs.length); i++) {
+    for (let i = 0; i < Math.min(2, runs.length); i++) {
       sum.score += runs[i].score
       sum.time.minutes += runs[i].time.minutes
       sum.time.seconds += runs[i].time.seconds
