@@ -40,6 +40,8 @@
     "path": "^0.12.7",
     "protobufjs": "^6.8.0",
     "serve-favicon": "~2.4.5",
+    "pdfkit": "^0.8.3",
+    "qr-image": "^3.2.0",
     "sessionstore": "^1.0.5",
     "socket.io": "^2.0.4",
     "socket.io-redis": "^5.2.0",
