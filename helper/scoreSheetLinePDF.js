@@ -39,16 +39,16 @@ const globalConfig = {
   }
 }
 
-function drawCheckbox(doc, posX, posY, size, text, color) {
-  doc.rect(posX, posY, size, size)
+function drawCheckbox(doc, pos, size, text, color) {
+  doc.rect(pos.x, pos.y, size, size)
     .strokeColor(color)
     .lineWidth(1)
     .fillAndStroke("white", color)
 
   doc.fontSize(size)
   doc.fillAndStroke("black", "black")
-    .text(text, posX + size + 2, posY + 1)
-    .highlight(posX + size + 2, posY, doc.widthOfString(text), size)
+    .text(text, pos.x + size + 2, pos.y + 1)
+    .highlight(pos.x + size + 2, pos.y, doc.widthOfString(text), size)
 }
 
 function tileIsDroptile(tile) {
@@ -77,15 +77,20 @@ function drawHeader(doc, pos, config, round, field, team) {
 function tileAddCheckbox(doc, checkboxes, pos, config, text, color) {
   var checkbox_horizontal_amount = Math.floor((config.fields.tileSize - config.fields.checkbox.marginBorder * 2) / (config.fields.checkbox.size * 2))
   var checkbox_vertical_amount = Math.floor((config.fields.tileSize - config.fields.checkbox.marginBorder * 2) / (config.fields.checkbox.size + config.fields.checkbox.marginCheckbox))
-  console.log(checkbox_horizontal_amount, checkbox_vertical_amount)
   if (checkboxes[checkboxes.length - 1].length == (checkbox_horizontal_amount * checkbox_vertical_amount)) {
     console.log("CANT PLACE ANY MORE CHECKBOXES!!!")
   }
 
-  var checkbox_pos_x = pos.x + config.fields.checkbox.marginBorder + Math.floor(checkboxes[checkboxes.length - 1].length / checkbox_vertical_amount) * ((config.fields.checkbox.size * 2) + config.fields.checkbox.marginCheckbox)
-  var checkbox_pos_y = pos.y + config.fields.checkbox.marginBorder + (checkboxes[checkboxes.length - 1].length % checkbox_vertical_amount) * (config.fields.checkbox.size + config.fields.checkbox.marginCheckbox)
-  drawCheckbox(doc, checkbox_pos_x, checkbox_pos_y, config.fields.checkbox.size, text, color)
-  checkboxes[checkboxes.length - 1].push({type: text, x: checkbox_pos_x, y: checkbox_pos_y})
+  var checkbox_pos = {
+    x: pos.x + config.fields.checkbox.marginBorder
+      + Math.floor(checkboxes[checkboxes.length - 1].length / checkbox_vertical_amount)
+      * ((config.fields.checkbox.size * 2) + config.fields.checkbox.marginCheckbox),
+    y: pos.y + config.fields.checkbox.marginBorder
+      + (checkboxes[checkboxes.length - 1].length % checkbox_vertical_amount)
+      * (config.fields.checkbox.size + config.fields.checkbox.marginCheckbox)
+  }
+  drawCheckbox(doc, checkbox_pos, config.fields.checkbox.size, text, color)
+  checkboxes[checkboxes.length - 1].push({type: text, pos: checkbox_pos})
 }
 
 function drawFields(doc, pos, config, map) {

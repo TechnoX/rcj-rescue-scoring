@@ -12,6 +12,7 @@ const fs = require('fs')
 const pathFinder = require('../../helper/pathFinder')
 const scoreCalculator = require('../../helper/scoreCalculator')
 const auth = require('../../helper/authLevels')
+const scoreSheetLinePDF = require('../../helper/scoreSheetLinePDF')
 const ACCESSLEVELS = require('../../models/user').ACCESSLEVELS
 
 var socketIo
@@ -444,7 +445,7 @@ privateRouter.put('/:runid', function (req, res, next) {
 })
 
 /**
- * @api {get} /scoringSheet Generate scoring sheet for list of runs
+ * @api {get} /scoreSheet Generate scoring sheet for list of runs
  * @apiName GetScoringSheet
  * @apiGroup Get
  * @apiVersion 1.0.1
@@ -484,7 +485,10 @@ function getScoringSheets(req, res, next) {
     },
     {
       path  : "map",
-      select: "name height width length numberOfDropTiles finished startTile tiles"
+      select: "name height width length numberOfDropTiles finished startTile tiles",
+      populate: {
+        path: "tiles.tileType"
+      }
     }
   ])
 
@@ -495,14 +499,8 @@ function getScoringSheets(req, res, next) {
         msg: "Could not get runs"
       })
     } else if (dbRuns) {
-      for (let i = 0; i < dbRuns.length; i++) {
-        console.log(dbRuns[i])
-      }
+      scoreSheetLinePDF.generateScoreSheet(res, dbRuns)
     }
-  })
-
-  res.status(200).send({
-    msg: "Generated!"
   })
 }
 module.exports.getScoringSheets = getScoringSheets
