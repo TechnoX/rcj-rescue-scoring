@@ -41,8 +41,9 @@ const globalConfig = {
       marginsVertical: 10 // Vertical space between two input fields
     }
   },
-  signatures: {
-
+  signature: {
+    width: 200,
+    height: 40
   }
 }
 
@@ -257,6 +258,18 @@ function drawLOPInputField(doc, config, pos_x, pos_y, text) {
   return drawInputField(doc, config, pos_x, pos_y, text, columnText, rowText)
 }
 
+function drawSignatureBox(doc, config, pos_x, pos_y, text) {
+  doc.fontSize(config.data.inputs.labelFontSize)
+    .fillColor("black")
+    .text(text, pos_x, pos_y)
+  pos_y += config.data.inputs.labelFontSize
+
+  doc.rect(pos_x, pos_y, config.signature.width, config.signature.height)
+    .fillAndStroke("white", "black")
+
+  return pos_y + config.signature.height
+}
+
 function drawTimeInputField(doc, config, pos_x, pos_y) {
   var columnText = ["0", "1", "2", "3", "4", "5", "6", "7", "8"]
   var rowText = ["Minutes", "Seconds", "Seconds"]
@@ -291,7 +304,10 @@ function drawRun(doc, config, round, field, team, time, map) {
   pos_y = drawLOPInputFields(doc, config, pos_x, pos_y, map) + config.data.inputs.marginsVertical
   pos_y = drawVictimInputField(doc, config, pos_x, pos_y, 9, "alive") + config.data.inputs.marginsVertical
   pos_y = drawVictimInputField(doc, config, pos_x, pos_y, 9, "dead") + config.data.inputs.marginsVertical
-  drawTimeInputField(doc, config, pos_x, pos_y)
+  pos_y = drawTimeInputField(doc, config, pos_x, pos_y) + config.data.inputs.marginsVertical
+  pos_y = drawSignatureBox(doc, config, pos_x, pos_y, "Team:") + config.data.inputs.marginsVertical
+  pos_y = drawSignatureBox(doc, config, pos_x, pos_y, "Referee:") + config.data.inputs.marginsVertical
+  drawSignatureBox(doc, config, pos_x, pos_y, "Co-Referee:")
 }
 
 module.exports.generateScoreSheet = function(res, rounds) {
