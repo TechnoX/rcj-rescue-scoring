@@ -239,10 +239,12 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
       lops   : 0
     }
     
-    for (let i = 0; i < Math.min(9, runs.length); i++) {
+    for (let i = 0; i < Math.min(2, runs.length); i++) {
       sum.score += runs[i].score
       sum.time.minutes += runs[i].time.minutes
       sum.time.seconds += runs[i].time.seconds
+      sum.time.minutes += Math.floor(sum.time.seconds / 60)
+      sum.time.seconds %= 60
       sum.rescued += runs[i].rescuedLiveVictims + runs[i].rescuedDeadVictims
       sum.lops += runs[i].LoPsNum
     }
