@@ -3,52 +3,67 @@ var qr = require('qr-image');
 
 const globalConfig = {
   margin: {
-    left: 25,
-    top: 25
+    left: 40,
+    top: 100
   },
-  header: {
-    height: 40, // General height of header line
-    title: {
-      fontSize: 20,
-      text: "RoboCup Junior Rescue Line Scoring Sheet",
-      width: 300 // Width of textbox.
-    },
-    information: {
-      marginQR: 20,
-      fontSize: 14,
-      text: {
-        round: "Round",
-        field: "Field",
-        team: "Team"
-      }
-    }
-  },
+  checkboxSize: 10,
   fields: {
-    marginHeader: 10,
-    tileSize: 32,
+    tileSize: 38,
     checkbox: {
-      size: 7,
       marginBorder: 1,
       marginCheckbox: 2
     },
     tileSpacing: 2, // Spacing between tiles
     positions: [ // Position for each z level. The scoring sheet can handle up to n levels.
       {x: 0, y: 0}, // Level 0
-      {x: 280, y: 0} // Level 1
+      {x: 0, y: 325} // Level 1
     ]
+  },
+  data: {
+    marginLeft: 330, // Distance from config.margin.left to text
+    metadata: {
+      sizeQR: 57,
+      marginQR: 10,
+      text: {
+        fontSize: 14,
+        round: "Round",
+        field: "Field",
+        team: "Team",
+        time: "Time:"
+      }
+    },
+    inputs: {
+      labelFontSize: 14,
+      marginsVertical: 10 // Vertical space between two input fields
+    }
+  },
+  signatures: {
+
   }
 }
 
-function drawCheckbox(doc, pos, size, text, color) {
+var DirsEnum = Object.freeze({RIGHT: 1, BOTTOM: 2, LEFT: 3, TOP: 4})
+
+function drawCheckbox(doc, pos, size, text, dir, color) {
+  doc.save()
   doc.rect(pos.x, pos.y, size, size)
     .strokeColor(color)
     .lineWidth(1)
     .fillAndStroke("white", color)
 
+  if (text == "") {
+    return;
+  }
+
   doc.fontSize(size)
   doc.fillAndStroke("black", "black")
-    .text(text, pos.x + size + 2, pos.y + 1)
-    .highlight(pos.x + size + 2, pos.y, doc.widthOfString(text), size)
+  switch (dir) {
+    case DirsEnum.RIGHT:  doc.text(text, pos.x + size + 2, pos.y + 1); break;
+    case DirsEnum.BOTTOM: doc.text(text, pos.x + 2, pos.y + size + 2); break;
+    case DirsEnum.LEFT:   doc.text(text, pos.x - doc.widthOfString(text) - 2, pos.y + 1); break;
+    case DirsEnum.TOP:    doc.text(text, pos.x + 2, pos.y - size); break;
+  }
+  doc.restore()
 }
 
 function tileIsDroptile(tile) {
@@ -58,25 +73,27 @@ function tileIsDroptile(tile) {
     && tile.items.obstacles == 0;
 }
 
-function drawHeader(doc, pos, config, round, field, team) {
-  doc.fontSize(config.header.title.fontSize)
-  doc.text(config.header.title.text, pos.x, pos.y, {width: config.header.title.width})
-  pos.x += config.header.title.width
+function drawMetadata(doc, pos, config, round, field, team, time) {
+  var pos_x_save = pos.x
 
-  doc.image(qr.imageSync(round._id.toString(), {margin: 0}), pos.x, pos.y, {width: config.header.height})
-  pos.x += config.header.height + config.header.information.marginQR
+  doc.image(qr.imageSync(round._id.toString(), {margin: 0}), pos.x, pos.y, {width: config.data.metadata.sizeQR})
+  pos.x += config.data.metadata.sizeQR + config.data.metadata.marginQR
 
-  doc.fontSize(config.header.information.fontSize)
-  doc.text(config.header.information.text.round + ": " + round.name, pos.x, pos.y)
-  pos.y += config.header.information.fontSize + 1
-  doc.text(config.header.information.text.field + ": " + field.name, pos.x, pos.y)
-  pos.y += config.header.information.fontSize + 1
-  doc.text(config.header.information.text.team + ": " + team.name, pos.x, pos.y)
+  doc.fontSize(config.data.metadata.text.fontSize)
+  doc.fillColor("black")
+  doc.text(config.data.metadata.text.round + " " + round.name, pos.x, pos.y)
+  pos.y += config.data.metadata.text.fontSize + 1
+  doc.text(config.data.metadata.text.field + " " + field.name, pos.x, pos.y)
+  pos.y += config.data.metadata.text.fontSize + 1
+  doc.text(config.data.metadata.text.team + " " + team.name, pos.x, pos.y)
+  pos.y += config.data.metadata.text.fontSize + 1
+  doc.text(config.data.metadata.text.time + " ", pos.x, pos.y)
+  pos.x = pos_x_save
 }
 
 function tileAddCheckbox(doc, checkboxes, pos, config, text, color) {
-  var checkbox_horizontal_amount = Math.floor((config.fields.tileSize - config.fields.checkbox.marginBorder * 2) / (config.fields.checkbox.size * 2))
-  var checkbox_vertical_amount = Math.floor((config.fields.tileSize - config.fields.checkbox.marginBorder * 2) / (config.fields.checkbox.size + config.fields.checkbox.marginCheckbox))
+  var checkbox_horizontal_amount = Math.floor((config.fields.tileSize - config.fields.checkbox.marginBorder * 2) / (config.checkboxSize * 2))
+  var checkbox_vertical_amount = Math.floor((config.fields.tileSize - config.fields.checkbox.marginBorder * 2) / (config.checkboxSize + config.fields.checkbox.marginCheckbox))
   if (checkboxes[checkboxes.length - 1].length == (checkbox_horizontal_amount * checkbox_vertical_amount)) {
     console.log("CANT PLACE ANY MORE CHECKBOXES!!!")
   }
@@ -84,12 +101,12 @@ function tileAddCheckbox(doc, checkboxes, pos, config, text, color) {
   var checkbox_pos = {
     x: pos.x + config.fields.checkbox.marginBorder
       + Math.floor(checkboxes[checkboxes.length - 1].length / checkbox_vertical_amount)
-      * ((config.fields.checkbox.size * 2) + config.fields.checkbox.marginCheckbox),
+      * ((config.checkboxSize * 2) + config.fields.checkbox.marginCheckbox),
     y: pos.y + config.fields.checkbox.marginBorder
       + (checkboxes[checkboxes.length - 1].length % checkbox_vertical_amount)
-      * (config.fields.checkbox.size + config.fields.checkbox.marginCheckbox)
+      * (config.checkboxSize + config.fields.checkbox.marginCheckbox)
   }
-  drawCheckbox(doc, checkbox_pos, config.fields.checkbox.size, text, color)
+  drawCheckbox(doc, checkbox_pos, config.checkboxSize, text, DirsEnum.RIGHT, color)
   checkboxes[checkboxes.length - 1].push({type: text, pos: checkbox_pos})
 }
 
@@ -157,27 +174,110 @@ function drawFields(doc, pos, config, map) {
   }
 }
 
-function drawRun(doc, config, round, field, team, map) {
-  drawHeader(
-    doc,
-    {
-      x: config.margin.left,
-      y: config.margin.top
-    },
-    config,
-    round,
-    field,
-    team
-  )
-  drawFields(
-    doc,
-    {
-      x: config.margin.left,
-      y: config.margin.top + config.header.height + config.fields.marginHeader
-    },
-    config,
-    map
-  )
+function drawCheckboxMatrix(doc, pos, config, columnText, rowText) {
+  doc.fontSize(config.checkboxSize)
+  var rowTextWidth = Math.max.apply(null, rowText.map(text => doc.widthOfString(text))) + 2
+  for (var rowIndex = 0; rowIndex < rowText.length; rowIndex++) {
+    doc.fillColor("black")
+      .text(rowText[rowIndex], pos.x, pos.y + rowIndex * config.checkboxSize)
+
+    for (var colIndex = 0; colIndex < columnText.length; colIndex++) {
+      drawCheckbox(
+        doc,
+        {
+          x: pos.x + colIndex * config.checkboxSize + rowTextWidth,
+          y: pos.y + rowIndex * config.checkboxSize
+        },
+        config.checkboxSize, rowIndex == 0 ? columnText[colIndex] : "", DirsEnum.TOP, "black"
+      )
+    }
+  }
+}
+
+function drawInputField(doc, config, pos, text, columnText, rowText) {
+  var pos_x_save = pos.x
+  doc.fontSize(config.data.inputs.labelFontSize)
+    .fillColor("black")
+    .text(text, pos.x, pos.y)
+  pos.y += config.data.inputs.labelFontSize
+
+  doc.fillAndStroke("white", "black")
+    .rect(pos.x, pos.y, 60, (rowText.length + 1) * config.checkboxSize)
+  pos.x += 60 + 2
+  pos.y += config.checkboxSize
+  drawCheckboxMatrix(doc, pos, config, columnText, rowText)
+  pos.x = pos_x_save
+}
+
+function drawLOPInputFields(doc, config, pos, map) {
+  drawLOPInputField(doc, config, {x: pos.x, y: pos.y}, "Start to " + (map.numberOfDropTiles == 0 ? "Evacuation:" : "CP 1:"))
+  for (var i = 1; i <= map.numberOfDropTiles; i++) {
+    pos.y += (config.data.inputs.labelFontSize + config.checkboxSize * 2 + config.data.inputs.marginsVertical)
+    if(i == map.numberOfDropTiles) {
+      drawLOPInputField(doc, config, {x: pos.x, y: pos.y}, "CP " + i + " to Evacuation:")
+    } else {
+      drawLOPInputField(doc, config, {x: pos.x, y: pos.y}, "CP " + i + " to CP " + (i + 1) + ":")
+    }
+  }
+}
+
+function drawLOPInputField(doc, config, pos, text) {
+  var columnText = ["0", "1", "2", "3+"]
+  var rowText = [""]
+  drawInputField(doc, config, pos, text, columnText, rowText)
+}
+
+function drawTimeInputField(doc, config, pos) {
+  var columnText = ["0", "1", "2", "3", "4", "5", "6", "7", "8"]
+  var rowText = ["Minutes", "Seconds", "Seconds"]
+  drawInputField(doc, config, pos, "Time:", columnText, rowText)
+}
+
+function drawEvacuationManualCheckboxes(doc, config, pos) {
+  drawCheckbox(doc, pos, config.checkboxSize, "Low Evacuation", DirsEnum.RIGHT, "black")
+  pos.y += config.checkboxSize + config.data.inputs.marginsVertical
+  drawCheckbox(doc, pos, config.checkboxSize, "High Evacuation", DirsEnum.RIGHT, "black")
+  pos.y += config.checkboxSize + config.data.inputs.marginsVertical
+  drawCheckbox(doc, pos, config.checkboxSize, "Enter manually", DirsEnum.RIGHT, "black")
+  pos.y += config.checkboxSize + config.data.inputs.marginsVertical
+}
+
+function drawVictimInputField(doc, config, pos, amount, text) {
+  var columnText = []
+  for (var i = 0; i <= amount; i++) {
+    columnText.push("" + i)
+  }
+  var rowText = [""]
+  drawInputField(doc, config, pos, "Victims (" + text + "):", columnText, rowText)
+}
+
+function drawRun(doc, config, round, field, team, time, map) {
+  var pos = {
+    x: config.margin.left,
+    y: config.margin.top
+  }
+
+  drawFields(doc, pos, config, map)
+  pos.x += config.data.marginLeft
+
+  drawMetadata(doc, pos, config, round, field, team, time)
+  pos.y += config.data.metadata.sizeQR + config.data.inputs.marginsVertical
+
+  drawEvacuationManualCheckboxes(doc, config, pos)
+  pos.y += config.data.inputs.marginsVertical
+
+  drawLOPInputFields(doc, config, pos, map)
+  pos.x = config.margin.left + config.data.marginLeft
+  pos.y += config.data.inputs.marginsVertical + 40
+
+  drawVictimInputField(doc, config, pos, 9, "alive")
+  pos.x = config.margin.left + config.data.marginLeft
+  pos.y += config.data.inputs.marginsVertical
+  drawVictimInputField(doc, config, pos, 9, "dead")
+  pos.x = config.margin.left + config.data.marginLeft
+  pos.y += config.data.inputs.marginsVertical
+
+  drawTimeInputField(doc, config, pos)
 }
 
 module.exports.generateScoreSheet = function(res, rounds) {
@@ -185,9 +285,9 @@ module.exports.generateScoreSheet = function(res, rounds) {
 
   doc.pipe(res);
 
-  for(var i = 0; i < rounds.length; i++) {
-    doc.addPage()
-    drawRun(doc, globalConfig, rounds[i].round, rounds[i].field, rounds[i].team, rounds[i].map)
+  for (var i = 0; i < rounds.length; i++) {
+    doc.addPage({margin: 10})
+    drawRun(doc, globalConfig, rounds[i].round, rounds[i].field, rounds[i].team, rounds[i].startTime, rounds[i].map)
   }
 
   doc.end()
