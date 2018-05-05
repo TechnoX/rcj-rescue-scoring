@@ -64,17 +64,14 @@ var DirsEnum = Object.freeze({RIGHT: 1, BOTTOM: 2, LEFT: 3, TOP: 4})
  */
 function drawCheckbox(doc, pos_x, pos_y, size, text, dir, color) {
   doc.save()
-  doc.rect(pos_x, pos_y, size, size)
-    .strokeColor(color)
-    .lineWidth(1)
+  doc.rect(pos_x, pos_y, size, size).lineWidth(1)
     .fillAndStroke("white", color)
+
 
   if (text == "") {
     return;
   }
 
-  doc.fontSize(size)
-  doc.fillAndStroke("black", "black")
   switch (dir) {
     case DirsEnum.RIGHT:
       pos_x = pos_x + size + 2;
@@ -96,7 +93,17 @@ function drawCheckbox(doc, pos_x, pos_y, size, text, dir, color) {
       pos_y = pos_y - size;
       break;
   }
-  doc.text(text, pos_x, pos_y);
+  doc.rect(pos_x, pos_y, doc.widthOfString(text), size - 1)
+    .fillOpacity(0.7)
+    .lineWidth(0)
+    .fillAndStroke("white", "white")
+
+
+  doc.fontSize(size)
+    .fillOpacity(1)
+    .fillColor("black")
+    .text(text, pos_x, pos_y);
+
   doc.restore()
   return;
 }
@@ -211,7 +218,7 @@ function drawFields(doc, pos_x, pos_y, config, map) {
     }
 
     if (map.startTile.x == tile.x && map.startTile.y == tile.y && map.startTile.z == tile.z) {
-      tileAddCheckbox(doc, checkboxes, tile_pos_x, tile_pos_y, config, "Start", "green")
+      tileAddCheckbox(doc, checkboxes, tile_pos_x, tile_pos_y, config, "St", "green")
     } else if(tileIsDroptile(tile)) {
       tileAddCheckbox(doc, checkboxes, tile_pos_x, tile_pos_y, config, "C", "blue")
     } else {
