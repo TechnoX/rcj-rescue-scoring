@@ -26,7 +26,6 @@ const globalConfig = {
     marginLeft: 330, // Distance from config.margin.left to text
     metadata: {
       sizeQR: 57,
-      marginQR: 10,
       text: {
         fontSize: 14,
         round: "Round",
@@ -37,13 +36,13 @@ const globalConfig = {
     },
     inputs: {
       textFieldWidth: 60, // Width of field where human writes down number human readable
-      labelFontSize: 14,
-      marginsVertical: 10 // Vertical space between two input fields
+      labelFontSize: 12,
+      marginsVertical: 5 // Vertical space between two input fields
     }
   },
   signature: {
     width: 200,
-    height: 40
+    height: 30
   }
 }
 
@@ -111,7 +110,7 @@ function tileIsDroptile(tile) {
 
 function drawMetadata(doc, pos_x, pos_y, config, round, field, team, time) {
   doc.image(qr.imageSync(round._id.toString(), {margin: 0}), pos_x, pos_y, {width: config.data.metadata.sizeQR})
-  pos_x += config.data.metadata.sizeQR + config.data.metadata.marginQR
+  pos_x += config.data.metadata.sizeQR + config.data.inputs.marginsVertical
 
   doc.fontSize(config.data.metadata.text.fontSize)
   doc.fillColor("black")
@@ -121,7 +120,8 @@ function drawMetadata(doc, pos_x, pos_y, config, round, field, team, time) {
   pos_y += config.data.metadata.text.fontSize + 1
   doc.text(config.data.metadata.text.team + " " + team.name, pos_x, pos_y)
   pos_y += config.data.metadata.text.fontSize + 1
-  doc.text(config.data.metadata.text.time + " ", pos_x, pos_y)
+  var dateTime = new Date(time)
+  doc.text(config.data.metadata.text.time + " " + dateTime.getHours() + ":" + dateTime.getMinutes(), pos_x, pos_y)
   pos_y += config.data.metadata.text.fontSize + 1
   return pos_y
 }
@@ -193,13 +193,13 @@ function drawFields(doc, pos_x, pos_y, config, map) {
       for (var j = 0; tile.tileType.intersections > 0 && j < tile.index.length; j++) {
         tileAddCheckbox(doc, checkboxes, tile_pos_x, tile_pos_y, config, "I", "red")
       }
-      if (tile.items.speedbumps > 0) {
+      for (var j = 0; tile.items.speedbumps > 0 && j < tile.index.length; j++) {
         tileAddCheckbox(doc, checkboxes, tile_pos_x, tile_pos_y, config, "S", "violet")
       }
-      if (tile.items.obstacles > 0) {
+      for (var j = 0; tile.items.obstacles > 0 && j < tile.index.length; j++) {
         tileAddCheckbox(doc, checkboxes, tile_pos_x, tile_pos_y, config, "O", "brown")
       }
-      if (tile.tileType.gaps > 0) {
+      for (var j = 0; tile.tileType.gaps > 0 && j < tile.index.length; j++) {
         tileAddCheckbox(doc, checkboxes, tile_pos_x, tile_pos_y, config, "G", "orange")
       }
     }
@@ -239,17 +239,11 @@ function drawInputField(doc, config, pos_x, pos_y, text, columnText, rowText) {
 }
 
 function drawLOPInputFields(doc, config, pos_x, pos_y, map) {
-  var pos_y_max = 0
-  drawLOPInputField(doc, config, pos_x, pos_y, "Start to " + (map.numberOfDropTiles == 0 ? "Evacuation:" : "CP 1:"))
-  for (var i = 1; i <= map.numberOfDropTiles; i++) {
-    pos_y += (config.data.inputs.labelFontSize + config.checkboxSize * 2 + config.data.inputs.marginsVertical)
-    if(i == map.numberOfDropTiles) {
-      pos_y_max = drawLOPInputField(doc, config, pos_x, pos_y, "CP " + i + " to Evacuation:")
-    } else {
-      pos_y_max = drawLOPInputField(doc, config, pos_x, pos_y, "CP " + i + " to CP " + (i + 1) + ":")
-    }
+  pos_y = drawLOPInputField(doc, config, pos_x, pos_y, "Start to " + (map.numberOfDropTiles == 0 ? "Evacuation:" : "CP 1:"))
+  for (var i = 1; i < map.numberOfDropTiles; i++) {
+    pos_y = drawLOPInputField(doc, config, pos_x, pos_y, "CP " + i + " to CP " + (i + 1) + ":")
   }
-  return pos_y_max
+  return pos_y
 }
 
 function drawLOPInputField(doc, config, pos_x, pos_y, text) {
@@ -299,7 +293,7 @@ function drawRun(doc, config, round, field, team, time, map) {
   var pos_x = config.margin.left
   drawFields(doc, pos_x, pos_y, config, map)
   pos_x += config.data.marginLeft
-  pos_y = drawMetadata(doc, pos_x, pos_y, config, round, field, team, time) + config.data.metadata.marginQR
+  pos_y = drawMetadata(doc, pos_x, pos_y, config, round, field, team, time) + config.data.inputs.marginsVertical
   pos_y = drawEvacuationManualCheckboxes(doc, config, pos_x, pos_y) + config.data.inputs.marginsVertical
   pos_y = drawLOPInputFields(doc, config, pos_x, pos_y, map) + config.data.inputs.marginsVertical
   pos_y = drawVictimInputField(doc, config, pos_x, pos_y, 9, "alive") + config.data.inputs.marginsVertical
