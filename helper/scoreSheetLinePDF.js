@@ -144,6 +144,16 @@ function tileAddCheckbox(doc, checkboxes, pos_x, pos_y, config, text, color) {
   checkboxes[checkboxes.length - 1].push({type: text, pos: {x: checkbox_pos_x, y: checkbox_pos_y}})
 }
 
+function dirToAngle(dir) {
+  switch (dir) {
+    case "bottom": return 0;
+    case "right": return 90;
+    case "top": return 180;
+    case "left": return 270;
+  }
+  return 0;
+}
+
 function drawFields(doc, pos_x, pos_y, config, map) {
   for (var z = 0; z < map.height && z < config.fields.positions.length; z++) {
     doc.lineWidth(1)
@@ -184,6 +194,21 @@ function drawFields(doc, pos_x, pos_y, config, map) {
     doc.restore()
 
     checkboxes.push([])
+
+    if (tile.levelUp || tile.levelDown) {
+      doc.save()
+
+      doc.rotate(dirToAngle(tile.levelUp || tile.levelDown), {
+        origin: [
+          tile_pos_x + (config.fields.tileSize / 2),
+          tile_pos_y + (config.fields.tileSize / 2)
+        ]
+      })
+      doc.image("public/images/" + (tile.levelUp ? "up.png" : "down.png"),
+        tile_pos_x + (config.fields.tileSize / 2),
+        tile_pos_y + (config.fields.tileSize / 2), {width: config.fields.tileSize / 2})
+      doc.restore()
+    }
 
     if (map.startTile.x == tile.x && map.startTile.y == tile.y && map.startTile.z == tile.z) {
       tileAddCheckbox(doc, checkboxes, tile_pos_x, tile_pos_y, config, "Start", "green")
