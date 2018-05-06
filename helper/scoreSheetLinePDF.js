@@ -35,9 +35,9 @@ const globalConfig = {
       }
     },
     inputs: {
-      textFieldWidth: 60, // Width of field where human writes down number human readable
+      textFieldWidth: 65, // Width of field where human writes down number human readable
       labelFontSize: 12,
-      marginsVertical: 5 // Vertical space between two input fields
+      marginsVertical: 8 // Vertical space between two input fields
     }
   },
   signature: {
@@ -69,28 +69,38 @@ function drawCheckbox(doc, pos_x, pos_y, size, text, dir, color) {
 
 
   if (text == "") {
-    return;
+    return {x: pos_x + size, y: pos_y + size}
   }
+
+  var pos_x_end, pos_y_end;
 
   switch (dir) {
     case DirsEnum.RIGHT:
       pos_x = pos_x + size + 2;
       pos_y = pos_y + 1;
+      pos_x_end = pos_x + size + doc.widthOfString(text)
+      pos_y_end = pos_y + size
       break;
 
     case DirsEnum.BOTTOM:
       pos_x = pos_x + 2;
       pos_y = pos_y + size + 2;
+      pos_x_end = pos_x + size
+      pos_y_end = pos_y + Math.max(doc.widthOfString(text), size)
       break;
 
     case DirsEnum.LEFT:
       pos_x = pos_x - doc.widthOfString(text) - 2;
       pos_y = pos_y + 1;
+      pos_x_end = pos_x + size
+      pos_y_end = pos_y + size
       break;
 
     case DirsEnum.TOP:
       pos_x = pos_x + 2;
       pos_y = pos_y - size;
+      pos_x_end = pos_x + Math.max(doc.widthOfString(text), size)
+      pos_y_end = pos_y + size
       break;
   }
   doc.rect(pos_x, pos_y, doc.widthOfString(text), size - 1)
@@ -98,14 +108,13 @@ function drawCheckbox(doc, pos_x, pos_y, size, text, dir, color) {
     .lineWidth(0)
     .fillAndStroke("white", "white")
 
-
   doc.fontSize(size)
     .fillOpacity(1)
     .fillColor("black")
     .text(text, pos_x, pos_y);
 
   doc.restore()
-  return;
+  return {x: pos_x_end, y: pos_y_end}
 }
 
 function tileIsDroptile(tile) {
@@ -130,7 +139,7 @@ function drawMetadata(doc, pos_x, pos_y, config, round, field, team, time) {
   var dateTime = new Date(time)
   doc.text(config.data.metadata.text.time + " " + dateTime.getHours() + ":" + dateTime.getMinutes(), pos_x, pos_y)
   pos_y += config.data.metadata.text.fontSize + 1
-  return pos_y
+  return {x: pos_x, y: pos_y}
 }
 
 function tileAddCheckbox(doc, checkboxes, pos_x, pos_y, config, text, color) {
@@ -147,8 +156,8 @@ function tileAddCheckbox(doc, checkboxes, pos_x, pos_y, config, text, color) {
       + (checkboxes[checkboxes.length - 1].length % checkbox_vertical_amount)
       * (config.checkboxSize + config.fields.checkbox.marginCheckbox)
 
-  drawCheckbox(doc, checkbox_pos_x, checkbox_pos_y, config.checkboxSize, text, DirsEnum.RIGHT, color)
   checkboxes[checkboxes.length - 1].push({type: text, pos: {x: checkbox_pos_x, y: checkbox_pos_y}})
+  return drawCheckbox(doc, checkbox_pos_x, checkbox_pos_y, config.checkboxSize, text, DirsEnum.RIGHT, color)
 }
 
 function dirToAngle(dir) {
@@ -254,61 +263,39 @@ function drawCheckboxMatrix(doc, pos_x, pos_y, config, columnText, rowText) {
       )
     }
   }
-  return pos_y + (rowText.length + 1) * config.checkboxSize
+  return {x: pos_x + rowTextWidth + columnText.length * config.checkboxSize, y: pos_y + rowText.length * config.checkboxSize}
 }
 
-function drawInputField(doc, config, pos_x, pos_y, text, columnText, rowText) {
+function drawTextInputField(doc, config, pos_x, pos_y, text, width, height) {
   doc.fontSize(config.data.inputs.labelFontSize)
     .fillColor("black")
     .text(text, pos_x, pos_y)
   pos_y += config.data.inputs.labelFontSize
 
-  doc.fillAndStroke("white", "black")
-    .rect(pos_x, pos_y, config.data.inputs.textFieldWidth, (rowText.length + 1) * config.checkboxSize)
-  pos_x += config.data.inputs.textFieldWidth + 2
-  pos_y += config.checkboxSize
-  return drawCheckboxMatrix(doc, pos_x, pos_y, config, columnText, rowText)
+  doc.rect(pos_x, pos_y, width, height)
+    .fillAndStroke("white", "black")
+  pos_x += width
+  pos_y += height
+  return {x: pos_x, y: pos_y}
 }
 
-function drawLOPInputFields(doc, config, pos_x, pos_y, map) {
-  pos_y = drawLOPInputField(doc, config, pos_x, pos_y, "Start to " + (map.numberOfDropTiles == 0 ? "Evacuation:" : "CP 1:"))
-  for (var i = 1; i < map.numberOfDropTiles; i++) {
-    pos_y = drawLOPInputField(doc, config, pos_x, pos_y, "CP " + i + " to CP " + (i + 1) + ":")
-  }
-  return pos_y
+function drawNumberInputField(doc, config, pos_x, pos_y, text, columnText, rowText) {
+  var pos = drawTextInputField(doc, config, pos_x, pos_y, text, config.data.inputs.textFieldWidth, (rowText.length + 1) * config.checkboxSize)
+  pos.x += 2
+  pos.y -= rowText.length * config.checkboxSize
+  return drawCheckboxMatrix(doc, pos.x, pos.y, config, columnText, rowText)
 }
 
 function drawLOPInputField(doc, config, pos_x, pos_y, text) {
   var columnText = ["0", "1", "2", "3+"]
   var rowText = [""]
-  return drawInputField(doc, config, pos_x, pos_y, text, columnText, rowText)
-}
-
-function drawSignatureBox(doc, config, pos_x, pos_y, text) {
-  doc.fontSize(config.data.inputs.labelFontSize)
-    .fillColor("black")
-    .text(text, pos_x, pos_y)
-  pos_y += config.data.inputs.labelFontSize
-
-  doc.rect(pos_x, pos_y, config.signature.width, config.signature.height)
-    .fillAndStroke("white", "black")
-
-  return pos_y + config.signature.height
+  return drawNumberInputField(doc, config, pos_x, pos_y, text, columnText, rowText)
 }
 
 function drawTimeInputField(doc, config, pos_x, pos_y) {
   var columnText = ["0", "1", "2", "3", "4", "5", "6", "7", "8"]
   var rowText = ["Minutes", "Seconds", "Seconds"]
-  return drawInputField(doc, config, pos_x, pos_y, "Time:", columnText, rowText)
-}
-
-function drawEvacuationManualCheckboxes(doc, config, pos_x, pos_y) {
-  drawCheckbox(doc, pos_x, pos_y, config.checkboxSize, "Low Evacuation", DirsEnum.RIGHT, "black")
-  pos_y += config.checkboxSize + config.data.inputs.marginsVertical
-  drawCheckbox(doc, pos_x, pos_y, config.checkboxSize, "High Evacuation", DirsEnum.RIGHT, "black")
-  pos_y += config.checkboxSize + config.data.inputs.marginsVertical
-  drawCheckbox(doc, pos_x, pos_y, config.checkboxSize, "Enter scoring sheet manually", DirsEnum.RIGHT, "black")
-  return pos_y + config.checkboxSize
+  return drawNumberInputField(doc, config, pos_x, pos_y, "Time:", columnText, rowText)
 }
 
 function drawVictimInputField(doc, config, pos_x, pos_y, amount, text) {
@@ -317,7 +304,7 @@ function drawVictimInputField(doc, config, pos_x, pos_y, amount, text) {
     columnText.push("" + i)
   }
   var rowText = [""]
-  return drawInputField(doc, config, pos_x, pos_y, "Victims (" + text + "):", columnText, rowText)
+  return drawNumberInputField(doc, config, pos_x, pos_y, "Victims (" + text + "):", columnText, rowText)
 }
 
 function drawRun(doc, config, round, field, team, time, map) {
@@ -325,15 +312,23 @@ function drawRun(doc, config, round, field, team, time, map) {
   var pos_x = config.margin.left
   drawFields(doc, pos_x, pos_y, config, map)
   pos_x += config.data.marginLeft
-  pos_y = drawMetadata(doc, pos_x, pos_y, config, round, field, team, time) + config.data.inputs.marginsVertical
-  pos_y = drawEvacuationManualCheckboxes(doc, config, pos_x, pos_y) + config.data.inputs.marginsVertical
-  pos_y = drawLOPInputFields(doc, config, pos_x, pos_y, map) + config.data.inputs.marginsVertical
-  pos_y = drawVictimInputField(doc, config, pos_x, pos_y, 9, "alive") + config.data.inputs.marginsVertical
-  pos_y = drawVictimInputField(doc, config, pos_x, pos_y, 9, "dead") + config.data.inputs.marginsVertical
-  pos_y = drawTimeInputField(doc, config, pos_x, pos_y) + config.data.inputs.marginsVertical
-  pos_y = drawSignatureBox(doc, config, pos_x, pos_y, "Team:") + config.data.inputs.marginsVertical
-  pos_y = drawSignatureBox(doc, config, pos_x, pos_y, "Referee:") + config.data.inputs.marginsVertical
-  drawSignatureBox(doc, config, pos_x, pos_y, "Co-Referee:")
+  pos_y = drawMetadata(doc, pos_x, pos_y, config, round, field, team, time).y + config.data.inputs.marginsVertical
+  pos_y = drawCheckbox(doc, pos_x, pos_y, config.checkboxSize, "Low Evacuation", DirsEnum.RIGHT, "black").y + config.data.inputs.marginsVertical
+  pos_y = drawCheckbox(doc, pos_x, pos_y, config.checkboxSize, "High Evacuation", DirsEnum.RIGHT, "black").y + config.data.inputs.marginsVertical
+  pos_y = drawCheckbox(doc, pos_x, pos_y, config.checkboxSize, "Enter scoring sheet manually", DirsEnum.RIGHT, "black").y + config.data.inputs.marginsVertical
+
+  if (map.numberOfDropTiles > 0) {
+    for (var i = 0; i < map.numberOfDropTiles; i++) {
+      pos_y = drawLOPInputField(doc, config, pos_x, pos_y, (i == 0 ? "Start" : ("CP " + i)) + " to CP " + (i + 1) + ":").y + config.data.inputs.marginsVertical
+    }
+  }
+
+  pos_y = drawVictimInputField(doc, config, pos_x, pos_y, 9, "alive").y + config.data.inputs.marginsVertical
+  pos_y = drawVictimInputField(doc, config, pos_x, pos_y, 9, "dead").y + config.data.inputs.marginsVertical
+  pos_y = drawTimeInputField(doc, config, pos_x, pos_y).y + config.data.inputs.marginsVertical
+  pos_y = drawTextInputField(doc, config, pos_x, pos_y, "Team:", config.signature.width, config.signature.height).y + config.data.inputs.marginsVertical
+  pos_y = drawTextInputField(doc, config, pos_x, pos_y, "Referee:", config.signature.width, config.signature.height).y + config.data.inputs.marginsVertical
+  drawTextInputField(doc, config, pos_x, pos_y, "Co-Referee:", config.signature.width, config.signature.height)
 }
 
 module.exports.generateScoreSheet = function(res, rounds) {
