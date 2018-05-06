@@ -80,8 +80,8 @@ block content
                     .col-9
                        img(ng-src="/images/ranking/{{$index+1}}.png" style="height:29vh;float: left;")
                        div(style="margin-left:35vh;")
-                           div(style="position:relative; top:3vh; font-size: 6vh;") {{run.teamCode}}
-                       div(style="position:relative; top:5vh; font-size:10vh; overflow: hidden;text-overflow: ellipsis;white-space: nowrap;") {{run.teamName}}
+                           div(style="position:relative; top:3vh; font-size: 6vh;") {{run.team.code}}
+                       div(style="position:relative; top:5vh; font-size:10vh; overflow: hidden;text-overflow: ellipsis;white-space: nowrap;") {{run.team.name_only}}
                     .col-3
                         ul.list-group(style="height:100%;font-size:4vh;")
                           li.list-group-item(style="border:3px solid #636e72;padding:1vh")
