@@ -89,7 +89,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 let tmp = {
                     dis: 1,
                     status: $scope.showedUp,
-                    point: 3*$scope.showedUp
+                    point: 5*$scope.showedUp
                 }
                 $scope.checkPointDistance.push(tmp);
                 let prevCheckPoint = 0;
@@ -185,7 +185,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 let tmp = {
                     dis: 1,
                     status: $scope.showedUp,
-                    point: 3*$scope.showedUp
+                    point: 5*$scope.showedUp
                 }
                 $scope.checkPointDistance.push(tmp);
                 let prevCheckPoint = 0;
@@ -221,8 +221,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
     
     $scope.LoPsCountPoint = function (n){
-        if(n == 0) return 3;
-        if(n == 1) return 2;
+        if(n == 0) return 5;
+        if(n == 1) return 3;
         if(n == 2) return 1;
         return 0;
     }

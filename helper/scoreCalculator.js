@@ -22,6 +22,7 @@ module.exports.calculateLineScore = function (run) {
   
   let lastDropTile = 0
   let dropTileCount = 0
+  let checkPoint = [5,3,1,0]
   
   for (let i = 0; i < run.tiles.length; i++) {
     let tile = run.tiles[i]
@@ -29,7 +30,7 @@ module.exports.calculateLineScore = function (run) {
     if (tile.scored) {
       if (tile.isDropTile) {
         let tileCount = i - lastDropTile
-        score += Math.max(tileCount * (3 - run.LoPs[dropTileCount]), 0)
+        score += Math.max(tileCount * checkPoint[Math.min(run.LoPs[dropTileCount] , 3)], 0)
       }
       
       score += mapTiles[i].tileType.gaps * 10
