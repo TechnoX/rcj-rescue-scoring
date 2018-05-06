@@ -5,12 +5,14 @@ app.controller("ClockController", ['$scope', '$http', '$translate', '$timeout', 
     date = new Date();
     $scope.time = date.getTime();
     $scope.runs = [];
+    $scope.timeDep = 0;
     var lr=[];
     var mr=[];
    
     function tick() {
             date = new Date();
-            $scope.time = date.getTime();
+            $scope.time = Number(date.getTime()) + Number($scope.timeDep);
+            //console.log($scope.time);
             //$scope.$apply();
             $timeout(tick, 500);
         }
