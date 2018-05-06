@@ -52,6 +52,8 @@ const globalConfig = {
  */
 const DirsEnum = Object.freeze({RIGHT: 1, BOTTOM: 2, LEFT: 3, TOP: 4});
 
+const InputTypeEnum = Object.freeze({CHECKBOX: "cb", TEXT: "txt", MATRIXROW: "mrow", MATRIX: "m", MATRIXTEXT: "mt", QR: "qr"});
+
 /**
  * Draws a checkbox with text
  * @param doc The document to draw the checkbox in
@@ -63,12 +65,14 @@ const DirsEnum = Object.freeze({RIGHT: 1, BOTTOM: 2, LEFT: 3, TOP: 4});
  * @param color
  */
 function drawCheckbox(doc, pos_x, pos_y, size, text, dir, color) {
+  const posData = {type: InputTypeEnum.CHECKBOX, x: pos_x, y: pos_y, w: size, h: size, children: []};
+
   doc.save();
   doc.rect(pos_x, pos_y, size, size).lineWidth(1)
     .fillAndStroke("white", color);
 
   if (text === "") {
-    return {x: pos_x + size, y: pos_y + size}
+    return {x: pos_x + size, y: pos_y + size, posData: posData}
   }
 
   var pos_x_end, pos_y_end;
@@ -113,7 +117,7 @@ function drawCheckbox(doc, pos_x, pos_y, size, text, dir, color) {
     .text(text, pos_x, pos_y);
 
   doc.restore();
-  return {x: pos_x_end, y: pos_y_end}
+  return {x: pos_x_end, y: pos_y_end, posData: posData}
 }
 
 function tileIsDroptile(tile) {
@@ -124,6 +128,8 @@ function tileIsDroptile(tile) {
 }
 
 function drawMetadata(doc, pos_x, pos_y, config, round, field, team, time) {
+  const posData = {type: InputTypeEnum.QR, x: pos_x, y: pos_y, w: config.data.metadata.sizeQR, h: config.data.metadata.sizeQR, children: []};
+
   doc.image(qr.imageSync(round._id.toString(), {margin: 0}), pos_x, pos_y, {width: config.data.metadata.sizeQR});
   pos_x += config.data.metadata.sizeQR + config.data.inputs.marginsVertical;
 
@@ -138,7 +144,7 @@ function drawMetadata(doc, pos_x, pos_y, config, round, field, team, time) {
   let dateTime = new Date(time);
   doc.text(config.data.metadata.text.time + " " + dateTime.getHours() + ":" + dateTime.getMinutes(), pos_x, pos_y);
   pos_y += config.data.metadata.text.fontSize + 1;
-  return {x: pos_x, y: pos_y}
+  return {x: pos_x, y: pos_y, posData: posData}
 }
 
 function tileAddCheckbox(doc, checkboxes, pos_x, pos_y, config, text, color) {
@@ -155,8 +161,8 @@ function tileAddCheckbox(doc, checkboxes, pos_x, pos_y, config, text, color) {
       + (checkboxes[checkboxes.length - 1].length % checkbox_vertical_amount)
       * (config.checkboxSize + config.fields.checkbox.marginCheckbox);
 
-  checkboxes[checkboxes.length - 1].push({type: text, pos: {x: checkbox_pos_x, y: checkbox_pos_y}});
-  return drawCheckbox(doc, checkbox_pos_x, checkbox_pos_y, config.checkboxSize, text, DirsEnum.RIGHT, color)
+  const posCheckbox = drawCheckbox(doc, checkbox_pos_x, checkbox_pos_y, config.checkboxSize, text, DirsEnum.RIGHT, color)
+  checkboxes[checkboxes.length - 1].push({id: text, posData: posCheckbox.posData});
 }
 
 function dirToAngle(dir) {
@@ -244,28 +250,60 @@ function drawFields(doc, pos_x, pos_y, config, map) {
       }
     }
   }
+
+  return checkboxes
 }
 
 function drawCheckboxMatrix(doc, pos_x, pos_y, config, columnText, rowText) {
   doc.fontSize(config.checkboxSize);
-  const rowTextWidth = Math.max.apply(null, rowText.map(text => doc.widthOfString(text))) + 2;
+  const rowTextWidth = Math.ceil(Math.max.apply(null, rowText.map(text => doc.widthOfString(text)))) + 2;
+
+  const posData = {
+    type: InputTypeEnum.MATRIX,
+    x: pos_x,
+    y: pos_y,
+    w: rowTextWidth + 2 + rowText.length * config.checkboxSize,
+    h: (columnText.length + 1) * config.checkboxSize,
+    children: []
+  };
+
   for (let rowIndex = 0; rowIndex < rowText.length; rowIndex++) {
     doc.fillColor("black")
       .text(rowText[rowIndex], pos_x, pos_y + rowIndex * config.checkboxSize);
 
+    posData.children.push({
+      type: InputTypeEnum.MATRIXROW,
+      x: pos_x,
+      y: pos_y + rowIndex * config.checkboxSize,
+      w: rowText.length * config.checkboxSize,
+      h: config.checkboxSize,
+      children: []
+    });
+
     for (let colIndex = 0; colIndex < columnText.length; colIndex++) {
-      drawCheckbox(
+      let posDatCheckbox = drawCheckbox(
         doc,
         pos_x + colIndex * config.checkboxSize + rowTextWidth,
         pos_y + rowIndex * config.checkboxSize,
         config.checkboxSize, rowIndex === 0 ? columnText[colIndex] : "", DirsEnum.TOP, "black"
-      )
+      ).posData
+      posData.children[posData.children.length - 1].children.push(posDatCheckbox)
     }
   }
-  return {x: pos_x + rowTextWidth + columnText.length * config.checkboxSize, y: pos_y + rowText.length * config.checkboxSize}
+
+  return {x: pos_x + rowTextWidth + columnText.length * config.checkboxSize, y: pos_y + rowText.length * config.checkboxSize, posData: posData}
 }
 
 function drawTextInputField(doc, config, pos_x, pos_y, text, width, height) {
+  const posData = {
+    type: InputTypeEnum.TEXT,
+    x: pos_x,
+    y: pos_y,
+    w: width,
+    h: height,
+    children: []
+  };
+
   doc.fontSize(config.data.inputs.labelFontSize)
     .fillColor("black")
     .text(text, pos_x, pos_y);
@@ -275,14 +313,27 @@ function drawTextInputField(doc, config, pos_x, pos_y, text, width, height) {
     .fillAndStroke("white", "black");
   pos_x += width;
   pos_y += height;
-  return {x: pos_x, y: pos_y}
+  return {x: pos_x, y: pos_y, posData: posData}
 }
 
 function drawNumberInputField(doc, config, pos_x, pos_y, text, columnText, rowText) {
-  const pos = drawTextInputField(doc, config, pos_x, pos_y, text, config.data.inputs.textFieldWidth, (rowText.length + 1) * config.checkboxSize);
-  pos.x += 2;
-  pos.y -= rowText.length * config.checkboxSize;
-  return drawCheckboxMatrix(doc, pos.x, pos.y, config, columnText, rowText)
+  const posText = drawTextInputField(doc, config, pos_x, pos_y, text, config.data.inputs.textFieldWidth, (rowText.length + 1) * config.checkboxSize);
+  posText.x += 2;
+  posText.y -= rowText.length * config.checkboxSize;
+  const posMatrix = drawCheckboxMatrix(doc, posText.x, posText.y, config, columnText, rowText);
+
+  return {
+    x: posMatrix.x,
+    y: posMatrix.y,
+    posData: {
+      type: InputTypeEnum.MATRIXTEXT,
+      x: pos_x,
+      y: pos_y,
+      w: posMatrix.x - pos_x,
+      h: posMatrix.y - pos_y,
+      children: [posText, posMatrix]
+    }
+  };
 }
 
 function drawLOPInputField(doc, config, pos_x, pos_y, text) {
@@ -307,27 +358,39 @@ function drawVictimInputField(doc, config, pos_x, pos_y, amount, text) {
 }
 
 function drawRun(doc, config, round, field, team, time, map) {
+  let posDatas = []
   let pos_y = config.margin.top;
   let pos_x = config.margin.left;
-  drawFields(doc, pos_x, pos_y, config, map);
+
+  function nextItem(pos, descr) {
+    posDatas.push({descr: descr, posData: pos.posData});
+    pos_y = pos.y + config.data.inputs.marginsVertical;
+  }
+
+  const tilePosData = drawFields(doc, pos_x, pos_y, config, map);
   pos_x += config.data.marginLeft;
-  pos_y = drawMetadata(doc, pos_x, pos_y, config, round, field, team, time).y + config.data.inputs.marginsVertical;
-  pos_y = drawCheckbox(doc, pos_x, pos_y, config.checkboxSize, "Low Evacuation", DirsEnum.RIGHT, "black").y + config.data.inputs.marginsVertical;
-  pos_y = drawCheckbox(doc, pos_x, pos_y, config.checkboxSize, "High Evacuation", DirsEnum.RIGHT, "black").y + config.data.inputs.marginsVertical;
-  pos_y = drawCheckbox(doc, pos_x, pos_y, config.checkboxSize, "Enter scoring sheet manually", DirsEnum.RIGHT, "black").y + config.data.inputs.marginsVertical;
+  nextItem(drawMetadata(doc, pos_x, pos_y, config, round, field, team, time), "meta");
+  nextItem(drawCheckbox(doc, pos_x, pos_y, config.checkboxSize, "Low Evacuation", DirsEnum.RIGHT, "black"), "lowEvac");
+  nextItem(drawCheckbox(doc, pos_x, pos_y, config.checkboxSize, "High Evacuation", DirsEnum.RIGHT, "black"), "highEvac");
+  nextItem(drawCheckbox(doc, pos_x, pos_y, config.checkboxSize, "Enter scoring sheet manually", DirsEnum.RIGHT, "black"), "enterManually");
 
   if (map.numberOfDropTiles > 0) {
     for (let i = 0; i < map.numberOfDropTiles; i++) {
-      pos_y = drawLOPInputField(doc, config, pos_x, pos_y, (i === 0 ? "Start" : ("CP " + i)) + " to CP " + (i + 1) + ":").y + config.data.inputs.marginsVertical
+      nextItem(drawLOPInputField(doc, config, pos_x, pos_y, (i === 0 ? "Start" : ("CP " + i)) + " to CP " + (i + 1) + ":"), "cb" + i);
     }
   }
 
-  pos_y = drawVictimInputField(doc, config, pos_x, pos_y, 9, "alive").y + config.data.inputs.marginsVertical;
-  pos_y = drawVictimInputField(doc, config, pos_x, pos_y, 9, "dead").y + config.data.inputs.marginsVertical;
-  pos_y = drawTimeInputField(doc, config, pos_x, pos_y).y + config.data.inputs.marginsVertical;
-  pos_y = drawTextInputField(doc, config, pos_x, pos_y, "Team:", config.signature.width, config.signature.height).y + config.data.inputs.marginsVertical;
-  pos_y = drawTextInputField(doc, config, pos_x, pos_y, "Referee:", config.signature.width, config.signature.height).y + config.data.inputs.marginsVertical;
-  drawTextInputField(doc, config, pos_x, pos_y, "Co-Referee:", config.signature.width, config.signature.height)
+  nextItem(drawVictimInputField(doc, config, pos_x, pos_y, 9, "alive"), "victimsAlive");
+  nextItem(drawVictimInputField(doc, config, pos_x, pos_y, 9, "dead"), "victimsDead");
+  nextItem(drawTimeInputField(doc, config, pos_x, pos_y), "time");
+  nextItem(drawTextInputField(doc, config, pos_x, pos_y, "Team:", config.signature.width, config.signature.height), "signTeam");
+  nextItem(drawTextInputField(doc, config, pos_x, pos_y, "Referee:", config.signature.width, config.signature.height), "signRef");
+  nextItem(drawTextInputField(doc, config, pos_x, pos_y, "Co-Referee:", config.signature.width, config.signature.height), "signCoRef");
+
+  return {
+    tiles: tilePosData,
+    data: posDatas
+  }
 }
 
 module.exports.generateScoreSheet = function(res, rounds) {
@@ -337,7 +400,7 @@ module.exports.generateScoreSheet = function(res, rounds) {
 
   for (let i = 0; i < rounds.length; i++) {
     doc.addPage({margin: 10});
-    drawRun(doc, globalConfig, rounds[i].round, rounds[i].field, rounds[i].team, rounds[i].startTime, rounds[i].map)
+    console.log(drawRun(doc, globalConfig, rounds[i].round, rounds[i].field, rounds[i].team, rounds[i].startTime, rounds[i].map))
   }
 
   doc.end()
