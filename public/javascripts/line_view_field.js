@@ -19,6 +19,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.stiles = [];
     // Map (images etc.) for the tiles
     $scope.mtiles = [];
+    
+    $scope.victim_list = [];
+    $scope.LoPs = [];
+
 
     
     setInterval(function () {
@@ -119,6 +123,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.retired = data.retired;
                 $scope.LoPs_total = 0;
                 $scope.status = data.status;
+                $scope.victim_list = data.rescueOrder;
                 for (let i = 0; i < $scope.LoPs.length; i++) {
                     $scope.LoPs_total += $scope.LoPs[i];
                 }
@@ -169,6 +174,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     f = true;
                 }
             }
+            
+            $scope.victim_list = response.data.rescueOrder;
+            
 
             // Get the map
             $http.get("/api/maps/line/" + response.data.map +
@@ -203,6 +211,16 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         }, function (response) {
             console.log("Error: " + response.statusText);
         });
+    }
+    
+    $scope.count_victim_list = function(type){
+        let count = 0
+        for(victiml of $scope.victim_list){
+            if(!victiml.type.indexOf(type)){
+                count++;
+            }
+        }
+        return count;
     }
 
 
