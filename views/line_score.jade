@@ -96,7 +96,7 @@ block content
             td.text-center(ng-bind='run.score'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
             td.text-center(ng-if="!run.retired"  ng-style="run.isplaying && {'background-color': '#ffffa8'}") {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
             td.text-center(ng-if="run.retired"  ng-style="run.isplaying && {'background-color': '#ffffa8'}") R
-            td.text-center(ng-bind='run.rescuedLiveVictims + run.rescuedDeadVictims'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+            td.text-center(ng-bind='run.rescueOrder.length'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
             td.text-center(ng-bind='run.LoPsNum'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
     .col-lg-6
       h3 ワールドリーグ - 全競技
@@ -120,7 +120,7 @@ block content
             td.text-center(ng-bind='run.score'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
             td.text-center(ng-if="!run.retired"  ng-style="run.isplaying && {'background-color': '#ffffa8'}") {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
             td.text-center(ng-if="run.retired"  ng-style="run.isplaying && {'background-color': '#ffffa8'}") R
-            td.text-center(ng-bind='run.rescuedLiveVictims + run.rescuedDeadVictims'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+            td.text-center(ng-bind='run.rescueOrder.length'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
             td.text-center(ng-bind='run.LoPsNum'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")        
    
    

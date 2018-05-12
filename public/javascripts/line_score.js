@@ -207,56 +207,6 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
         })
     }
 
-    function sum_jpop(runs) {
-        if (runs.length == 1) {
-            return {
-                score: runs[0].score,
-                time: runs[0].time,
-                rescued: runs[0].rescuedLiveVictims + runs[0].rescuedDeadVictims,
-                lops: runs[0].LoPsNum,
-                retired: runs[0].retired
-            }
-        }
-        var select = [];
-        var not_select = [];
-        var result = [];
-        result.time = {};
-        for (var i = 0; i < runs.length; i++) {
-            if (runs[i].round.name == "1" || runs[i].round.name == "2") {
-                select.push(runs[i]);
-            } else {
-                not_select.push(runs[i]);
-            }
-            if (select.length >= 2) select.sort(sortRuns);
-        }
-        result.score = 0;
-        result.time.minutes = 0;
-        result.time.seconds = 0;
-        result.rescued = 0;
-        result.lops = 0;
-        result.retired = false;
-        for (var i = 0; i < not_select.length; i++) {
-            result.score += not_select[i].score;
-            result.time.minutes += not_select[i].time.minutes;
-            result.time.seconds += not_select[i].time.seconds;
-            result.time.minutes += (result.time.seconds >= 60 ? 1 : 0);
-            result.time.seconds %= 60;
-            result.rescued += not_select[i].rescuedLiveVictims +
-                not_select[i].rescuedDeadVictims;
-            result.lops += not_select[i].LoPsNum;
-            if (not_select[i].retired) result.retired = true;
-        }
-        result.score += select[0].score;
-        result.time.minutes += select[0].time.minutes;
-        result.time.seconds += select[0].time.seconds;
-        result.time.minutes += (result.time.seconds >= 60 ? 1 : 0);
-        result.time.seconds %= 60;
-        result.rescued += select[0].rescuedLiveVictims +
-            select[0].rescuedDeadVictims;
-        result.lops += select[0].LoPsNum;
-        if (select[0].retired) result.retired = true;
-        return result;
-    }
 
     function sumBest(runs) {
         //console.log(runs);
@@ -264,7 +214,7 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
             return {
                 score: runs[0].score,
                 time: runs[0].time,
-                rescued: runs[0].rescuedLiveVictims + runs[0].rescuedDeadVictims,
+                rescued: runs[0].rescueOrder.length,
                 lops: runs[0].LoPsNum
             }
         }
@@ -285,7 +235,7 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
             sum.score += runs[i].score
             sum.time.minutes += runs[i].time.minutes
             sum.time.seconds += runs[i].time.seconds
-            sum.rescued += runs[i].rescuedLiveVictims + runs[i].rescuedDeadVictims
+            sum.rescued += runs[i].rescueOrder.length
             sum.lops += runs[i].LoPsNum
         }
         sum.time.minutes += Math.floor(sum.time.seconds/60);
