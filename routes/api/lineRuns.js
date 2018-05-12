@@ -408,8 +408,10 @@ privateRouter.put('/:runid', function (req, res, next) {
                     dbRun.LoPs.length = run.LoPs.length
                 }
                 
-                dbRun.rescueOrder = run.rescueOrder
-
+                if (run.rescueOrder != null){
+                    dbRun.rescueOrder = run.rescueOrder
+                }
+                
                 // Recursively updates properties in "dbObj" from "obj"
                 const copyProperties = function (obj, dbObj) {
                     for (let prop in obj) {
@@ -445,7 +447,6 @@ privateRouter.put('/:runid', function (req, res, next) {
                         msg: "Could not save run"
                     })
                 }
-                logger.info(dbRun)
                 dbRun.score = scoreCalculator.calculateLineScore(dbRun)
 
                 if (dbRun.score > 0 || dbRun.time.minutes != 0 ||
