@@ -45,13 +45,28 @@ module.exports.calculateLineScore = function (run) {
     }
   }
   
-  if (run.evacuationLevel == 1) {
-    score += run.rescuedLiveVictims * 30
-    score += run.rescuedDeadVictims * 15
-    
-  } else if (run.evacuationLevel == 2) {
-    score += run.rescuedLiveVictims * 40
-    score += run.rescuedDeadVictims * 20
+  if(run.rescueOrder){
+      if (run.evacuationLevel == 1) {
+        for(let victim of run.rescueOrder){
+            if(victim.effective){
+                if(victim.type == "L"){
+                    score += Math.max(30 - run.LoPs[dropTileCount] * 5 ,0)
+                }else{
+                    score += Math.max(15 - run.LoPs[dropTileCount] * 5 ,0)
+                }
+            }
+        }
+      } else if (run.evacuationLevel == 2) {
+        for(let victim of run.rescueOrder){
+            if(victim.effective){
+                if(victim.type == "L"){
+                    score += Math.max(40 - run.LoPs[dropTileCount] * 5 ,0)
+                }else{
+                    score += Math.max(20 - run.LoPs[dropTileCount] * 5 ,0)
+                }
+            }
+        }
+      }
   }
   
   if (run.exitBonus) {

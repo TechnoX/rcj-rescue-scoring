@@ -64,6 +64,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.processing = new Array();
     $scope.rprocessing = false;
     
+    $scope.victim_list = [];
+    $scope.victim_tmp = [];
+    $scope.LoPs = [];
+    
     $scope.checkTeam = $scope.checkRound = $scope.checkMember = $scope.checkMachine = false;
     $scope.toggleCheckTeam = function(){
         $scope.checkTeam = !$scope.checkTeam;
@@ -143,6 +147,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.seconds = response.data.time.seconds;
             $scope.time = ($scope.minutes * 60 + $scope.seconds)*1000;
             prevTime = $scope.time;
+            
+            $scope.victim_list = response.data.rescueOrder;
+            
 
             // Scoring elements of the tiles
             $scope.stiles = response.data.tiles;
@@ -152,6 +159,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     marker[i] = true;
                 }
             }
+            
+            
 
             // Get the map
             $http.get("/api/maps/line/" + response.data.map +
@@ -164,8 +173,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 width = response.data.width;
                 length = response.data.length;
                 $scope.startTile = response.data.startTile;
-                $scope.numberOfDropTiles = response.data.numberOfDropTiles;;
+                $scope.numberOfDropTiles = response.data.numberOfDropTiles;
                 $scope.mtiles = {};
+                
+                // Get max victim count
+                $scope.maxLiveVictims = response.data.victims.live;
+                $scope.maxDeadVictims = response.data.victims.dead;
+                
                 var flag = false;
                 var ntile = {
                     scored: false,
@@ -404,6 +418,147 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 console.log("Error: " + response.statusText);
             });
         }
+    }
+    
+    $scope.calc_victim_points = function(type,effective){
+        if(!effective) return 0;
+        let tmp_point = 0;
+        if($scope.evacuationLevel == 1){ // Low Level
+            if(type == "L") tmp_point = 30;
+            else tmp_point = 15;
+        }else{                          // High Level
+            if(type == "L") tmp_point = 40;
+            else tmp_point = 20;
+        }
+        
+        return Math.max(tmp_point - $scope.LoPs[$scope.LoPs.length - 1] * 5 , 0);
+    }
+    
+    $scope.count_victim_list = function(type){
+        let count = 0
+        for(victiml of $scope.victim_list){
+            if(!victiml.type.indexOf(type)){
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    $scope.count_victim_tmp = function(type){
+        let count = 0
+        for(victiml of $scope.victim_tmp){
+            if(!victiml.indexOf(type)){
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    $scope.addVictimTmp = function(type){
+        playSound(sClick);
+        if(type == "L"){
+            if($scope.count_victim_list("L") + $scope.count_victim_tmp("L") >= $scope.maxLiveVictims)return;
+        }else{
+            if($scope.count_victim_list("D") + $scope.count_victim_tmp("D") >= $scope.maxDeadVictims)return;
+        }
+        $scope.victim_tmp.push(type);
+    }
+    
+    $scope.addVictim = function(type){
+        let tmp = {};
+        tmp.effective = true;
+        if(type == "L"){
+            tmp.type = "L";
+            if($scope.count_victim_list("L") >= $scope.maxLiveVictims)return;
+        }else{
+            tmp.type = "D";
+            if($scope.count_victim_list("D") >= $scope.maxDeadVictims)return;
+            if($scope.count_victim_list("L") >= $scope.maxLiveVictims){ // All live victims rescued
+                
+            }else{
+                tmp.effective = false;
+            }
+        }
+        
+        
+        $scope.victim_list.push(tmp);
+    }
+    
+    function reStateVictim(){
+        let count = 0;
+        for(victiml of $scope.victim_list){
+            if(!victiml.type.indexOf("L")){
+                count++;
+            }
+            if(!victiml.type.indexOf("D")){
+                if(count >= $scope.maxLiveVictims){
+                    victiml.effective = true;
+                }else{
+                    victiml.effective = false;
+                }
+            }
+            
+        }
+    }
+    
+    $scope.delete_victim = function(index){
+        playSound(sClick);
+        $scope.victim_list.splice(index, 1);
+        reStateVictim();
+        $http.put("/api/runs/line/" + runId, {
+                rescueOrder: $scope.victim_list,
+                time: {
+                    minutes: Math.floor($scope.time / 60000),
+                    seconds: (Math.floor($scope.time % 60000)) / 1000
+                }
+            }).then(function (response) {
+                $scope.score = response.data.score;
+                $scope.rdprocessing = false;
+            }, function (response) {
+                console.log("Error: " + response.statusText);
+            });
+    }
+    $scope.delete_victim_tmp = function(index){
+        playSound(sClick);
+        $scope.victim_tmp.splice(index, 1);
+    }
+    
+    $scope.victimRegist = function(){
+        playSound(sClick);
+        let live = 0;
+        let dead = 0;
+        for(victiml of $scope.victim_tmp){
+            if(!victiml.indexOf("L")){
+                live++;
+            }else{
+                dead++;
+            }
+        }
+        for(let i = 0; i < dead; i++){
+            $scope.addVictim("D");
+        }
+        for(let i = 0; i < live; i++){
+            $scope.addVictim("L");
+        } 
+        $scope.victim_tmp_clear();
+        
+        $http.put("/api/runs/line/" + runId, {
+                rescueOrder: $scope.victim_list,
+                time: {
+                    minutes: Math.floor($scope.time / 60000),
+                    seconds: (Math.floor($scope.time % 60000)) / 1000
+                }
+            }).then(function (response) {
+                $scope.score = response.data.score;
+                $scope.rdprocessing = false;
+            }, function (response) {
+                console.log("Error: " + response.statusText);
+            });
+    }
+    
+    $scope.victim_tmp_clear = function(){
+        playSound(sClick);
+        $scope.victim_tmp = [];
     }
 
     var tick = function () {
@@ -733,6 +888,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         run.rescuedLiveVictims = $scope.rescuedLiveVictims;
         run.showedUp = $scope.showedUp;
         run.started = $scope.started;
+        run.rescueOrder = $scope.victim_list;
         run.tiles = $scope.stiles;
         $scope.minutes = Math.floor($scope.time / 60000)
         $scope.seconds = Math.floor(($scope.time % 60000) / 1000)

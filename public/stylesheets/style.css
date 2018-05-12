@@ -235,6 +235,22 @@ a {
     border-style: dashed;
 }
 
+
+.victim_btn{
+    display: inline-block;
+    padding: 0.5em 1em;
+    text-decoration: none;
+    color: #67c5ff;
+    border: dashed 1px #67c5ff;
+    border-radius: 3px;
+    transition: .4s;
+}
+
+.victim_btn:hover {
+    border-style: dotted;
+    color: #679efd;
+}
+
 table.custom {
     border-top: 1px solid #4f4d47;
     border-right: 1px solid #4f4d47;

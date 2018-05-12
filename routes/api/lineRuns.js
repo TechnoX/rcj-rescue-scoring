@@ -99,7 +99,7 @@ function getLineRuns(req, res) {
       }
     ])
     } else {
-        query.select("competition round team field map score time status started rescuedLiveVictims rescuedDeadVictims LoPs comment startTime sign")
+        query.select("competition round team field map score time status started rescuedLiveVictims rescuedDeadVictims rescueOrder LoPs comment startTime sign")
     }
 
 
@@ -407,6 +407,8 @@ privateRouter.put('/:runid', function (req, res, next) {
                 if (run.LoPs != null && run.LoPs.length != dbRun.LoPs.length) {
                     dbRun.LoPs.length = run.LoPs.length
                 }
+                
+                dbRun.rescueOrder = run.rescueOrder
 
                 // Recursively updates properties in "dbObj" from "obj"
                 const copyProperties = function (obj, dbObj) {
@@ -443,7 +445,7 @@ privateRouter.put('/:runid', function (req, res, next) {
                         msg: "Could not save run"
                     })
                 }
-
+                logger.info(dbRun)
                 dbRun.score = scoreCalculator.calculateLineScore(dbRun)
 
                 if (dbRun.score > 0 || dbRun.time.minutes != 0 ||
