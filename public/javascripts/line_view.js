@@ -10,6 +10,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.stiles = [];
     // Map (images etc.) for the tiles
     $scope.mtiles = [];
+    
+    $scope.victim_list = [];
+    $scope.LoPs = [];
+
 
     $scope.checkPointDistance = [];
 
@@ -45,6 +49,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.minutes = data.time.minutes;
                 $scope.seconds = data.time.seconds;
                 $scope.retired = data.retired;
+                
+                $scope.victim_list = data.rescueOrder;
 
                 $scope.checkPointDistance = [];
                 let tmp = {
@@ -116,6 +122,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     marker[i] = true;
                 }
             }
+            
+            $scope.victim_list = response.data.rescueOrder;
 
             // Get the map
             $http.get("/api/maps/line/" + response.data.map +
@@ -135,6 +143,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     scored: false,
                     isDropTile: false
                 }
+                
+                
+                // Get max victim count
+                $scope.maxLiveVictims = response.data.victims.live;
+                $scope.maxDeadVictims = response.data.victims.dead;
 
                 while ($scope.stiles.length < response.data.indexCount) {
                     $scope.stiles.push(ntile);
@@ -183,6 +196,31 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.go('/home/access_denied');
             }
         });
+    }
+    
+     $scope.calc_victim_points = function(type,effective){
+        if(!effective) return 0;
+        let tmp_point = 0;
+        if($scope.evacuationLevel == 1){ // Low Level
+            if(type == "L") tmp_point = 30;
+            else tmp_point = 15;
+        }else{                          // High Level
+            if(type == "L") tmp_point = 40;
+            else tmp_point = 20;
+        }
+        
+        return Math.max(tmp_point - $scope.LoPs[$scope.LoPs.length - 1] * 5 , 0);
+    }
+    
+    $scope.victimPoints = function(){
+        let score = 0;
+        for(victiml of $scope.victim_list){
+            if(victiml.effective){
+                if(victiml.type =="L") score += $scope.calc_victim_points("L",1);
+                else score += $scope.calc_victim_points("D",1);
+            }
+        }
+        return score;
     }
 
     $scope.LoPsCountPoint = function (n) {
