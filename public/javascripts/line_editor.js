@@ -47,6 +47,8 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
     $scope.height = 1;
     $scope.width = 1;
     $scope.length = 1;
+    $scope.liveV = 0;
+    $scope.deadV = 0;
     $scope.name = "Awesome Testbana";
 
     if (mapId) {
@@ -71,6 +73,8 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
             $scope.length = response.data.length;
             $scope.name = response.data.name;
             $scope.finished = response.data.finished;
+            $scope.liveV = response.data.victims.live;
+            $scope.deadV = response.data.victims.dead;
 
         }, function (response) {
             console.log("Error: " + response.statusText);
@@ -124,6 +128,9 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
             alert("You must have a new name when saving as!");
             return;
         }
+        var victims = {};
+        victims.live = $scope.liveV;
+        victims.dead = $scope.deadV;
         var map = {
             competition: $scope.se_competition,
             name: $scope.saveasname,
@@ -133,7 +140,8 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
             finished: $scope.finished,
             numberOfDropTiles: $scope.numberOfDropTiles,
             startTile: $scope.startTile,
-            tiles: $scope.tiles
+            tiles: $scope.tiles,
+            victims: victims
         };
 
         $http.post("/api/maps/line", map).then(function (response) {
@@ -162,6 +170,10 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
                 return;
             }
         }
+        
+        var victims = {};
+        victims.live = $scope.liveV;
+        victims.dead = $scope.deadV;
 
         var map = {
             competition: $scope.competitionId,
@@ -172,7 +184,8 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
             finished: $scope.finished,
             numberOfDropTiles: $scope.numberOfDropTiles,
             startTile: $scope.startTile,
-            tiles: $scope.tiles
+            tiles: $scope.tiles,
+            victims: victims
         };
 
         console.log(map);
@@ -201,7 +214,11 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
     }
 
     $scope.export = function () {
-
+        
+        var victims = {};
+        victims.live = $scope.liveV;
+        victims.dead = $scope.deadV;
+        
         var map = {
             name: $scope.name,
             length: $scope.length,
@@ -210,7 +227,8 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
             finished: $scope.finished,
             numberOfDropTiles: $scope.numberOfDropTiles,
             startTile: $scope.startTile,
-            tiles: $scope.tiles
+            tiles: $scope.tiles,
+            victims: victims
         };
         var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(map))
         var downloadLink = document.createElement('a')

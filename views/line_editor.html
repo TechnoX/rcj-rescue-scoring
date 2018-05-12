@@ -49,6 +49,16 @@
             </div>
             <br>
             <div class="input-group">
+                <span class="input-group-addon">生きている被災者の数</span>
+                <input type="number" ng-model="liveV" min="0" >
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">死んでいる被災者の数</span>
+                <input type="number" ng-model="deadV" min="0" >
+            </div>
+            <br>
+            <div class="input-group">
                 <span class="input-group-addon">{{"admin.lineMapEditor.check" | translate}}</span>
                 <input type="number" ng-model="numberOfDropTiles" min="0" >
             </div>
