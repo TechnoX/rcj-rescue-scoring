@@ -58,7 +58,7 @@ module.exports.calculateLineScore = function (run) {
     score += 20
   }
   
-  // 3 points for placing robot on first droptile (start)
+  // 5 points for placing robot on first droptile (start)
   // Implicit showedUp if anything else is scored
   if (run.showedUp || score > 0) {
     score += 5
