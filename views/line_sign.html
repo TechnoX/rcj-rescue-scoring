@@ -72,45 +72,50 @@
                         </div>
 
                     </div>
-                    <h3 class="card-header"><i class="fas fa-ambulance" aria-hidden="true"></i> {{'line.sign.rescue' | translate}}　<span class="badge badge-danger">{{evacuationLevel-1?'line.sign.high':'line.sign.low' | translate}}</span></h3>
+                    <h3 class="card-header"><i class="fas fa-ambulance" aria-hidden="true"></i> {{'line.judge.rescue' | translate}}　<span class="badge badge-danger">{{evacuationLevel-1?'line.judge.high':'line.judge.low' | translate}}</span></h3>
                     <div class="card-body">
-                        <p class="card-text">{{'line.sign.live' | translate}}<span class="badge badge-info">{{30 + (evacuationLevel-1)*10}}　points /victim</span></p>
-                        <div class="input-group" style="width:100%; height:35px;">
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-danger" disabled>
-                                    <i class="fas fa-minus" aria-hidden="true"></i>
-                                </button>
-                            </span>
-                            <div style="background-color: #F2F2F2; width:100px; text-align: center;">
-                                <span class="count">{{rescuedLiveVictims}}</span>
+                        <div style="display:flex;" class="card-text">
+                            <div style="width:40%;font-size:20px;" align="center">
+                                {{'common.lops' | translate}}
                             </div>
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-success" disabled>
-                                    <i class="fas fa-plus" aria-hidden="true"></i>
-                                </button>
-                            </span>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="card-body">
-                        <p class="card-text">{{'line.sign.dead' | translate}}<span class="badge badge-info">{{15 + (evacuationLevel-1)*5}} points /victim</span></p>
-                        <div class="input-group" style="width:100%; height:35px;">
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-danger" disabled>
-                                    <i class="fas fa-minus" aria-hidden="true"></i>
-                                </button>
-                            </span>
-                            <div style="background-color: #F2F2F2; width:100px; text-align: center;">
-                                <span class="count">{{rescuedDeadVictims}}</span>
+                            <div style="width:60%;position: relative;">
+                                <div class="input-group" style="width:100%; height:35px;position:absolute;top: 0;bottom: 0;margin: auto;">
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-danger" disabled>
+                                            <i class="fas fa-minus" aria-hidden="true"></i>
+                                        </button>
+                                    </span>
+                                    <div style="background-color: #F2F2F2; width:100px; text-align: center;">
+                                        <img src="/images/loader2.gif" alt="" ng-show="processing[actualUsedDropTiles] == true" style="height:100%; width:auto;">
+                                        <span class="count" ng-show="processing[actualUsedDropTiles] != true">{{LoPs[actualUsedDropTiles]?LoPs[actualUsedDropTiles]:0}}</span>
+                                    </div>
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-success" disabled>
+                                            <i class="fas fa-plus" aria-hidden="true"></i>
+                                        </button>
+                                    </span>
+                                </div>
                             </div>
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-success" disabled>
-                                    <i class="fas fa-plus" aria-hidden="true"></i>
-                                </button>
-                            </span>
                         </div>
+                        <hr>
+                        <h6>救助済みの被災者</h6>
+                        <table border="1" style="width:100%; text-align: center; margin-top: 10px;" ng-repeat="j in range(6)" ng-if="victim_list.length > j*5 || j == 0">
+                            <tr>
+                                <th style="text-align:center;" ng-repeat="i in range(5)">{{j*5 + i+1}}</th>
+                            </tr>
+                            <tr>
+                                <td ng-repeat="i in range(5)" ng-style="{'background-color': victim_list[j*5 + i].effective?'#FFD9B7':'#ccc'}">
+                                    <img src="/images/liveVictim.png" width=30px ng-if="victim_list[j*5 + i].type == 'L'" />
+                                    <img src="/images/deadVictim.png" width=30px ng-if="victim_list[j*5 + i].type == 'D'" />
+                                    <span style="width:30px;" ng-hide="victim_list[j*5 + i]">---</span>
+                                    <br>
+                                    <span ng-show="victim_list[j*5 + i]">{{calc_victim_points(victim_list[j*5 + i].type,victim_list[j*5 + i].effective)}} P</span>
+                                </td>
+                            </tr>
+                        </table>
+                        <hr>
+
                     </div>
-                    <hr>
                     <div class="card-body">
                         <p class="card-text">{{'line.judge.exit' | translate}}<span class="badge badge-info">20　points</span></p>
                         <div class="col-md-12" style="position: relative;">
@@ -166,7 +171,7 @@
                 </div>
             </div>
             <br>
-            <h2 style="text-align:center;">{{score - checkTotal() - ((rescuedLiveVictims * (30 + (evacuationLevel-1)*10)) + (rescuedDeadVictims * (15 + (evacuationLevel-1)*5)) + (20 * exitBonus))}} {{'common.point' |translate}}</h2>
+            <h2 style="text-align:center;">{{score - checkTotal() - ( victimPoints() + (20 * exitBonus))}} {{'common.point' |translate}}</h2>
         </div>
     </div>
 
@@ -202,19 +207,46 @@
     <h2>{{'line.sign.rescue' | translate}} / {{'line.sign.exitBonus' | translate}}</h2>
     <div class="alert alert-info" style="margin-bottom:50px;text-align:center;" role="alert">
         <div class="row">
-            <div class="col-md-2">
-                <p style="height:30px;">{{'line.sign.live' | translate}}</p>
-                <i class="fas fa-child fa-2x"> {{rescuedLiveVictims}}</i><br><br>
-                <h1>{{rescuedLiveVictims * (30 + (evacuationLevel-1)*10)}} {{'common.point' | translate}}</h1>
-            </div>
-            <div class="col-md-1">
-                <p style="height:30px;"></p>
-                <h1>+</h1>
-            </div>
-            <div class="col-md-2">
-                <p style="height:30px;">{{'line.sign.dead' | translate}}</p>
-                <i class="fas fa-child fa-2x"> {{rescuedDeadVictims}}</i><br><br>
-                <h1>{{rescuedDeadVictims * (15 + (evacuationLevel-1)*5)}} {{'common.point' | translate}}</h1>
+            <div class="col-md-5">
+                <p style="height:30px;">{{'line.judge.rescue' | translate}}【{{evacuationLevel-1?'line.judge.high':'line.judge.low' | translate}}】</p>
+                <div class="row">
+                    <div class="col-6" ng-click="addVictimTmp('L')">
+                        <span>Max : {{maxLiveVictims}}</span>
+                        <br>
+                        <div class="victim_btn" style="width:100%;position: relative; background-color: #E1FFFE;">
+                            <img src="/images/liveVictim.png" class="img-thumbnail" width=60px>
+                        </div>
+                        <br>
+                        <span>{{evacuationLevel-1?'40':'30'}}p - ({{LoPs[actualUsedDropTiles]}}times x 5p)</span>
+                        <span class="badge badge-info" style="margin-top:10px;">{{calc_victim_points("L",true)}}　points /victim</span>
+
+                    </div>
+                    <div class="col-6" style="" ng-click="addVictimTmp('D')">
+                        <span>Max : {{maxDeadVictims}}</span>
+                        <br>
+                        <div class="victim_btn" style="width:100%;position: relative; background-color: #E1FFFE;">
+                            <img src="/images/deadVictim.png" class="img-thumbnail" width=60px>
+                        </div>
+                        <br>
+                        <span>{{evacuationLevel-1?'20':'15'}}p - ({{LoPs[actualUsedDropTiles]}}times x 5p)</span>
+                        <span class="badge badge-info" style="margin-top:10px;">{{calc_victim_points("D",true)}}　points /victim</span>
+                    </div>
+                </div>
+                <hr>
+                <table border="1" style="width:100%; text-align: center; margin-top: 10px;" ng-repeat="j in range(6)" ng-if="victim_list.length > j*5 || j == 0">
+                    <tr>
+                        <th style="text-align:center;" ng-repeat="i in range(5)">{{j*5 + i+1}}</th>
+                    </tr>
+                    <tr>
+                        <td ng-repeat="i in range(5)" ng-style="{'background-color': victim_list[j*5 + i].effective?'#FFCFA4':'#ccc'}" ng-dblclick="delete_victim(j*5 + i)">
+                            <img src="/images/liveVictim.png" width=30px ng-if="victim_list[j*5 + i].type == 'L'" />
+                            <img src="/images/deadVictim.png" width=30px ng-if="victim_list[j*5 + i].type == 'D'" />
+                            <span style="width:30px;" ng-hide="victim_list[j*5 + i]">---</span>
+                            <br>
+                            <span ng-show="victim_list[j*5 + i]">{{calc_victim_points(victim_list[j*5 + i].type,victim_list[j*5 + i].effective)}} P</span>
+                        </td>
+                    </tr>
+                </table>
             </div>
             <div class="col-md-1">
                 <p style="height:30px;"></p>
@@ -231,7 +263,7 @@
             </div>
             <div class="col-md-3">
                 <p style="height:30px;">{{'common.stotal' | translate}}</p>
-                <h1>{{(rescuedLiveVictims * (30 + (evacuationLevel-1)*10)) + (rescuedDeadVictims * (15 + (evacuationLevel-1)*5)) + (20 * exitBonus)}} {{'common.point' | translate}}</h1>
+                <h1>{{ victimPoints() + (20 * exitBonus)}} {{'common.point' | translate}}</h1>
             </div>
         </div>
     </div>
@@ -241,7 +273,7 @@
         <div class="row">
             <div class="col-md-2">
                 <p style="height:30px;">{{'line.sign.item' | translate}}</p>
-                <h1>{{score - checkTotal() - ((rescuedLiveVictims * (30 + (evacuationLevel-1)*10)) + (rescuedDeadVictims * (15 + (evacuationLevel-1)*5)) + (20 * exitBonus))}} {{'common.point' | translate}}</h1>
+                <h1>{{score - checkTotal() - ( victimPoints() + (20 * exitBonus))}} {{'common.point' | translate}}</h1>
             </div>
             <div class="col-md-1">
                 <p style="height:30px;"></p>
@@ -257,7 +289,7 @@
             </div>
             <div class="col-md-2">
                 <p style="text-align:center;height:30px;">{{'line.sign.rescue' | translate}} / {{'line.sign.exitBonus' | translate}}</p>
-                <h1>{{(rescuedLiveVictims * (30 + (evacuationLevel-1)*10)) + (rescuedDeadVictims * (15 + (evacuationLevel-1)*5)) + (20 * exitBonus)}} {{'common.point' | translate}}</h1>
+                <h1>{{ victimPoints() + (20 * exitBonus)}} {{'common.point' | translate}}</h1>
             </div>
             <div class="col-md-1">
                 <p style="height:30px;"></p>
