@@ -57,6 +57,10 @@ const lineMapSchema = new Schema({
         required: true,
         default : 0,
         min     : 0
+      },
+      rampPoints: {
+        type: Boolean,
+        default: false
       }
     },
     index    : {type: [Number], min: 0},
@@ -70,7 +74,23 @@ const lineMapSchema = new Schema({
     z: {type: Number, integer: true, required: true, min: 0}
   },
   numberOfDropTiles: {type: Number, required: true, min: 0},
-  finished         : {type: Boolean, default: false}
+  finished         : {type: Boolean, default: false},
+  victims: {
+      live:{
+          type: Number,
+          integer: true,
+          min: 0,
+          max: 100,
+          default: 0
+      },
+      dead:{
+          type: Number,
+          integer: true,
+          min: 0,
+          max: 100,
+          default: 0
+      }
+  }
 })
 
 lineMapSchema.pre('save', function (next) {
