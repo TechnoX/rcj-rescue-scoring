@@ -46,8 +46,6 @@ const lineRunSchema = new Schema({
     }
   },
   exitBonus         : {type: Boolean, default: false},
-  rescuedLiveVictims: {type: Number, min: 0, default: 0},
-  rescuedDeadVictims: {type: Number, min: 0, default: 0},
   rescueOrder : [{
       type: {type: String},
       effective: {type: Boolean}

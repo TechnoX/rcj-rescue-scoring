@@ -41,8 +41,6 @@ module.exports.connectSocketIo = function (io) {
  * @apiSuccess (200) {Number}   -.time.minutes
  * @apiSuccess (200) {Number}   -.time.seconds
  * @apiSuccess (200) {Number}   -.status
- * @apiSuccess (200) {Number}   -.rescuedLiveVictims
- * @apiSuccess (200) {Number}   -.rescuedDeadVictims
  * @apiSuccess (200) {Object[]} -             Array of LoPs
  *
  * @apiError (400) {String} msg The error message
@@ -99,7 +97,7 @@ function getLineRuns(req, res) {
       }
     ])
     } else {
-        query.select("competition round team field map score time status started rescuedLiveVictims rescuedDeadVictims rescueOrder LoPs comment startTime sign")
+        query.select("competition round team field map score time status started rescueOrder LoPs comment startTime sign")
     }
 
 
