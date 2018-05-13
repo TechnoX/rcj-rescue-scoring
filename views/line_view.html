@@ -171,7 +171,7 @@
 
             </div>
         </div>
-        <div class="col-md-7 col-lg-8 tilearea" >
+        <div class="col-md-7 col-lg-8 tilearea">
             <div style="text-align:left;float:left;">
                 <div class="btn-group">
                     <span class="input-group-addon"><i class="fas fa-arrows-alt-v" aria-hidden="true"></i></span>
@@ -210,7 +210,7 @@
                 </div>
             </div>
             <br>
-            <h2 style="text-align:center;">{{score - checkTotal() - ( victimPoints() + (20 * exitBonus))}} {{'common.point' |translate}}</h2>
+            <h2 style="text-align:center;">{{'common.stotal' | translate}} : {{score - checkTotal() - ( victimPoints() + (20 * exitBonus))}} {{'common.point' |translate}}</h2>
         </div>
     </div>
 
@@ -247,37 +247,38 @@
     <div class="alert alert-info" style="margin-bottom:50px;text-align:center;" role="alert">
         <div class="row">
             <div class="col-md-5">
-                <p style="height:30px;">{{'line.judge.rescue' | translate}}【{{evacuationLevel-1?'line.judge.high':'line.judge.low' | translate}}】</p>
+                <!--<p style="height:30px;">{{'line.judge.rescue' | translate}}【{{evacuationLevel-1?'line.judge.high':'line.judge.low' | translate}}】</p>-->
                 <div class="row">
                     <div class="col-6" ng-click="addVictimTmp('L')">
                         <span>Max : {{maxLiveVictims}}</span>
                         <br>
                         <div class="victim_btn" style="width:100%;position: relative; background-color: #E1FFFE;">
                             <img src="/images/liveVictim.png" class="img-thumbnail" width=60px>
-                        </div>
-                        <br>
-                        <span>{{evacuationLevel-1?'40':'30'}}p - ({{LoPs[actualUsedDropTiles]}}times x 5p)</span>
-                        <span class="badge badge-info" style="margin-top:10px;">{{calc_victim_points("L",true)}}　points /victim</span>
 
+                            <br>
+                            <span style="font-size:1.5vw;color:#444;">{{evacuationLevel-1?'40':'30'}}<span style="font-size:10px;">p</span> - ({{LoPs[actualUsedDropTiles]}}<span style="font-size:10px;">times</span> x 5<span style="font-size:10px;">p</span>)</span>
+                            <span class="badge badge-info" style="margin-top:10px;"><span style="font-size:25px;">{{calc_victim_points("L",true)}}</span>　points /victim</span>
+                        </div>
                     </div>
                     <div class="col-6" style="" ng-click="addVictimTmp('D')">
-                        <span>Max : {{maxDeadVictims}}</span>
+                        <span>Max : {{maxLiveVictims}}</span>
                         <br>
                         <div class="victim_btn" style="width:100%;position: relative; background-color: #E1FFFE;">
                             <img src="/images/deadVictim.png" class="img-thumbnail" width=60px>
+                            <br>
+                            <span style="font-size:1.5vw;color:#444;">{{evacuationLevel-1?'20':'15'}}<span style="font-size:10px;">p</span> - ({{LoPs[actualUsedDropTiles]}}<span style="font-size:10px;">times</span> x 5<span style="font-size:10px;">p</span>)</span>
+                            <span class="badge badge-info" style="margin-top:10px;"><span style="font-size:25px;">{{calc_victim_points("D",true)}}</span>　points /victim</span>
                         </div>
-                        <br>
-                        <span>{{evacuationLevel-1?'20':'15'}}p - ({{LoPs[actualUsedDropTiles]}}times x 5p)</span>
-                        <span class="badge badge-info" style="margin-top:10px;">{{calc_victim_points("D",true)}}　points /victim</span>
                     </div>
                 </div>
-                <hr>
+            </div>
+            <div class="col-md-7">
                 <table border="1" style="width:100%; text-align: center; margin-top: 10px;" ng-repeat="j in range(6)" ng-if="victim_list.length > j*5 || j == 0">
                     <tr>
-                        <th style="text-align:center;" ng-repeat="i in range(5)">{{j*5 + i+1}}</th>
+                        <th style="text-align:center;background-color:#fff;" ng-repeat="i in range(5)">{{j*5 + i+1}}</th>
                     </tr>
                     <tr>
-                        <td ng-repeat="i in range(5)" ng-style="{'background-color': victim_list[j*5 + i].effective?'#FFCFA4':'#ccc'}" ng-dblclick="delete_victim(j*5 + i)">
+                        <td ng-repeat="i in range(5)" ng-style="{'background-color': victim_list[j*5 + i].effective?'#BDF4CB':'#ccc'}" ng-dblclick="delete_victim(j*5 + i)">
                             <img src="/images/liveVictim.png" width=30px ng-if="victim_list[j*5 + i].type == 'L'" />
                             <img src="/images/deadVictim.png" width=30px ng-if="victim_list[j*5 + i].type == 'D'" />
                             <span style="width:30px;" ng-hide="victim_list[j*5 + i]">---</span>
@@ -287,20 +288,21 @@
                     </tr>
                 </table>
             </div>
-            <div class="col-md-1">
+            <div class="col-md-5"></div>
+            <div class="col-md-1" style="margin-top:20px;">
                 <p style="height:30px;"></p>
                 <h1>+</h1>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-2" style="margin-top:20px;">
                 <p style="text-align:center;height:30px;">{{'line.sign.exitBonus' | translate}}</p>
                 <i class="fas fa-home fa-2x"> {{exitBonus}}</i><br><br>
                 <h1>{{ 20 * exitBonus}} {{'common.point' | translate}}</h1>
             </div>
-            <div class="col-md-1">
+            <div class="col-md-1" style="margin-top:20px;">
                 <p style="height:30px;"></p>
                 <h1>=</h1>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3" style="margin-top:20px;">
                 <p style="height:30px;">{{'common.stotal' | translate}}</p>
                 <h1>{{ victimPoints() + (20 * exitBonus)}} {{'common.point' | translate}}</h1>
             </div>
