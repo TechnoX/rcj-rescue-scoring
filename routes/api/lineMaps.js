@@ -101,7 +101,8 @@ adminRouter.post('/', function (req, res) {
       z: map.startTile.z
     },
     numberOfDropTiles: map.numberOfDropTiles,
-    finished         : map.finished
+    finished         : map.finished,
+    victims          : map.victims
   })
   
   //logger.debug(newMap)
