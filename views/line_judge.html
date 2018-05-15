@@ -218,7 +218,7 @@
                             </div>
                             <table border="1" style="width:100%; text-align: center; margin-top: 10px;" ng-repeat="j in range(6)" ng-if="victim_tmp.length > j*5">
                                 <tr>
-                                    <td ng-repeat="i in range(5)" ng-dblclick="delete_victim_tmp(j*5 + i)">
+                                    <td ng-repeat="i in range(5)" ng-dblclick="delete_victim_tmp(j*5 + i)" ng-swipe-left="delete_victim_tmp(j*5 + i)">
                                         <img src="/images/liveVictim.png" width=30px ng-if="victim_tmp[j*5 + i] == 'L'" />
                                         <img src="/images/deadVictim.png" width=30px ng-if="victim_tmp[j*5 + i] == 'D'" />
                                         <span style="width:30px;" ng-hide="victim_tmp[j*5 + i]">---</span>
@@ -233,13 +233,13 @@
                             
                             <hr>
                             <h6>救助済みの被災者</h6>
-                            <span style="font-size:9px;">救助済みの被災者を削除する場合は，ダブルタップしてください</span>
+                            <span style="font-size:9px;">救助済みの被災者を削除する場合は，ダブルクリック or 左にスワイプ(Mobile Device) してください</span>
                             <table border="1" style="width:100%; text-align: center; margin-top: 10px;" ng-repeat="j in range(6)" ng-if="victim_list.length > j*5 || j == 0">
                                 <tr>
                                     <th style="text-align:center;" ng-repeat="i in range(5)">{{j*5 + i+1}}</th>
                                 </tr>
                                 <tr>
-                                    <td ng-repeat="i in range(5)" ng-style="{'background-color': victim_list[j*5 + i].effective?'#E1FFFE':'#ccc'}" ng-dblclick="delete_victim(j*5 + i)">
+                                    <td ng-repeat="i in range(5)" ng-style="{'background-color': victim_list[j*5 + i].effective?'#E1FFFE':'#ccc'}" ng-dblclick="delete_victim(j*5 + i)" ng-swipe-left="delete_victim(j*5 + i)">
                                         <img src="/images/liveVictim.png" width=30px ng-if="victim_list[j*5 + i].type == 'L'" />
                                         <img src="/images/deadVictim.png" width=30px ng-if="victim_list[j*5 + i].type == 'D'" />
                                         <span style="width:30px;" ng-hide="victim_list[j*5 + i]">---</span>
