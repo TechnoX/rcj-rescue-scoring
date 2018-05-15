@@ -40,7 +40,8 @@
     "sweetalert2": "^7.18.0",
     "lightbox2": "^2.10.0",
     "fontawesome-free-5.0.6": "https://use.fontawesome.com/releases/v5.0.6/fontawesome-free-5.0.6.zip",
-    "cheet.js": "^0.3.3"
+    "cheet.js": "^0.3.3",
+    "angular-touch": "^1.7.0"
   },
   "description": "",
   "main": "",

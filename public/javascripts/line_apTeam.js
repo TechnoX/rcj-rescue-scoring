@@ -1,4 +1,4 @@
-var app = angular.module("LineTimetable", ['pascalprecht.translate', 'ngCookies']);
+var app = angular.module("LineTimetable", ['ngTouch','pascalprecht.translate', 'ngCookies']);
 app.controller("LineTimetableController", ['$scope', '$http', '$translate', function ($scope, $http, $translate) {
     $scope.competitionId = competitionId
     $scope.teamId = teamId

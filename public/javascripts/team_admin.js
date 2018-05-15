@@ -1,4 +1,4 @@
-var app = angular.module("TeamAdmin", ['pascalprecht.translate', 'ngCookies']).controller("TeamAdminController", function ($scope, $http) {
+var app = angular.module("TeamAdmin", ['ngTouch','pascalprecht.translate', 'ngCookies']).controller("TeamAdminController", function ($scope, $http) {
     $scope.competitionId = competitionId
 
     updateTeamList()

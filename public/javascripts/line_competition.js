@@ -1,4 +1,4 @@
-var app = angular.module("LineCompetition", ['pascalprecht.translate', 'ngCookies']);
+var app = angular.module("LineCompetition", ['ngTouch','pascalprecht.translate', 'ngCookies']);
 var socket;
 app.controller("LineCompetitionController", ['$scope', '$http', '$translate', function ($scope, $http, $translate) {
     $scope.competitionId = competitionId

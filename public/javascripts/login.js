@@ -1,6 +1,6 @@
 //- -*- tab-width: 2 -*-
 
-var app = angular.module('login', ['ngAnimate', 'ui.bootstrap', 'pascalprecht.translate', 'ngCookies']);
+var app = angular.module('login', ['ngTouch','ngAnimate', 'ui.bootstrap', 'pascalprecht.translate', 'ngCookies']);
 
 app.controller('loginController', ['$scope', '$log', '$timeout', '$http', '$translate', function ($scope, $log, $timeout, $http, $translate) {
     $scope.isFailed = false;

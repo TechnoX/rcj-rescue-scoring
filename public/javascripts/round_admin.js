@@ -1,4 +1,4 @@
-var app = angular.module("RoundAdmin", ['pascalprecht.translate', 'ngCookies']).controller("RoundAdminController", function ($scope, $http) {
+var app = angular.module("RoundAdmin", ['ngTouch','pascalprecht.translate', 'ngCookies']).controller("RoundAdminController", function ($scope, $http) {
     $scope.competitionId = competitionId
 
     updateRoundList()

@@ -1,5 +1,5 @@
 // register the directive with your app module
-var app = angular.module('SignEditor', ['ngAnimate', 'ui.bootstrap', 'pascalprecht.translate', 'ngCookies']);
+var app = angular.module('SignEditor', ['ngTouch','ngAnimate', 'ui.bootstrap', 'pascalprecht.translate', 'ngCookies']);
 
 // function referenced by the drop target
 app.controller('SignEditorController', ['$scope', '$uibModal', '$log', '$http', '$translate', function ($scope, $uibModal, $log, $http, $translate) {

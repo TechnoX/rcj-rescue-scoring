@@ -1,4 +1,4 @@
-var app = angular.module("FieldAdmin", ['pascalprecht.translate', 'ngCookies']).controller("FieldAdminController", function ($scope, $http) {
+var app = angular.module("FieldAdmin", ['ngTouch','pascalprecht.translate', 'ngCookies']).controller("FieldAdminController", function ($scope, $http) {
     $scope.competitionId = competitionId
 
     updateFieldList()

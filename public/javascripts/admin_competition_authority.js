@@ -1,4 +1,4 @@
-var app = angular.module("AdminAuth", ['pascalprecht.translate', 'ngCookies']).controller("AdminAuthController", function ($scope, $http) {
+var app = angular.module("AdminAuth", ['ngTouch','pascalprecht.translate', 'ngCookies']).controller("AdminAuthController", function ($scope, $http) {
     $scope.competitionId = competitionId
     updateUserList()
     $http.get("/api/competitions/" + competitionId).then(function (response) {

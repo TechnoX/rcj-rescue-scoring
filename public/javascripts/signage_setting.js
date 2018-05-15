@@ -1,4 +1,4 @@
-var app = angular.module("SignageSetting", ['pascalprecht.translate', 'ngCookies']).controller("SignageSettingController", function ($scope, $http) {
+var app = angular.module("SignageSetting", ['ngTouch','pascalprecht.translate', 'ngCookies']).controller("SignageSettingController", function ($scope, $http) {
   
   updateSignageList()
     

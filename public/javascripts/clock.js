@@ -1,4 +1,4 @@
-var app = angular.module("Clock", ['pascalprecht.translate', 'ngCookies']);
+var app = angular.module("Clock", ['ngTouch','pascalprecht.translate', 'ngCookies']);
 app.controller("ClockController", ['$scope', '$http', '$translate', '$timeout', function ($scope, $http, $translate, $timeout) {
     $scope.competitionId = competitionId
 

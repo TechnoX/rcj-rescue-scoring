@@ -1,5 +1,5 @@
 // register the directive with your app module
-var app = angular.module('LineEditor', ['lvl.services', 'ngAnimate', 'ui.bootstrap', 'pascalprecht.translate', 'ngCookies']);
+var app = angular.module('LineEditor', ['ngTouch','lvl.services', 'ngAnimate', 'ui.bootstrap', 'pascalprecht.translate', 'ngCookies']);
 
 // function referenced by the drop target
 app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', '$translate', function ($scope, $uibModal, $log, $http, $translate) {
@@ -154,7 +154,7 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
             alert(response.data.msg);
         });
     }
-    $scope.saveMap = function () {
+    $scope.'ngTouch',Map = function () {
         if ($scope.startNotSet()) {
             alert("You must define a starting tile by right-clicking a tile");
             return;

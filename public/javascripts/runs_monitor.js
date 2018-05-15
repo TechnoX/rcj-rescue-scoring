@@ -1,5 +1,5 @@
-// register the directive with your app module
-var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'pascalprecht.translate', 'ngCookies']);
+'ngTouch',// register the directive with your app module
+var app = angular.module('ddApp', ['ngTouch','ngAnimate', 'ui.bootstrap', 'pascalprecht.translate', 'ngCookies']);
 var scp;
 var allFieldOpen = 0;
 

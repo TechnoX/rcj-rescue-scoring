@@ -1,4 +1,4 @@
-var app = angular.module("MazeTimetable", ['pascalprecht.translate', 'ngCookies']);
+var app = angular.module("MazeTimetable", ['ngTouch','pascalprecht.translate', 'ngCookies']);
 app.controller("MazeTimetableController", ['$scope', '$http', '$translate', function ($scope, $http, $translate) {
     $scope.competitionId = competitionId
     $scope.teamId = teamId

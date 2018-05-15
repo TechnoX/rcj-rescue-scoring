@@ -1,4 +1,4 @@
-var app = angular.module("InterviewTeam", ['pascalprecht.translate', 'ngCookies', 'ngFileUpload', 'ngAlertify']).controller("InterviewTeamController",[ '$scope' , '$http', 'Upload','$timeout', 'alertify',function ($scope, $http,Upload,$timeout,alertify) {
+var app = angular.module("InterviewTeam", ['ngTouch','pascalprecht.translate', 'ngCookies', 'ngFileUpload', 'ngAlertify']).controller("InterviewTeamController",[ '$scope' , '$http', 'Upload','$timeout', 'alertify',function ($scope, $http,Upload,$timeout,alertify) {
     $scope.competitionId = competitionId
     $scope.teamId = teamId
     $scope.picN = 0;

@@ -1,4 +1,4 @@
-var app = angular.module("TilesetAdmin", ['pascalprecht.translate', 'ngCookies']).controller("TilesetAdminController", function ($scope, $http) {
+var app = angular.module("TilesetAdmin", ['ngTouch','pascalprecht.translate', 'ngCookies']).controller("TilesetAdminController", function ($scope, $http) {
 
     function updateTileSetList(callback) {
         $http.get("/api/maps/line/tilesets?populate=true").then((response) => {

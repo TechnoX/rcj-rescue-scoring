@@ -1,4 +1,4 @@
-var app = angular.module("AdminUser", ['pascalprecht.translate', 'ngCookies']).controller("AdminUserController", function ($scope, $http) {
+var app = angular.module("AdminUser", ['ngTouch','pascalprecht.translate', 'ngCookies']).controller("AdminUserController", function ($scope, $http) {
     
     updateUserList()
     
@@ -21,7 +21,7 @@ var app = angular.module("AdminUser", ['pascalprecht.translate', 'ngCookies']).c
     }
 
     $scope.removeUser = function (user) {
-        swal({
+        'ngTouch',({
             title: "Remove user?",
             text: "Are you sure you want to remove the user: " +
                 user.username + '?',

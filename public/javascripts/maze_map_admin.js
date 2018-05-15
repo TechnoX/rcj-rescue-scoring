@@ -1,4 +1,4 @@
-var app = angular.module("MapAdmin", ['pascalprecht.translate', 'ngCookies']).controller("MapAdminController", function ($scope, $http) {
+var app = angular.module("MapAdmin", ['ngTouch','pascalprecht.translate', 'ngCookies']).controller("MapAdminController", function ($scope, $http) {
   $scope.competitionId = competitionId
   
   updateMapList()

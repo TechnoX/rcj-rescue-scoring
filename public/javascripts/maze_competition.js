@@ -1,5 +1,5 @@
 document.write("<script type='text/javascript' src='/javascripts/translate_config.js'></script>");
-var app = angular.module("MazeCompetition", ['pascalprecht.translate', 'ngCookies']);
+var app = angular.module("MazeCompetition", ['ngTouch','pascalprecht.translate', 'ngCookies']);
 var socket;
 app.controller("MazeCompetitionController", ['$scope', '$http', '$translate', function ($scope, $http, $translate) {
         $scope.competitionId = competitionId
