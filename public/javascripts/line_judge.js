@@ -55,7 +55,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
 
     $scope.sync = 0;
-    
+
     $scope.z = 0;
     $scope.placedDropTiles = 0;
     $scope.actualUsedDropTiles = 0; // Count droptiles twice that will be passed two times
@@ -64,11 +64,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.time = 0;
     $scope.startUnixTime = 0;
 
-    
+
     $scope.victim_list = [];
     $scope.victim_tmp = [];
     $scope.LoPs = [];
-    
+
     $scope.checkTeam = $scope.checkRound = $scope.checkMember = $scope.checkMachine = false;
     $scope.toggleCheckTeam = function () {
         $scope.checkTeam = !$scope.checkTeam;
@@ -86,41 +86,41 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.checkMachine = !$scope.checkMachine;
         playSound(sClick);
     }
-    $scope.checks = function (){
+    $scope.checks = function () {
         return ($scope.checkTeam & $scope.checkRound & $scope.checkMember & $scope.checkMachine)
     }
-    
+
     const http_config = {
         timeout: 1000
     };
-    
-    function upload_run(data){
+
+    function upload_run(data) {
         let tmp = {
-            map : {
-                tiles : db_mtile
+            map: {
+                tiles: db_mtile
             },
-            tiles : $scope.stiles,
-            LoPs : $scope.LoPs,
+            tiles: $scope.stiles,
+            LoPs: $scope.LoPs,
             rescueOrder: $scope.victim_list,
             evacuationLevel: $scope.evacuationLevel,
             exitBonus: $scope.exitBonus,
             showedUp: $scope.showedUp
         };
         $scope.score = line_calc_score(tmp);
-        
-        
-        if($scope.networkError){
+
+
+        if ($scope.networkError) {
             $scope.saveEverything();
             return;
         }
-        
+
         $scope.sync++;
-        $http.put("/api/runs/line/" + runId, Object.assign(data,{
-                time: {
-                    minutes: Math.floor($scope.time / 60000),
-                    seconds: (Math.floor($scope.time % 60000)) / 1000
-                }
-            }),http_config).then(function (response) {
+        $http.put("/api/runs/line/" + runId, Object.assign(data, {
+            time: {
+                minutes: Math.floor($scope.time / 60000),
+                seconds: (Math.floor($scope.time % 60000)) / 1000
+            }
+        }), http_config).then(function (response) {
             console.log(response);
             //$scope.score = response.data.score;
             $scope.sync--;
@@ -130,13 +130,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             }
             $scope.networkError = true;
         });
-        
+
     }
 
     var date = new Date();
     var prevTime = 0;
-    
-    
+
+
 
     //$cookies.remove('sRotate')
     if ($cookies.get('sRotate')) {
@@ -156,9 +156,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.fromSign = true;
         $timeout($scope.tile_size, 10);
         $timeout($scope.tile_size, 200);
-    }else{
+    } else {
         let data = {
-             status: 1
+            status: 1
         };
         upload_run(data);
     }
@@ -182,11 +182,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             // Verified time by timekeeper
             $scope.minutes = response.data.time.minutes;
             $scope.seconds = response.data.time.seconds;
-            $scope.time = ($scope.minutes * 60 + $scope.seconds)*1000;
+            $scope.time = ($scope.minutes * 60 + $scope.seconds) * 1000;
             prevTime = $scope.time;
-            
+
             $scope.victim_list = response.data.rescueOrder;
-            
+
 
             // Scoring elements of the tiles
             $scope.stiles = response.data.tiles;
@@ -196,8 +196,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     marker[i] = true;
                 }
             }
-            
-            
+
+
 
             // Get the map
             $http.get("/api/maps/line/" + response.data.map +
@@ -212,11 +212,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.startTile = response.data.startTile;
                 $scope.numberOfDropTiles = response.data.numberOfDropTiles;
                 $scope.mtiles = {};
-                
+
                 // Get max victim count
                 $scope.maxLiveVictims = response.data.victims.live;
                 $scope.maxDeadVictims = response.data.victims.dead;
-                
+
                 var flag = false;
                 var ntile = {
                     scored: false,
@@ -230,7 +230,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     $scope.sync++;
                     $http.put("/api/runs/line/" + runId, {
                         tiles: $scope.stiles
-                    },http_config).then(function (response) {
+                    }, http_config).then(function (response) {
                         console.log("Run Score Tileset Updated")
                         loadNewRun();
                         $scope.sync--;
@@ -243,7 +243,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     });
                     return;
                 }
-                
+
                 db_mtile = response.data.tiles;
                 for (var i = 0; i < response.data.tiles.length; i++) {
                     $scope.mtiles[response.data.tiles[i].x + ',' +
@@ -274,8 +274,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             }
         });
     }
-    
-   
+
+
 
     loadNewRun();
 
@@ -318,7 +318,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         //$timeout($scope.tile_size, 10);
         $timeout($scope.tile_size, 200);
         $timeout($scope.tile_size, 2000);
-        scrollTo( 0, 0 ) ;
+        scrollTo(0, 0);
     }
 
     $scope.changeFloor = function (z) {
@@ -346,7 +346,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.LoPs[index] = 0;
         if ($scope.LoPs[index] < 0)
             $scope.LoPs[index] = 0;
-        
+
         upload_run({
             LoPs: $scope.LoPs
         });
@@ -357,7 +357,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.LoPs[index]++;
         else
             $scope.LoPs[index] = 1;
-        
+
         upload_run({
             LoPs: $scope.LoPs
         });
@@ -365,131 +365,131 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             playSound(sInfo);
             swal(txt_lops, txt_lops_mes, "info");
         }
-        
+
     }
 
-    
-    $scope.calc_victim_points = function(type,effective){
-        if(!effective) return 0;
+
+    $scope.calc_victim_points = function (type, effective) {
+        if (!effective) return 0;
         let tmp_point = 0;
-        if($scope.evacuationLevel == 1){ // Low Level
-            if(type == "L") tmp_point = 30;
+        if ($scope.evacuationLevel == 1) { // Low Level
+            if (type == "L") tmp_point = 30;
             else tmp_point = 15;
-        }else{                          // High Level
-            if(type == "L") tmp_point = 40;
+        } else { // High Level
+            if (type == "L") tmp_point = 40;
             else tmp_point = 20;
         }
-        
-        return Math.max(tmp_point - $scope.LoPs[$scope.LoPs.length - 1] * 5 , 0);
+
+        return Math.max(tmp_point - $scope.LoPs[$scope.LoPs.length - 1] * 5, 0);
     }
-    
-    $scope.count_victim_list = function(type){
+
+    $scope.count_victim_list = function (type) {
         let count = 0
-        for(victiml of $scope.victim_list){
-            if(!victiml.type.indexOf(type)){
+        for (victiml of $scope.victim_list) {
+            if (!victiml.type.indexOf(type)) {
                 count++;
             }
         }
         return count;
     }
-    
-    $scope.count_victim_tmp = function(type){
+
+    $scope.count_victim_tmp = function (type) {
         let count = 0
-        for(victiml of $scope.victim_tmp){
-            if(!victiml.indexOf(type)){
+        for (victiml of $scope.victim_tmp) {
+            if (!victiml.indexOf(type)) {
                 count++;
             }
         }
         return count;
     }
-    
-    $scope.addVictimTmp = function(type){
+
+    $scope.addVictimTmp = function (type) {
         playSound(sClick);
-        if(type == "L"){
-            if($scope.count_victim_list("L") + $scope.count_victim_tmp("L") >= $scope.maxLiveVictims)return;
-        }else{
-            if($scope.count_victim_list("D") + $scope.count_victim_tmp("D") >= $scope.maxDeadVictims)return;
+        if (type == "L") {
+            if ($scope.count_victim_list("L") + $scope.count_victim_tmp("L") >= $scope.maxLiveVictims) return;
+        } else {
+            if ($scope.count_victim_list("D") + $scope.count_victim_tmp("D") >= $scope.maxDeadVictims) return;
         }
         $scope.victim_tmp.push(type);
     }
-    
-    $scope.addVictim = function(type){
+
+    $scope.addVictim = function (type) {
         let tmp = {};
         tmp.effective = true;
-        if(type == "L"){
+        if (type == "L") {
             tmp.type = "L";
-            if($scope.count_victim_list("L") >= $scope.maxLiveVictims)return;
-        }else{
+            if ($scope.count_victim_list("L") >= $scope.maxLiveVictims) return;
+        } else {
             tmp.type = "D";
-            if($scope.count_victim_list("D") >= $scope.maxDeadVictims)return;
-            if($scope.count_victim_list("L") >= $scope.maxLiveVictims){ // All live victims rescued
-                
-            }else{
+            if ($scope.count_victim_list("D") >= $scope.maxDeadVictims) return;
+            if ($scope.count_victim_list("L") >= $scope.maxLiveVictims) { // All live victims rescued
+
+            } else {
                 tmp.effective = false;
             }
         }
-        
-        
+
+
         $scope.victim_list.push(tmp);
     }
-    
-    function reStateVictim(){
+
+    function reStateVictim() {
         let count = 0;
-        for(victiml of $scope.victim_list){
-            if(!victiml.type.indexOf("L")){
+        for (victiml of $scope.victim_list) {
+            if (!victiml.type.indexOf("L")) {
                 count++;
             }
-            if(!victiml.type.indexOf("D")){
-                if(count >= $scope.maxLiveVictims){
+            if (!victiml.type.indexOf("D")) {
+                if (count >= $scope.maxLiveVictims) {
                     victiml.effective = true;
-                }else{
+                } else {
                     victiml.effective = false;
                 }
             }
-            
+
         }
     }
-    
-    $scope.delete_victim = function(index){
+
+    $scope.delete_victim = function (index) {
         playSound(sClick);
         $scope.victim_list.splice(index, 1);
         reStateVictim();
-        
+
         upload_run({
             rescueOrder: $scope.victim_list
         });
-        
+
     }
-    $scope.delete_victim_tmp = function(index){
+    $scope.delete_victim_tmp = function (index) {
         playSound(sClick);
         $scope.victim_tmp.splice(index, 1);
     }
-    
-    $scope.victimRegist = function(){
+
+    $scope.victimRegist = function () {
         playSound(sClick);
         let live = 0;
         let dead = 0;
-        for(victiml of $scope.victim_tmp){
-            if(!victiml.indexOf("L")){
+        for (victiml of $scope.victim_tmp) {
+            if (!victiml.indexOf("L")) {
                 live++;
-            }else{
+            } else {
                 dead++;
             }
         }
-        for(let i = 0; i < dead; i++){
+        for (let i = 0; i < dead; i++) {
             $scope.addVictim("D");
         }
-        for(let i = 0; i < live; i++){
+        for (let i = 0; i < live; i++) {
             $scope.addVictim("L");
-        } 
+        }
         $scope.victim_tmp_clear();
-        
+
         upload_run({
             rescueOrder: $scope.victim_list
         });
     }
-    
-    $scope.victim_tmp_clear = function(){
+
+    $scope.victim_tmp_clear = function () {
         playSound(sClick);
         $scope.victim_tmp = [];
     }
@@ -523,7 +523,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $timeout(tick, 0);
             date = new Date();
             $scope.startUnixTime = date.getTime();
-            
+
             upload_run({
                 status: 2
             });
@@ -545,11 +545,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.changeShowedUp = function () {
         playSound(sClick);
-        
+
         upload_run({
-                showedUp: $scope.showedUp
+            showedUp: $scope.showedUp
         });
-        
+
 
     }
     $scope.changeExitBonus = function () {
@@ -563,19 +563,19 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.minutes = Math.floor($scope.time / 60000)
             $scope.seconds = Math.floor(($scope.time % 60000) / 1000)
         }
-        
+
         upload_run({
-                exitBonus: $scope.exitBonus
+            exitBonus: $scope.exitBonus
         });
-        
-        
+
+
     }
     $scope.changeLevel = function (n) {
         playSound(sClick);
         $scope.evacuationLevel = n;
-        
+
         upload_run({
-                evacuationLevel: $scope.evacuationLevel
+            evacuationLevel: $scope.evacuationLevel
         });
 
     }
@@ -679,9 +679,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     httpdata.tiles[mtile.index[i]] = stile[i];
                 }
                 console.log(httpdata);
-                
+
                 upload_run(httpdata);
-                
+
             }
         }
     }
@@ -774,11 +774,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.seconds = Math.floor(($scope.time % 60000) / 1000)
         run.retired = $scope.retired;
         run.time = {
-                minutes: $scope.minutes,
-                seconds: $scope.seconds
-            };
+            minutes: $scope.minutes,
+            seconds: $scope.seconds
+        };
         $scope.sync++;
-        $http.put("/api/runs/line/" + runId, run,http_config).then(function (response) {
+        $http.put("/api/runs/line/" + runId, run, http_config).then(function (response) {
             $scope.score = response.data.score;
             $scope.sync--;
             $scope.networkError = false;
@@ -788,9 +788,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.networkError = true;
         });
         //console.log("Update run", run);
-        
-        
-        
+
+
+
     };
 
     /*$scope.retire = function () {
@@ -808,9 +808,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.saveEverything();
         });
     }*/
-    
-    
-    $scope.handover = function(){
+
+
+    $scope.handover = function () {
         var run = {}
         run.LoPs = $scope.LoPs;
         run.evacuationLevel = $scope.evacuationLevel;
@@ -824,20 +824,19 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.seconds = Math.floor(($scope.time % 60000) / 1000)
         run.retired = $scope.retired;
         run.time = {
-                minutes: $scope.minutes,
-                seconds: $scope.seconds
+            minutes: $scope.minutes,
+            seconds: $scope.seconds
         };
         run.status = 3;
-            
+
         swal({
-              title: 'Scan it !',
-              html:
-                '<div style="text-align: center;"><div id="qr_code_area"></div></div>',
-              showCloseButton: true
-            }).then((result) => {
-              stopMakeQR();
-            })
-            createMultiQR(run, "qr_code_area", 100);
+            title: 'Scan it !',
+            html: '<div style="text-align: center;"><div id="qr_code_area"></div></div>',
+            showCloseButton: true
+        }).then((result) => {
+            stopMakeQR();
+        })
+        createMultiQR(run, "qr_code_area", 100);
     }
 
     $scope.confirm = function () {
@@ -859,14 +858,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.seconds = Math.floor(($scope.time % 60000) / 1000)
             run.retired = $scope.retired;
             run.time = {
-                    minutes: $scope.minutes,
-                    seconds: $scope.seconds
+                minutes: $scope.minutes,
+                seconds: $scope.seconds
             };
             run.status = 3;
-            
-            
+
+
             $scope.sync++;
-            $http.put("/api/runs/line/" + runId, run,http_config).then(function (response) {
+            $http.put("/api/runs/line/" + runId, run, http_config).then(function (response) {
                 $scope.score = response.data.score;
                 $scope.sync--;
                 $scope.go('/line/sign/' + runId + '?return=' + $scope.getParam('return'));
@@ -966,7 +965,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 // Please note that $uibModalInstance represents a modal window (instance) dependency.
 // It is not the same as the $uibModal service used above.
 
-app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance,$timeout, mtile, stiles, nineTile, sRotate, startTile) {
+app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, $timeout, mtile, stiles, nineTile, sRotate, startTile) {
     $scope.mtile = mtile;
     $scope.sRotate = sRotate;
     console.log(mtile);
@@ -1060,7 +1059,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance,$timeout
         }
 
     }
-    
+
 
     $scope.tilerotate = function (tilerot) {
         //console.log(tilerot);
