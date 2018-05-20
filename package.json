@@ -3,7 +3,8 @@
   "version": "0.2.0",
   "private": true,
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "workbox generateSW workbox-config.js"
   },
   "dependencies": {
     "async": "^2.6.0",
@@ -47,7 +48,8 @@
   },
   "main": "app.js",
   "devDependencies": {
-    "supertest": "^3.0.0"
+    "supertest": "^3.0.0",
+    "workbox-cli": "^3.2.0"
   },
   "author": "",
   "license": "ISC"
