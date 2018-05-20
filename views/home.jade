@@ -6,6 +6,18 @@ block vars
 
 append scripts
   script(src='/javascripts/home.js')
+  script.
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js');
+      });
+      window.addEventListener('install', (event) => {
+          event.waitUntil(self.skipWaiting());
+        });
+      window.addEventListener('activate', (event) => {
+          event.waitUntil(self.clients.claim());
+      });
+    }
 
 block location
   span.breadcrumb-item.active Home

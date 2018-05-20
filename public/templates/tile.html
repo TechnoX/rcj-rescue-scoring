@@ -23,6 +23,5 @@
 <i class="fas fa-check fa-fw tile-image tile-font" ng-show="tileStatus(tile) == 'done'" style="padding-top:4px; color:#27ae60; opacity:0.9;"></i>
 <i class="fas fa-play fa-fw fa-rotate-270 tile-image tile-font" ng-show="tileStatus(tile) == 'halfdone'" style="padding-top:4px; color:#f4d03f; opacity:0.9;"></i>
 <i class="fas fa-times fa-fw tile-image tile-font" ng-show="tileStatus(tile) == 'undone'" style="padding-top:6px; color:#e74c3c; opacity:0.9;"></i>
-<img src="/images/loader2.gif" class="tile-image" ng-show="tileStatus(tile) == 'processing'">
 
 <p class="tile-point" ng-if="tileStatus(tile) && !isDropTile(tile) && !isStart(tile)" style="color:#444; opacity:1;z-index:6;position: relative;text-align:center;">{{tilePoint(tile)}}</p>

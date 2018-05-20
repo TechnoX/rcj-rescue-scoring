@@ -2,7 +2,8 @@
     <!-- Navbar content -->
 
     <div class="col-md-6 col-sm4 col-12">
-        <li class="navbar-brand" href="#"><i class="fa fa-spinner fa-spin fa-fw"></i> {{team.name}}</li>
+        <li class="navbar-brand" href="#" ng-show="!networkError"><i class="fas fa-sync" ng-class="{'fa-spin' : sync > 0}"></i> {{team.name}}</li>
+        <li class="navbar-brand" href="#" ng-show="networkError"><i class="fas fa-exclamation-triangle" style="color: #f1c40f;"></i> Network ERROR {{team.name}}</li>
     </div>
     <div class="col-md-3 col-sm4 col-7">
         <i class="fas fa-calculator fa-2x" aria-hidden="true"></i>
@@ -90,6 +91,19 @@
         <button class="btn btn-success" type="button" ng-click="infochecked()" ng-disabled="!(checkTeam && checkRound && checkMember && checkMachine)"><i class="fas fa-check-circle fa-2x" aria-hidden="true"> {{'line.judge.confirm' | translate}}</i></button>
     </div>
     <div ng-show="checked">
+        <div class="alert alert-warning" role="alert" ng-show="networkError">
+          <h4 class="alert-heading">Network Error</h4>
+          <div class="row">
+              <div class="col-md-10">
+                  <p>サーバに競技情報を保存するのに失敗しました．ネットワーク接続を確認してください．
+                  競技の記録はこのまま継続することができますが，サーバには保存されていません．
+                  システム運用担当者を呼んでください．</p>
+              </div>
+              <div class="col-md-2">
+                  <button class="btn btn-warning" type="button" ng-click="saveEverything()">再送信</button>
+              </div>
+          </div>
+        </div>
         <div class="row">
             <div class="col-md-5 col-lg-4">
                 <button class="btn btn-primary" style="margin:0 10px 10px 0;" type="button" ng-click="toggleScoring()"><i class="far fa-clipboard" aria-hidden="true"> {{ startedScoring ? 'line.judge.run_end' : 'line.judge.run_start' | translate }}</i></button>
@@ -151,8 +165,7 @@
                                         </button>
                                     </span>
                                             <div style="background-color: #F2F2F2; width:100px; text-align: center;">
-                                                <img src="/images/loader2.gif" alt="" ng-show="processing[$index] == true" style="height:100%; width:auto;">
-                                                <span class="count" ng-show="processing[$index] != true">{{LoPs[$index]?LoPs[$index]:0}}</span>
+                                                <span class="count">{{LoPs[$index]?LoPs[$index]:0}}</span>
                                             </div>
                                             <span class="input-group-btn">
                                         <button type="button" class="btn btn-success" ng-click="increment($index,$last)">
@@ -181,8 +194,8 @@
                                         </button>
                                     </span>
                                         <div style="background-color: #F2F2F2; width:100px; text-align: center;">
-                                            <img src="/images/loader2.gif" alt="" ng-show="processing[actualUsedDropTiles] == true" style="height:100%; width:auto;">
-                                            <span class="count" ng-show="processing[actualUsedDropTiles] != true">{{LoPs[actualUsedDropTiles]?LoPs[actualUsedDropTiles]:0}}</span>
+
+                                            <span class="count">{{LoPs[actualUsedDropTiles]?LoPs[actualUsedDropTiles]:0}}</span>
                                         </div>
                                         <span class="input-group-btn">
                                         <button type="button" class="btn btn-success" ng-click="increment(actualUsedDropTiles,true)">
@@ -257,9 +270,8 @@
                             <div class="col-md-12" style="position: relative;" ng-click="changeExitBonus()">
                                 <img src="/images/line_bonus.png" class="img-thumbnail" width=186.3px height=118px ng-style="{'background-color': exitBonus?'#2ecc71':'#D91E18'}">
                                 <div style="position:absolute; top:25px; left:65px;">
-                                    <img src="/images/loader2.gif" class="" ng-show="exitBonusP" style="" width=7 0px height=70px>
-                                    <i class="fas fa-check fa-fw fa-5x" ng-show="exitBonus && !exitBonusP" style="color:#27ae60; opacity:0.9;"></i>
-                                    <i class="fas fa-times fa-fw fa-5x" ng-show="!exitBonus && !exitBonusP" style="padding-top:4px; color:#e74c3c; opacity:0.9;"></i>
+                                    <i class="fas fa-check fa-fw fa-5x" ng-show="exitBonus" style="color:#27ae60; opacity:0.9;"></i>
+                                    <i class="fas fa-times fa-fw fa-5x" ng-show="!exitBonus " style="padding-top:4px; color:#e74c3c; opacity:0.9;"></i>
                                 </div>
 
                             </div>
@@ -341,7 +353,8 @@
                         </div>
                         <div class="col-sm-5">
                             <div style="text-align:right;">
-                                <button class="btn btn-danger" type="button" ng-click="confirm()" ng-disabled="startedTime"><i class="fas fa-arrow-right fa-2x" aria-hidden="true"> {{'line.judge.toSign'| translate}}</i></button>
+                                <button class="btn btn-danger" type="button" ng-click="confirm()" ng-disabled="startedTime" ng-hide="networkError"><i class="fas fa-arrow-right fa-2x" aria-hidden="true"> {{'line.judge.toSign'| translate}}</i></button>
+                                <button class="btn btn-danger" type="button" ng-click="confirm()" ng-disabled="startedTime" ng-show="networkError">競技を他の端末に引き継ぐ</button>
                             </div>
                         </div>
                     </div>

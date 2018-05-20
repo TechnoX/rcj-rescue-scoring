@@ -1,10 +1,11 @@
 // register the directive with your app module
-var app = angular.module('ddApp', ['ngTouch','ngAnimate', 'ui.bootstrap', 'pascalprecht.translate', 'ngCookies']);
+var app = angular.module('ddApp', ['ngTouch', 'ngAnimate', 'ui.bootstrap', 'pascalprecht.translate', 'ngCookies']);
 var marker = {};
 
 // function referenced by the drop target
 app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', '$translate', '$cookies', function ($scope, $uibModal, $log, $timeout, $http, $translate, $cookies) {
 
+    var db_mtile;
     var txt_score_element, txt_not_yet, txt_timeup, txt_timeup_mes, txt_lops, txt_lops_mes, txt_cantvisit, txt_start, txt_implicit;
     $translate('line.judge.js.score_element').then(function (val) {
         txt_score_element = val;
@@ -53,7 +54,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     });
 
 
-
+    $scope.sync = 0;
+    
     $scope.z = 0;
     $scope.placedDropTiles = 0;
     $scope.actualUsedDropTiles = 0; // Count droptiles twice that will be passed two times
@@ -61,36 +63,80 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.startedTime = false;
     $scope.time = 0;
     $scope.startUnixTime = 0;
-    $scope.processing = new Array();
-    $scope.rprocessing = false;
+
     
     $scope.victim_list = [];
     $scope.victim_tmp = [];
     $scope.LoPs = [];
     
     $scope.checkTeam = $scope.checkRound = $scope.checkMember = $scope.checkMachine = false;
-    $scope.toggleCheckTeam = function(){
+    $scope.toggleCheckTeam = function () {
         $scope.checkTeam = !$scope.checkTeam;
         playSound(sClick);
     }
-    $scope.toggleCheckRound = function(){
+    $scope.toggleCheckRound = function () {
         $scope.checkRound = !$scope.checkRound;
         playSound(sClick);
     }
-    $scope.toggleCheckMember = function(){
+    $scope.toggleCheckMember = function () {
         $scope.checkMember = !$scope.checkMember;
         playSound(sClick);
     }
-    $scope.toggleCheckMachine = function(){
+    $scope.toggleCheckMachine = function () {
         $scope.checkMachine = !$scope.checkMachine;
         playSound(sClick);
     }
-    $scope.checks = function(){
+    $scope.checks = function (){
         return ($scope.checkTeam & $scope.checkRound & $scope.checkMember & $scope.checkMachine)
+    }
+    
+    const http_config = {
+        timeout: 1000
+    };
+    
+    function upload_run(data){
+        let tmp = {
+            map : {
+                tiles : db_mtile
+            },
+            tiles : $scope.stiles,
+            LoPs : $scope.LoPs,
+            rescueOrder: $scope.victim_list,
+            evacuationLevel: $scope.evacuationLevel,
+            exitBonus: $scope.exitBonus,
+            showedUp: $scope.showedUp
+        };
+        $scope.score = line_calc_score(tmp);
+        
+        
+        if($scope.networkError){
+            $scope.saveEverything();
+            return;
+        }
+        
+        $scope.sync++;
+        $http.put("/api/runs/line/" + runId, Object.assign(data,{
+                time: {
+                    minutes: Math.floor($scope.time / 60000),
+                    seconds: (Math.floor($scope.time % 60000)) / 1000
+                }
+            }),http_config).then(function (response) {
+            console.log(response);
+            //$scope.score = response.data.score;
+            $scope.sync--;
+        }, function (response) {
+            if (response.status == 401) {
+                $scope.go('/home/access_denied');
+            }
+            $scope.networkError = true;
+        });
+        
     }
 
     var date = new Date();
     var prevTime = 0;
+    
+    
 
     //$cookies.remove('sRotate')
     if ($cookies.get('sRotate')) {
@@ -111,17 +157,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $timeout($scope.tile_size, 10);
         $timeout($scope.tile_size, 200);
     }else{
-        $http.put("/api/runs/line/" + runId, {
-                    status: 1
-                    //tiles : $scope.stiles
-                }).then(function (response) {
-
-                }, function (response) {
-                    console.log("Error: " + response.statusText);
-                    if (response.status == 401) {
-                        $scope.go('/home/access_denied');
-                    }
-                });
+        let data = {
+             status: 1
+        };
+        upload_run(data);
     }
 
     function loadNewRun() {
@@ -132,8 +171,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.evacuationLevel = response.data.evacuationLevel;
             $scope.exitBonus = response.data.exitBonus;
             $scope.field = response.data.field.name;
-            $scope.rescuedDeadVictims = response.data.rescuedDeadVictims;
-            $scope.rescuedLiveVictims = response.data.rescuedLiveVictims;
             $scope.score = response.data.score;
             $scope.showedUp = response.data.showedUp;
             $scope.started = response.data.started;
@@ -190,19 +227,24 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     flag = true;
                 }
                 if (flag) {
+                    $scope.sync++;
                     $http.put("/api/runs/line/" + runId, {
                         tiles: $scope.stiles
-                    }).then(function (response) {
+                    },http_config).then(function (response) {
                         console.log("Run Score Tileset Updated")
                         loadNewRun();
+                        $scope.sync--;
                     }, function (response) {
                         console.log("Error: " + response.statusText);
                         if (response.status == 401) {
                             $scope.go('/home/access_denied');
                         }
+                        $scope.networkError = true;
                     });
                     return;
                 }
+                
+                db_mtile = response.data.tiles;
                 for (var i = 0; i < response.data.tiles.length; i++) {
                     $scope.mtiles[response.data.tiles[i].x + ',' +
                         response.data.tiles[i].y + ',' +
@@ -232,6 +274,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             }
         });
     }
+    
+   
 
     loadNewRun();
 
@@ -296,52 +340,32 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.decrement = function (index) {
         playSound(sClick);
-        $scope.processing[index] = true;
         if ($scope.LoPs[index])
             $scope.LoPs[index]--;
         else
             $scope.LoPs[index] = 0;
         if ($scope.LoPs[index] < 0)
             $scope.LoPs[index] = 0;
-        $http.put("/api/runs/line/" + runId, {
-            LoPs: $scope.LoPs,
-            time: {
-                minutes: Math.floor($scope.time / 60000),
-                seconds: Math.floor(($scope.time % 60000) / 1000)
-            }
-        }).then(function (response) {
-            console.log(response);
-            $scope.score = response.data.score;
-            $scope.processing[index] = false;
-        }, function (response) {
-            console.log("Error: " + response.statusText);
+        
+        upload_run({
+            LoPs: $scope.LoPs
         });
-
     }
     $scope.increment = function (index, last) {
         playSound(sClick);
-        $scope.processing[index] = true;
         if ($scope.LoPs[index])
             $scope.LoPs[index]++;
         else
             $scope.LoPs[index] = 1;
-        $http.put("/api/runs/line/" + runId, {
-            LoPs: $scope.LoPs,
-            time: {
-                minutes: Math.floor($scope.time / 60000),
-                seconds: Math.floor(($scope.time % 60000) / 1000)
-            }
-        }).then(function (response) {
-            console.log(response);
-            $scope.score = response.data.score;
-            $scope.processing[index] = false;
-        }, function (response) {
-            console.log("Error: " + response.statusText);
+        
+        upload_run({
+            LoPs: $scope.LoPs
         });
         if ($scope.LoPs[index] >= 3 && !last) {
             playSound(sInfo);
             swal(txt_lops, txt_lops_mes, "info");
         }
+        
     }
 
     
@@ -430,18 +454,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         playSound(sClick);
         $scope.victim_list.splice(index, 1);
         reStateVictim();
-        $http.put("/api/runs/line/" + runId, {
-                rescueOrder: $scope.victim_list,
-                time: {
-                    minutes: Math.floor($scope.time / 60000),
-                    seconds: (Math.floor($scope.time % 60000)) / 1000
-                }
-            }).then(function (response) {
-                $scope.score = response.data.score;
-                $scope.rdprocessing = false;
-            }, function (response) {
-                console.log("Error: " + response.statusText);
-            });
+        
+        upload_run({
+            rescueOrder: $scope.victim_list
+        });
+        
     }
     $scope.delete_victim_tmp = function(index){
         playSound(sClick);
@@ -467,18 +484,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         } 
         $scope.victim_tmp_clear();
         
-        $http.put("/api/runs/line/" + runId, {
-                rescueOrder: $scope.victim_list,
-                time: {
-                    minutes: Math.floor($scope.time / 60000),
-                    seconds: (Math.floor($scope.time % 60000)) / 1000
-                }
-            }).then(function (response) {
-                $scope.score = response.data.score;
-                $scope.rdprocessing = false;
-            }, function (response) {
-                console.log("Error: " + response.statusText);
-            });
+        upload_run({
+            rescueOrder: $scope.victim_list
+        });
     }
     
     $scope.victim_tmp_clear = function(){
@@ -515,17 +523,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $timeout(tick, 0);
             date = new Date();
             $scope.startUnixTime = date.getTime();
-            $http.put("/api/runs/line/" + runId, {
-                status: 2,
-                time: {
-                    minutes: Math.floor($scope.time / 60000),
-                    seconds: Math.floor(($scope.time % 60000) / 1000)
-                }
-            }).then(function (response) {
-
-            }, function (response) {
-                console.log("Error: " + response.statusText);
+            
+            upload_run({
+                status: 2
             });
+
         } else {
             // Save everything when you stop the time
             date = new Date();
@@ -543,23 +545,16 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.changeShowedUp = function () {
         playSound(sClick);
-        $http.put("/api/runs/line/" + runId, {
-            showedUp: $scope.showedUp,
-            time: {
-                minutes: Math.floor($scope.time / 60000),
-                seconds: Math.floor(($scope.time % 60000) / 1000)
-            }
-        }).then(function (response) {
-            $scope.score = response.data.score;
-        }, function (response) {
-            console.log("Error: " + response.statusText);
+        
+        upload_run({
+                showedUp: $scope.showedUp
         });
+        
 
     }
     $scope.changeExitBonus = function () {
         playSound(sClick);
         $scope.exitBonus = !$scope.exitBonus
-        $scope.exitBonusP = true
         if ($scope.exitBonus && $scope.startedTime) {
             $scope.startedTime = false
             date = new Date();
@@ -568,34 +563,21 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.minutes = Math.floor($scope.time / 60000)
             $scope.seconds = Math.floor(($scope.time % 60000) / 1000)
         }
-        $http.put("/api/runs/line/" + runId, {
-            exitBonus: $scope.exitBonus,
-            time: {
-                minutes: Math.floor($scope.time / 60000),
-                seconds: Math.floor(($scope.time % 60000) / 1000)
-            }
-        }).then(function (response) {
-            $scope.score = response.data.score;
-            $scope.exitBonusP = false
-        }, function (response) {
-            console.log("Error: " + response.statusText);
+        
+        upload_run({
+                exitBonus: $scope.exitBonus
         });
-
+        
+        
     }
     $scope.changeLevel = function (n) {
         playSound(sClick);
         $scope.evacuationLevel = n;
-        $http.put("/api/runs/line/" + runId, {
-            evacuationLevel: $scope.evacuationLevel,
-            time: {
-                minutes: Math.floor($scope.time / 60000),
-                seconds: Math.floor(($scope.time % 60000) / 1000)
-            }
-        }).then(function (response) {
-            $scope.score = response.data.score;
-        }, function (response) {
-            console.log("Error: " + response.statusText);
+        
+        upload_run({
+                evacuationLevel: $scope.evacuationLevel
         });
+
     }
 
     $scope.doScoring = function (x, y, z) {
@@ -603,11 +585,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         var stile = [];
         var isDropTile = false;
         var httpdata = {
-            tiles: {},
-            time: {
-                minutes: Math.floor($scope.time / 60000),
-                seconds: Math.floor(($scope.time % 60000) / 1000)
-            }
+            tiles: {}
         };
 
         // If this is not a created tile
@@ -670,14 +648,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     $scope.placedDropTiles--;
                 }
                 console.log(httpdata);
-                $http.put("/api/runs/line/" +
-                    runId, httpdata).then(function (response) {
-                    $scope.score = response.data.score;
-                    //$timeout($scope.tile_size, 10);
-                    //$timeout($scope.tile_size, 500);
-                }, function (response) {
-                    console.log("Error: " + response.statusText);
-                });
+                upload_run(httpdata);
 
             }
 
@@ -699,24 +670,18 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 return;
             } else if (total > 1) {
                 // Show modal
-                mtile.processing = true;
                 $scope.open(x, y, z);
                 // Save data from modal when closing it
             } else if (total == 1) {
-                mtile.processing = true;
 
                 for (var i = 0; i < stile.length; i++) {
                     stile[i].scored = !stile[i].scored;
                     httpdata.tiles[mtile.index[i]] = stile[i];
                 }
                 console.log(httpdata);
-                $http.put("/api/runs/line/" +
-                    runId, httpdata).then(function (response) {
-                    $scope.score = response.data.score;
-                    mtile.processing = false;
-                }, function (response) {
-                    console.log("Error: " + response.statusText);
-                });
+                
+                upload_run(httpdata);
+                
             }
         }
     }
@@ -789,17 +754,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             }
         }).closed.then(function (result) {
             console.log("Closed modal");
-            $http.put("/api/runs/line/" + runId, {
-                tiles: $scope.stiles,
-                time: {
-                    minutes: Math.floor($scope.time / 60000),
-                    seconds: Math.floor(($scope.time % 60000) / 1000)
-                }
-            }).then(function (response) {
-                $scope.score = response.data.score;
-                $scope.mtiles[x + ',' + y + ',' + z].processing = false;
-            }, function (response) {
-                console.log("Error: " + response.statusText);
+            upload_run({
+                tiles: $scope.stiles
             });
         });
     };
@@ -809,26 +765,32 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         run.LoPs = $scope.LoPs;
         run.evacuationLevel = $scope.evacuationLevel;
         run.exitBonus = $scope.exitBonus;
-        run.rescuedDeadVictims = $scope.rescuedDeadVictims;
-        run.rescuedLiveVictims = $scope.rescuedLiveVictims;
+        run.rescueOrder = $scope.victim_list;
         run.showedUp = $scope.showedUp;
         run.started = $scope.started;
         run.rescueOrder = $scope.victim_list;
         run.tiles = $scope.stiles;
         $scope.minutes = Math.floor($scope.time / 60000)
         $scope.seconds = Math.floor(($scope.time % 60000) / 1000)
-        run.time = {
-            minutes: $scope.minutes,
-            seconds: $scope.seconds
-        };
         run.retired = $scope.retired;
-        console.log("Update run", run);
-        $http.put("/api/runs/line/" + runId, run).then(function (response) {
+        run.time = {
+                minutes: $scope.minutes,
+                seconds: $scope.seconds
+            };
+        $scope.sync++;
+        $http.put("/api/runs/line/" + runId, run,http_config).then(function (response) {
             $scope.score = response.data.score;
-            console.log("Run updated, got score: ", $scope.score);
+            $scope.sync--;
+            $scope.networkError = false;
+            $scope.sync = 0;
         }, function (response) {
             console.log("Error: " + response.statusText);
+            $scope.networkError = true;
         });
+        //console.log("Update run", run);
+        
+        
+        
     };
 
     /*$scope.retire = function () {
@@ -846,6 +808,19 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.saveEverything();
         });
     }*/
+    
+    
+    $scope.handover = function(){
+        swal({
+              title: 'Scan it !',
+              html:
+                '<div style="text-align: center;"><div id="qr_code_area"></div></div>',
+              showCloseButton: true
+            }).then((result) => {
+              stopMakeQR();
+            })
+            createMultiQR(run, "qr_code_area", 100);
+    }
 
     $scope.confirm = function () {
         if ((!$scope.showedUp || $scope.showedUp == null) && $scope.score > 0) {
@@ -854,22 +829,26 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         } else {
             playSound(sClick);
             var run = {}
-            run.rescuedDeadVictims = $scope.rescuedDeadVictims;
-            run.rescuedLiveVictims = $scope.rescuedLiveVictims;
+            run.rescueOrder = $scope.victim_list;
             run.tiles = $scope.stiles;
             run.showedUp = $scope.showedUp;
             run.LoPs = $scope.LoPs;
             // Verified time by timekeeper
-            run.time = {};
-            run.time.minutes = $scope.minutes;
-            run.time.seconds = $scope.seconds;
+            run.time = {
+                minutes: $scope.minutes,
+                seconds: $scope.seconds
+            };
             run.status = 3;
-
-            $http.put("/api/runs/line/" + runId, run).then(function (response) {
+            
+            
+            $scope.sync++;
+            $http.put("/api/runs/line/" + runId, run,http_config).then(function (response) {
                 $scope.score = response.data.score;
+                $scope.sync--;
                 $scope.go('/line/sign/' + runId + '?return=' + $scope.getParam('return'));
             }, function (response) {
                 console.log("Error: " + response.statusText);
+                $scope.networkError = true;
             });
         }
     };
@@ -1230,9 +1209,7 @@ app.directive('tile', function () {
                     }
                 }
 
-                if (tile.processing)
-                    return "processing";
-                else if ((possible > 0 && successfully == possible) ||
+                if ((possible > 0 && successfully == possible) ||
                     (isStart(tile) && $scope.$parent.showedUp))
                     return "done";
                 else if (successfully > 0)
