@@ -811,6 +811,24 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     
     
     $scope.handover = function(){
+        var run = {}
+        run.LoPs = $scope.LoPs;
+        run.evacuationLevel = $scope.evacuationLevel;
+        run.exitBonus = $scope.exitBonus;
+        run.rescueOrder = $scope.victim_list;
+        run.showedUp = $scope.showedUp;
+        run.started = $scope.started;
+        run.rescueOrder = $scope.victim_list;
+        run.tiles = $scope.stiles;
+        $scope.minutes = Math.floor($scope.time / 60000)
+        $scope.seconds = Math.floor(($scope.time % 60000) / 1000)
+        run.retired = $scope.retired;
+        run.time = {
+                minutes: $scope.minutes,
+                seconds: $scope.seconds
+        };
+        run.status = 3;
+            
         swal({
               title: 'Scan it !',
               html:
@@ -829,14 +847,20 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         } else {
             playSound(sClick);
             var run = {}
+            run.LoPs = $scope.LoPs;
+            run.evacuationLevel = $scope.evacuationLevel;
+            run.exitBonus = $scope.exitBonus;
+            run.rescueOrder = $scope.victim_list;
+            run.showedUp = $scope.showedUp;
+            run.started = $scope.started;
             run.rescueOrder = $scope.victim_list;
             run.tiles = $scope.stiles;
-            run.showedUp = $scope.showedUp;
-            run.LoPs = $scope.LoPs;
-            // Verified time by timekeeper
+            $scope.minutes = Math.floor($scope.time / 60000)
+            $scope.seconds = Math.floor(($scope.time % 60000) / 1000)
+            run.retired = $scope.retired;
             run.time = {
-                minutes: $scope.minutes,
-                seconds: $scope.seconds
+                    minutes: $scope.minutes,
+                    seconds: $scope.seconds
             };
             run.status = 3;
             
