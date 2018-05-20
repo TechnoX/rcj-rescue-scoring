@@ -1,0 +1,52 @@
+{"dir" : "ltr",
+    "lang" : "en",
+    "name" : "RoboCup Junior Scoring",
+    "scope" : "/",
+    "display" : "fullscreen",
+    "start_url" : "/home",
+    "short_name" : "RCJ Score",
+    "theme_color" : "#ffffff",
+    "description" : "",
+    "orientation" : "any",
+    "background_color" : "#ffffff",
+    "related_applications" : "",
+    "prefer_related_applications" : "false",
+    "icons" : [
+        {
+            "src": "/images/favicon-16.ico",
+            "sizes": "16x16"
+        },
+        {
+            "src": "/images/favicon-32.ico",
+            "sizes": "32x32"
+        },
+        {
+            "src": "/images/favicon-96.ico",
+            "sizes": "96x96"
+        },
+        {
+            "src": "/images/apple-touch-icon-144.png",
+            "sizes": "144x144"
+        },
+        {
+            "src": "/images/apple-touch-icon-152.png",
+            "sizes": "152x152"
+        },
+        {
+            "src": "/images/apple-touch-icon-180.png",
+            "sizes": "180x180"
+        },
+        {
+            "src": "/images/favicon-196.png",
+            "sizes": "196x196"
+        },
+        {
+            "src": "/images/favicon-32.png",
+            "sizes": "32x32"
+        },
+        {
+            "src": "/images/favicon-128.png",
+            "sizes": "128x128"
+        }
+    ]
+}
