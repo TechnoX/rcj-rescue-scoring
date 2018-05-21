@@ -27,7 +27,7 @@ function createMultiQR(obj, qr_id, length) {
     if (idx < 0) {
       return;
     }
-    qr_timeout = setTimeout(task, 500 + Math.random() * 400);
+    qr_timeout = setTimeout(task, 1000 + Math.random() * 400);
 
     $('#' + qr_id).empty().qrcode({
       render: 'image',
