@@ -1,7 +1,6 @@
 module.exports = {
   "globDirectory": "public/",
   "globPatterns": [
-    "components/**/*.{js,css,scss,woff2}",
     "javascripts/*.js",
     "lang/*.json",
     "stylesheets/*.css",
