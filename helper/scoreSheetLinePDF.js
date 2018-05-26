@@ -1,14 +1,22 @@
 const PDFDocument = require('pdfkit');
 const qr = require('qr-image');
+const util = require('util')
+const process = require('./scoreSheetLineProcess')
 
 /**
  * Defines some important numbers for the placement of different objects in the scoresheet.
  */
 const globalConfig = {
   margin: {
-    left: 40,
+    left: 30,
     top: 100
   },
+  positionMarkersSize: 20, // Must be the largest object
+  positionMarkers: [
+    {x: 0, y: -30}, // upper left
+    {x: 0, y: 660}, // lower left
+    {x: 530, y: 660}, // lower right
+  ],
   checkboxSize: 10,
   fields: {
     tileSize: 38,
@@ -52,7 +60,7 @@ const globalConfig = {
  */
 const DirsEnum = Object.freeze({RIGHT: 1, BOTTOM: 2, LEFT: 3, TOP: 4});
 
-const InputTypeEnum = Object.freeze({CHECKBOX: "cb", TEXT: "txt", MATRIXROW: "mrow", MATRIX: "m", MATRIXTEXT: "mt", QR: "qr"});
+const InputTypeEnum = Object.freeze({POSMARK: "pos", CHECKBOX: "cb", TEXT: "txt", MATRIXROW: "mrow", MATRIX: "m", MATRIXTEXT: "mt", QR: "qr"});
 
 /**
  * Draws a checkbox with text
@@ -64,12 +72,12 @@ const InputTypeEnum = Object.freeze({CHECKBOX: "cb", TEXT: "txt", MATRIXROW: "mr
  * @param dir direction of the checkbox where the text should be shown
  * @param color
  */
-function drawCheckbox(doc, pos_x, pos_y, size, text, dir, color) {
+function drawCheckbox(doc, pos_x, pos_y, size, text = "", dir = DirsEnum.RIGHT, color = "black", filled = false) {
   const posData = {type: InputTypeEnum.CHECKBOX, x: pos_x, y: pos_y, w: size, h: size, children: []};
 
   doc.save();
   doc.rect(pos_x, pos_y, size, size).lineWidth(1)
-    .fillAndStroke("white", color);
+    .fillAndStroke(filled ? "black" : "white", color);
 
   if (text === "") {
     return {x: pos_x + size, y: pos_y + size, posData: posData}
@@ -286,7 +294,7 @@ function drawCheckboxMatrix(doc, pos_x, pos_y, config, columnText, rowText) {
         pos_x + colIndex * config.checkboxSize + rowTextWidth,
         pos_y + rowIndex * config.checkboxSize,
         config.checkboxSize, rowIndex === 0 ? columnText[colIndex] : "", DirsEnum.TOP, "black"
-      ).posData
+      ).posData;
       posData.children[posData.children.length - 1].children.push(posDatCheckbox)
     }
   }
@@ -300,7 +308,7 @@ function drawTextInputField(doc, config, pos_x, pos_y, text, width, height) {
     x: pos_x,
     y: pos_y,
     w: width,
-    h: height,
+    h: height + config.data.inputs.labelFontSize,
     children: []
   };
 
@@ -357,22 +365,64 @@ function drawVictimInputField(doc, config, pos_x, pos_y, amount, text) {
   return drawNumberInputField(doc, config, pos_x, pos_y, "Victims (" + text + "):", columnText, rowText)
 }
 
+function drawEvacuationInputField(doc, config, pos_x, pos_y) {
+  const columnText = ["L", "H"];
+  const rowText = [""];
+  return drawNumberInputField(doc, config, pos_x, pos_y, "Evacuation Low/High:", columnText, rowText)
+}
+
+function drawPositionMarkers(doc, config) {
+  const pos_x_min = Math.min.apply(null, config.positionMarkers.map(el => el.x));
+  const pos_y_min = Math.min.apply(null, config.positionMarkers.map(el => el.y));
+  const pos_x_max = Math.max.apply(null, config.positionMarkers.map(el => el.x));
+  const pos_y_max = Math.max.apply(null, config.positionMarkers.map(el => el.y));
+
+  const posData = {
+    type: InputTypeEnum.POSMARK,
+    x: pos_x_min,
+    y: pos_y_min,
+    w: pos_x_max - pos_x_min,
+    h: pos_y_max - pos_y_min,
+    children: []
+  };
+  for (let i = 0; i < config.positionMarkers.length; i++) {
+    posData.children.push(
+      drawCheckbox(
+        doc,
+        config.margin.left + config.positionMarkers[i].x,
+        config.margin.top + config.positionMarkers[i].y,
+        config.positionMarkersSize,
+        "", DirsEnum.RIGHT, "black", true
+      ).posData
+    )
+  }
+  return {
+    x: pos_x_max + config.positionMarkersSize,
+    y: pos_y_max + config.positionMarkersSize,
+    posData: posData
+  };
+}
+
 function drawRun(doc, config, round, field, team, time, map) {
-  let posDatas = []
+  let posDatas = [];
   let pos_y = config.margin.top;
   let pos_x = config.margin.left;
 
-  function nextItem(pos, descr) {
+  function savePos(pos, descr) {
     posDatas.push({descr: descr, posData: pos.posData});
+  }
+
+  function nextItem(pos, descr) {
+    savePos(pos, descr);
     pos_y = pos.y + config.data.inputs.marginsVertical;
   }
 
+  savePos(drawPositionMarkers(doc, config), "posMarkers");
   const tilePosData = drawFields(doc, pos_x, pos_y, config, map);
   pos_x += config.data.marginLeft;
   nextItem(drawMetadata(doc, pos_x, pos_y, config, round, field, team, time), "meta");
-  nextItem(drawCheckbox(doc, pos_x, pos_y, config.checkboxSize, "Low Evacuation", DirsEnum.RIGHT, "black"), "lowEvac");
-  nextItem(drawCheckbox(doc, pos_x, pos_y, config.checkboxSize, "High Evacuation", DirsEnum.RIGHT, "black"), "highEvac");
   nextItem(drawCheckbox(doc, pos_x, pos_y, config.checkboxSize, "Enter scoring sheet manually", DirsEnum.RIGHT, "black"), "enterManually");
+  nextItem(drawEvacuationInputField(doc, config, pos_x, pos_y), "evacuation");
 
   if (map.numberOfDropTiles > 0) {
     for (let i = 0; i < map.numberOfDropTiles; i++) {
@@ -385,7 +435,6 @@ function drawRun(doc, config, round, field, team, time, map) {
   nextItem(drawTimeInputField(doc, config, pos_x, pos_y), "time");
   nextItem(drawTextInputField(doc, config, pos_x, pos_y, "Team:", config.signature.width, config.signature.height), "signTeam");
   nextItem(drawTextInputField(doc, config, pos_x, pos_y, "Referee:", config.signature.width, config.signature.height), "signRef");
-  nextItem(drawTextInputField(doc, config, pos_x, pos_y, "Co-Referee:", config.signature.width, config.signature.height), "signCoRef");
 
   return {
     tiles: tilePosData,
@@ -398,10 +447,15 @@ module.exports.generateScoreSheet = function(res, rounds) {
 
   doc.pipe(res);
 
+  let posDatas = [];
   for (let i = 0; i < rounds.length; i++) {
     doc.addPage({margin: 10});
-    console.log(drawRun(doc, globalConfig, rounds[i].round, rounds[i].field, rounds[i].team, rounds[i].startTime, rounds[i].map))
+    posDatas.push(drawRun(doc, globalConfig, rounds[i].round, rounds[i].field, rounds[i].team, rounds[i].startTime, rounds[i].map))
   }
+
+  //console.log(util.inspect(posDatas[0], {showHidden: false, depth: null}));
+
+  process.processScoreSheet(posDatas[0]);
 
   doc.end()
 };
