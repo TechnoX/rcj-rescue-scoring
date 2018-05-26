@@ -36,6 +36,7 @@
     "nodemon": "^1.17.2",
     "object-hash": "^1.2.0",
     "passport": "^0.4.0",
+    "opencv4nodejs": "^4.5.0",
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
     "protobufjs": "^6.8.0",
