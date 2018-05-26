@@ -89,6 +89,21 @@ function processPosdataElement(mat, posdata) {
   }
 }
 
+function processTileData(sheetMat, tiles) {
+  for (let i = 0; i < tiles.length; i++) {
+    for (let j = 0; j < tiles[i].length; j++) {
+      tiles[i][j].cbVal = processPosdataElement(sheetMat, tiles[i][j].posData);
+    }
+  }
+  let max = Math.max.apply(Math, tiles.map(el => Math.max.apply(Math, el.map(t => t.cbVal))));
+  for (let i = 0; i < tiles.length; i++) {
+    for (let j = 0; j < tiles[i].length; j++) {
+      tiles[i][j].checked = tiles[i][j].cbVal > (max / 3);
+    }
+  }
+  return tiles;
+}
+
 /**
  * Extracts position markers from the raw input image and scales the image in a way that
  * the posData pixel value from the sheet generation match the image
@@ -139,7 +154,7 @@ module.exports.processScoreSheet = function(posData, config) {
 
   //console.log(processPosdataElement(sheetProc, findPosdataByDescr(posData.data, 'meta')));
   //console.log(processPosdataElement(sheetProc, findPosdataByDescr(posData.data, 'enterManually')))
-  //console.log(processTileData(sheetProc, posData.tiles))
+  console.log(processTileData(normalizedSheet, posData.tiles));
 
   drawPosdataToSheet(normalizedSheet, posData);
   cv.imwrite("helper/out.png", normalizedSheet)
