@@ -7,16 +7,16 @@ const process = require('./scoreSheetLineProcess')
  * Defines some important numbers for the placement of different objects in the scoresheet.
  */
 const globalConfig = {
+  positionMarkersSize: 20, // Must be the largest object
+  positionMarkers: [
+    {x: 10, y: 20}, // upper left
+    {x: 10, y: 760}, // lower left
+    {x: 570, y: 760}, // lower right
+  ],
   margin: {
     left: 30,
     top: 100
   },
-  positionMarkersSize: 20, // Must be the largest object
-  positionMarkers: [
-    {x: 0, y: -30}, // upper left
-    {x: 0, y: 660}, // lower left
-    {x: 530, y: 660}, // lower right
-  ],
   checkboxSize: 10,
   fields: {
     tileSize: 38,
@@ -386,15 +386,12 @@ function drawPositionMarkers(doc, config) {
     children: []
   };
   for (let i = 0; i < config.positionMarkers.length; i++) {
-    posData.children.push(
-      drawCheckbox(
-        doc,
-        config.margin.left + config.positionMarkers[i].x,
-        config.margin.top + config.positionMarkers[i].y,
-        config.positionMarkersSize,
-        "", DirsEnum.RIGHT, "black", true
-      ).posData
-    )
+    doc.rect(
+      config.positionMarkers[i].x,
+      config.positionMarkers[i].y,
+      config.positionMarkersSize,
+      config.positionMarkersSize
+    ).lineWidth(1).fillAndStroke("black", "white");
   }
   return {
     x: pos_x_max + config.positionMarkersSize,
