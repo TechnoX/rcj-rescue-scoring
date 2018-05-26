@@ -1,4 +1,7 @@
 const cv = require('opencv4nodejs');
+const jsQR = require('jsqr');
+
+const InputTypeEnum = Object.freeze({POSMARK: "pos", CHECKBOX: "cb", TEXT: "txt", MATRIXROW: "mrow", MATRIX: "m", MATRIXTEXT: "mt", QR: "qr"});
 
 function findPosdataByDescr(data, descriptor) {
   return data.find(item => item.descr === descriptor).posData;
@@ -18,6 +21,58 @@ function drawPosdataToSheet(sheetMat, posData) {
       sheetMat.drawRectangle(new cv.Rect(man.x - 40, man.y - 80, man.w, man.h),
         new cv.Vec3(0, 255, 0), 2, 4, 0);
     }
+  }
+}
+
+function processPosdataElement(mat, posdata) {
+  let matPosdata = mat.getRegion(new cv.Rect(posdata.x - 40, posdata.y - 80, posdata.w, posdata.h));
+
+  switch (posdata.type) {
+    case InputTypeEnum.POSMARK:
+      break;
+
+    case InputTypeEnum.CHECKBOX:
+      let cumulative = 0;
+      for (let y = 0; y < posdata.h; y++) {
+        for (let x = 0; x < posdata.w; x++) {
+          cumulative += (255 - matPosdata.at(y, x));
+        }
+      }
+      return cumulative;
+
+    case InputTypeEnum.MATRIXROW:
+      let valMax = 0, iMax = 0;
+      for (let i = 0; i < posdata.children.length; i++) {
+        let val = processPosdataElement(mat, posdata.children[i]);
+        if (val > valMax) {
+          valMax = val;
+          iMax = i;
+        }
+      }
+      return iMax;
+
+    case InputTypeEnum.MATRIX:
+      let rowCrossedIndexes = [];
+      for (let i = 0; i < posdata.children.length; i++) {
+        rowCrossedIndexes.push(processPosdataElement(mat, posdata.children[i]))
+      }
+      return rowCrossedIndexes;
+
+    case InputTypeEnum.TEXT:
+      return matPosdata;
+
+    case InputTypeEnum.MATRIXTEXT:
+      return {
+        img: matPosdata,
+        indexes: processPosdataElement(mat, posdata.children[1].posData)
+      };
+
+    case InputTypeEnum.QR:
+      let code = jsQR(new Uint8ClampedArray(matPosdata.cvtColor(cv.COLOR_GRAY2BGRA).getData()), posdata.w, posdata.h);
+      if (code) {
+        code = code.data
+      }
+      return code;
   }
 }
 
@@ -53,7 +108,6 @@ module.exports.processScoreSheet = function(posData, config) {
     )
   ).resizeToMax(Math.max(posMarkers.w, posMarkers.h));
 
-  drawPosdataToSheet(sheetProc, posData);
-
-  cv.imwrite('helper/scoringSm.jpg', sheetProc);
+  console.log(processPosdataElement(sheetProc, findPosdataByDescr(posData.data, 'meta')));
+  console.log(processPosdataElement(sheetProc, findPosdataByDescr(posData.data, 'enterManually')))
 };
