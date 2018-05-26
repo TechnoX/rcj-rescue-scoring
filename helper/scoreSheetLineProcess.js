@@ -24,6 +24,20 @@ function drawPosdataToSheet(sheetMat, posData) {
   }
 }
 
+/**
+ * processes a posdata element on the calibrated mat
+ * @param mat calibrated mat
+ * @param posdata posdata for the mat
+ * @returns depends on the type of the given posData:
+ *    POSMARK: undefined
+ *    CHECKBOX: number that is proportional to the amount of grey in the checkbox area.
+ *    MATRIXROW: index of the column with the highest value of grey
+ *    MATRIX: array of indexes of MATRIXROW
+ *    TEXT: mat of the text field
+ *    MATRIXTEXT: object of the shape {img, indexes} where img is the mat of
+ *      the whole matrix and text, indexes is the return value of MATRIX
+ *    QR: null if no QR code could be identified, otherwise the data of the code as string
+ */
 function processPosdataElement(mat, posdata) {
   let matPosdata = mat.getRegion(new cv.Rect(posdata.x - 40, posdata.y - 80, posdata.w, posdata.h));
 
