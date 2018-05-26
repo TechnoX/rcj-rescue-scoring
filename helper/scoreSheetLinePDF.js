@@ -351,8 +351,8 @@ function drawLOPInputField(doc, config, pos_x, pos_y, text) {
 }
 
 function drawTimeInputField(doc, config, pos_x, pos_y) {
-  const columnText = ["0", "1", "2", "3", "4", "5", "6", "7", "8"];
-  const rowText = ["Minutes", "Seconds", "Seconds"];
+  const columnText = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+  const rowText = ["Min", "Sec", "Sec"];
   return drawNumberInputField(doc, config, pos_x, pos_y, "Time:", columnText, rowText)
 }
 
@@ -455,7 +455,7 @@ module.exports.generateScoreSheet = function(res, rounds) {
 
   //console.log(util.inspect(posDatas[0], {showHidden: false, depth: null}));
 
-  process.processScoreSheet(posDatas[0]);
+  process.processScoreSheet(posDatas[0], globalConfig);
 
   doc.end()
 };
