@@ -60,7 +60,7 @@ const globalConfig = {
  */
 const DirsEnum = Object.freeze({RIGHT: 1, BOTTOM: 2, LEFT: 3, TOP: 4});
 
-const InputTypeEnum = Object.freeze({POSMARK: "pos", CHECKBOX: "cb", TEXT: "txt", MATRIXROW: "mrow", MATRIX: "m", MATRIXTEXT: "mt", QR: "qr"});
+const InputTypeEnum = Object.freeze({FIELD: "fld", FIELDTILE: "fldtl", POSMARK: "pos", CHECKBOX: "cb", TEXT: "txt", MATRIXROW: "mrow", MATRIX: "m", MATRIXTEXT: "mt", QR: "qr"});
 
 /**
  * Draws a checkbox with text
@@ -155,22 +155,23 @@ function drawMetadata(doc, pos_x, pos_y, config, round, field, team, time) {
   return {x: pos_x, y: pos_y, posData: posData}
 }
 
-function tileAddCheckbox(doc, checkboxes, pos_x, pos_y, config, text, color) {
+function tileAddCheckbox(doc, posDataTile, config, text, color) {
   let checkbox_horizontal_amount = Math.floor((config.fields.tileSize - config.fields.checkbox.marginBorder * 2) / (config.checkboxSize * 2));
   let checkbox_vertical_amount = Math.floor((config.fields.tileSize - config.fields.checkbox.marginBorder * 2) / (config.checkboxSize + config.fields.checkbox.marginCheckbox));
-  if (checkboxes[checkboxes.length - 1].length === (checkbox_horizontal_amount * checkbox_vertical_amount)) {
+  if (posDataTile.children.length === (checkbox_horizontal_amount * checkbox_vertical_amount)) {
     console.log("CANT PLACE ANY MORE CHECKBOXES!!!")
   }
 
-  let checkbox_pos_x = pos_x + config.fields.checkbox.marginBorder
-      + Math.floor(checkboxes[checkboxes.length - 1].length / checkbox_vertical_amount)
+  let checkbox_pos_x = posDataTile.x + config.fields.checkbox.marginBorder
+      + Math.floor(posDataTile.children.length / checkbox_vertical_amount)
       * ((config.checkboxSize * 2) + config.fields.checkbox.marginCheckbox);
-  let checkbox_pos_y = pos_y + config.fields.checkbox.marginBorder
-      + (checkboxes[checkboxes.length - 1].length % checkbox_vertical_amount)
+  let checkbox_pos_y = posDataTile.y + config.fields.checkbox.marginBorder
+      + (posDataTile.children.length % checkbox_vertical_amount)
       * (config.checkboxSize + config.fields.checkbox.marginCheckbox);
 
-  const posCheckbox = drawCheckbox(doc, checkbox_pos_x, checkbox_pos_y, config.checkboxSize, text, DirsEnum.RIGHT, color)
-  checkboxes[checkboxes.length - 1].push({id: text, posData: posCheckbox.posData});
+  const posCheckbox = drawCheckbox(doc, checkbox_pos_x, checkbox_pos_y, config.checkboxSize, text, DirsEnum.RIGHT, color);
+  posCheckbox.posData.id = text;
+  posDataTile.children.push(posCheckbox.posData);
 }
 
 function dirToAngle(dir) {
@@ -184,21 +185,31 @@ function dirToAngle(dir) {
 }
 
 function drawFields(doc, pos_x, pos_y, config, map) {
+  const mapLevelHeight = map.width * (config.fields.tileSize + config.fields.tileSpacing) + 2 - config.fields.tileSpacing;
+  const mapLevelWidth = map.length * (config.fields.tileSize + config.fields.tileSpacing) + 2 - config.fields.tileSpacing;
+
+  const posData = {
+    type: InputTypeEnum.FIELD,
+    x: pos_x + config.fields.positions[0].x,
+    y: pos_y + config.fields.positions[0].y,
+    w: config.fields.positions[1].x + mapLevelWidth,
+    h: config.fields.positions[1].y + mapLevelHeight,
+    children: []
+  };
+
   for (let z = 0; z < map.height && z < config.fields.positions.length; z++) {
     doc.lineWidth(1)
       .rect(
         pos_x + config.fields.positions[z].x,
         pos_y + config.fields.positions[z].y,
-        map.width * (config.fields.tileSize + config.fields.tileSpacing) + 2 - config.fields.tileSpacing,
-        map.length * (config.fields.tileSize + config.fields.tileSpacing) + 2 - config.fields.tileSpacing
+        mapLevelHeight,
+        mapLevelWidth
       )
       .fillAndStroke("#EFEFEF", "black")
   }
 
   pos_x++;
   pos_y++;
-
-  let checkboxes = [];
 
   for (let i = 0; i < map.tiles.length; i++) {
     const tile = map.tiles[i];
@@ -222,7 +233,14 @@ function drawFields(doc, pos_x, pos_y, config, map) {
       tile_pos_y, {width: config.fields.tileSize});
     doc.restore();
 
-    checkboxes.push([]);
+    posData.children.push({
+      type: InputTypeEnum.FIELDTILE,
+      x: tile_pos_x,
+      y: tile_pos_y,
+      w: config.fields.tileSize,
+      h: config.fields.tileSize,
+      children: []
+    });
 
     if (tile.levelUp || tile.levelDown) {
       doc.save();
@@ -240,26 +258,30 @@ function drawFields(doc, pos_x, pos_y, config, map) {
     }
 
     if (map.startTile.x === tile.x && map.startTile.y === tile.y && map.startTile.z === tile.z) {
-      tileAddCheckbox(doc, checkboxes, tile_pos_x, tile_pos_y, config, "St", "green")
+      tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "St", "green")
     } else if(tileIsDroptile(tile)) {
-      tileAddCheckbox(doc, checkboxes, tile_pos_x, tile_pos_y, config, "C", "blue")
+      tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "C", "blue")
     } else {
       for (let j = 0; tile.tileType.intersections > 0 && j < tile.index.length; j++) {
-        tileAddCheckbox(doc, checkboxes, tile_pos_x, tile_pos_y, config, "I", "red")
+        tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "I", "red")
       }
       for (let j = 0; tile.items.speedbumps > 0 && j < tile.index.length; j++) {
-        tileAddCheckbox(doc, checkboxes, tile_pos_x, tile_pos_y, config, "S", "violet")
+        tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "S", "violet")
       }
       for (let j = 0; tile.items.obstacles > 0 && j < tile.index.length; j++) {
-        tileAddCheckbox(doc, checkboxes, tile_pos_x, tile_pos_y, config, "O", "brown")
+        tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "O", "brown")
       }
       for (let j = 0; tile.tileType.gaps > 0 && j < tile.index.length; j++) {
-        tileAddCheckbox(doc, checkboxes, tile_pos_x, tile_pos_y, config, "G", "orange")
+        tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "G", "orange")
       }
     }
   }
 
-  return checkboxes
+  return {
+    x: pos_x + config.fields.positions[0].x + mapLevelWidth,
+    y: pos_y + config.fields.positions[1].y + mapLevelHeight,
+    posData: posData
+  };
 }
 
 function drawCheckboxMatrix(doc, pos_x, pos_y, config, columnText, rowText) {
@@ -415,7 +437,8 @@ function drawRun(doc, config, round, field, team, time, map) {
   }
 
   savePos(drawPositionMarkers(doc, config), "posMarkers");
-  const tilePosData = drawFields(doc, pos_x, pos_y, config, map);
+  let pf = drawFields(doc, pos_x, pos_y, config, map);
+  savePos(pf, "field");
   pos_x += config.data.marginLeft;
   nextItem(drawMetadata(doc, pos_x, pos_y, config, round, field, team, time), "meta");
   nextItem(drawCheckbox(doc, pos_x, pos_y, config.checkboxSize, "Enter scoring sheet manually", DirsEnum.RIGHT, "black"), "enterManually");
@@ -433,10 +456,7 @@ function drawRun(doc, config, round, field, team, time, map) {
   nextItem(drawTextInputField(doc, config, pos_x, pos_y, "Team:", config.signature.width, config.signature.height), "signTeam");
   nextItem(drawTextInputField(doc, config, pos_x, pos_y, "Referee:", config.signature.width, config.signature.height), "signRef");
 
-  return {
-    tiles: tilePosData,
-    data: posDatas
-  }
+  return posDatas
 }
 
 module.exports.generateScoreSheet = function(res, rounds) {

@@ -1,25 +1,26 @@
 const cv = require('opencv4nodejs');
 const jsQR = require('jsqr');
+const util = require('util')
 
 const InputTypeEnum = Object.freeze({POSMARK: "pos", CHECKBOX: "cb", TEXT: "txt", MATRIXROW: "mrow", MATRIX: "m", MATRIXTEXT: "mt", QR: "qr"});
 
 function findPosdataByDescr(data, descriptor) {
-  return data.find(item => item.descr === descriptor).posData;
+  let dat = data.find(item => item.descr === descriptor);
+  if (typeof dat === 'undefined') {
+    return null;
+  }
+  return dat.posData;
 }
 
-function drawPosdataToSheet(sheetMat, posData) {
-  for (let i = 0; i < posData.data.length; i++) {
-    let man = posData.data[i].posData;
-    sheetMat.drawRectangle(new cv.Rect(man.x, man.y, man.w, man.h),
-      new cv.Vec3(0, 255, 0), 2, 4, 0);
+function drawPosdataToSheet(sheetMat, posData, maxLevel) {
+  if (maxLevel <= 0) {
+    return;
   }
 
-  for (let i = 0; i < posData.tiles.length; i++) {
-    for (let j = 0; j < posData.tiles[i].length; j++) {
-      let man = posData.tiles[i][j].posData;
-      sheetMat.drawRectangle(new cv.Rect(man.x, man.y, man.w, man.h),
-        new cv.Vec3(0, 255, 0), 2, 4, 0);
-    }
+  sheetMat.drawRectangle(new cv.Rect(posData.x, posData.y, posData.w, posData.h), new cv.Vec3(0, 255, 0), 1, 8, 0);
+
+  for (let i = 0; i < posData.children.length; i++) {
+    drawPosdataToSheet(sheetMat, posData.children[i], maxLevel - 1)
   }
 }
 
@@ -101,7 +102,7 @@ function processPosdataText(mat, posdata) {
     return null;
   }
 
-  return mat.getRegion(new cv.Rect(posdata.x, posdata.y, posdata.w, posdata.h));
+  return mat.getRegion(new cv.Rect(posdata.x, posdata.y, posdata.w, posdata.h)).getData();
 }
 
 /**
@@ -117,7 +118,7 @@ function processPosdataMatrixText(mat, posdata) {
   }
 
   return {
-    img: mat.getRegion(new cv.Rect(posdata.x, posdata.y, posdata.w, posdata.h)),
+    img: mat.getRegion(new cv.Rect(posdata.x, posdata.y, posdata.w, posdata.h)).getData(),
     indexes: processPosdataMatrix(mat, posdata.children[1].posData)
   };
 }
@@ -149,19 +150,29 @@ function processPosdataQR(mat, posdata) {
   return code;
 }
 
-function processTileData(sheetMat, tiles) {
+function processTileData(sheetMat, posdata) {
+  let tiles = posdata.children.slice(0);
+
   for (let i = 0; i < tiles.length; i++) {
-    for (let j = 0; j < tiles[i].length; j++) {
-      tiles[i][j].cbVal = processPosdataCheckbox(sheetMat, tiles[i][j].posData);
+    for (let j = 0; j < tiles[i].children.length; j++) {
+      tiles[i].children[j].cbVal = processPosdataCheckbox(sheetMat, tiles[i].children[j]);
     }
   }
-  let max = Math.max.apply(Math, tiles.map(el => Math.max.apply(Math, el.map(t => t.cbVal))));
+
+  let procTiles = [];
+  let max = Math.max.apply(Math, tiles.map(el => Math.max.apply(Math, el.children.map(t => t.cbVal))));
   for (let i = 0; i < tiles.length; i++) {
-    for (let j = 0; j < tiles[i].length; j++) {
-      tiles[i][j].checked = tiles[i][j].cbVal > (max / 3);
+    procTiles.push([]);
+    for (let j = 0; j < tiles[i].children.length; j++) {
+      procTiles[i].push([]);
+      procTiles[i][j].checked = tiles[i].children[j].cbVal > (max / 3);
     }
   }
-  return tiles;
+
+  return {
+    img: sheetMat.getRegion(new cv.Rect(posdata.x, posdata.y, posdata.w, posdata.h)).getData(),
+    tiles: procTiles
+  };
 }
 
 /**
@@ -210,14 +221,29 @@ function processPosMarkers(sheetMat, config, posMarkersPosData) {
 }
 
 module.exports.processScoreSheet = function(posData, config) {
-  const normalizedSheet = processPosMarkers(cv.imread('helper/scoresheet_n.png').bgrToGray(), config, findPosdataByDescr(posData.data, 'posMarkers'));
+  const normalizedSheet = processPosMarkers(cv.imread('helper/scoresheet_n.png').bgrToGray(), config, findPosdataByDescr(posData, 'posMarkers'));
 
-  console.log(processPosdataQR(normalizedSheet, findPosdataByDescr(posData.data, 'meta')));
-  console.log(processPosdataCheckbox(normalizedSheet, findPosdataByDescr(posData.data, 'enterManually')));
-  console.log(processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData.data, 'time')));
-  console.log(processPosdataText(normalizedSheet, findPosdataByDescr(posData.data, 'signTeam')));
-  console.log(processTileData(normalizedSheet, posData.tiles));
+  let sheetData = {};
+  sheetData.qr = processPosdataQR(normalizedSheet, findPosdataByDescr(posData, 'meta'));
+  sheetData.enterManually = processPosdataCheckbox(normalizedSheet, findPosdataByDescr(posData, 'enterManually'));
+  sheetData.evacuation = processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData, 'evacuation'));
+  sheetData.checkpoints = [];
+  for (let i = 0, posDataCB; (posDataCB = findPosdataByDescr(posData, 'cb' + i)) !== null; i++) {
+    if (posDataCB === null) {
+      break;
+    }
+    sheetData.checkpoints.push(processPosdataMatrixText(normalizedSheet, posDataCB))
+  }
+  sheetData.victimsAlive = processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData, 'victimsAlive'));
+  sheetData.victimsDead = processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData, 'victimsDead'));
+  sheetData.time = processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData, 'time'));
+  sheetData.signTeam = processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData, 'signTeam'));
+  sheetData.signRef = processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData, 'signRef'));
+  sheetData.tiles = processTileData(normalizedSheet, findPosdataByDescr(posData, 'field'));
 
-  drawPosdataToSheet(normalizedSheet, posData);
-  cv.imwrite("helper/out.png", normalizedSheet)
+  console.log(util.inspect(sheetData, {showHidden: false, depth: null}));
+
+  let normalizedSheetColored = normalizedSheet.cvtColor(cv.COLOR_GRAY2BGR);
+  drawPosdataToSheet(normalizedSheetColored, findPosdataByDescr(posData, 'field'), 3);
+  cv.imwrite("helper/out.png", normalizedSheetColored)
 };
