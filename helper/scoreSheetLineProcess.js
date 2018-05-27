@@ -23,76 +23,136 @@ function drawPosdataToSheet(sheetMat, posData) {
   }
 }
 
+
 /**
- * processes a posdata element on the calibrated mat
- * @param mat calibrated mat
- * @param posdata posdata for the mat
- * @returns depends on the type of the given posData:
- *    POSMARK: undefined
- *    CHECKBOX: number that is proportional to the amount of grey in the checkbox area.
- *    MATRIXROW: index of the column with the highest value of grey
- *    MATRIX: array of indexes of MATRIXROW
- *    TEXT: mat of the text field
- *    MATRIXTEXT: object of the shape {img, indexes} where img is the mat of
- *      the whole matrix and text, indexes is the return value of MATRIX
- *    QR: null if no QR code could be identified, otherwise the data of the code as string
+ * processes a posdata checkbox element on the normalized mat
+ * @param mat normalized mat
+ * @param posdata posdata for the element to process
+ * @returns number that is proportional to the amount of grey in the checkbox area if element
+ * is a checkbox, otherwise null
  */
-function processPosdataElement(mat, posdata) {
+function processPosdataCheckbox(mat, posdata) {
+  if (posdata.type !== InputTypeEnum.CHECKBOX) {
+    return null;
+  }
+
   let matPosdata = mat.getRegion(new cv.Rect(posdata.x, posdata.y, posdata.w, posdata.h));
 
-  switch (posdata.type) {
-    case InputTypeEnum.POSMARK:
-      break;
-
-    case InputTypeEnum.CHECKBOX:
-      let cumulative = 0;
-      for (let y = 0; y < posdata.h; y++) {
-        for (let x = 0; x < posdata.w; x++) {
-          cumulative += (255 - matPosdata.at(y, x));
-        }
-      }
-      return cumulative;
-
-    case InputTypeEnum.MATRIXROW:
-      let valMax = 0, iMax = 0;
-      for (let i = 0; i < posdata.children.length; i++) {
-        let val = processPosdataElement(mat, posdata.children[i]);
-        if (val > valMax) {
-          valMax = val;
-          iMax = i;
-        }
-      }
-      return iMax;
-
-    case InputTypeEnum.MATRIX:
-      let rowCrossedIndexes = [];
-      for (let i = 0; i < posdata.children.length; i++) {
-        rowCrossedIndexes.push(processPosdataElement(mat, posdata.children[i]))
-      }
-      return rowCrossedIndexes;
-
-    case InputTypeEnum.TEXT:
-      return matPosdata;
-
-    case InputTypeEnum.MATRIXTEXT:
-      return {
-        img: matPosdata,
-        indexes: processPosdataElement(mat, posdata.children[1].posData)
-      };
-
-    case InputTypeEnum.QR:
-      let code = jsQR(new Uint8ClampedArray(matPosdata.cvtColor(cv.COLOR_GRAY2BGRA).getData()), posdata.w, posdata.h);
-      if (code) {
-        code = code.data
-      }
-      return code;
+  let cumulative = 0;
+  for (let y = 0; y < posdata.h; y++) {
+    for (let x = 0; x < posdata.w; x++) {
+      cumulative += (255 - matPosdata.at(y, x));
+    }
   }
+  return cumulative;
+}
+
+
+/**
+ * processes a posdata matrixrow element on the normalized mat
+ * @param mat normalized mat
+ * @param posdata posdata for the element to process
+ * @returns index of the column with the highest value of grey if element
+ * is a matrixrow, otherwise null
+ */
+function processPosdataMatrixrow(mat, posdata) {
+  if (posdata.type !== InputTypeEnum.MATRIXROW) {
+    return null;
+  }
+
+  let valMax = 0, iMax = 0;
+  for (let i = 0; i < posdata.children.length; i++) {
+    let val = processPosdataCheckbox(mat, posdata.children[i]);
+    if (val > valMax) {
+      valMax = val;
+      iMax = i;
+    }
+  }
+  return iMax;
+}
+
+
+/**
+ * processes a posdata matrix element on the normalized mat
+ * @param mat normalized mat
+ * @param posdata posdata for the element to process
+ * @returns array of indexes of MATRIXROW if element is a matrix, otherwise null
+ */
+function processPosdataMatrix(mat, posdata) {
+  if (posdata.type !== InputTypeEnum.MATRIX) {
+    return null;
+  }
+
+  let rowCrossedIndexes = [];
+  for (let i = 0; i < posdata.children.length; i++) {
+    rowCrossedIndexes.push(processPosdataMatrixrow(mat, posdata.children[i]))
+  }
+  return rowCrossedIndexes;
+}
+
+/**
+ * processes a posdata text element on the normalized mat
+ * @param mat normalized mat
+ * @param posdata posdata for the element to process
+ * @returns extracted mat region of the text field if element is a matrix, otherwise null
+ */
+function processPosdataText(mat, posdata) {
+  if (posdata.type !== InputTypeEnum.TEXT) {
+    return null;
+  }
+
+  return mat.getRegion(new cv.Rect(posdata.x, posdata.y, posdata.w, posdata.h));
+}
+
+/**
+ * processes a posdata matrixtext element on the normalized mat
+ * @param mat normalized mat
+ * @param posdata posdata for the element to process
+ * @returns object of the shape {img, indexes} where img is the mat of the whole matrix and text
+ * indexes is the return value of MATRIX if element is a matrixtext, otherwise null
+ */
+function processPosdataMatrixText(mat, posdata) {
+  if (posdata.type !== InputTypeEnum.MATRIXTEXT) {
+    return null;
+  }
+
+  return {
+    img: mat.getRegion(new cv.Rect(posdata.x, posdata.y, posdata.w, posdata.h)),
+    indexes: processPosdataMatrix(mat, posdata.children[1].posData)
+  };
+}
+
+/**
+ * processes a posdata qr element on the normalized mat
+ * @param mat normalized mat
+ * @param posdata posdata for the element to process
+ * @returns data of the qr code as string if element is a qr and a qr could be
+ * detected, otherwise null
+ */
+function processPosdataQR(mat, posdata) {
+  if (posdata.type !== InputTypeEnum.QR) {
+    return null;
+  }
+
+  let code = jsQR(
+    new Uint8ClampedArray(
+      mat.getRegion(
+        new cv.Rect(posdata.x, posdata.y, posdata.w, posdata.h)
+      ).cvtColor(cv.COLOR_GRAY2BGRA).getData()
+    ),
+    posdata.w,
+    posdata.h
+  );
+  if (code) {
+    code = code.data
+  }
+  return code;
 }
 
 function processTileData(sheetMat, tiles) {
   for (let i = 0; i < tiles.length; i++) {
     for (let j = 0; j < tiles[i].length; j++) {
-      tiles[i][j].cbVal = processPosdataElement(sheetMat, tiles[i][j].posData);
+      tiles[i][j].cbVal = processPosdataCheckbox(sheetMat, tiles[i][j].posData);
     }
   }
   let max = Math.max.apply(Math, tiles.map(el => Math.max.apply(Math, el.map(t => t.cbVal))));
@@ -152,8 +212,10 @@ function processPosMarkers(sheetMat, config, posMarkersPosData) {
 module.exports.processScoreSheet = function(posData, config) {
   const normalizedSheet = processPosMarkers(cv.imread('helper/scoresheet_n.png').bgrToGray(), config, findPosdataByDescr(posData.data, 'posMarkers'));
 
-  //console.log(processPosdataElement(sheetProc, findPosdataByDescr(posData.data, 'meta')));
-  //console.log(processPosdataElement(sheetProc, findPosdataByDescr(posData.data, 'enterManually')))
+  console.log(processPosdataQR(normalizedSheet, findPosdataByDescr(posData.data, 'meta')));
+  console.log(processPosdataCheckbox(normalizedSheet, findPosdataByDescr(posData.data, 'enterManually')));
+  console.log(processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData.data, 'time')));
+  console.log(processPosdataText(normalizedSheet, findPosdataByDescr(posData.data, 'signTeam')));
   console.log(processTileData(normalizedSheet, posData.tiles));
 
   drawPosdataToSheet(normalizedSheet, posData);
