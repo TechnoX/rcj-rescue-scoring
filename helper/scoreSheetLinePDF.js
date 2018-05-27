@@ -408,12 +408,23 @@ function drawPositionMarkers(doc, config) {
     children: []
   };
   for (let i = 0; i < config.positionMarkers.length; i++) {
+    const posDataMark = {
+      type: InputTypeEnum.POSMARK,
+      x: config.positionMarkers[i].x,
+      y: config.positionMarkers[i].y,
+      w: config.positionMarkersSize,
+      h: config.positionMarkersSize,
+      children: []
+    };
+
     doc.rect(
-      config.positionMarkers[i].x,
-      config.positionMarkers[i].y,
-      config.positionMarkersSize,
-      config.positionMarkersSize
+      posDataMark.x,
+      posDataMark.y,
+      posDataMark.w,
+      posDataMark.h
     ).lineWidth(1).fillAndStroke("black", "white");
+
+    posData.children.push(posDataMark);
   }
   return {
     x: pos_x_max + config.positionMarkersSize,
@@ -472,7 +483,7 @@ module.exports.generateScoreSheet = function(res, rounds) {
 
   //console.log(util.inspect(posDatas[0], {showHidden: false, depth: null}));
 
-  process.processScoreSheet(posDatas[0], globalConfig);
+  console.log(process.processScoreSheet(posDatas[0], 'helper/scoresheet_n.png'));
 
   doc.end()
 };

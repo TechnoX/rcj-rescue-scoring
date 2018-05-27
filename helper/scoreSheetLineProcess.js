@@ -1,6 +1,6 @@
 const cv = require('opencv4nodejs');
 const jsQR = require('jsqr');
-const util = require('util')
+const tmp = require('tmp');
 
 const InputTypeEnum = Object.freeze({POSMARK: "pos", CHECKBOX: "cb", TEXT: "txt", MATRIXROW: "mrow", MATRIX: "m", MATRIXTEXT: "mt", QR: "qr"});
 
@@ -102,7 +102,10 @@ function processPosdataText(mat, posdata) {
     return null;
   }
 
-  return mat.getRegion(new cv.Rect(posdata.x, posdata.y, posdata.w, posdata.h)).getData();
+  let tmpFile = tmp.fileSync({postfix: ".jpg"});
+  cv.imwrite(tmpFile.name, mat.getRegion(new cv.Rect(posdata.x, posdata.y, posdata.w, posdata.h)));
+
+  return tmpFile;
 }
 
 /**
@@ -117,8 +120,11 @@ function processPosdataMatrixText(mat, posdata) {
     return null;
   }
 
+  let tmpFile = tmp.fileSync({postfix: ".jpg"});
+  cv.imwrite(tmpFile.name, mat.getRegion(new cv.Rect(posdata.x, posdata.y, posdata.w, posdata.h)));
+
   return {
-    img: mat.getRegion(new cv.Rect(posdata.x, posdata.y, posdata.w, posdata.h)).getData(),
+    img: tmpFile,
     indexes: processPosdataMatrix(mat, posdata.children[1].posData)
   };
 }
@@ -165,12 +171,16 @@ function processTileData(sheetMat, posdata) {
     procTiles.push([]);
     for (let j = 0; j < tiles[i].children.length; j++) {
       procTiles[i].push([]);
+      procTiles[i][j].id = tiles[i].children[j].id;
       procTiles[i][j].checked = tiles[i].children[j].cbVal > (max / 3);
     }
   }
 
+  let tmpFile = tmp.fileSync({postfix: ".jpg"});
+  cv.imwrite(tmpFile.name, sheetMat.getRegion(new cv.Rect(posdata.x, posdata.y, posdata.w, posdata.h)));
+
   return {
-    img: sheetMat.getRegion(new cv.Rect(posdata.x, posdata.y, posdata.w, posdata.h)).getData(),
+    img: tmpFile,
     tiles: procTiles
   };
 }
@@ -179,11 +189,10 @@ function processTileData(sheetMat, posdata) {
  * Extracts position markers from the raw input image and scales the image in a way that
  * the posData pixel value from the sheet generation match the image
  * @param sheetMat raw sheet image
- * @param config configuration object from sheet generation
  * @param posMarkersPosData posData
  * @returns {Mat} normalized sheet
  */
-function processPosMarkers(sheetMat, config, posMarkersPosData) {
+function processPosMarkers(sheetMat, posMarkersPosData) {
   const params = new cv.SimpleBlobDetectorParams();
   params.filterByArea = false;
   params.filterByCircularity = true;
@@ -213,19 +222,19 @@ function processPosMarkers(sheetMat, config, posMarkersPosData) {
   ).resizeToMax(posMarkersPosData.h)
     .warpAffine(
       new cv.Mat([
-          [1, 0, config.positionMarkers[0].x + config.positionMarkersSize / 2],
-          [0, 1, config.positionMarkers[0].y + config.positionMarkersSize / 2]
+          [1, 0, posMarkersPosData.children[0].x + posMarkersPosData.children[0].w / 2],
+          [0, 1, posMarkersPosData.children[0].y + posMarkersPosData.children[0].h / 2]
         ], cv.CV_32FC1
-      ), new cv.Size(posMarkersPosData.w + config.positionMarkers[0].x, posMarkersPosData.h + config.positionMarkers[0].y)
+      ), new cv.Size(posMarkersPosData.w + posMarkersPosData.children[0].x, posMarkersPosData.h + posMarkersPosData.children[0].y)
     );
 }
 
-module.exports.processScoreSheet = function(posData, config) {
-  const normalizedSheet = processPosMarkers(cv.imread('helper/scoresheet_n.png').bgrToGray(), config, findPosdataByDescr(posData, 'posMarkers'));
+module.exports.processScoreSheet = function(posData, scoreSheetFileName) {
+  const normalizedSheet = processPosMarkers(cv.imread(scoreSheetFileName).bgrToGray(), findPosdataByDescr(posData, 'posMarkers'));
 
   let sheetData = {};
   sheetData.qr = processPosdataQR(normalizedSheet, findPosdataByDescr(posData, 'meta'));
-  sheetData.enterManually = processPosdataCheckbox(normalizedSheet, findPosdataByDescr(posData, 'enterManually'));
+  sheetData.enterManually = processPosdataCheckbox(normalizedSheet, findPosdataByDescr(posData, 'enterManually')) > 10000;
   sheetData.evacuation = processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData, 'evacuation'));
   sheetData.checkpoints = [];
   for (let i = 0, posDataCB; (posDataCB = findPosdataByDescr(posData, 'cb' + i)) !== null; i++) {
@@ -237,13 +246,12 @@ module.exports.processScoreSheet = function(posData, config) {
   sheetData.victimsAlive = processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData, 'victimsAlive'));
   sheetData.victimsDead = processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData, 'victimsDead'));
   sheetData.time = processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData, 'time'));
-  sheetData.signTeam = processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData, 'signTeam'));
-  sheetData.signRef = processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData, 'signRef'));
+  sheetData.signTeam = processPosdataText(normalizedSheet, findPosdataByDescr(posData, 'signTeam'));
+  sheetData.signRef = processPosdataText(normalizedSheet, findPosdataByDescr(posData, 'signRef'));
   sheetData.tiles = processTileData(normalizedSheet, findPosdataByDescr(posData, 'field'));
 
-  console.log(util.inspect(sheetData, {showHidden: false, depth: null}));
+  //let normalizedSheetColored = normalizedSheet.cvtColor(cv.COLOR_GRAY2BGR);
+  //drawPosdataToSheet(normalizedSheetColored, findPosdataByDescr(posData, 'field'), 3);
 
-  let normalizedSheetColored = normalizedSheet.cvtColor(cv.COLOR_GRAY2BGR);
-  drawPosdataToSheet(normalizedSheetColored, findPosdataByDescr(posData, 'field'), 3);
-  cv.imwrite("helper/out.png", normalizedSheetColored)
+  return sheetData;
 };

@@ -48,7 +48,8 @@
     "socket.io": "^2.0.4",
     "socket.io-redis": "^5.2.0",
     "superagent": "^3.8.2",
-    "validator": "^9.4.0"
+    "validator": "^9.4.0",
+    "tmp": "0.0.33"
   },
   "main": "app.js",
   "devDependencies": {
