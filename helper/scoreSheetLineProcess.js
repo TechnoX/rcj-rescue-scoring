@@ -156,6 +156,19 @@ function processPosdataQR(mat, posdata) {
   return code;
 }
 
+module.exports.processPosdataQRFull = function(filename) {
+  let mat = cv.imread(filename).resizeToMax(1000);
+  let code = jsQR(
+    new Uint8ClampedArray(mat.cvtColor(cv.COLOR_GRAY2BGRA).getData()),
+    mat.cols,
+    mat.rows
+  );
+  if (code) {
+    code = code.data
+  }
+  return code;
+}
+
 function processTileData(sheetMat, posdata) {
   let tiles = posdata.children.slice(0);
 
