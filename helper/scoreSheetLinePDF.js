@@ -1,7 +1,5 @@
 const PDFDocument = require('pdfkit');
 const qr = require('qr-image');
-const util = require('util')
-const process = require('./scoreSheetLineProcess')
 
 /**
  * Defines some important numbers for the placement of different objects in the scoresheet.
@@ -481,9 +479,9 @@ module.exports.generateScoreSheet = function(res, rounds) {
     posDatas.push(drawRun(doc, globalConfig, rounds[i].round, rounds[i].field, rounds[i].team, rounds[i].startTime, rounds[i].map))
   }
 
+  doc.end();
+
+  //const util = require('util')
   //console.log(util.inspect(posDatas[0], {showHidden: false, depth: null}));
-
-  console.log(process.processScoreSheet(posDatas[0], 'helper/scoresheet_n.png'));
-
-  doc.end()
+  return posDatas;
 };
