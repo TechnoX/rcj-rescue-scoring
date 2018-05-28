@@ -502,7 +502,29 @@ publicRouter.get('/scoresheet', function (req, res, next) {
         msg: "Could not get runs"
       })
     } else if (dbRuns) {
-      scoreSheetLinePDF.generateScoreSheet(res, dbRuns)
+      let posData = scoreSheetLinePDF.generateScoreSheet(res, dbRuns);
+      for (let i = 0; i < dbRuns.length; i++) {
+        lineRun.findById(dbRuns[i]._id, (err, run) => {
+          if (err) {
+            logger.error(err)
+            res.status(400).send({
+              msg: "Could not get run",
+              err: err.message
+            })
+          } else {
+            run.scoreSheet.positionData = posData[i];
+            run.save((err) => {
+              if (err) {
+                logger.error(err)
+                res.status(400).send({
+                  msg: "Error saving positiondata of run in db",
+                  err: err.message
+                })
+              }
+            })
+          }
+        })
+      }
     }
   })
 })
