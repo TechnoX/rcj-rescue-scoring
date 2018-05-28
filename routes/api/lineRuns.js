@@ -1,5 +1,7 @@
 "use strict"
 const express = require('express')
+const multer = require('multer')
+const tmp = require('tmp')
 const publicRouter = express.Router()
 const privateRouter = express.Router()
 const adminRouter = express.Router()
@@ -13,6 +15,7 @@ const pathFinder = require('../../helper/pathFinder')
 const scoreCalculator = require('../../helper/scoreCalculator')
 const auth = require('../../helper/authLevels')
 const scoreSheetLinePDF = require('../../helper/scoreSheetLinePDF')
+const scoreSheetLineProcess = require('../../helper/scoreSheetLineProcess')
 const ACCESSLEVELS = require('../../models/user').ACCESSLEVELS
 
 var socketIo
@@ -456,13 +459,13 @@ privateRouter.put('/:runid', function (req, res, next) {
  *
  * @apiError (400) {String} msg The error message
  */
-publicRouter.get('/scoresheet', getScoringSheets)
-
-function getScoringSheets(req, res, next) {
+publicRouter.get('/scoresheet', function (req, res, next) {
   const competition = req.query.competition || req.params.competition
 
   if (competition == null || competition.constructor !== String) {
-    return;
+    res.status(400).send({
+      msg: "Err competition"
+    })
   }
 
   var query = lineRun.find({
@@ -502,8 +505,7 @@ function getScoringSheets(req, res, next) {
       scoreSheetLinePDF.generateScoreSheet(res, dbRuns)
     }
   })
-}
-module.exports.getScoringSheets = getScoringSheets
+})
 
 /**
  * @api {delete} /runs/line/:runid Delete run
@@ -585,6 +587,35 @@ adminRouter.post('/', function (req, res) {
   })
 })
 
+/**
+ * Upload scoring sheet (single (jpg/png) or bunch (pdf)
+ */
+publicRouter.post('/scoresheet/:competition', function (req, res) {
+  const competition = req.params.competition;
+
+  console.log("competition:", competition);
+
+  let storage = multer.diskStorage({
+    destination: function (req, file, callback) {
+      callback(null, "/tmp/")
+    },
+    filename: function (req, file, callback) {
+      callback(null, "scoringsheet_" + competition)
+    }
+  });
+
+  let upload = multer({
+    storage: storage
+  }).single('file');
+
+  upload(req, res, function (err) {
+    res.end('File is uploaded')
+  })
+
+  console.log(scoreSheetLineProcess.processPosdataQRFull("helper/scoresheet_n.png"));
+
+ // scoreSheetLineProcess.processScoreSheet(posDatas[0], 'helper/scoresheet_n.png')
+});
 
 publicRouter.all('*', function (req, res, next) {
   next()

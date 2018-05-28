@@ -10,6 +10,7 @@ append scripts
   script(src = '/components/angular-bootstrap-datetimepicker/src/js/datetimepicker.js')
   script(src = '/components/angular-bootstrap-datetimepicker/src/js/datetimepicker.templates.js')
   script(src='/javascripts/line_run_admin.js')
+  script(src='/components/ng-file-upload/ng-file-upload-all.min.js')
 
 append css
   link(rel='stylesheet' href='/components/angular-bootstrap-datetimepicker/src/css/datetimepicker.css')
@@ -94,6 +95,12 @@ block content
           button(ng-click="removeSelectedRun()" class='btn btn-danger' style="margin: 5px 5px 5px 5px;") {{"admin.lineRun.delS" | translate}}
           button(ng-click="go('/admin/'+ competitionId +'/line/runs/monitor')" class='btn btn-success' style="margin: 5px 5px 5px 5px; text-align:right;") {{"admin.lineRun.monitor" | translate}}
           button(ng-click="reset_kiosk()" class='btn btn-secondary' style="margin: 5px 5px 5px 5px; text-align:right;") Reset Kiosk
+          form(style="")
+            input(type='file', ngf-select='', ng-model='files', ngf-max-size='5MB', required='', ngf-accept="'image/*'", ngf-pattern="'image/*'",  ngf-multiple='true' capture="environment")
+            br
+            br
+            button.btn.btn-info(ng-click='uploadSheets(files)') Upload
+            button.btn.btn-warning(ng-click='files = null', ng-show='files') Cancel
       center
         .loader
           img(src="/images/loader2.gif")

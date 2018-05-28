@@ -184,16 +184,6 @@ publicRouter.get('/:competition/line/latestrun', function (req, res, next) {
     return lineRunsApi.getLatestLineRun(req, res, next)
 })
 
-publicRouter.get('/:competition/line/runs/scoresheet', function (req, res, next) {
-  const id = req.params.competition
-
-  if (!ObjectId.isValid(id)) {
-    return next()
-  }
-
-  return lineRunsApi.getScoringSheets(req, res, next)
-})
-
 publicRouter.get('/:competition/maze/runs', function (req, res, next) {
     var id = req.params.competition
 
