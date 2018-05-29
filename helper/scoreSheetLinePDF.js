@@ -465,6 +465,7 @@ function drawRun(doc, config, scoringRun) {
   nextItem(drawVictimInputField(doc, config, pos_x, pos_y, 9, "alive"), "victimsAlive");
   nextItem(drawVictimInputField(doc, config, pos_x, pos_y, 9, "dead"), "victimsDead");
   nextItem(drawTimeInputField(doc, config, pos_x, pos_y), "time");
+  nextItem(drawCheckbox(doc, pos_x, pos_y, config.checkboxSize, "Exit evacuation zone", DirsEnum.RIGHT, "black"), "exitBonus");
   nextItem(drawTextInputField(doc, config, pos_x, pos_y, "Team:", config.signature.width, config.signature.height), "signTeam");
   nextItem(drawTextInputField(doc, config, pos_x, pos_y, "Referee:", config.signature.width, config.signature.height), "signRef");
 
