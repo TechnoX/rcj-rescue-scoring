@@ -77,13 +77,13 @@ const lineRunSchema = new Schema({
     positionData: {type: Object, default: null},
     reviewed: {type: ObjectId, ref: 'User', default: null},
 
-    LoPImages: [{ data: Buffer, contentType: String }],
+    LoPImages: [{ data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}}],
     tileDataImage: { data: Buffer, contentType: String }, // Image representing the up to two arena levels
-    evacuationLevelImage: { data: Buffer, contentType: String },
-    evacuationBonusImage: { data: Buffer, contentType: String },
-    rescuedLiveVictimsImage: { data: Buffer, contentType: String },
-    rescuedDeadVictimsImage: { data: Buffer, contentType: String },
-    timeImage: { data: Buffer, contentType: String }
+    evacuationLevelImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
+    evacuationBonusImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
+    rescuedLiveVictimsImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
+    rescuedDeadVictimsImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
+    timeImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}}
   },
 })
 

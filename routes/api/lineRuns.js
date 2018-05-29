@@ -529,6 +529,81 @@ publicRouter.get('/scoresheet', function (req, res, next) {
   })
 })
 
+publicRouter.get('/scoresheetimg/:run/:img', function (req, res, next) {
+  var run_id = req.params.run;
+  var img_type = req.params.img;
+
+  if (!ObjectId.isValid(run_id)) {
+    return next()
+  }
+
+  lineRun.findById(ObjectId(run_id), (err, run) => {
+    if (err) {
+      logger.error(err);
+      res.status(400).send({
+        msg: "Could not get run",
+        err: err.message
+      });
+    } else {
+      const img_type_split = img_type.toString().split("_");
+      switch (img_type_split[0]) {
+        case "lop":
+          if (img_type_split.length < 2) {
+            res.status(400).send({
+              msg: "No lop number specified!",
+            });
+            return;
+          }
+          let number = parseInt(img_type_split[1], 10);
+          if (isNaN(number) || number >= run.scoreSheet.LoPImages.length) {
+            res.status(400).send({
+              msg: "Invalid number",
+            });
+            return;
+          }
+          res.contentType(run.scoreSheet.LoPImages[number].contentType);
+          res.send(run.scoreSheet.LoPImages[number].data);
+          break;
+
+        case "tiles":
+          res.contentType(run.scoreSheet.tileDataImage.contentType);
+          res.send(run.scoreSheet.tileDataImage.data);
+          break;
+
+        case "evacuationLevel":
+          res.contentType(run.scoreSheet.evacuationLevelImage.contentType);
+          res.send(run.scoreSheet.evacuationLevelImage.data);
+          break;
+
+        case "evacuationBonus":
+          res.contentType(run.scoreSheet.evacuationBonusImage.contentType);
+          res.send(run.scoreSheet.evacuationBonusImage.data);
+          break;
+
+        case "rescuedLive":
+          res.contentType(run.scoreSheet.rescuedLiveVictimsImage.contentType);
+          res.send(run.scoreSheet.rescuedLiveVictimsImage.data);
+          break;
+
+        case "rescuedDead":
+          res.contentType(run.scoreSheet.rescuedDeadVictimsImage.contentType);
+          res.send(run.scoreSheet.rescuedDeadVictimsImage.data);
+          break;
+
+        case "time":
+          res.contentType(run.scoreSheet.timeImage.contentType);
+          res.send(run.scoreSheet.timeImage.data);
+          break;
+
+        default:
+          res.status(400).send({
+            msg: "err"
+          })
+      }
+    }
+  });
+})
+
 /**
  * @api {delete} /runs/line/:runid Delete run
  * @apiName DeleteRun
@@ -672,14 +747,30 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
         const sheetData = scoreSheetLineProcess.processScoreSheet(run.scoreSheet.positionData, req.file.path);
 
         run.evacuationLevel = sheetData.evacuation.indexes[0] + 1;
+        run.scoreSheet.evacuationLevelImage.data = fs.readFileSync(sheetData.evacuation.img.name);
+        run.scoreSheet.evacuationLevelImage.contentType = "image/jpg";
+
         for (let i = 0; i < sheetData.checkpoints.length && i < run.LoPs.length; i++) {
           run.LoPs.set(i, sheetData.checkpoints[i].indexes[0]);
+          run.scoreSheet.LoPImages.set(i, {
+            data: fs.readFileSync(sheetData.checkpoints[i].img.name),
+            contentType: "image/jpg"
+          })
         }
 
         run.rescuedLiveVictims = sheetData.victimsAlive.indexes[0];
+        run.scoreSheet.rescuedLiveVictimsImage.data = fs.readFileSync(sheetData.victimsAlive.img.name);
+        run.scoreSheet.rescuedLiveVictimsImage.contentType = "image/jpg";
+
         run.rescuedDeadVictims = sheetData.victimsDead.indexes[0];
+        run.scoreSheet.rescuedDeadVictimsImage.data = fs.readFileSync(sheetData.victimsDead.img.name);
+        run.scoreSheet.rescuedDeadVictimsImage.contentType = "image/jpg";
+
         run.time.minutes = sheetData.time.indexes[0];
         run.time.seconds = sheetData.time.indexes[1] * 10 + sheetData.time.indexes[2];
+        run.scoreSheet.timeImage.data = fs.readFileSync(sheetData.time.img.name);
+        run.scoreSheet.timeImage.contentType = "image/jpg";
+
         run.exitBonus = sheetData.exitBonus;
 
         for (let i = 0; i < sheetData.tiles.tilesData.length; i++) {
@@ -693,6 +784,8 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
             }
           }
         }
+        run.scoreSheet.tileDataImage.data = fs.readFileSync(sheetData.tiles.img.name);
+        run.scoreSheet.tileDataImage.contentType = "image/jpg";
 
         run.score = scoreCalculator.calculateLineScore(run);
         run.started = true;
