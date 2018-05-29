@@ -157,7 +157,7 @@ function processPosdataQR(mat, posdata) {
 }
 
 module.exports.processPosdataQRFull = function(filename) {
-  let mat = cv.imread(filename).resizeToMax(1000);
+  let mat = cv.imread(filename).bgrToGray().resizeToMax(1000);
   let code = jsQR(
     new Uint8ClampedArray(mat.cvtColor(cv.COLOR_GRAY2BGRA).getData()),
     mat.cols,
@@ -184,7 +184,7 @@ function processTileData(sheetMat, posdata) {
     procTiles.push([]);
     for (let j = 0; j < tiles[i].children.length; j++) {
       procTiles[i].push([]);
-      procTiles[i][j].id = tiles[i].children[j].id;
+      procTiles[i][j].meta = tiles[i].children[j].meta;
       procTiles[i][j].checked = tiles[i].children[j].cbVal > (max / 3);
     }
   }
@@ -194,7 +194,7 @@ function processTileData(sheetMat, posdata) {
 
   return {
     img: tmpFile,
-    tiles: procTiles
+    tilesData: procTiles
   };
 }
 
