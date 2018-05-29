@@ -617,12 +617,23 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
 
   console.log("competition:", competition);
 
+  let pathname = "tmp/";
+  fs.mkdir(pathname, function (err) {
+    if (err && err.code !== 'EEXIST') {
+      console.log(err);
+      return res.status(400).send({
+        msg: "Error creating tmp dir",
+        err: err.message
+      })
+    }
+  });
+
   let storage = multer.diskStorage({
     destination: function (req, file, callback) {
-      callback(null, "/tmp/")
+      callback(null, pathname)
     },
     filename: function (req, file, callback) {
-      callback(null, "scoringsheet_" + competition)
+      callback(null, "scoringsheet_" + Math.random().toString(36).substr(2, 10) + file.originalname)
     }
   });
 
@@ -631,10 +642,80 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
   }).single('file');
 
   upload(req, res, function (err) {
-    res.end('File is uploaded')
-  })
+    if (err) {
+      return res.status(400).send({
+        msg: "Error uploading file",
+        err: err.message
+      })
+    }
+    let sheetRunID = scoreSheetLineProcess.processPosdataQRFull(req.file.path);
+    if (sheetRunID == null) {
+      return res.status(400).send({
+        msg: "Error processing file",
+        err: err.message
+      })
+    }
 
-  console.log(scoreSheetLineProcess.processPosdataQRFull("helper/scoresheet_n.png"));
+    lineRun.findById(ObjectId(sheetRunID)).populate({
+      path    : 'map',
+      populate: {
+        path: 'tiles.tileType'
+      }
+    }).exec(function(err, run) {
+      if (err) {
+        logger.error(err)
+        res.status(400).send({
+          msg: "Could not get run",
+          err: err.message
+        })
+      } else {
+        const sheetData = scoreSheetLineProcess.processScoreSheet(run.scoreSheet.positionData, req.file.path);
+
+        run.evacuationLevel = sheetData.evacuation.indexes[0] + 1;
+        for (let i = 0; i < sheetData.checkpoints.length && i < run.LoPs.length; i++) {
+          run.LoPs.set(i, sheetData.checkpoints[i].indexes[0]);
+        }
+
+        run.rescuedLiveVictims = sheetData.victimsAlive.indexes[0];
+        run.rescuedDeadVictims = sheetData.victimsDead.indexes[0];
+        run.time.minutes = sheetData.time.indexes[0];
+        run.time.seconds = sheetData.time.indexes[1] * 10 + sheetData.time.indexes[2];
+        run.exitBonus = sheetData.exitBonus;
+
+        for (let i = 0; i < sheetData.tiles.tilesData.length; i++) {
+          for (let j = 0; j < sheetData.tiles.tilesData[i].length; j++) {
+            let tileData = sheetData.tiles.tilesData[i][j];
+            if (tileData.meta.id === 'C') {
+              run.tiles[tileData.meta.tileIndex].isDropTile = tileData.checked;
+              run.tiles[tileData.meta.tileIndex].scored = tileData.checked;
+            } else {
+              run.tiles[tileData.meta.tileIndex].scored = tileData.checked;
+            }
+          }
+        }
+
+        run.score = scoreCalculator.calculateLineScore(run);
+        run.started = true;
+        run.status = 4;
+
+        run.save((err) => {
+          if (err) {
+            logger.error(err);
+            res.status(400).send({
+              msg: "Error saving positiondata of run in db",
+              err: err.message
+            })
+          }
+        });
+
+        fs.unlink(req.file.path, (err) => {
+          if (err) throw err;
+        });
+      }
+    });
+
+    res.end('File is uploaded and processed');
+  })
 
  // scoreSheetLineProcess.processScoreSheet(posDatas[0], 'helper/scoresheet_n.png')
 });
