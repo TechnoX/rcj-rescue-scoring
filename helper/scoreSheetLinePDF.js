@@ -133,21 +133,21 @@ function tileIsDroptile(tile) {
     && tile.items.obstacles === 0;
 }
 
-function drawMetadata(doc, pos_x, pos_y, config, round, field, team, time) {
+function drawMetadata(doc, pos_x, pos_y, config, run) {
   const posData = {type: InputTypeEnum.QR, x: pos_x, y: pos_y, w: config.data.metadata.sizeQR, h: config.data.metadata.sizeQR, children: []};
 
-  doc.image(qr.imageSync(round._id.toString(), {margin: 0}), pos_x, pos_y, {width: config.data.metadata.sizeQR});
+  doc.image(qr.imageSync(run._id.toString(), {margin: 0}), pos_x, pos_y, {width: config.data.metadata.sizeQR});
   pos_x += config.data.metadata.sizeQR + config.data.inputs.marginsVertical;
 
   doc.fontSize(config.data.metadata.text.fontSize);
   doc.fillColor("black");
-  doc.text(config.data.metadata.text.round + " " + round.name, pos_x, pos_y);
+  doc.text(config.data.metadata.text.round + " " + run.round.name, pos_x, pos_y);
   pos_y += config.data.metadata.text.fontSize + 1;
-  doc.text(config.data.metadata.text.field + " " + field.name, pos_x, pos_y);
+  doc.text(config.data.metadata.text.field + " " + run.field.name, pos_x, pos_y);
   pos_y += config.data.metadata.text.fontSize + 1;
-  doc.text(config.data.metadata.text.team + " " + team.name, pos_x, pos_y);
+  doc.text(config.data.metadata.text.team + " " + run.team.name, pos_x, pos_y);
   pos_y += config.data.metadata.text.fontSize + 1;
-  let dateTime = new Date(time);
+  let dateTime = new Date(run.startTime);
   doc.text(config.data.metadata.text.time + " " + dateTime.getHours() + ":" + dateTime.getMinutes(), pos_x, pos_y);
   pos_y += config.data.metadata.text.fontSize + 1;
   return {x: pos_x, y: pos_y, posData: posData}
@@ -431,7 +431,7 @@ function drawPositionMarkers(doc, config) {
   };
 }
 
-function drawRun(doc, config, round, field, team, time, map) {
+function drawRun(doc, config, scoringRun) {
   let posDatas = [];
   let pos_y = config.margin.top;
   let pos_x = config.margin.left;
@@ -446,15 +446,15 @@ function drawRun(doc, config, round, field, team, time, map) {
   }
 
   savePos(drawPositionMarkers(doc, config), "posMarkers");
-  let pf = drawFields(doc, pos_x, pos_y, config, map);
+  let pf = drawFields(doc, pos_x, pos_y, config, scoringRun.map);
   savePos(pf, "field");
   pos_x += config.data.marginLeft;
-  nextItem(drawMetadata(doc, pos_x, pos_y, config, round, field, team, time), "meta");
+  nextItem(drawMetadata(doc, pos_x, pos_y, config, scoringRun), "meta");
   nextItem(drawCheckbox(doc, pos_x, pos_y, config.checkboxSize, "Enter scoring sheet manually", DirsEnum.RIGHT, "black"), "enterManually");
   nextItem(drawEvacuationInputField(doc, config, pos_x, pos_y), "evacuation");
 
-  if (map.numberOfDropTiles > 0) {
-    for (let i = 0; i < map.numberOfDropTiles; i++) {
+  if (scoringRun.map.numberOfDropTiles > 0) {
+    for (let i = 0; i < scoringRun.map.numberOfDropTiles; i++) {
       nextItem(drawLOPInputField(doc, config, pos_x, pos_y, (i === 0 ? "Start" : ("CP " + i)) + " to CP " + (i + 1) + ":"), "cb" + i);
     }
   }
@@ -476,7 +476,7 @@ module.exports.generateScoreSheet = function(res, rounds) {
   let posDatas = [];
   for (let i = 0; i < rounds.length; i++) {
     doc.addPage({margin: 10});
-    posDatas.push(drawRun(doc, globalConfig, rounds[i].round, rounds[i].field, rounds[i].team, rounds[i].startTime, rounds[i].map))
+    posDatas.push(drawRun(doc, globalConfig, rounds[i]))
   }
 
   doc.end();
