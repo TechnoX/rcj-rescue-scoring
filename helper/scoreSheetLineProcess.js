@@ -1,6 +1,5 @@
 const cv = require('opencv4nodejs');
 const jsQR = require('jsqr');
-const tmp = require('tmp');
 
 const InputTypeEnum = Object.freeze({POSMARK: "pos", CHECKBOX: "cb", TEXT: "txt", MATRIXROW: "mrow", MATRIX: "m", MATRIXTEXT: "mt", QR: "qr"});
 
@@ -102,10 +101,13 @@ function processPosdataText(mat, posdata) {
     return null;
   }
 
-  let tmpFile = tmp.fileSync({postfix: ".jpg"});
-  cv.imwrite(tmpFile.name, mat.getRegion(new cv.Rect(posdata.x, posdata.y, posdata.w, posdata.h)));
-
-  return tmpFile;
+  return {
+    data: cv.imencode(
+      ".jpg",
+      mat.getRegion(new cv.Rect(posdata.x, posdata.y, posdata.w, posdata.h))
+    ),
+    contentType: "image/jpg"
+  };
 }
 
 /**
@@ -120,11 +122,14 @@ function processPosdataMatrixText(mat, posdata) {
     return null;
   }
 
-  let tmpFile = tmp.fileSync({postfix: ".jpg"});
-  cv.imwrite(tmpFile.name, mat.getRegion(new cv.Rect(posdata.x, posdata.y, posdata.w, posdata.h)));
-
   return {
-    img: tmpFile,
+    img: {
+      data: cv.imencode(
+        ".jpg",
+        mat.getRegion(new cv.Rect(posdata.x, posdata.y, posdata.w, posdata.h))
+      ),
+      contentType: "image/jpg"
+    },
     indexes: processPosdataMatrix(mat, posdata.children[1].posData)
   };
 }
@@ -189,11 +194,14 @@ function processTileData(sheetMat, posdata) {
     }
   }
 
-  let tmpFile = tmp.fileSync({postfix: ".jpg"});
-  cv.imwrite(tmpFile.name, sheetMat.getRegion(new cv.Rect(posdata.x, posdata.y, posdata.w, posdata.h)));
-
   return {
-    img: tmpFile,
+    img: {
+      data: cv.imencode(
+        ".jpg",
+        sheetMat.getRegion(new cv.Rect(posdata.x, posdata.y, posdata.w, posdata.h))
+      ),
+      contentType: "image/jpg"
+    },
     tilesData: procTiles
   };
 }

@@ -1,7 +1,6 @@
 "use strict"
 const express = require('express')
 const multer = require('multer')
-const tmp = require('tmp')
 const publicRouter = express.Router()
 const privateRouter = express.Router()
 const adminRouter = express.Router()
@@ -747,29 +746,22 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
         const sheetData = scoreSheetLineProcess.processScoreSheet(run.scoreSheet.positionData, req.file.path);
 
         run.evacuationLevel = sheetData.evacuation.indexes[0] + 1;
-        run.scoreSheet.evacuationLevelImage.data = fs.readFileSync(sheetData.evacuation.img.name);
-        run.scoreSheet.evacuationLevelImage.contentType = "image/jpg";
+        run.scoreSheet.evacuationLevelImage = sheetData.evacuation.img;
 
         for (let i = 0; i < sheetData.checkpoints.length && i < run.LoPs.length; i++) {
           run.LoPs.set(i, sheetData.checkpoints[i].indexes[0]);
-          run.scoreSheet.LoPImages.set(i, {
-            data: fs.readFileSync(sheetData.checkpoints[i].img.name),
-            contentType: "image/jpg"
-          })
+          run.scoreSheet.LoPImages.set(i, sheetData.checkpoints[i].img)
         }
 
         run.rescuedLiveVictims = sheetData.victimsAlive.indexes[0];
-        run.scoreSheet.rescuedLiveVictimsImage.data = fs.readFileSync(sheetData.victimsAlive.img.name);
-        run.scoreSheet.rescuedLiveVictimsImage.contentType = "image/jpg";
+        run.scoreSheet.rescuedLiveVictimsImage = sheetData.victimsAlive.img;
 
         run.rescuedDeadVictims = sheetData.victimsDead.indexes[0];
-        run.scoreSheet.rescuedDeadVictimsImage.data = fs.readFileSync(sheetData.victimsDead.img.name);
-        run.scoreSheet.rescuedDeadVictimsImage.contentType = "image/jpg";
+        run.scoreSheet.rescuedDeadVictimsImage = sheetData.victimsDead.img;
 
         run.time.minutes = sheetData.time.indexes[0];
         run.time.seconds = sheetData.time.indexes[1] * 10 + sheetData.time.indexes[2];
-        run.scoreSheet.timeImage.data = fs.readFileSync(sheetData.time.img.name);
-        run.scoreSheet.timeImage.contentType = "image/jpg";
+        run.scoreSheet.timeImage = sheetData.time.img;
 
         run.exitBonus = sheetData.exitBonus;
 
@@ -784,8 +776,7 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
             }
           }
         }
-        run.scoreSheet.tileDataImage.data = fs.readFileSync(sheetData.tiles.img.name);
-        run.scoreSheet.tileDataImage.contentType = "image/jpg";
+        run.scoreSheet.tileDataImage = sheetData.tiles.img;
 
         run.score = scoreCalculator.calculateLineScore(run);
         run.started = true;
