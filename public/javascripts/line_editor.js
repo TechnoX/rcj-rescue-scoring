@@ -154,7 +154,9 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
             alert(response.data.msg);
         });
     }
-    $scope.'ngTouch',Map = function () {
+    
+    
+    $scope.saveMap = function () {
         if ($scope.startNotSet()) {
             alert("You must define a starting tile by right-clicking a tile");
             return;
