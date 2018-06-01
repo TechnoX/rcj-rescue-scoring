@@ -53,13 +53,17 @@
                   <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[3].levelUp)" ng-show="nineTile[3].levelUp" style="padding-top:4px; color:#3498db; opacity:0.4;"></i>
                   <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[3].levelDown)" ng-show="nineTile[3].levelDown" style="padding-top:4px; color:#ff8095; opacity:0.4;"></i>
                   <div ng-if="next.left">
-                      <div ng-show="stiles[next.left].scored">
-                          <img src="/images/next-robot-done.png" style="position:absolute;left: 0px; top: 0px; " width="100%" height="auto" class="rot270">
-                          <i class="fa fa-check fa-fw fa-3x" style="padding-top:4px; color:#27ae60; opacity:0.9;position:absolute;bottom:0px;left:0px;"></i>
+                      <div ng-show="dirStatus(stiles[next.left]) == 'done'">
+                          <img src="/images/next-robot-done.png" style="position:absolute;left: 0px; top: 0px; " width="100%" height="auto">
+                          <i class="fas fa-check fa-fw fa-3x" style="padding-top:4px; color:#27ae60; opacity:0.9;position:absolute;top:0px;left:0px;"></i>
                       </div>
-                      <div ng-show="!stiles[next.left].scored">
-                          <img src="/images/next-robot-undone.png" style="position:absolute;left: 0px; top: 0px;opacity:0.5;" width="100%" height="auto" class="rot270">
-                          <i class="fa fa-times fa-fw fa-3x" style="padding-top:4px; color:#e74c3c; opacity:0.9;position:absolute;bottom:0px;left:0px;"></i>
+                      <div ng-show="dirStatus(stiles[next.left]) == 'halfdone'">
+                          <img src="/images/next-robot-done.png" style="position:absolute;left: 0px; top: 0px; " width="100%" height="auto">
+                          <i class="fas fa-play fa-fw fa-rotate-270 fa-3x" style="padding-top:4px; color:#f4d03f; opacity:0.9;position:absolute;top:0px;left:0px;"></i>
+                      </div>
+                      <div ng-show="dirStatus(stiles[next.left]) == 'undone'">
+                          <img src="/images/next-robot-undone.png" style="position:absolute;left: 0px; top: 0px;opacity:0.5;" width="100%" height="auto">
+                          <i class="fas fa-times fa-fw fa-3x" style="padding-top:4px; color:#e74c3c; opacity:0.9;position:absolute;top:0px;left:0px;"></i>
                       </div>
                   </div>
               </td>
@@ -79,13 +83,17 @@
                   <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[5].levelUp)" ng-show="nineTile[5].levelUp" style="padding-top:4px; color:#3498db; opacity:0.4;"></i>
                   <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[5].levelDown)" ng-show="nineTile[5].levelDown" style="padding-top:4px; color:#ff8095; opacity:0.4;"></i>
                   <div ng-if="next.right">
-                      <div ng-show="stiles[next.right].scored">
-                          <img src="/images/next-robot-done.png" style="position:absolute;left: 0px; top: 0px; " width="100%" height="auto" class="rot90">
-                          <i class="fa fa-check fa-fw fa-3x" style="padding-top:4px; color:#27ae60; opacity:0.9;position:absolute;top:0px;right:0px;"></i>
+                      <div ng-show="dirStatus(stiles[next.right]) == 'done'">
+                          <img src="/images/next-robot-done.png" style="position:absolute;left: 0px; top: 0px; " width="100%" height="auto">
+                          <i class="fas fa-check fa-fw fa-3x" style="padding-top:4px; color:#27ae60; opacity:0.9;position:absolute;top:0px;left:0px;"></i>
                       </div>
-                      <div ng-show="!stiles[next.right].scored">
-                          <img src="/images/next-robot-undone.png" style="position:absolute;left: 0px; top: 0px;opacity:0.5;" width="100%" height="auto" class="rot90">
-                          <i class="fa fa-times fa-fw fa-3x" style="padding-top:4px; color:#e74c3c; opacity:0.9;position:absolute;top:0px;right:0px;"></i>
+                      <div ng-show="dirStatus(stiles[next.right]) == 'halfdone'">
+                          <img src="/images/next-robot-done.png" style="position:absolute;left: 0px; top: 0px; " width="100%" height="auto">
+                          <i class="fas fa-play fa-fw fa-rotate-270 fa-3x" style="padding-top:4px; color:#f4d03f; opacity:0.9;position:absolute;top:0px;left:0px;"></i>
+                      </div>
+                      <div ng-show="dirStatus(stiles[next.right]) == 'undone'">
+                          <img src="/images/next-robot-undone.png" style="position:absolute;left: 0px; top: 0px;opacity:0.5;" width="100%" height="auto">
+                          <i class="fas fa-times fa-fw fa-3x" style="padding-top:4px; color:#e74c3c; opacity:0.9;position:absolute;top:0px;left:0px;"></i>
                       </div>
                   </div>
               </td>
@@ -107,13 +115,17 @@
                   <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[7].levelUp)" ng-show="nineTile[7].levelUp" style="padding-top:4px; color:#3498db; opacity:0.4;"></i>
                   <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[7].levelDown)" ng-show="nineTile[7].levelDown" style="padding-top:4px; color:#ff8095; opacity:0.4;"></i>
                   <div ng-if="next.bottom">
-                      <div ng-show="stiles[next.bottom].scored">
-                          <img src="/images/next-robot-done.png" style="position:absolute;left: 0px; top: 0px; " width="100%" height="auto" class="rot180">
-                          <i class="fa fa-check fa-fw fa-3x" style="padding-top:4px; color:#27ae60; opacity:0.9;position:absolute;bottom:0px;right:0px;"></i>
+                      <div ng-show="dirStatus(stiles[next.bottom]) == 'done'">
+                          <img src="/images/next-robot-done.png" style="position:absolute;left: 0px; top: 0px; " width="100%" height="auto">
+                          <i class="fas fa-check fa-fw fa-3x" style="padding-top:4px; color:#27ae60; opacity:0.9;position:absolute;top:0px;left:0px;"></i>
                       </div>
-                      <div ng-show="!stiles[next.bottom].scored">
-                          <img src="/images/next-robot-undone.png" style="position:absolute;left: 0px; top: 0px;opacity:0.5;" width="100%" height="auto" class="rot180">
-                          <i class="fa fa-times fa-fw fa-3x" style="padding-top:4px; color:#e74c3c; opacity:0.9;position:absolute;bottom:0px;right:0px;"></i>
+                      <div ng-show="dirStatus(stiles[next.bottom]) == 'halfdone'">
+                          <img src="/images/next-robot-done.png" style="position:absolute;left: 0px; top: 0px; " width="100%" height="auto">
+                          <i class="fas fa-play fa-fw fa-rotate-270 fa-3x" style="padding-top:4px; color:#f4d03f; opacity:0.9;position:absolute;top:0px;left:0px;"></i>
+                      </div>
+                      <div ng-show="dirStatus(stiles[next.bottom]) == 'undone'">
+                          <img src="/images/next-robot-undone.png" style="position:absolute;left: 0px; top: 0px;opacity:0.5;" width="100%" height="auto">
+                          <i class="fas fa-times fa-fw fa-3x" style="padding-top:4px; color:#e74c3c; opacity:0.9;position:absolute;top:0px;left:0px;"></i>
                       </div>
                   </div>
               </td>
