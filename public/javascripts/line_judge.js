@@ -93,6 +93,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     const http_config = {
         timeout: 1000
     };
+    
+    var tileReset = true;
 
     function upload_run(data) {
         let tmp = {
@@ -184,6 +186,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.seconds = response.data.time.seconds;
             $scope.time = ($scope.minutes * 60 + $scope.seconds) * 1000;
             prevTime = $scope.time;
+            
+            var started = response.data.started;
 
             $scope.victim_list = response.data.rescueOrder;
 
@@ -202,7 +206,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             // Get the map
             $http.get("/api/maps/line/" + response.data.map +
                 "?populate=true").then(function (response) {
-
+                console.log(response);
                 $scope.height = response.data.height;
 
                 $scope.width = response.data.width;
@@ -212,20 +216,93 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.startTile = response.data.startTile;
                 $scope.numberOfDropTiles = response.data.numberOfDropTiles;
                 $scope.mtiles = {};
-
+                
                 // Get max victim count
                 $scope.maxLiveVictims = response.data.victims.live;
                 $scope.maxDeadVictims = response.data.victims.dead;
 
                 var flag = false;
+                var sItem = {
+                    item: "",
+                    scored: false
+                };
                 var ntile = {
-                    scored: false,
+                    scoredItems:[],
                     isDropTile: false
                 }
-                while ($scope.stiles.length < response.data.indexCount) {
-                    $scope.stiles.push(ntile);
-                    flag = true;
+                
+                if(!started && tileReset){
+                    $scope.stiles = [];
+                    tileReset = false;
                 }
+                if($scope.stiles.length < response.data.indexCount){
+                    while ($scope.stiles.length < response.data.indexCount) {
+                        $scope.stiles.push({
+                            scoredItems:[],
+                            isDropTile: false
+                        });
+                        flag = true;
+                    }
+                    console.log($scope.stiles);
+                    for(let i=0,t;t=response.data.tiles[i];i++){
+                        for(let j=0;j<t.index.length;j++){
+                            //console.log(t.items.obstacles);
+                            for(let k=0;k<t.items.obstacles;k++){
+                                let addSItem = {
+                                    item: "obstacle",
+                                    scored: false
+                                };
+                                $scope.stiles[t.index[j]].scoredItems.push(addSItem);
+                            }
+                            
+                            for(let k=0;k<t.items.speedbumps;k++){
+                                let addSItem = {
+                                    item: "speedbump",
+                                    scored: false
+                                };
+                                $scope.stiles[t.index[j]].scoredItems.push(addSItem);
+                            }
+                            
+                            if(t.items.rampPoints){
+                                let addSItem = {
+                                    item: "ramp",
+                                    scored: false
+                                };
+                                $scope.stiles[t.index[j]].scoredItems.push(addSItem);
+                            }
+                            
+                            for(let k=0;k<t.tileType.gaps;k++){
+                                let addSItem = {
+                                    item: "gap",
+                                    scored: false
+                                };
+                                $scope.stiles[t.index[j]].scoredItems.push(addSItem);
+                            }
+                            
+                            for(let k=0;k<t.tileType.intersections;k++){
+                                let addSItem = {
+                                    item: "intersection",
+                                    scored: false
+                                };
+                                $scope.stiles[t.index[j]].scoredItems.push(addSItem);
+                            }
+                        }
+                        
+                    }
+                    
+                    for(let i=0; i < $scope.stiles.length;i++){
+                        if($scope.stiles[i].scoredItems.length == 0){
+                            let addSItem = {
+                                        item: "checkpoint",
+                                        scored: false
+                            };
+                            $scope.stiles[i].scoredItems.push(addSItem);
+                        }
+                    }
+                }
+                
+                console.log($scope.stiles);
+                
                 if (flag) {
                     $scope.sync++;
                     $http.put("/api/runs/line/" + runId, {
@@ -605,6 +682,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             mtile.items.speedbumps > 0 ||
             mtile.tileType.gaps > 0 ||
             mtile.tileType.intersections > 0) * mtile.index.length;
+        
 
         // If the run is not started, we can place drop pucks on this tile
         if (!$scope.startedScoring) {
@@ -628,7 +706,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     // If this tile already contains a droptile, we should remove it
                     if (stile[i].isDropTile) {
                         stile[i].isDropTile = false;
-                        stile[i].scored = false;
+                        stile[i].scoredItems[0].scored = false;
                         $scope.actualUsedDropTiles--;
                         marker[mtile.index[i]] = false;
                         removed = true;
@@ -673,14 +751,98 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.open(x, y, z);
                 // Save data from modal when closing it
             } else if (total == 1) {
+                console.log(stile)
+                if(stile[0].scoredItems.length == 1){
+                    stile[0].scoredItems[0].scored = !stile[0].scoredItems[0].scored;
+                    httpdata.tiles[mtile.index[0]] = stile[0];
+                    $scope.stiles[mtile.index[0]] = stile[0];
+                    
+                    upload_run(httpdata);
+                }else{
+                    var selectableHtml = "";
+                    function itemPreCheck(item){
+                        if(item.scored) return "checked";
+                        return "";
+                    }
+                    for(let i=0; i<stile[0].scoredItems.length;i++){
+                        selectableHtml += '<input type="checkbox" id="element'+ i +'" ' + itemPreCheck(stile[0].scoredItems[i]) + '><label class="checkbox" for="element'+ i +'"> '+  stile[0].scoredItems[i].item +'</label><br>'
+                    }
+                    async function getFormValues () {
+                        const {value: formValues} = await swal({
+                          title: 'Multiple inputs',
+                          html:selectableHtml
+                            ,
+                          focusConfirm: false,
+                          preConfirm: () => {
+                            switch(stile[0].scoredItems.length){
+                                case 2: return [
+                                          document.getElementById('element0').checked,
+                                          document.getElementById('element1').checked
+                                        ]
+                                case 3: return [
+                                          document.getElementById('element0').checked,
+                                          document.getElementById('element1').checked,
+                                          document.getElementById('element2').checked
+                                        ]
+                                case 4: return [
+                                          document.getElementById('element0').checked,
+                                          document.getElementById('element1').checked,
+                                          document.getElementById('element2').checked,
+                                          document.getElementById('element3').checked
+                                        ]
+                                case 5: return [
+                                          document.getElementById('element0').checked,
+                                          document.getElementById('element1').checked,
+                                          document.getElementById('element2').checked,
+                                          document.getElementById('element3').checked,
+                                          document.getElementById('element4').checked
+                                        ]
+                                case 6: return [
+                                          document.getElementById('element0').checked,
+                                          document.getElementById('element1').checked,
+                                          document.getElementById('element2').checked,
+                                          document.getElementById('element3').checked,
+                                          document.getElementById('element4').checked,
+                                          document.getElementById('element5').checked
+                                        ]
+                                case 7: return [
+                                          document.getElementById('element0').checked,
+                                          document.getElementById('element1').checked,
+                                          document.getElementById('element2').checked,
+                                          document.getElementById('element3').checked,
+                                          document.getElementById('element4').checked,
+                                          document.getElementById('element5').checked,
+                                          document.getElementById('element6').checked
+                                        ]
+                                case 8:  return [
+                                          document.getElementById('element0').checked,
+                                          document.getElementById('element1').checked,
+                                          document.getElementById('element2').checked,
+                                          document.getElementById('element3').checked,
+                                          document.getElementById('element4').checked,
+                                          document.getElementById('element5').checked,
+                                          document.getElementById('element6').checked,
+                                          document.getElementById('element7').checked
+                                        ]
+                            }
+                          }
+                        })
 
-                for (var i = 0; i < stile.length; i++) {
-                    stile[i].scored = !stile[i].scored;
-                    httpdata.tiles[mtile.index[i]] = stile[i];
+                        if (formValues) {
+                          for(let i=0;i<formValues.length;i++){
+                              $scope.stiles[mtile.index[0]].scoredItems[i].scored = formValues[i];
+                          }
+                            httpdata.tiles[mtile.index[0]] = $scope.stiles[mtile.index[0]];
+                            console.log(httpdata);
+                            $scope.$apply();
+                            upload_run(httpdata);
+                        }
+                    }
+
+                    getFormValues();
+                    
                 }
-                console.log(httpdata);
-
-                upload_run(httpdata);
+                
 
             }
         }
@@ -1048,11 +1210,39 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, $timeou
         //console.log($scope.next);
 
     }
+    
+    $scope.dirStatus = function (tile) {
+        if(tile.scoredItems.length == 0) return;
+
+        // Number of successfully passed times
+        var successfully = 0;
+        // Number of times it is possible to pass this tile
+        var possible = tile.scoredItems.length;
+
+        for(let j = 0; j < tile.scoredItems.length;j++){
+            if(tile.scoredItems[j].scored){
+                successfully++;
+            }
+        }
+
+        if (possible > 0 && successfully == possible)
+            return "done";
+        else if (successfully > 0)
+            return "halfdone";
+        else if (possible > 0)
+            return "undone";
+        else
+            return "";
+    }
 
     $scope.toggle_scored = function (num) {
+        swal("test");
         playSound(sClick);
         try {
-            $scope.stiles[num].scored = !$scope.stiles[num].scored;
+            if($scope.stiles[num].scoredItems.length == 1){
+                $scope.stiles[num].scoredItems[0].scored = !$scope.stiles[num].scoredItems[0].scored;
+            }
+            //$scope.stiles[num].scored = !$scope.stiles[num].scored;
             $timeout($uibModalInstance.close, 300);
         } catch (e) {
 
@@ -1224,11 +1414,17 @@ app.directive('tile', function () {
                 // Number of successfully passed times
                 var successfully = 0;
                 // Number of times it is possible to pass this tile
-                var possible = tile.index.length;
+                var possible = 0;
+                
+                for(let i=0;i<tile.index.length;i++){
+                    possible += $scope.$parent.stiles[tile.index[i]].scoredItems.length;
+                }
 
                 for (var i = 0; i < tile.index.length; i++) {
-                    if ($scope.$parent.stiles[tile.index[i]].scored) {
-                        successfully++;
+                    for(let j = 0; j < $scope.$parent.stiles[tile.index[i]].scoredItems.length;j++){
+                        if($scope.$parent.stiles[tile.index[i]].scoredItems[j].scored){
+                            successfully++;
+                        }
                     }
                 }
 

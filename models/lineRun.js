@@ -30,7 +30,13 @@ const lineRunSchema = new Schema({
   
   tiles             : [{
     isDropTile: {type: Boolean, default: false},
-    scored    : {type: Boolean, default: false}
+    scoredItems: [
+        {
+            item: {type: String, default: ""},
+            scored: {type: Boolean, default: false}
+        }
+    ]
+    //scored    : {type: Boolean, default: false}
     /*scoredItems: {
      obstacles   : {type: Boolean, default: false},
      speedbumps  : {type: Boolean, default: false},

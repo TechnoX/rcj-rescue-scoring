@@ -357,6 +357,7 @@ privateRouter.put('/:runid', function (req, res, next) {
 
     const run = req.body
     
+    
     var statusUpdate = false;
 
     // Exclude fields that are not allowed to be publicly changed
@@ -380,6 +381,31 @@ privateRouter.put('/:runid', function (req, res, next) {
             }
         })
         .exec(function (err, dbRun) {
+        
+            // Recursively updates properties in "dbObj" from "obj"
+            const copyProperties = function (obj, dbObj) {
+                for (let prop in obj) {
+                    if (obj.constructor == Array ||
+                        (obj.hasOwnProperty(prop) &&
+                            (dbObj.hasOwnProperty(prop) ||
+                                (dbObj.get !== undefined &&
+                                    dbObj.get(prop) !== undefined)))) { // Mongoose objects don't have hasOwnProperty
+                        if (typeof obj[prop] == 'object' && dbObj[prop] != null) { // Catches object and array
+                            copyProperties(obj[prop], dbObj[prop])
+
+                            if (dbObj.markModified !== undefined) {
+                                dbObj.markModified(prop)
+                            }
+                        } else if (obj[prop] !== undefined) {
+                            //logger.debug("copy " + prop)
+                            dbObj[prop] = obj[prop]
+                        }
+                    } else {
+                        return new Error("Illegal key: " + prop)
+                    }
+                }
+            }
+            
             if (err) {
                 logger.error(err)
                 res.status(400).send({
@@ -392,12 +418,10 @@ privateRouter.put('/:runid', function (req, res, next) {
                         msg: "You have no authority to access this api!!"
                     })
                 }
-                if (run.tiles != null && run.tiles.constructor === Object) { // Handle dict as "sparse" array
-                    const tiles = run.tiles
-                    run.tiles = []
-                    Object.keys(tiles).forEach(function (key) {
+                if (run.tiles != null) { // Handle dict as "sparse" array
+                    Object.keys(run.tiles).forEach(function (key) {
                         if (!isNaN(key)) {
-                            run.tiles[key] = tiles[key]
+                            dbRun.tiles[key] = run.tiles[key]
                         }
                     })
                 }
@@ -410,29 +434,8 @@ privateRouter.put('/:runid', function (req, res, next) {
                     dbRun.rescueOrder = run.rescueOrder
                 }
                 
-                // Recursively updates properties in "dbObj" from "obj"
-                const copyProperties = function (obj, dbObj) {
-                    for (let prop in obj) {
-                        if (obj.constructor == Array ||
-                            (obj.hasOwnProperty(prop) &&
-                                (dbObj.hasOwnProperty(prop) ||
-                                    (dbObj.get !== undefined &&
-                                        dbObj.get(prop) !== undefined)))) { // Mongoose objects don't have hasOwnProperty
-                            if (typeof obj[prop] == 'object' && dbObj[prop] != null) { // Catches object and array
-                                copyProperties(obj[prop], dbObj[prop])
-
-                                if (dbObj.markModified !== undefined) {
-                                    dbObj.markModified(prop)
-                                }
-                            } else if (obj[prop] !== undefined) {
-                                //logger.debug("copy " + prop)
-                                dbObj[prop] = obj[prop]
-                            }
-                        } else {
-                            return new Error("Illegal key: " + prop)
-                        }
-                    }
-                }
+                
+                
                 
                 if(run.status != dbRun.status) statusUpdate = true;
 

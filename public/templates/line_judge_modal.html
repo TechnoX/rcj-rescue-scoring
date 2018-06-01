@@ -21,13 +21,17 @@
                   <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[1].levelUp)" ng-show="nineTile[1].levelUp" style="padding-top:4px; color:#3498db; opacity:0.4;"></i>
                   <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[1].levelDown)" ng-show="nineTile[1].levelDown" style="padding-top:4px; color:#ff8095; opacity:0.4;"></i>
                   <div ng-if="next.top">
-                      <div ng-show="stiles[next.top].scored">
+                      <div ng-show="dirStatus(stiles[next.top]) == 'done'">
                           <img src="/images/next-robot-done.png" style="position:absolute;left: 0px; top: 0px; " width="100%" height="auto">
-                          <i class="fa fa-check fa-fw fa-3x" style="padding-top:4px; color:#27ae60; opacity:0.9;position:absolute;top:0px;left:0px;"></i>
+                          <i class="fas fa-check fa-fw fa-3x" style="padding-top:4px; color:#27ae60; opacity:0.9;position:absolute;top:0px;left:0px;"></i>
                       </div>
-                      <div ng-show="!stiles[next.top].scored">
+                      <div ng-show="dirStatus(stiles[next.top]) == 'halfdone'">
+                          <img src="/images/next-robot-done.png" style="position:absolute;left: 0px; top: 0px; " width="100%" height="auto">
+                          <i class="fas fa-play fa-fw fa-rotate-270 fa-3x" style="padding-top:4px; color:#f4d03f; opacity:0.9;position:absolute;top:0px;left:0px;"></i>
+                      </div>
+                      <div ng-show="dirStatus(stiles[next.top]) == 'undone'">
                           <img src="/images/next-robot-undone.png" style="position:absolute;left: 0px; top: 0px;opacity:0.5;" width="100%" height="auto">
-                          <i class="fa fa-times fa-fw fa-3x" style="padding-top:4px; color:#e74c3c; opacity:0.9;position:absolute;top:0px;left:0px;"></i>
+                          <i class="fas fa-times fa-fw fa-3x" style="padding-top:4px; color:#e74c3c; opacity:0.9;position:absolute;top:0px;left:0px;"></i>
                       </div>
                   </div>
               </td>
