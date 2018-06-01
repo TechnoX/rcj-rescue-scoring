@@ -231,7 +231,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     isDropTile: false
                 }
                 
+                console.log(started);
+                
                 if(!started && tileReset){
+                    
                     $scope.stiles = [];
                     tileReset = false;
                 }
@@ -769,7 +772,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     }
                     async function getFormValues () {
                         const {value: formValues} = await swal({
-                          title: 'Multiple inputs',
+                          title: 'Multiple elements',
                           html:selectableHtml
                             ,
                           focusConfirm: false,
@@ -1236,14 +1239,94 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, $timeou
     }
 
     $scope.toggle_scored = function (num) {
-        swal("test");
         playSound(sClick);
         try {
             if($scope.stiles[num].scoredItems.length == 1){
                 $scope.stiles[num].scoredItems[0].scored = !$scope.stiles[num].scoredItems[0].scored;
+                $timeout($uibModalInstance.close, 300);
+            }else{
+                var selectableHtml = "";
+                function itemPreCheck(item){
+                    if(item.scored) return "checked";
+                    return "";
+                }
+                for(let i=0; i<$scope.stiles[num].scoredItems.length;i++){
+                    selectableHtml += '<input type="checkbox" id="element'+ i +'" ' + itemPreCheck($scope.stiles[num].scoredItems[i]) + '><label class="checkbox" for="element'+ i +'"> '+ $scope.stiles[num].scoredItems[i].item +'</label><br>'
+                }
+                async function getFormValues () {
+                    const {value: formValues} = await swal({
+                      title: 'Multiple elements',
+                      html:selectableHtml
+                        ,
+                      focusConfirm: false,
+                      preConfirm: () => {
+                        switch($scope.stiles[num].scoredItems.length){
+                            case 2: return [
+                                      document.getElementById('element0').checked,
+                                      document.getElementById('element1').checked
+                                    ]
+                            case 3: return [
+                                      document.getElementById('element0').checked,
+                                      document.getElementById('element1').checked,
+                                      document.getElementById('element2').checked
+                                    ]
+                            case 4: return [
+                                      document.getElementById('element0').checked,
+                                      document.getElementById('element1').checked,
+                                      document.getElementById('element2').checked,
+                                      document.getElementById('element3').checked
+                                    ]
+                            case 5: return [
+                                      document.getElementById('element0').checked,
+                                      document.getElementById('element1').checked,
+                                      document.getElementById('element2').checked,
+                                      document.getElementById('element3').checked,
+                                      document.getElementById('element4').checked
+                                    ]
+                            case 6: return [
+                                      document.getElementById('element0').checked,
+                                      document.getElementById('element1').checked,
+                                      document.getElementById('element2').checked,
+                                      document.getElementById('element3').checked,
+                                      document.getElementById('element4').checked,
+                                      document.getElementById('element5').checked
+                                    ]
+                            case 7: return [
+                                      document.getElementById('element0').checked,
+                                      document.getElementById('element1').checked,
+                                      document.getElementById('element2').checked,
+                                      document.getElementById('element3').checked,
+                                      document.getElementById('element4').checked,
+                                      document.getElementById('element5').checked,
+                                      document.getElementById('element6').checked
+                                    ]
+                            case 8:  return [
+                                      document.getElementById('element0').checked,
+                                      document.getElementById('element1').checked,
+                                      document.getElementById('element2').checked,
+                                      document.getElementById('element3').checked,
+                                      document.getElementById('element4').checked,
+                                      document.getElementById('element5').checked,
+                                      document.getElementById('element6').checked,
+                                      document.getElementById('element7').checked
+                                    ]
+                        }
+                      }
+                    })
+
+                    if (formValues) {
+                      for(let i=0;i<formValues.length;i++){
+                          $scope.stiles[num].scoredItems[i].scored = formValues[i];
+                      }  
+                      $scope.$apply();
+                      $timeout($uibModalInstance.close, 300);
+                    }
+                }
+
+                getFormValues();
             }
             //$scope.stiles[num].scored = !$scope.stiles[num].scored;
-            $timeout($uibModalInstance.close, 300);
+            
         } catch (e) {
 
         }
