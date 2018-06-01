@@ -368,7 +368,7 @@ function drawNumberInputField(doc, config, pos_x, pos_y, text, columnText, rowTe
 }
 
 function drawLOPInputField(doc, config, pos_x, pos_y, text) {
-  const columnText = ["0", "1", "2", "3+"];
+  const columnText = ["0", "1", "2", "3", "4", "5", "6", "7", "8+"];
   const rowText = [""];
   return drawNumberInputField(doc, config, pos_x, pos_y, text, columnText, rowText)
 }
@@ -377,6 +377,12 @@ function drawTimeInputField(doc, config, pos_x, pos_y) {
   const columnText = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
   const rowText = ["Min", "Sec", "Sec"];
   return drawNumberInputField(doc, config, pos_x, pos_y, "Time:", columnText, rowText)
+}
+
+function drawExitBonusField(doc, config, pos_x, pos_y) {
+  const columnText = ["Y", "N"];
+  const rowText = [""];
+  return drawNumberInputField(doc, config, pos_x, pos_y, "Exit Bonus (Yes/No):", columnText, rowText)
 }
 
 function drawVictimInputField(doc, config, pos_x, pos_y, amount, text) {
@@ -457,15 +463,28 @@ function drawRun(doc, config, scoringRun) {
   nextItem(drawEvacuationInputField(doc, config, pos_x, pos_y), "evacuation");
 
   if (scoringRun.map.numberOfDropTiles > 0) {
-    for (let i = 0; i < scoringRun.map.numberOfDropTiles; i++) {
-      nextItem(drawLOPInputField(doc, config, pos_x, pos_y, (i === 0 ? "Start" : ("CP " + i)) + " to CP " + (i + 1) + ":"), "cb" + i);
+    for (let i = 0; i <= scoringRun.map.numberOfDropTiles; i++) {
+      let text = "";
+      if (i === 0) {
+        text += "Start"
+      } else {
+        text += "CP " + i
+      }
+      text += " to ";
+      if (i === scoringRun.map.numberOfDropTiles) {
+        text += "Evacuation";
+      } else {
+        text += "CP " + (i + 1)
+      }
+      text += ":";
+      nextItem(drawLOPInputField(doc, config, pos_x, pos_y, text, "cb" + i));
     }
   }
 
   nextItem(drawVictimInputField(doc, config, pos_x, pos_y, 9, "alive"), "victimsAlive");
   nextItem(drawVictimInputField(doc, config, pos_x, pos_y, 9, "dead"), "victimsDead");
   nextItem(drawTimeInputField(doc, config, pos_x, pos_y), "time");
-  nextItem(drawCheckbox(doc, pos_x, pos_y, config.checkboxSize, "Exit evacuation zone", DirsEnum.RIGHT, "black"), "exitBonus");
+  nextItem(drawExitBonusField(doc, config, pos_x, pos_y), "exitBonus");
   nextItem(drawTextInputField(doc, config, pos_x, pos_y, "Team:", config.signature.width, config.signature.height), "signTeam");
   nextItem(drawTextInputField(doc, config, pos_x, pos_y, "Referee:", config.signature.width, config.signature.height), "signRef");
 

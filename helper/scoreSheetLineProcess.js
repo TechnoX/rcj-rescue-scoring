@@ -269,11 +269,8 @@ module.exports.processScoreSheet = function(posData, scoreSheetFileName) {
   sheetData.time = processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData, 'time'));
   sheetData.signTeam = processPosdataText(normalizedSheet, findPosdataByDescr(posData, 'signTeam'));
   sheetData.signRef = processPosdataText(normalizedSheet, findPosdataByDescr(posData, 'signRef'));
-  sheetData.exitBonus = processPosdataCheckbox(normalizedSheet, findPosdataByDescr(posData, 'exitBonus')) > 10000;
+  sheetData.exitBonus = processPosdataCheckbox(normalizedSheet, findPosdataByDescr(posData, 'exitBonus'));
   sheetData.tiles = processTileData(normalizedSheet, findPosdataByDescr(posData, 'field'));
-
-  //let normalizedSheetColored = normalizedSheet.cvtColor(cv.COLOR_GRAY2BGR);
-  //drawPosdataToSheet(normalizedSheetColored, findPosdataByDescr(posData, 'field'), 3);
 
   return sheetData;
 };
