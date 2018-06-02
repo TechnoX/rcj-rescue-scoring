@@ -454,10 +454,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         if (!effective) tmp_point = 5;
         else if ($scope.evacuationLevel == 1) { // Low Level
             if (type == "L") tmp_point = 30;
-            else tmp_point = 15;
+            else tmp_point = 20;
         } else { // High Level
             if (type == "L") tmp_point = 40;
-            else tmp_point = 20;
+            else tmp_point = 30;
         }
         return Math.max(tmp_point - $scope.LoPs[$scope.actualUsedDropTiles] * 5, 0);
     }
