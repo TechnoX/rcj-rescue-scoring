@@ -245,8 +245,8 @@
                             
                             
                             <hr>
-                            <h6>救助済みの被災者</h6>
-                            <span style="font-size:9px;">救助済みの被災者を削除する場合は，ダブルクリック or 左にスワイプ(Mobile Device) してください</span>
+                            <h6>Rescued Victims</h6>
+                            <span style="font-size:9px;">To delete a rescued victim, double click or swipe left (Mobile Device)</span>
                             <table border="1" style="width:100%; text-align: center; margin-top: 10px;" ng-repeat="j in range(6)" ng-if="victim_list.length > j*5 || j == 0">
                                 <tr>
                                     <th style="text-align:center;" ng-repeat="i in range(5)">{{j*5 + i+1}}</th>
@@ -354,7 +354,7 @@
                         <div class="col-sm-5">
                             <div style="text-align:right;">
                                 <button class="btn btn-danger" type="button" ng-click="confirm()" ng-disabled="startedTime" ng-hide="networkError"><i class="fas fa-arrow-right fa-2x" aria-hidden="true"> {{'line.judge.toSign'| translate}}</i></button>
-                                <button class="btn btn-danger" type="button" ng-click="handover()" ng-disabled="startedTime" ng-show="1||networkError">競技を他の端末に引き継ぐ</button>
+                                <button class="btn btn-danger" type="button" ng-click="handover()" ng-disabled="startedTime" ng-show="networkError">Hand over to another device</button>
                             </div>
                         </div>
                     </div>
