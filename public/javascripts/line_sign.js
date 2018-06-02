@@ -74,9 +74,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             socket.emit('subscribe', 'runs/' + runId);
 
             socket.on('data', function (data) {
-                console.log(data);
-                $scope.rescuedLiveVictims = data.rescuedLiveVictims;
-                $scope.rescuedDeadVictims = data.rescuedDeadVictims;
+                //console.log(data);
                 $scope.evacuationLevel = data.evacuationLevel;
                 $scope.exitBonus = data.exitBonus;
                 $scope.stiles = data.tiles;
@@ -104,7 +102,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                         let tmp = {
                             dis: i - prevCheckPoint,
                             status: $scope.stiles[i].scored,
-                            point: (i - prevCheckPoint) * $scope.stiles[i].scored * $scope.LoPsCountPoint($scope.LoPs[j])
+                            point: (i - prevCheckPoint) * $scope.stiles[i].scoredItems[0].scored * $scope.LoPsCountPoint($scope.LoPs[j])
                         }
                         $scope.checkPointDistance.push(tmp);
                         prevCheckPoint = i;
@@ -127,8 +125,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.evacuationLevel = response.data.evacuationLevel;
             $scope.exitBonus = response.data.exitBonus;
             $scope.field = response.data.field.name;
-            $scope.rescuedDeadVictims = response.data.rescuedDeadVictims;
-            $scope.rescuedLiveVictims = response.data.rescuedLiveVictims;
             $scope.score = response.data.score;
             $scope.showedUp = response.data.showedUp;
             $scope.started = response.data.started;
@@ -206,7 +202,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                         let tmp = {
                             dis: i - prevCheckPoint,
                             status: $scope.stiles[i].scored,
-                            point: (i - prevCheckPoint) * $scope.stiles[i].scored * $scope.LoPsCountPoint($scope.LoPs[j])
+                            point: (i - prevCheckPoint) * $scope.stiles[i].scoredItems[0].scored * $scope.LoPsCountPoint($scope.LoPs[j])
                         }
                         $scope.checkPointDistance.push(tmp);
                         prevCheckPoint = i;
@@ -231,19 +227,19 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         });
     }
     
-    $scope.calc_victim_points = function(type,effective){
-        if(!effective) return 0;
+    $scope.calc_victim_points = function (type, effective) {
         let tmp_point = 0;
-        if($scope.evacuationLevel == 1){ // Low Level
-            if(type == "L") tmp_point = 30;
-            else tmp_point = 15;
-        }else{                          // High Level
-            if(type == "L") tmp_point = 40;
+        if (!effective) tmp_point = 5;
+        else if ($scope.evacuationLevel == 1) { // Low Level
+            if (type == "L") tmp_point = 30;
             else tmp_point = 20;
+        } else { // High Level
+            if (type == "L") tmp_point = 40;
+            else tmp_point = 30;
         }
-        
-        return Math.max(tmp_point - $scope.LoPs[$scope.LoPs.length - 1] * 5 , 0);
+        return Math.max(tmp_point - $scope.LoPs[$scope.actualUsedDropTiles] * 5, 0);
     }
+
     
     $scope.victimPoints = function(){
         let score = 0;
@@ -251,6 +247,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             if(victiml.effective){
                 if(victiml.type =="L") score += $scope.calc_victim_points("L",1);
                 else score += $scope.calc_victim_points("D",1);
+            }else{
+                score += $scope.calc_victim_points("D",0);
             }
         }
         return score;
@@ -339,11 +337,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.showElements = function (x, y, z) {
         var mtile = $scope.mtiles[x + ',' + y + ',' + z];
         var isDropTile = false;
+        var stile = [];
+
         // If this is not a created tile
         if (!mtile || mtile.index.length == 0)
             return;
-
+        playSound(sClick);
         for (var i = 0; i < mtile.index.length; i++) {
+            stile.push($scope.stiles[mtile.index[i]]);
             if ($scope.stiles[mtile.index[i]].isDropTile) {
                 isDropTile = true;
             }
@@ -355,16 +356,49 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             mtile.tileType.gaps > 0 ||
             mtile.tileType.intersections > 0) * mtile.index.length;
         // Add the number of possible passes for drop tiles
-        if (isDropTile) {
-            total += mtile.index.length;
-        }
+        
+         if (isDropTile) {
+                total += stile.length;
+            }
 
-        if (total > 1) {
-            // Show modal
-            playSound(sClick);
-            $scope.open(x, y, z);
+
+            if (total == 0) {
+                return;
+            } else if (total > 1) {
+                // Show modal
+                $scope.open(x, y, z);
+                // Save data from modal when closing it
+            } else if (total == 1) {
+                if(stile[0].scoredItems.length == 1){
+                    return;
+                }else{
+                    var selectableHtml = "";
+                    function itemPreCheck(item){
+                        if(item.scored) return "checked";
+                        return "";
+                    }
+                    for(let i=0; i<stile[0].scoredItems.length;i++){
+                        selectableHtml += '<input type="checkbox" id="element'+ i +'" ' + itemPreCheck(stile[0].scoredItems[i]) + ' disabled><label class="checkbox" for="element'+ i +'"> '+  stile[0].scoredItems[i].item +'</label><br>'
+                    }
+                    async function getFormValues () {
+                        const {value: formValues} = await swal({
+                          title: 'Multiple elements',
+                          html:selectableHtml
+                            ,
+                          focusConfirm: false,
+                          preConfirm: () => {
+                            playSound(sClick);
+                          }
+                        })
+                    }
+
+                    getFormValues();
+                    
+                }
+                
+
+            }
         }
-    }
 
 
     $scope.open = function (x, y, z) {
@@ -657,6 +691,7 @@ app.directive('tile', function () {
                     tile.y == $scope.$parent.startTile.y &&
                     tile.z == $scope.$parent.startTile.z;
             }
+            
             $scope.tileStatus = function (tile) {
                 // If this is a non-existent tile
                 if ((!tile || tile.index.length == 0) && !isStart(tile))
@@ -665,6 +700,7 @@ app.directive('tile', function () {
                 // If this tile has no scoring elements we should just return empty string
                 if (tile.items.obstacles == 0 &&
                     tile.items.speedbumps == 0 &&
+                    !tile.items.rampPoints &&
                     tile.tileType.gaps == 0 &&
                     tile.tileType.intersections == 0 &&
                     !$scope.$parent.stiles[tile.index[0]].isDropTile && !isStart(tile)
@@ -675,16 +711,21 @@ app.directive('tile', function () {
                 // Number of successfully passed times
                 var successfully = 0;
                 // Number of times it is possible to pass this tile
-                var possible = tile.index.length;
+                var possible = 0;
+                
+                for(let i=0;i<tile.index.length;i++){
+                    possible += $scope.$parent.stiles[tile.index[i]].scoredItems.length;
+                }
 
                 for (var i = 0; i < tile.index.length; i++) {
-                    if ($scope.$parent.stiles[tile.index[i]].scored) {
-                        successfully++;
+                    for(let j = 0; j < $scope.$parent.stiles[tile.index[i]].scoredItems.length;j++){
+                        if($scope.$parent.stiles[tile.index[i]].scoredItems[j].scored){
+                            successfully++;
+                        }
                     }
                 }
-                if (tile.processing)
-                    return "processing";
-                else if ((possible > 0 && successfully == possible) ||
+
+                if ((possible > 0 && successfully == possible) ||
                     (isStart(tile) && $scope.$parent.showedUp))
                     return "done";
                 else if (successfully > 0)
@@ -703,6 +744,7 @@ app.directive('tile', function () {
                 // If this tile has no scoring elements we should just return empty string
                 if (tile.items.obstacles == 0 &&
                     tile.items.speedbumps == 0 &&
+                    !tile.items.rampPoints &&
                     tile.tileType.gaps == 0 &&
                     tile.tileType.intersections == 0 &&
                     !$scope.$parent.stiles[tile.index[0]].isDropTile && !isStart(tile)
@@ -714,11 +756,29 @@ app.directive('tile', function () {
                 var successfully = 0;
 
                 for (var i = 0; i < tile.index.length; i++) {
-                    if ($scope.$parent.stiles[tile.index[i]].scored) {
-                        successfully += tile.items.obstacles*10;
-                        successfully += tile.items.speedbumps*5;
-                        successfully += tile.tileType.gaps*10;
-                        successfully += tile.tileType.intersections*15;
+                    for (let j=0; j<$scope.$parent.stiles[tile.index[i]].scoredItems.length;j++){
+                        switch ($scope.$parent.stiles[tile.index[i]].scoredItems[j].item){
+                            case "checkpoint":
+                                let tileCount = i - lastDropTile;
+                                successfully += Math.max(tileCount * (5 - 2 * run.LoPs[dropTileCount]), 0) * $scope.$parent.stiles[tile.index[i]].scoredItems[j].scored;
+                                break;
+                            case "gap":
+                                successfully += 10 * $scope.$parent.stiles[tile.index[i]].scoredItems[j].scored;
+                                break;
+                            case "intersection":
+                                successfully += 15 * $scope.$parent.stiles[tile.index[i]].scoredItems[j].scored;
+                                break;
+                            case "obstacle":
+                                successfully += 10 * $scope.$parent.stiles[tile.index[i]].scoredItems[j].scored;
+                                break;
+                            case "speedbump":
+                                successfully += 5 * $scope.$parent.stiles[tile.index[i]].scoredItems[j].scored;
+                                break;
+                            case "ramp":
+                                successfully += 5 * $scope.$parent.stiles[tile.index[i]].scoredItems[j].scored;
+                                break;
+                        }
+
                     }
                 }
                 return successfully;
@@ -839,6 +899,66 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, 
                     $scope.next.bottom = mtile.index[i];
                     break;
             }
+        }
+
+    }
+    
+    $scope.dirStatus = function (tile) {
+        if(tile.scoredItems.length == 0) return;
+
+        // Number of successfully passed times
+        var successfully = 0;
+        // Number of times it is possible to pass this tile
+        var possible = tile.scoredItems.length;
+
+        for(let j = 0; j < tile.scoredItems.length;j++){
+            if(tile.scoredItems[j].scored){
+                successfully++;
+            }
+        }
+
+        if (possible > 0 && successfully == possible)
+            return "done";
+        else if (successfully > 0)
+            return "halfdone";
+        else if (possible > 0)
+            return "undone";
+        else
+            return "";
+    }
+    
+    $scope.toggle_view = function (num) {
+        playSound(sClick);
+        try {
+            if($scope.stiles[num].scoredItems.length == 1){
+                return;
+            }else{
+                var selectableHtml = "";
+                function itemPreCheck(item){
+                    if(item.scored) return "checked";
+                    return "";
+                }
+                for(let i=0; i<$scope.stiles[num].scoredItems.length;i++){
+                    selectableHtml += '<input type="checkbox" id="element'+ i +'" ' + itemPreCheck($scope.stiles[num].scoredItems[i]) + ' disabled><label class="checkbox" for="element'+ i +'"> '+ $scope.stiles[num].scoredItems[i].item +'</label><br>'
+                }
+                async function getFormValues () {
+                    const {value: formValues} = await swal({
+                      title: 'Multiple elements',
+                      html:selectableHtml
+                        ,
+                      focusConfirm: false,
+                      preConfirm: () => {
+                        
+                      }
+                    })
+                }
+
+                getFormValues();
+            }
+            //$scope.stiles[num].scored = !$scope.stiles[num].scored;
+            
+        } catch (e) {
+
         }
 
     }
