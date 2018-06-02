@@ -59,8 +59,10 @@ function line_calc_score(run) {
                         if (victim.type == "L") {
                             score += Math.max(30 - run.LoPs[dropTileCount] * 5, 0)
                         } else {
-                            score += Math.max(15 - run.LoPs[dropTileCount] * 5, 0)
+                            score += Math.max(20 - run.LoPs[dropTileCount] * 5, 0)
                         }
+                    }else{
+                        score += Math.max(5 - run.LoPs[dropTileCount] * 5, 0)
                     }
                 }
             } else if (run.evacuationLevel == 2) {
@@ -69,8 +71,10 @@ function line_calc_score(run) {
                         if (victim.type == "L") {
                             score += Math.max(40 - run.LoPs[dropTileCount] * 5, 0)
                         } else {
-                            score += Math.max(20 - run.LoPs[dropTileCount] * 5, 0)
+                            score += Math.max(30 - run.LoPs[dropTileCount] * 5, 0)
                         }
+                    }else{
+                        score += Math.max(5 - run.LoPs[dropTileCount] * 5, 0)
                     }
                 }
             }
