@@ -178,6 +178,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 // Get max victim count
                 $scope.maxLiveVictims = response.data.victims.live;
                 $scope.maxDeadVictims = response.data.victims.dead;
+                
+                $scope.mapIndexCount = response.data.indexCount;
 
                 while($scope.stiles.length < response.data.indexCount){
                     $scope.stiles.push(ntile);
@@ -338,6 +340,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         var mtile = $scope.mtiles[x + ',' + y + ',' + z];
         var isDropTile = false;
         var stile = [];
+        var stileIndex = [];
 
         // If this is not a created tile
         if (!mtile || mtile.index.length == 0)
@@ -345,6 +348,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         playSound(sClick);
         for (var i = 0; i < mtile.index.length; i++) {
             stile.push($scope.stiles[mtile.index[i]]);
+            stileIndex.push(mtile.index[i])
             if ($scope.stiles[mtile.index[i]].isDropTile) {
                 isDropTile = true;
             }
@@ -358,7 +362,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         // Add the number of possible passes for drop tiles
         
          if (isDropTile) {
-                total += stile.length;
+                for(let i=0;i<stile.length;i++){
+                    if(stileIndex[i] < $scope.mapIndexCount-2){
+                        total ++;
+                    }
+                }
             }
 
 
@@ -660,10 +668,10 @@ app.directive('tile', function () {
                             if (marker[j]) count++;
                         }
                         count++;
-                        if (i != 0) ret_txt += '&'
+                        if (ret_txt != "") ret_txt += '&'
                         ret_txt += count;
                     } else {
-                        return;
+                        return ret_txt;
                     }
                 }
                 return ret_txt;

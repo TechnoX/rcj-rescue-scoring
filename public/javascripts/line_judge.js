@@ -220,6 +220,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 // Get max victim count
                 $scope.maxLiveVictims = response.data.victims.live;
                 $scope.maxDeadVictims = response.data.victims.dead;
+                
+                $scope.mapIndexCount = response.data.indexCount;
 
                 var flag = false;
                 var sItem = {
@@ -293,7 +295,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                         
                     }
                     
-                    for(let i=0; i < $scope.stiles.length;i++){
+                    for(let i=0; i < $scope.stiles.length-2;i++){
                         if($scope.stiles[i].scoredItems.length == 0){
                             let addSItem = {
                                         item: "checkpoint",
@@ -329,11 +331,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     $scope.mtiles[response.data.tiles[i].x + ',' +
                         response.data.tiles[i].y + ',' +
                         response.data.tiles[i].z] = response.data.tiles[i];
+                    
                     if ($scope.stiles[response.data.tiles[i].index[0]] &&
                         $scope.stiles[response.data.tiles[i].index[0]].isDropTile) {
                         $scope.placedDropTiles++;
                     }
                 }
+                console.log($scope.mtiles)
 
                 $timeout($scope.tile_size, 0);
                 $timeout($scope.tile_size, 500);
@@ -662,6 +666,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.doScoring = function (x, y, z) {
         var mtile = $scope.mtiles[x + ',' + y + ',' + z];
         var stile = [];
+        var stileIndex = [];
         var isDropTile = false;
         var httpdata = {
             tiles: {}
@@ -673,6 +678,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         playSound(sClick);
         for (var i = 0; i < mtile.index.length; i++) {
             stile.push($scope.stiles[mtile.index[i]]);
+            stileIndex.push(mtile.index[i]);
             if ($scope.stiles[mtile.index[i]].isDropTile) {
                 isDropTile = true;
             }
@@ -705,21 +711,24 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 var removed = false;
 
                 for (var i = 0; i < stile.length; i++) {
-                    // If this tile already contains a droptile, we should remove it
-                    if (stile[i].isDropTile) {
-                        stile[i].isDropTile = false;
-                        stile[i].scoredItems[0].scored = false;
-                        $scope.actualUsedDropTiles--;
-                        marker[mtile.index[i]] = false;
-                        removed = true;
-                    } // If this tile doesn't contain a droptile, we should add one, IF we have any left to place
-                    else if ($scope.numberOfDropTiles - $scope.placedDropTiles > 0) {
-                        stile[i].isDropTile = true;
-                        $scope.actualUsedDropTiles++;
-                        marker[mtile.index[i]] = true;
-                        placed = true;
+                    if(stileIndex[i] < $scope.mapIndexCount-2){
+                        // If this tile already contains a droptile, we should remove it
+                        if (stile[i].isDropTile) {
+                            stile[i].isDropTile = false;
+                            stile[i].scoredItems[0].scored = false;
+                            $scope.actualUsedDropTiles--;
+                            marker[mtile.index[i]] = false;
+                            removed = true;
+                        } // If this tile doesn't contain a droptile, we should add one, IF we have any left to place
+                        else if ($scope.numberOfDropTiles - $scope.placedDropTiles > 0) {
+                            stile[i].isDropTile = true;
+                            $scope.actualUsedDropTiles++;
+                            marker[mtile.index[i]] = true;
+                            placed = true;
+                        }
+                        httpdata.tiles[mtile.index[i]] = stile[i];   
                     }
-                    httpdata.tiles[mtile.index[i]] = stile[i];
+                    
                 }
 
                 if (placed) {
@@ -736,7 +745,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         } else {
             // Add the number of possible passes for drop tiles
             if (isDropTile) {
-                total += stile.length;
+                for(let i=0;i<stile.length;i++){
+                    if(stileIndex[i] < $scope.mapIndexCount-2){
+                        total ++;
+                    }
+                }
             }
 
 
@@ -1448,10 +1461,10 @@ app.directive('tile', function () {
                             if (marker[j]) count++;
                         }
                         count++;
-                        if (i != 0) ret_txt += '&'
+                        if (ret_txt != "") ret_txt += '&'
                         ret_txt += count;
                     } else {
-                        return;
+                        return ret_txt;
                     }
                 }
                 return ret_txt;

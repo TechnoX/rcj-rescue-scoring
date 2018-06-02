@@ -38,8 +38,23 @@ function traverse(curTile, entryDir, tiles, map, index) {
   curTile.next.push(next_Coord)
   var nextTile = tiles[next_Coord]
   
-  
   if (nextTile === undefined) {
+    index++
+    curTile.index.push(index)
+    entryDir = exitDir(curTile,entryDir)
+    next_Coord = nextCoord(curTile,entryDir)
+    curTile.next.push(next_Coord)
+    entryDir = exitDir(curTile,entryDir)
+    
+    curTile = tiles[next_Coord]
+    index++
+    entryDir = flipDir(entryDir)
+    curTile.index.push(index)
+    next_Coord = nextCoord(curTile,entryDir)
+    curTile.next.push(next_Coord)
+    
+    
+    
     map.indexCount = index + 1
     return
   }
