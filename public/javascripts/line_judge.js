@@ -450,17 +450,16 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
 
     $scope.calc_victim_points = function (type, effective) {
-        if (!effective) return 0;
         let tmp_point = 0;
-        if ($scope.evacuationLevel == 1) { // Low Level
+        if (!effective) tmp_point = 5;
+        else if ($scope.evacuationLevel == 1) { // Low Level
             if (type == "L") tmp_point = 30;
             else tmp_point = 15;
         } else { // High Level
             if (type == "L") tmp_point = 40;
             else tmp_point = 20;
         }
-
-        return Math.max(tmp_point - $scope.LoPs[$scope.LoPs.length - 1] * 5, 0);
+        return Math.max(tmp_point - $scope.LoPs[$scope.actualUsedDropTiles] * 5, 0);
     }
 
     $scope.count_victim_list = function (type) {
@@ -684,7 +683,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         var total = (mtile.items.obstacles > 0 ||
             mtile.items.speedbumps > 0 ||
             mtile.tileType.gaps > 0 ||
-            mtile.tileType.intersections > 0) * mtile.index.length;
+            mtile.tileType.intersections > 0 || mtile.items.rampPoints) * mtile.index.length;
         
 
         // If the run is not started, we can place drop pucks on this tile
@@ -1489,6 +1488,7 @@ app.directive('tile', function () {
                 // If this tile has no scoring elements we should just return empty string
                 if (tile.items.obstacles == 0 &&
                     tile.items.speedbumps == 0 &&
+                    !tile.items.rampPoints &&
                     tile.tileType.gaps == 0 &&
                     tile.tileType.intersections == 0 &&
                     !$scope.$parent.stiles[tile.index[0]].isDropTile && !isStart(tile)
