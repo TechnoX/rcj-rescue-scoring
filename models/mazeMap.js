@@ -189,7 +189,7 @@ mazeMapSchema.pre('save', function (next) {
   
   if (self.finished) {
     mazeFill.floodFill(self)
-    mazeFill.linearFill(self)
+    //mazeFill.linearFill(self)
     //logger.debug(JSON.stringify(self))
   }
   

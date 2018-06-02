@@ -10,7 +10,7 @@
       <input type="checkbox" ng-model="cell.tile.checkpoint" id="isCheckpoint"><label class="checkbox" for="isCheckpoint">{{"admin.mazeMapEditor.cp" | translate}}</label>
     </li>
     <li>
-      <input type="checkbox" ng-model="cell.tile.black" id="isBlack"><label class="checkbox" for="isBlack">{{"admin.mazeMapEditor.black" | translate}}</label>
+      <input type="checkbox" ng-model="cell.tile.black" id="isBlack" ng-change="blackChanged()"><label class="checkbox" for="isBlack">{{"admin.mazeMapEditor.black" | translate}}</label>
     </li>
     <li>
       <input type="checkbox" ng-model="cell.tile.rampTop" id="isTopHorizontal"><label class="checkbox" for="isTopHorizontal">{{"admin.mazeMapEditor.up" | translate}}</label>

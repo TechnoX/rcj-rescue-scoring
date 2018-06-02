@@ -118,6 +118,8 @@ app.controller('MazeEditorController', ['$scope', '$uibModal', '$log', '$http','
         return (typeof thing === "undefined");
     }
     $scope.recalculateLinear = function () {
+        //console.log($scope.cells)
+        $scope.virtualWall = [];
         //console.log($scope.cells);
         if ($scope.startNotSet())
             return;
@@ -126,6 +128,24 @@ app.controller('MazeEditorController', ['$scope', '$uibModal', '$log', '$http','
         for (var index in $scope.cells) {
             $scope.cells[index].isLinear = false;
         }
+        
+        // Set to virtual wall around the black tile
+        for (var index in $scope.cells) {
+            if($scope.cells[index].tile){
+                if($scope.cells[index].tile.black){
+                    //console.log("黒発見")
+                    var x = Number($scope.cells[index].x);
+                    var y = Number($scope.cells[index].y);
+                    var z = Number($scope.cells[index].z);
+                    $scope.virtualWall[x + "," + (y-1) + "," + z] = true;
+                    $scope.virtualWall[(x+1) + "," + y + "," + z] = true;
+                    $scope.virtualWall[(x-1) + "," + y + "," + z] = true;
+                    $scope.virtualWall[x + "," + (y+1) + "," + z] = true;
+                    
+                }
+            }
+        }
+        //console.log($scope.virtualWall)
 
         // Start it will all 4 walls around the starting tile
         
@@ -138,7 +158,7 @@ app.controller('MazeEditorController', ['$scope', '$uibModal', '$log', '$http','
             if($scope.cells[index].x != null &&$scope.cells[index].tile != null && $scope.cells[index].tile.changeFloorTo != null && $scope.cells[index].tile.changeFloorTo != $scope.cells[index].z){
                 recurs($scope.cells[index].x-1, $scope.cells[index].y, $scope.cells[index].tile.changeFloorTo);
                 recurs($scope.cells[index].x+1, $scope.cells[index].y, $scope.cells[index].tile.changeFloorTo);
-                recurs($scope.cells[index].x1, $scope.cells[index].y-1, $scope.cells[index].tile.changeFloorTo);
+                recurs($scope.cells[index].x+1, $scope.cells[index].y-1, $scope.cells[index].tile.changeFloorTo);
                 recurs($scope.cells[index].x-1, $scope.cells[index].y+1, $scope.cells[index].tile.changeFloorTo);
             }
         }
@@ -154,6 +174,16 @@ app.controller('MazeEditorController', ['$scope', '$uibModal', '$log', '$http','
         }
 
         var cell = $scope.cells[x + ',' + y + ',' + z];
+        var virWall = $scope.virtualWall[x + ',' + y + ',' + z];
+        if(virWall && !cell){
+            $scope.cells[x + ',' + y + ',' + z] = {
+                isWall: false
+            }
+            cell = $scope.cells[x + ',' + y + ',' + z];
+        }
+        
+        
+        
         
         // If this is a wall that doesn't exists
         if (!cell)
@@ -167,7 +197,7 @@ app.controller('MazeEditorController', ['$scope', '$uibModal', '$log', '$http','
         // Already visited this, returning
         if (cell.isLinear)
             return;
-        if (cell.isWall) {
+        if (cell.isWall || virWall) {
             cell.isLinear = true;
 
 
@@ -449,7 +479,7 @@ app.controller('MazeEditorController', ['$scope', '$uibModal', '$log', '$http','
             } else {
                 cell.isWall = !cell.isWall;
             }
-            $scope.recalculateLinear();
+            
         } else if (isTile) {
             if (!cell) {
                 $scope.cells[x + ',' + y + ',' + z] = {
@@ -461,6 +491,7 @@ app.controller('MazeEditorController', ['$scope', '$uibModal', '$log', '$http','
             }
             $scope.open(x, y, z);
         }
+        $scope.recalculateLinear();
     }
 
     $scope.open = function (x, y, z) {
@@ -525,7 +556,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, x, y, z
             };
         }
         $scope.oldFloorDestination = newValue;
-        $scope.recalculateLinear();
+        $scope.$parent.recalculateLinear();
     }
 
     $scope.startChanged = function () {
@@ -534,6 +565,10 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, x, y, z
             $scope.$parent.startTile.y = y;
             $scope.$parent.startTile.z = z;
         }
+    }
+    
+    $scope.blackChanged = function () {
+        $scope.$parent.recalculateLinear();
     }
 
     $scope.range = function (n) {
@@ -544,6 +579,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, x, y, z
         return arr;
     }
     $scope.ok = function () {
+        $scope.$parent.recalculateLinear();
         $uibModalInstance.close();
     };
 });
