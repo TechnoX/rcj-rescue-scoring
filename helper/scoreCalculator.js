@@ -27,17 +27,31 @@ module.exports.calculateLineScore = function (run) {
   for (let i = 0; i < run.tiles.length; i++) {
     let tile = run.tiles[i]
     
-    if (tile.scored) {
-      if (tile.isDropTile) {
-        let tileCount = i - lastDropTile
-        score += Math.max(tileCount * (5 - 2 * run.LoPs[dropTileCount]), 0)
-      }
-      
-      score += mapTiles[i].tileType.gaps * 10
-      score += mapTiles[i].tileType.intersections * 15
-      score += mapTiles[i].items.obstacles * 10
-      score += mapTiles[i].items.speedbumps * 5
+    for (let j=0; j<tile.scoredItems.length;j++){
+        switch (tile.scoredItems[j].item){
+            case "checkpoint":
+                let tileCount = i - lastDropTile;
+                score += Math.max(tileCount * (5 - 2 * run.LoPs[dropTileCount]), 0) * tile.scoredItems[j].scored;
+                break;
+            case "gap":
+                score += 10 * tile.scoredItems[j].scored;
+                break;
+            case "intersection":
+                score += 15 * tile.scoredItems[j].scored;
+                break;
+            case "obstacle":
+                score += 10 * tile.scoredItems[j].scored;
+                break;
+            case "speedbump":
+                score += 5 * tile.scoredItems[j].scored;
+                break;
+            case "ramp":
+                score += 5 * tile.scoredItems[j].scored;
+                break;
+        }
+
     }
+
     
     if (tile.isDropTile) {
       lastDropTile = i
