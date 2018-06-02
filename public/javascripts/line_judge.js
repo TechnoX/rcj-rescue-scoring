@@ -768,7 +768,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                         return "";
                     }
                     for(let i=0; i<stile[0].scoredItems.length;i++){
-                        selectableHtml += '<input type="checkbox" id="element'+ i +'" ' + itemPreCheck(stile[0].scoredItems[i]) + '><label class="checkbox" for="element'+ i +'"> '+  stile[0].scoredItems[i].item +'</label><br>'
+                        selectableHtml += '<input type="checkbox" id="element'+ i +'" ' + itemPreCheck(stile[0].scoredItems[i]) + '><label class="checkbox" for="element'+ i +'" onclick="playSound(sClick)"> '+  stile[0].scoredItems[i].item +'</label><br>'
                     }
                     async function getFormValues () {
                         const {value: formValues} = await swal({
@@ -777,6 +777,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                             ,
                           focusConfirm: false,
                           preConfirm: () => {
+                            playSound(sClick);
                             switch(stile[0].scoredItems.length){
                                 case 2: return [
                                           document.getElementById('element0').checked,
@@ -1251,7 +1252,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, $timeou
                     return "";
                 }
                 for(let i=0; i<$scope.stiles[num].scoredItems.length;i++){
-                    selectableHtml += '<input type="checkbox" id="element'+ i +'" ' + itemPreCheck($scope.stiles[num].scoredItems[i]) + '><label class="checkbox" for="element'+ i +'"> '+ $scope.stiles[num].scoredItems[i].item +'</label><br>'
+                    selectableHtml += '<input type="checkbox" id="element'+ i +'" ' + itemPreCheck($scope.stiles[num].scoredItems[i]) + '><label class="checkbox" for="element'+ i +'" onclick="playSound(sClick)"> '+ $scope.stiles[num].scoredItems[i].item +'</label><br>'
                 }
                 async function getFormValues () {
                     const {value: formValues} = await swal({
@@ -1260,6 +1261,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, $timeou
                         ,
                       focusConfirm: false,
                       preConfirm: () => {
+                        playSound(sClick);
                         switch($scope.stiles[num].scoredItems.length){
                             case 2: return [
                                       document.getElementById('element0').checked,
