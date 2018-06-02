@@ -365,6 +365,10 @@ privateRouter.put('/:runid', function (req, res, next) {
                     err: err.message
                 })
             } else {
+                if(!dbRun)
+                    return res.status(400).send({
+                        msg: "Could not get run"
+                    })
                 if (!auth.authCompetition(req.user, dbRun.competition, ACCESSLEVELS.JUDGE)) {
                     return res.status(401).send({
                         msg: "You have no authority to access this api!!"
