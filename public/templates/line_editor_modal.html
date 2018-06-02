@@ -14,8 +14,12 @@
             <a href="#" ng-click="tile.items.obstacles=tile.items.obstacles+1">+</a>
         </li>
     </ul>
+    
+    <input type="checkbox" ng-model="tile.items.rampPoints" id="isRampPoints"><label class="checkbox" for="isRampPoints"> Ramp points</label>
 
     <input type="checkbox" ng-model="start" ng-disabled="start" id="isStartCheck"><label class="checkbox" for="isStartCheck"> {{"admin.lineMapEditor.start" | translate}}</label>
+    
+    
 
     <h5>{{"admin.lineMapEditor.down" | translate}}</h5>
     <input type="radio" ng-model="tile.levelDown" value="top" id="isDownTop"><label class="radio" for="isDownTop">{{"admin.lineMapEditor.top" | translate}}</label> <br>
