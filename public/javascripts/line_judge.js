@@ -743,6 +743,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
             // Match has started!
         } else {
+            var total = (mtile.items.obstacles > 0 ||
+            mtile.items.speedbumps > 0 ||
+            mtile.tileType.gaps > 0 ||
+            mtile.tileType.intersections > 0 || mtile.items.rampPoints) * mtile.index.length;
+            
             // Add the number of possible passes for drop tiles
             if (isDropTile) {
                 for(let i=0;i<stile.length;i++){
@@ -758,7 +763,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.changeShowedUp();
                 return;
             }
-
+            
+            
             if (total == 0) {
                 return;
             } else if (total > 1) {
@@ -780,7 +786,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                         return "";
                     }
                     for(let i=0; i<stile[0].scoredItems.length;i++){
-                        selectableHtml += '<input type="checkbox" id="element'+ i +'" ' + itemPreCheck(stile[0].scoredItems[i]) + '><label class="checkbox" for="element'+ i +'" onclick="playSound(sClick)"> '+  stile[0].scoredItems[i].item +'</label><br>'
+                        if(stile[0].scoredItems[i].item != "checkpoint" || stile[0].isDropTile){
+                            selectableHtml += '<input type="checkbox" id="element'+ i +'" ' + itemPreCheck(stile[0].scoredItems[i]) + '><label class="checkbox" for="element'+ i +'" onclick="playSound(sClick)"> '+  stile[0].scoredItems[i].item +'</label><br>'
+                        } 
                     }
                     async function getFormValues () {
                         const {value: formValues} = await swal({
@@ -1146,7 +1154,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, $timeout, mtile, stiles, nineTile, sRotate, startTile) {
     $scope.mtile = mtile;
     $scope.sRotate = sRotate;
-    console.log(mtile);
     $scope.stiles = stiles;
     $scope.nineTile = nineTile;
     $scope.words = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth"];
@@ -1233,7 +1240,14 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, $timeou
         // Number of successfully passed times
         var successfully = 0;
         // Number of times it is possible to pass this tile
-        var possible = tile.scoredItems.length;
+        var possible = 0 
+        for(let i=0;i<tile.scoredItems.length;i++){
+            if(tile.scoredItems[i].item == "checkpoint" && !tile.isDropTile){
+                
+            }else{
+                possible++;
+            }
+        }
 
         for(let j = 0; j < tile.scoredItems.length;j++){
             if(tile.scoredItems[j].scored){
@@ -1254,7 +1268,15 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, $timeou
     $scope.toggle_scored = function (num) {
         playSound(sClick);
         try {
-            if($scope.stiles[num].scoredItems.length == 1){
+            var possible = 0 
+            for(let i=0;i<$scope.stiles[num].scoredItems.length;i++){
+                if($scope.stiles[num].scoredItems[i].item == "checkpoint" && !$scope.stiles[num].isDropTile){
+
+                }else{
+                    possible++;
+                }
+            }
+            if(possible == 1){
                 $scope.stiles[num].scoredItems[0].scored = !$scope.stiles[num].scoredItems[0].scored;
                 $timeout($uibModalInstance.close, 300);
             }else{
@@ -1264,7 +1286,10 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, $timeou
                     return "";
                 }
                 for(let i=0; i<$scope.stiles[num].scoredItems.length;i++){
-                    selectableHtml += '<input type="checkbox" id="element'+ i +'" ' + itemPreCheck($scope.stiles[num].scoredItems[i]) + '><label class="checkbox" for="element'+ i +'" onclick="playSound(sClick)"> '+ $scope.stiles[num].scoredItems[i].item +'</label><br>'
+                    if( $scope.stiles[num].scoredItems[i].item != "checkpoint" ||  $scope.stiles[num].isDropTile){
+                        selectableHtml += '<input type="checkbox" id="element'+ i +'" ' + itemPreCheck($scope.stiles[num].scoredItems[i]) + '><label class="checkbox" for="element'+ i +'" onclick="playSound(sClick)"> '+ $scope.stiles[num].scoredItems[i].item +'</label><br>'
+                    }
+                    
                 }
                 async function getFormValues () {
                     const {value: formValues} = await swal({
@@ -1354,7 +1379,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, $timeou
         var ro = tilerot + $scope.sRotate;
         if (ro >= 360) ro -= 360;
         else if (ro < 0) ro += 360;
-        console.log(ro);
+        //console.log(ro);
         return ro;
     }
 
@@ -1365,7 +1390,6 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, $timeou
     }
 
     $scope.isStart = function (tile) {
-        console.log(tile);
         if (!tile)
             return;
         return tile.x == startTile.x &&
@@ -1515,7 +1539,13 @@ app.directive('tile', function () {
                 var possible = 0;
                 
                 for(let i=0;i<tile.index.length;i++){
-                    possible += $scope.$parent.stiles[tile.index[i]].scoredItems.length;
+                    for(let j=0;j<$scope.$parent.stiles[tile.index[i]].scoredItems.length;j++){
+                        if($scope.$parent.stiles[tile.index[i]].scoredItems[j].item == "checkpoint" && !$scope.$parent.stiles[tile.index[i]].isDropTile){
+
+                        }else{
+                            possible++;
+                        }
+                    }
                 }
 
                 for (var i = 0; i < tile.index.length; i++) {
