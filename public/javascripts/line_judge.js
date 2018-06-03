@@ -268,13 +268,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                                 $scope.stiles[t.index[j]].scoredItems.push(addSItem);
                             }
                             
-                            if(t.items.rampPoints){
-                                let addSItem = {
-                                    item: "ramp",
-                                    scored: false
-                                };
-                                $scope.stiles[t.index[j]].scoredItems.push(addSItem);
-                            }
                             
                             for(let k=0;k<t.tileType.gaps;k++){
                                 let addSItem = {
@@ -287,6 +280,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                             for(let k=0;k<t.tileType.intersections;k++){
                                 let addSItem = {
                                     item: "intersection",
+                                    scored: false
+                                };
+                                $scope.stiles[t.index[j]].scoredItems.push(addSItem);
+                            }
+                            
+                            if(t.items.rampPoints){
+                                let addSItem = {
+                                    item: "ramp",
                                     scored: false
                                 };
                                 $scope.stiles[t.index[j]].scoredItems.push(addSItem);
