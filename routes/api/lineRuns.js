@@ -744,7 +744,13 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
         })
       } else {
         const sheetData = scoreSheetLineProcess.processScoreSheet(run.scoreSheet.positionData, req.file.path);
-
+        run.tiles = []
+        while (run.tiles.length < run.map.indexCount) {
+            run.tiles.push({
+                scoredItems:[],
+                isDropTile: false
+            });
+        }
         run.evacuationLevel = sheetData.evacuation.indexes[0] + 1;
         run.scoreSheet.evacuationLevelImage = sheetData.evacuation.img;
 
@@ -771,14 +777,16 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
             if (tileData.meta.id === "checkpoint") {
               run.tiles[tileData.meta.tileIndex].isDropTile = tileData.checked;
             }
-            run.tiles[tileData.meta.tileIndex].scoredItems.push({item: tileData.meta.id, scored: tileData.meta.id === "checkpoint" ? true : tileData.checked});
+            run.tiles[tileData.meta.tileIndex].scoredItems.push({item: tileData.meta.id, scored: tileData.checked});
+            
           }
         }
         run.scoreSheet.tileDataImage = sheetData.tiles.img;
-
+        run.showedUp =  run.tiles[0].scoredItems[0].scored;
         run.score = scoreCalculator.calculateLineScore(run);
         run.started = true;
         run.status = 4;
+        
 
         run.save((err) => {
           if (err) {
