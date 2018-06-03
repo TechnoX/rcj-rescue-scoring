@@ -1,5 +1,6 @@
 const PDFDocument = require('pdfkit');
 const qr = require('qr-image');
+const logger = require('../config/logger').mainLogger
 
 /**
  * Defines some important numbers for the placement of different objects in the scoresheet.
@@ -145,7 +146,7 @@ function drawMetadata(doc, pos_x, pos_y, config, run) {
   pos_y += config.data.metadata.text.fontSize + 1;
   doc.text(config.data.metadata.text.field + " " + run.field.name, pos_x, pos_y);
   pos_y += config.data.metadata.text.fontSize + 1;
-  doc.text("@€ロボ", pos_x, pos_y);
+  doc.text(config.data.metadata.text.team + " " + run.team.name, pos_x, pos_y);
   pos_y += config.data.metadata.text.fontSize + 1;
   let dateTime = new Date(run.startTime);
   doc.text(config.data.metadata.text.time + " " + dateTime.getHours() + ":" + dateTime.getMinutes(), pos_x, pos_y);
@@ -185,7 +186,7 @@ function dirToAngle(dir) {
   return 0;
 }
 
-function drawFields(doc, pos_x, pos_y, config, map) {
+function drawFields(doc, pos_x, pos_y, config, map, stiles) {
   const mapLevelHeight = map.width * (config.fields.tileSize + config.fields.tileSpacing) + 2 - config.fields.tileSpacing;
   const mapLevelWidth = map.length * (config.fields.tileSize + config.fields.tileSpacing) + 2 - config.fields.tileSpacing;
 
@@ -259,26 +260,39 @@ function drawFields(doc, pos_x, pos_y, config, map) {
     }
 
     if (map.startTile.x === tile.x && map.startTile.y === tile.y && map.startTile.z === tile.z) {
-      tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "St", "start", "green", tile.index[0])
-    } else if(tileIsDroptile(tile)) {
-      tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "C", "checkpoint", "blue", tile.index[0])
-    } else {
-      for (let j = 0; tile.tileType.intersections > 0 && j < tile.index.length; j++) {
-        tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "I", "intersection", "red", tile.index[j])
-      }
-      for (let j = 0; tile.items.speedbumps > 0 && j < tile.index.length; j++) {
-        tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "S", "speedbump", "violet", tile.index[j])
-      }
-      for (let j = 0; tile.items.rampPoints > 0 && j < tile.index.length; j++) {
-        tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "R", "ramp", "pink", tile.index[j])
-      }
-      for (let j = 0; tile.items.obstacles > 0 && j < tile.index.length; j++) {
-        tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "O", "obstacle", "brown", tile.index[j])
-      }
-      for (let j = 0; tile.tileType.gaps > 0 && j < tile.index.length; j++) {
-        tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "G", "gap", "orange", tile.index[j])
-      }
+            tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "St" ,"start", "#0080FF", tile.index[0])
     }
+      for(let i=0,indexNum;indexNum=tile.index[i];i++){
+          let stile = stiles[indexNum];
+          for(let j=0;j<stile.scoredItems.length;j++){
+              switch(stile.scoredItems[j]){
+                  case "obstacle":
+                      if(i == 0) tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "O", "obstacle", "#A4603C", indexNum)
+                      else tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "O", "obstacle","#CAA28D", indexNum)
+                      break;
+                  case "speedbump":
+                      if(i == 0) tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "S", "speedbump","#046D0E", indexNum)
+                      else tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "S", "speedbump","#5CD717", indexNum)
+                      break;
+                  case "gap":
+                      if(i == 0) tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "G", "gap","#3A045E", indexNum)
+                      else tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "G", "gap","#9124CF", indexNum)
+                      break;
+                  case "intersection":
+                      if(i == 0 ) tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "I", "intersection","#B8080B", indexNum)
+                      else tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "I", "intersection","#FD0509", indexNum)
+                      break;
+                  case "ramp":
+                      if(i == 0) tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "R", "ramp","#EB39E8", indexNum)
+                      else tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "R", "ramp","#F480F2", indexNum)
+                      break;
+                  case "checkpoint":
+                      if(i == 0) tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "C", "checkpoint","#0080FF", indexNum)
+                      else tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "C", "checkpoint","#14C8E8", indexNum)
+                      break;
+                }
+          }
+      }
   }
 
   return {
@@ -456,9 +470,53 @@ function drawRun(doc, config, scoringRun) {
     savePos(pos, descr);
     pos_y = pos.y + config.data.inputs.marginsVertical;
   }
+    
+    var stiles = [];
+    while (stiles.length < scoringRun.map.indexCount) {
+        stiles.push({
+            scoredItems:[]
+        });
+    }
+    for(let i=0,t;t=scoringRun.map.tiles[i];i++){
+        for(let j=0;j<t.index.length;j++){
+            for(let k=0;k<t.items.obstacles;k++){
+                let addSItem = "obstacle";
+                stiles[t.index[j]].scoredItems.push(addSItem);
+            }
+
+            for(let k=0;k<t.items.speedbumps;k++){
+                let addSItem = "speedbump";
+                stiles[t.index[j]].scoredItems.push(addSItem);
+            }
+
+            for(let k=0;k<t.tileType.gaps;k++){
+                let addSItem =  "gap";
+                stiles[t.index[j]].scoredItems.push(addSItem);
+            }
+
+            for(let k=0;k<t.tileType.intersections;k++){
+                let addSItem = "intersection";
+                stiles[t.index[j]].scoredItems.push(addSItem);
+            }
+            
+            if(t.items.rampPoints){
+                let addSItem = "ramp";
+                stiles[t.index[j]].scoredItems.push(addSItem);
+            }
+        }
+
+    }
+    for(let i=0; i < stiles.length-2;i++){
+        if(stiles[i].scoredItems.length == 0 || stiles[i].scoredItems[0] == "ramp"){
+            let addSItem = "checkpoint";
+            stiles[i].scoredItems.push(addSItem);
+        }
+    }
+    
+    logger.debug(stiles);
 
   savePos(drawPositionMarkers(doc, config), "posMarkers");
-  let pf = drawFields(doc, pos_x, pos_y, config, scoringRun.map);
+  let pf = drawFields(doc, pos_x, pos_y, config, scoringRun.map,stiles);
   savePos(pf, "field");
   pos_x += config.data.marginLeft;
   nextItem(drawMetadata(doc, pos_x, pos_y, config, scoringRun), "meta");

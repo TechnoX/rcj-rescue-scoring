@@ -487,7 +487,7 @@ publicRouter.get('/scoresheet', function (req, res, next) {
     },
     {
       path  : "map",
-      select: "name height width length numberOfDropTiles finished startTile tiles",
+      select: "name height width length numberOfDropTiles finished startTile tiles indexCount",
       populate: {
         path: "tiles.tileType"
       }
