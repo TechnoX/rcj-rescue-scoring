@@ -98,7 +98,7 @@ module.exports.calculateLineScore = function (run) {
         if (run.showedUp || score > 0) {
             score += 5
         }
-
+        if(isNaN(score)) return 0
         return score
     } catch (e) {
 
