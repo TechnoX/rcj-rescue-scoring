@@ -145,7 +145,7 @@ function drawMetadata(doc, pos_x, pos_y, config, run) {
   pos_y += config.data.metadata.text.fontSize + 1;
   doc.text(config.data.metadata.text.field + " " + run.field.name, pos_x, pos_y);
   pos_y += config.data.metadata.text.fontSize + 1;
-  doc.text(config.data.metadata.text.team + " " + run.team.name, pos_x, pos_y);
+  doc.text("@€ロボ", pos_x, pos_y);
   pos_y += config.data.metadata.text.fontSize + 1;
   let dateTime = new Date(run.startTime);
   doc.text(config.data.metadata.text.time + " " + dateTime.getHours() + ":" + dateTime.getMinutes(), pos_x, pos_y);
@@ -153,7 +153,7 @@ function drawMetadata(doc, pos_x, pos_y, config, run) {
   return {x: pos_x, y: pos_y, posData: posData}
 }
 
-function tileAddCheckbox(doc, posDataTile, config, text, color, index) {
+function tileAddCheckbox(doc, posDataTile, config, text, scoringID, color, index) {
   let checkbox_horizontal_amount = Math.floor((config.fields.tileSize - config.fields.checkbox.marginBorder * 2) / (config.checkboxSize * 2));
   let checkbox_vertical_amount = Math.floor((config.fields.tileSize - config.fields.checkbox.marginBorder * 2) / (config.checkboxSize + config.fields.checkbox.marginCheckbox));
   if (posDataTile.children.length === (checkbox_horizontal_amount * checkbox_vertical_amount)) {
@@ -169,7 +169,7 @@ function tileAddCheckbox(doc, posDataTile, config, text, color, index) {
 
   const posCheckbox = drawCheckbox(doc, checkbox_pos_x, checkbox_pos_y, config.checkboxSize, text, DirsEnum.RIGHT, color);
   posCheckbox.posData.meta = {
-    id : text,
+    id : scoringID,
     tileIndex : index
   }
   posDataTile.children.push(posCheckbox.posData);
@@ -252,28 +252,31 @@ function drawFields(doc, pos_x, pos_y, config, map) {
           tile_pos_y + (config.fields.tileSize / 2)
         ]
       });
-      doc.image("public/images/" + (tile.levelUp ? "up.png" : "down.png"),
+     /* doc.image("public/images/" + (tile.levelUp ? "up.png" : "down.png"),
         tile_pos_x + (config.fields.tileSize / 2),
-        tile_pos_y + (config.fields.tileSize / 2), {width: config.fields.tileSize / 2});
+        tile_pos_y + (config.fields.tileSize / 2), {width: config.fields.tileSize / 2});*/
       doc.restore()
     }
 
     if (map.startTile.x === tile.x && map.startTile.y === tile.y && map.startTile.z === tile.z) {
-      tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "St", "green", tile.index[0])
+      tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "St", "start", "green", tile.index[0])
     } else if(tileIsDroptile(tile)) {
-      tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "C", "blue", tile.index[0])
+      tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "C", "checkpoint", "blue", tile.index[0])
     } else {
       for (let j = 0; tile.tileType.intersections > 0 && j < tile.index.length; j++) {
-        tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "I", "red", tile.index[j])
+        tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "I", "intersection", "red", tile.index[j])
       }
       for (let j = 0; tile.items.speedbumps > 0 && j < tile.index.length; j++) {
-        tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "S", "violet", tile.index[j])
+        tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "S", "speedbump", "violet", tile.index[j])
+      }
+      for (let j = 0; tile.items.rampPoints > 0 && j < tile.index.length; j++) {
+        tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "R", "ramp", "pink", tile.index[j])
       }
       for (let j = 0; tile.items.obstacles > 0 && j < tile.index.length; j++) {
-        tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "O", "brown", tile.index[j])
+        tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "O", "obstacle", "brown", tile.index[j])
       }
       for (let j = 0; tile.tileType.gaps > 0 && j < tile.index.length; j++) {
-        tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "G", "orange", tile.index[j])
+        tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "G", "gap", "orange", tile.index[j])
       }
     }
   }
@@ -477,7 +480,7 @@ function drawRun(doc, config, scoringRun) {
         text += "CP " + (i + 1)
       }
       text += ":";
-      nextItem(drawLOPInputField(doc, config, pos_x, pos_y, text, "cb" + i));
+      nextItem(drawLOPInputField(doc, config, pos_x, pos_y, text), "cb" + i);
     }
   }
 
@@ -495,6 +498,9 @@ module.exports.generateScoreSheet = function(res, rounds) {
   let doc = new PDFDocument({autoFirstPage: false});
 
   doc.pipe(res);
+
+  //doc.registerFont('Cardo', 'helper/NotoSans-Regular.ttf');
+  //doc.font('Cardo');
 
   let posDatas = [];
   for (let i = 0; i < rounds.length; i++) {

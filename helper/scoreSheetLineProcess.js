@@ -258,6 +258,7 @@ module.exports.processScoreSheet = function(posData, scoreSheetFileName) {
   sheetData.enterManually = processPosdataCheckbox(normalizedSheet, findPosdataByDescr(posData, 'enterManually')) > 10000;
   sheetData.evacuation = processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData, 'evacuation'));
   sheetData.checkpoints = [];
+  console.log(posData);
   for (let i = 0, posDataCB; (posDataCB = findPosdataByDescr(posData, 'cb' + i)) !== null; i++) {
     if (posDataCB === null) {
       break;

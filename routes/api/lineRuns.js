@@ -768,12 +768,10 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
         for (let i = 0; i < sheetData.tiles.tilesData.length; i++) {
           for (let j = 0; j < sheetData.tiles.tilesData[i].length; j++) {
             let tileData = sheetData.tiles.tilesData[i][j];
-            if (tileData.meta.id === 'C') {
+            if (tileData.meta.id === "checkpoint") {
               run.tiles[tileData.meta.tileIndex].isDropTile = tileData.checked;
-              run.tiles[tileData.meta.tileIndex].scored = tileData.checked;
-            } else {
-              run.tiles[tileData.meta.tileIndex].scored = tileData.checked;
             }
+            run.tiles[tileData.meta.tileIndex].scoredItems.push({item: tileData.meta.id, scored: tileData.meta.id === "checkpoint" ? true : tileData.checked});
           }
         }
         run.scoreSheet.tileDataImage = sheetData.tiles.img;
