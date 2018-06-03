@@ -296,7 +296,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     }
                     
                     for(let i=0; i < $scope.stiles.length-2;i++){
-                        if($scope.stiles[i].scoredItems.length == 0){
+                        if($scope.stiles[i].scoredItems.length == 0 || $scope.stiles[i].scoredItems[0].item == "ramp"){
                             let addSItem = {
                                         item: "checkpoint",
                                         scored: false
@@ -689,7 +689,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         var total = (mtile.items.obstacles > 0 ||
             mtile.items.speedbumps > 0 ||
             mtile.tileType.gaps > 0 ||
-            mtile.tileType.intersections > 0 || mtile.items.rampPoints) * mtile.index.length;
+            mtile.tileType.intersections > 0) * mtile.index.length;
         
 
         // If the run is not started, we can place drop pucks on this tile
