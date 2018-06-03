@@ -28,12 +28,13 @@ module.exports.calculateLineScore = function (run) {
         //console.log(mapTiles);
         for (let i = 0; i < run.tiles.length; i++) {
             let tile = run.tiles[i]
-            
+            //console.log(tile.scoredItems)
             for (let j=0; j<tile.scoredItems.length;j++){
                 switch (tile.scoredItems[j].item){
                     case "checkpoint":
                         let tileCount = i - lastDropTile;
                         score += Math.max(tileCount * (5 - 2 * run.LoPs[dropTileCount]), 0) * tile.scoredItems[j].scored;
+                        //console.log(Math.max(tileCount * (5 - 2 * run.LoPs[dropTileCount]), 0) * tile.scoredItems[j].scored)
                         break;
                     case "gap":
                         score += 10 * tile.scoredItems[j].scored;
