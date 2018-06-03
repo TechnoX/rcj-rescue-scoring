@@ -23,7 +23,6 @@ module.exports.calculateLineScore = function (run) {
   let lastDropTile = 0
   let dropTileCount = 0
   
-  
   for (let i = 0; i < run.tiles.length; i++) {
     let tile = run.tiles[i]
     
@@ -31,7 +30,11 @@ module.exports.calculateLineScore = function (run) {
         switch (tile.scoredItems[j].item){
             case "checkpoint":
                 let tileCount = i - lastDropTile;
-                score += Math.max(tileCount * (5 - 2 * run.LoPs[dropTileCount]), 0) * tile.scoredItems[j].scored;
+                if (run.LoPs.length < dropTileCount) {
+                  score += Math.max(tileCount * (5 - 2 * run.LoPs[dropTileCount]), 0) * tile.scoredItems[j].scored;
+                } else {
+                  console.log("ERROR")
+                }
                 break;
             case "gap":
                 score += 10 * tile.scoredItems[j].scored;
@@ -51,7 +54,6 @@ module.exports.calculateLineScore = function (run) {
         }
 
     }
-
     
     if (tile.isDropTile) {
       lastDropTile = i

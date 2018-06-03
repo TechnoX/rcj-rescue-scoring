@@ -1,5 +1,5 @@
 var socket;
-var app = angular.module("RunAdmin", ['ngTouch','ngAnimate', 'ui.bootstrap', 'ui.bootstrap.datetimepicker', 'pascalprecht.translate', 'ngCookies']).controller('RunAdminController', ['$scope', '$http', '$log', '$location', function ($scope, $http, $log, $location) {
+var app = angular.module("RunAdmin", ['ngTouch','ngAnimate', 'ui.bootstrap', 'ui.bootstrap.datetimepicker', 'pascalprecht.translate', 'ngCookies', 'ngFileUpload']).controller('RunAdminController', ['$scope', '$http', '$log', '$location', 'Upload', function ($scope, $http, $log, $location, Upload) {
         $scope.competitionId = competitionId
 
         updateRunList();
@@ -306,6 +306,20 @@ var app = angular.module("RunAdmin", ['ngTouch','ngAnimate', 'ui.bootstrap', 'ui
             });
         }
 
+        $scope.uploadSheets = function(files){
+            console.log("Files", files);
+            for (let i = 0; i < files.length; i++) {
+                Upload.upload({
+                    url: '/api/runs/line/scoresheet/' + competitionId,
+                    data: {file: files[i]},
+                }).then(function (resp) {
+                      console.log('Succ', resp);
+                    }, function (resp) {
+                    }, function (evt) {
+                    }
+                );
+            }
+        }
 
         $scope.go = function (path) {
             path = path + '?return=' + window.location.pathname;

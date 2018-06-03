@@ -49,7 +49,7 @@ const lineRunSchema = new Schema({
   evacuationLevel   : {
     type: Number, default: 1, validate: function (l) {
       return l == 1 || l == 2
-    }
+    },
   },
   exitBonus         : {type: Boolean, default: false},
   rescueOrder : [{
@@ -60,7 +60,7 @@ const lineRunSchema = new Schema({
   showedUp          : {type: Boolean, default: false},
   time              : {
     minutes: {type: Number, min: 0, max: 8, default: 0},
-    seconds: {type: Number, min: 0, max: 59, default: 0}
+    seconds: {type: Number, min: 0, max: 59, default: 0},
   },
   status            : {type: Number, min: -1, default: -1},
   retired           : {type: Boolean, default: false},
@@ -71,7 +71,20 @@ const lineRunSchema = new Schema({
   },
   started           : {type: Boolean, default: false, index: true},
   comment           : {type: String, default: ""},
-  startTime         : {type: Number, default: 0}
+  startTime         : {type: Number, default: 0},
+  test: {type: Boolean, default: false},
+  scoreSheet: { // all data connected to the scoring sheet should it be used
+    positionData: {type: Object, default: null},
+    reviewed: {type: ObjectId, ref: 'User', default: null},
+
+    LoPImages: [{ data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}}],
+    tileDataImage: { data: Buffer, contentType: String }, // Image representing the up to two arena levels
+    evacuationLevelImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
+    evacuationBonusImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
+    rescuedLiveVictimsImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
+    rescuedDeadVictimsImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
+    timeImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}}
+  },
 })
 
 lineRunSchema.pre('save', function (next) {
