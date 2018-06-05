@@ -291,11 +291,14 @@ function drawRun(doc, config, scoringRun) {
     }
   }
 
+  if (scoringRun.map.victims.dead > 0) {
+    nextItem(pdf.drawVictimInputField(doc, config, pos_x, pos_y, scoringRun.map.victims.dead, "dead before alive"), "victimsDeadBeforeAlive");
+  }
+
   if (scoringRun.map.victims.live > 0) {
     nextItem(pdf.drawVictimInputField(doc, config, pos_x, pos_y, scoringRun.map.victims.live, "alive"), "victimsAlive");
   }
   if (scoringRun.map.victims.dead > 0) {
-    nextItem(pdf.drawVictimInputField(doc, config, pos_x, pos_y, scoringRun.map.victims.dead, "dead before alive"), "victimsDeadBeforeAlive");
     nextItem(pdf.drawVictimInputField(doc, config, pos_x, pos_y, scoringRun.map.victims.dead, "dead after alive"), "victimsDeadAfterAlive");
   }
 
@@ -308,7 +311,7 @@ function drawRun(doc, config, scoringRun) {
 }
 
 function drawLOPInputField(doc, config, pos_x, pos_y, text) {
-  const columnText = ["0", "1", "2", "3", "4", "5", "6", "7", "8+"];
+  const columnText = ["N", "0", "1", "2", "3", "4", "5", "6", "7+"];
   const rowText = [""];
   return pdf.drawNumberInputField(doc, config, pos_x, pos_y, text, columnText, rowText)
 }

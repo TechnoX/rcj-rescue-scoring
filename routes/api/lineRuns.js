@@ -761,7 +761,13 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
         run.scoreSheet.evacuationLevelImage = sheetData.evacuation.img;
 
         for (let i = 0; i < sheetData.checkpoints.length && i < run.LoPs.length; i++) {
-          run.LoPs.set(i, sheetData.checkpoints[i].indexes[0]);
+          if (sheetData.checkpoints[i].indexes[0] === 0) {
+            // 0 means "N" = not reached was crossed
+            run.LoPs.set(i, 0);
+          } else {
+            run.LoPs.set(i, sheetData.checkpoints[i].indexes[0] - 1);
+          }
+
           run.scoreSheet.LoPImages.set(i, sheetData.checkpoints[i].img)
         }
 
@@ -793,8 +799,8 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
             if (tileData.meta.id === "checkpoint") {
               run.tiles[tileData.meta.tileIndex].isDropTile = tileData.checked;
             }
+            // TODO: mark the corresponding checkpoint as not reached if "N" is ticked
             run.tiles[tileData.meta.tileIndex].scoredItems.push({item: tileData.meta.id, scored: tileData.checked});
-            
           }
         }
         run.scoreSheet.tileDataImage = sheetData.tiles.img;
