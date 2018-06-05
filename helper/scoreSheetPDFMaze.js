@@ -19,7 +19,7 @@ const globalConfig = {
   },
   checkboxSize: 7,
   fields: {
-    tileSize: 30,
+    tileSize: 40,
     wallTickness: 4, // Should be even
     checkbox: {
       marginBorder: 1,
@@ -28,11 +28,11 @@ const globalConfig = {
     tileSpacing: 2, // Spacing between tiles
     positions: [ // Position for each z level. The scoring sheet can handle up to n levels.
       {x: 0, y: 0}, // Level 0
-      {x: 0, y: 325} // Level 1
+      {x: 0, y: 390} // Level 1
     ]
   },
   data: {
-    marginLeft: 330, // Distance from config.margin.left to text
+    marginLeft: 400, // Distance from config.margin.left to text
     metadata: {
       sizeQR: 57,
       text: {
@@ -40,20 +40,26 @@ const globalConfig = {
       }
     },
     inputs: {
-      textFieldWidth: 40, // Width of field where human writes down number human readable
+      textFieldWidth: 60, // Width of field where human writes down number human readable
       labelFontSize: 12,
       marginsVertical: 8 // Vertical space between two input fields
     }
   },
   signature: {
-    width: 200,
+    width: 150,
     height: 30
   }
 };
 
+function drawLoPInputField(doc, config, pos_x, pos_y) {
+  const columnText = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+  const rowText = ["", ""];
+  return pdf.drawNumberInputField(doc, config, pos_x, pos_y, "LOPs:", columnText, rowText)
+};
+
 function drawFields(doc, pos_x, pos_y, config, map) {
-  const mapLevelHeight = map.width * (config.fields.tileSize + config.fields.tileSpacing) + 2 - config.fields.tileSpacing;
-  const mapLevelWidth = map.length * (config.fields.tileSize + config.fields.tileSpacing) + 2 - config.fields.tileSpacing;
+  const mapLevelHeight = map.width * config.fields.tileSize;
+  const mapLevelWidth = map.length * config.fields.tileSize;
 
   const posData = {
     type: defs.InputTypeEnum.FIELD,
@@ -191,7 +197,16 @@ function drawRun(doc, config, scoringRun) {
   savePos(pdf.drawPositionMarkers(doc, config), "posMarkers");
   let pf = drawFields(doc, pos_x, pos_y, config, scoringRun.map);
   savePos(pf, "field");
+  pos_x += config.data.marginLeft;
+  nextItem(pdf.drawMetadata(doc, pos_x, pos_y, config, scoringRun), "meta");
+  nextItem(pdf.drawCheckbox(doc, pos_x, pos_y, config.checkboxSize, "Enter scoring sheet manually", defs.DirsEnum.RIGHT, "black"), "enterManually");
 
+
+  nextItem(drawLoPInputField(doc, config, pos_x, pos_y), "lops");
+  nextItem(pdf.drawExitBonusField(doc, config, pos_x, pos_y), "exitBonus");
+  nextItem(pdf.drawTimeInputField(doc, config, pos_x, pos_y), "time");
+  nextItem(pdf.drawTextInputField(doc, config, pos_x, pos_y, "Team:", config.signature.width, config.signature.height), "signTeam");
+  nextItem(pdf.drawTextInputField(doc, config, pos_x, pos_y, "Referee:", config.signature.width, config.signature.height), "signRef");
   return posDatas
 }
 
