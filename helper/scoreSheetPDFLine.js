@@ -39,7 +39,7 @@ const globalConfig = {
       }
     },
     inputs: {
-      textFieldWidth: 65, // Width of field where human writes down number human readable
+      textFieldWidth: 40, // Width of field where human writes down number human readable
       labelFontSize: 12,
       marginsVertical: 8 // Vertical space between two input fields
     }
@@ -201,6 +201,7 @@ function drawRun(doc, config, scoringRun) {
 
   function savePos(pos, descr) {
     posDatas.push({descr: descr, posData: pos.posData});
+    return pos;
   }
 
   function nextItem(pos, descr) {
@@ -249,8 +250,6 @@ function drawRun(doc, config, scoringRun) {
     }
   }
 
-  console.log("worst case amount of checkpoint passings:",calculateWorstCaseCheckpointAmount(scoringRun.map));
-
   savePos(pdf.drawPositionMarkers(doc, config), "posMarkers");
   let pf = drawFields(doc, pos_x, pos_y, config, scoringRun.map, stiles);
   savePos(pf, "field");
@@ -259,22 +258,18 @@ function drawRun(doc, config, scoringRun) {
   nextItem(pdf.drawCheckbox(doc, pos_x, pos_y, config.checkboxSize, "Enter scoring sheet manually", defs.DirsEnum.RIGHT, "black"), "enterManually");
   nextItem(pdf.drawEvacuationInputField(doc, config, pos_x, pos_y), "evacuation");
 
-  if (scoringRun.map.numberOfDropTiles > 0) {
-    for (let i = 0; i <= scoringRun.map.numberOfDropTiles; i++) {
-      let text = "";
-      if (i === 0) {
-        text += "Start"
+  let checkpointAmount = calculateWorstCaseCheckpointAmount(scoringRun.map);
+
+  if (checkpointAmount > 0) {
+    let pos_x_left = pos_x;
+    for (let i = 0; i < checkpointAmount; i++) {
+      let pos = savePos(drawLOPInputField(doc, config, pos_x, pos_y, "Until CP " + (i + 1)), "cb" + i);
+      if (i % 2 === 0 && i < (checkpointAmount - 1)) {
+        pos_x = pos.x + config.data.inputs.marginsVertical;
       } else {
-        text += "CP " + i
+        pos_y = pos.y + config.data.inputs.marginsVertical;
+        pos_x = pos_x_left;
       }
-      text += " to ";
-      if (i === scoringRun.map.numberOfDropTiles) {
-        text += "Evacuation";
-      } else {
-        text += "CP " + (i + 1)
-      }
-      text += ":";
-      nextItem(pdf.drawLOPInputField(doc, config, pos_x, pos_y, text), "cb" + i);
     }
   }
 
@@ -286,6 +281,12 @@ function drawRun(doc, config, scoringRun) {
   nextItem(pdf.drawTextInputField(doc, config, pos_x, pos_y, "Referee:", config.signature.width, config.signature.height), "signRef");
 
   return posDatas
+}
+
+function drawLOPInputField(doc, config, pos_x, pos_y, text) {
+  const columnText = ["0", "1", "2", "3", "4", "5", "6", "7", "8+"];
+  const rowText = [""];
+  return pdf.drawNumberInputField(doc, config, pos_x, pos_y, text, columnText, rowText)
 }
 
 module.exports.generateScoreSheet = function (res, rounds) {

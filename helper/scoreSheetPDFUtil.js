@@ -202,12 +202,6 @@ module.exports.drawNumberInputField = function (doc, config, pos_x, pos_y, text,
   };
 };
 
-module.exports.drawLOPInputField = function (doc, config, pos_x, pos_y, text) {
-  const columnText = ["0", "1", "2", "3", "4", "5", "6", "7", "8+"];
-  const rowText = [""];
-  return this.drawNumberInputField(doc, config, pos_x, pos_y, text, columnText, rowText)
-};
-
 module.exports.drawTimeInputField = function (doc, config, pos_x, pos_y) {
   const columnText = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
   const rowText = ["Min", "Sec", "Sec"];
