@@ -262,7 +262,7 @@ function drawRun(doc, config, scoringRun) {
     }
   }
   for (let i = 0; i < stiles.length - 2; i++) {
-    if (stiles[i].scoredItems.length === 0 || stiles[i].scoredItems[0] === "ramp") {
+    if (stiles[i].scoredItems.length === 0) {
       let addSItem = "checkpoint";
       stiles[i].scoredItems.push(addSItem);
     }
