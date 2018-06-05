@@ -34,11 +34,7 @@ const globalConfig = {
     metadata: {
       sizeQR: 57,
       text: {
-        fontSize: 14,
-        round: "Round",
-        field: "Field",
-        team: "Team",
-        time: "Time:"
+        fontSize: 14
       }
     },
     inputs: {
@@ -137,13 +133,6 @@ function drawCheckbox(doc, pos_x, pos_y, size, text = "", dir = DirsEnum.RIGHT, 
   return {x: pos_x_end, y: pos_y_end, posData: posData}
 }
 
-function tileIsDroptile(tile) {
-  return tile.tileType.intersections === 0
-    && tile.tileType.gaps === 0
-    && tile.items.speedbumps === 0
-    && tile.items.obstacles === 0;
-}
-
 function drawMetadata(doc, pos_x, pos_y, config, run) {
   const posData = {
     type: InputTypeEnum.QR,
@@ -159,14 +148,14 @@ function drawMetadata(doc, pos_x, pos_y, config, run) {
 
   doc.fontSize(config.data.metadata.text.fontSize);
   doc.fillColor("black");
-  doc.text(config.data.metadata.text.round + " " + run.round.name, pos_x, pos_y);
+  doc.text("Round " + run.round.name, pos_x, pos_y);
   pos_y += config.data.metadata.text.fontSize + 1;
-  doc.text(config.data.metadata.text.field + " " + run.field.name, pos_x, pos_y);
+  doc.text("Field " + run.field.name, pos_x, pos_y);
   pos_y += config.data.metadata.text.fontSize + 1;
-  doc.text(config.data.metadata.text.team + " " + run.team.name, pos_x, pos_y);
+  doc.text("Team " + run.team.name, pos_x, pos_y);
   pos_y += config.data.metadata.text.fontSize + 1;
   let dateTime = new Date(run.startTime);
-  doc.text(config.data.metadata.text.time + " " + dateTime.getHours() + ":" + dateTime.getMinutes(), pos_x, pos_y);
+  doc.text("Time: " + dateTime.getHours() + ":" + dateTime.getMinutes(), pos_x, pos_y);
   pos_y += config.data.metadata.text.fontSize + 1;
   return {x: pos_x, y: pos_y, posData: posData}
 }
@@ -288,28 +277,22 @@ function drawFields(doc, pos_x, pos_y, config, map, stiles) {
       for (let j = 0; j < stile.scoredItems.length; j++) {
         switch (stile.scoredItems[j]) {
           case "obstacle":
-            if (i == 0) tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "O", "obstacle", "#A4603C", indexNum)
-            else tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "O", "obstacle", "#CAA28D", indexNum)
+            tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "O", "obstacle", i === 0 ? "#A4603C" : "#CAA28D", indexNum);
             break;
           case "speedbump":
-            if (i == 0) tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "S", "speedbump", "#046D0E", indexNum)
-            else tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "S", "speedbump", "#5CD717", indexNum)
+            tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "S", "speedbump", i === 0 ? "#046D0E" : "#5CD717", indexNum);
             break;
           case "gap":
-            if (i == 0) tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "G", "gap", "#3A045E", indexNum)
-            else tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "G", "gap", "#9124CF", indexNum)
+            tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "G", "gap", i === 0 ? "#3A045E" : "#9124CF", indexNum);
             break;
           case "intersection":
-            if (i == 0) tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "I", "intersection", "#B8080B", indexNum)
-            else tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "I", "intersection", "#FD0509", indexNum)
+            tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "I", "intersection", i === 0 ? "#B8080B" : "#FD0509", indexNum);
             break;
           case "ramp":
-            if (i == 0) tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "R", "ramp", "#EB39E8", indexNum)
-            else tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "R", "ramp", "#F480F2", indexNum)
+            tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "R", "ramp", i === 0 ? "#EB39E8" : "#F480F2", indexNum);
             break;
           case "checkpoint":
-            if (i == 0) tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "C", "checkpoint", "#0080FF", indexNum)
-            else tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "C", "checkpoint", "#14C8E8", indexNum)
+            tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "C", "checkpoint", i === 0 ? "#0080FF" : "#14C8E8", indexNum);
             break;
         }
       }
