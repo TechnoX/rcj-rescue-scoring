@@ -66,16 +66,17 @@ function drawFields(doc, pos_x, pos_y, config, map) {
 
   doc.lineWidth(0);
 
+  // Draw walls first, otherwise they might overlap with checkboxes
   for (let i = 0, cell; cell = map.cells[i]; i++) {
     if (cell.isWall) {
       if (cell.x % 2 === 0) {
         // Horizontal wall
         doc.rect(
-            pos_x + (cell.x / 2) * config.fields.tileSize,
-            pos_y + ((cell.y - 1) / 2) * config.fields.tileSize + config.fields.wallTickness / 2,
-            config.fields.wallTickness,
-            config.fields.tileSize
-          ).fillAndStroke("black", "black")
+          pos_x + (cell.x / 2) * config.fields.tileSize,
+          pos_y + ((cell.y - 1) / 2) * config.fields.tileSize + config.fields.wallTickness / 2,
+          config.fields.wallTickness,
+          config.fields.tileSize
+        ).fillAndStroke("#000000", "black")
       } else {
         // Vertical wall
         doc.rect(
@@ -83,7 +84,79 @@ function drawFields(doc, pos_x, pos_y, config, map) {
           pos_y + (cell.y / 2) * config.fields.tileSize,
           config.fields.tileSize,
           config.fields.wallTickness
-        ).fillAndStroke("black", "black")
+        ).fillAndStroke("#000000", "black")
+      }
+    }
+  }
+
+  // Now draw the tile content
+  for (let i = 0, cell; cell = map.cells[i]; i++) {
+    if (!cell.isWall) {
+      const tile_pos_x = pos_x + config.fields.positions[cell.z].x + ((cell.x - 1) / 2) * config.fields.tileSize + config.fields.wallTickness / 2;
+      const tile_pos_y = pos_y + config.fields.positions[cell.z].y + ((cell.y - 1) / 2) * config.fields.tileSize + config.fields.wallTickness / 2;
+
+      posData.children.push({
+        type: defs.InputTypeEnum.FIELDTILE,
+        x: tile_pos_x,
+        y: tile_pos_y,
+        w: config.fields.tileSize,
+        h: config.fields.tileSize,
+        children: []
+      });
+
+      if (cell.isTile) {
+        if (cell.tile.checkpoint) {
+          doc.rect(
+            tile_pos_x + 2,
+            tile_pos_y + 2,
+            config.fields.tileSize - config.fields.wallTickness / 2 - 2,
+            config.fields.tileSize - config.fields.wallTickness / 2 - 2
+          ).fillAndStroke("#a8a8a8", "black");
+
+          pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "C", "checkpoint", "#0080FF", 0);
+        } else if (cell.tile.black) {
+          doc.rect(
+            tile_pos_x + 2,
+            tile_pos_y + 2,
+            config.fields.tileSize - config.fields.wallTickness / 2 - 2,
+            config.fields.tileSize - config.fields.wallTickness / 2 - 2
+          ).fillAndStroke("#272727", "black");
+        }
+
+        if (cell.tile.speedbump) {
+          pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "B", "speedbump", "#046D0E", 0);
+        }
+
+        if (cell.tile.rampBottom) {
+          pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "R", "rampBot", "#EB39E8", 0);
+        } else if (cell.tile.rampTop) {
+          pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "R", "rampTop", "#EB39E8", 0);
+        }
+
+        function addVictim(victimDir) {
+          switch (victimDir) {
+            case "Heated":
+              pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "V", "victimHeated", "#eb9000", 0);
+              break;
+
+            case "H":
+              pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "H", "victimH", "#eb0200", 0);
+              break;
+
+            case "S":
+              pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "S", "victimS", "#eb0047", 0);
+              break;
+
+            case "U":
+              pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "U", "victimU", "#77eb00", 0);
+              break;
+          }
+        }
+
+        addVictim(cell.tile.victims.top);
+        addVictim(cell.tile.victims.right);
+        addVictim(cell.tile.victims.bottom);
+        addVictim(cell.tile.victims.left);
       }
     }
   }
