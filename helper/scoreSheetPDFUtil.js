@@ -1,24 +1,5 @@
 const qr = require('qr-image');
-
-/**
- * Defines four orientations
- * @type {Readonly<{RIGHT: number, BOTTOM: number, LEFT: number, TOP: number}>}
- */
-const DirsEnum = Object.freeze({RIGHT: 1, BOTTOM: 2, LEFT: 3, TOP: 4});
-module.exports.DirsEnum = DirsEnum;
-
-const InputTypeEnum = Object.freeze({
-  FIELD: "fld",
-  FIELDTILE: "fldtl",
-  POSMARK: "pos",
-  CHECKBOX: "cb",
-  TEXT: "txt",
-  MATRIXROW: "mrow",
-  MATRIX: "m",
-  MATRIXTEXT: "mt",
-  QR: "qr"
-});
-module.exports.InputTypeEnum = InputTypeEnum;
+const defs = require('./scoreSheetUtil');
 
 /**
  * Draws a checkbox with text
@@ -30,8 +11,8 @@ module.exports.InputTypeEnum = InputTypeEnum;
  * @param dir direction of the checkbox where the text should be shown
  * @param color
  */
-module.exports.drawCheckbox = function (doc, pos_x, pos_y, size, text = "", dir = DirsEnum.RIGHT, color = "black", filled = false) {
-  const posData = {type: InputTypeEnum.CHECKBOX, x: pos_x, y: pos_y, w: size, h: size, children: []};
+module.exports.drawCheckbox = function (doc, pos_x, pos_y, size, text = "", dir = defs.DirsEnum.RIGHT, color = "black", filled = false) {
+  const posData = {type: defs.InputTypeEnum.CHECKBOX, x: pos_x, y: pos_y, w: size, h: size, children: []};
 
   doc.save();
   doc.rect(pos_x, pos_y, size, size).lineWidth(1)
@@ -44,28 +25,28 @@ module.exports.drawCheckbox = function (doc, pos_x, pos_y, size, text = "", dir 
   var pos_x_end, pos_y_end;
 
   switch (dir) {
-    case DirsEnum.RIGHT:
+    case defs.DirsEnum.RIGHT:
       pos_x = pos_x + size + 2;
       pos_y = pos_y + 1;
       pos_x_end = pos_x + size + doc.widthOfString(text);
       pos_y_end = pos_y + size;
       break;
 
-    case DirsEnum.BOTTOM:
+    case defs.DirsEnum.BOTTOM:
       pos_x = pos_x + 2;
       pos_y = pos_y + size + 2;
       pos_x_end = pos_x + size;
       pos_y_end = pos_y + Math.max(doc.widthOfString(text), size);
       break;
 
-    case DirsEnum.LEFT:
+    case defs.DirsEnum.LEFT:
       pos_x = pos_x - doc.widthOfString(text) - 2;
       pos_y = pos_y + 1;
       pos_x_end = pos_x + size;
       pos_y_end = pos_y + size;
       break;
 
-    case DirsEnum.TOP:
+    case defs.DirsEnum.TOP:
       pos_x = pos_x + 2;
       pos_y = pos_y - size;
       pos_x_end = pos_x + Math.max(doc.widthOfString(text), size);
@@ -88,7 +69,7 @@ module.exports.drawCheckbox = function (doc, pos_x, pos_y, size, text = "", dir 
 
 module.exports.drawMetadata = function (doc, pos_x, pos_y, config, run) {
   const posData = {
-    type: InputTypeEnum.QR,
+    type: defs.InputTypeEnum.QR,
     x: pos_x,
     y: pos_y,
     w: config.data.metadata.sizeQR,
@@ -127,7 +108,7 @@ module.exports.tileAddCheckbox = function (doc, posDataTile, config, text, scori
     + (posDataTile.children.length % checkbox_vertical_amount)
     * (config.checkboxSize + config.fields.checkbox.marginCheckbox);
 
-  const posCheckbox = this.drawCheckbox(doc, checkbox_pos_x, checkbox_pos_y, config.checkboxSize, text, DirsEnum.RIGHT, color);
+  const posCheckbox = this.drawCheckbox(doc, checkbox_pos_x, checkbox_pos_y, config.checkboxSize, text, defs.DirsEnum.RIGHT, color);
   posCheckbox.posData.meta = {
     id: scoringID,
     tileIndex: index
@@ -140,7 +121,7 @@ module.exports.drawCheckboxMatrix = function (doc, pos_x, pos_y, config, columnT
   const rowTextWidth = Math.ceil(Math.max.apply(null, rowText.map(text => doc.widthOfString(text)))) + 2;
 
   const posData = {
-    type: InputTypeEnum.MATRIX,
+    type: defs.InputTypeEnum.MATRIX,
     x: pos_x,
     y: pos_y,
     w: rowTextWidth + 2 + rowText.length * config.checkboxSize,
@@ -153,7 +134,7 @@ module.exports.drawCheckboxMatrix = function (doc, pos_x, pos_y, config, columnT
       .text(rowText[rowIndex], pos_x, pos_y + rowIndex * config.checkboxSize);
 
     posData.children.push({
-      type: InputTypeEnum.MATRIXROW,
+      type: defs.InputTypeEnum.MATRIXROW,
       x: pos_x,
       y: pos_y + rowIndex * config.checkboxSize,
       w: rowText.length * config.checkboxSize,
@@ -166,7 +147,7 @@ module.exports.drawCheckboxMatrix = function (doc, pos_x, pos_y, config, columnT
         doc,
         pos_x + colIndex * config.checkboxSize + rowTextWidth,
         pos_y + rowIndex * config.checkboxSize,
-        config.checkboxSize, rowIndex === 0 ? columnText[colIndex] : "", DirsEnum.TOP, "black"
+        config.checkboxSize, rowIndex === 0 ? columnText[colIndex] : "", defs.DirsEnum.TOP, "black"
       ).posData;
       posData.children[posData.children.length - 1].children.push(posDatCheckbox)
     }
@@ -181,7 +162,7 @@ module.exports.drawCheckboxMatrix = function (doc, pos_x, pos_y, config, columnT
 
 module.exports.drawTextInputField = function (doc, config, pos_x, pos_y, text, width, height) {
   const posData = {
-    type: InputTypeEnum.TEXT,
+    type: defs.InputTypeEnum.TEXT,
     x: pos_x,
     y: pos_y,
     w: width,
@@ -211,7 +192,7 @@ module.exports.drawNumberInputField = function (doc, config, pos_x, pos_y, text,
     x: posMatrix.x,
     y: posMatrix.y,
     posData: {
-      type: InputTypeEnum.MATRIXTEXT,
+      type: defs.InputTypeEnum.MATRIXTEXT,
       x: pos_x,
       y: pos_y,
       w: posMatrix.x - pos_x,
@@ -261,7 +242,7 @@ module.exports.drawPositionMarkers = function (doc, config) {
   const pos_y_max = Math.max.apply(null, config.positionMarkers.map(el => el.y));
 
   const posData = {
-    type: InputTypeEnum.POSMARK,
+    type: defs.InputTypeEnum.POSMARK,
     x: pos_x_min,
     y: pos_y_min,
     w: pos_x_max - pos_x_min,
@@ -270,7 +251,7 @@ module.exports.drawPositionMarkers = function (doc, config) {
   };
   for (let i = 0; i < config.positionMarkers.length; i++) {
     const posDataMark = {
-      type: InputTypeEnum.POSMARK,
+      type: defs.InputTypeEnum.POSMARK,
       x: config.positionMarkers[i].x,
       y: config.positionMarkers[i].y,
       w: config.positionMarkersSize,

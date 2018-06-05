@@ -1,7 +1,6 @@
 const cv = require('opencv4nodejs');
 const jsQR = require('jsqr');
-
-const InputTypeEnum = Object.freeze({POSMARK: "pos", CHECKBOX: "cb", TEXT: "txt", MATRIXROW: "mrow", MATRIX: "m", MATRIXTEXT: "mt", QR: "qr"});
+const defs = require('./scoreSheetUtil');
 
 function findPosdataByDescr(data, descriptor) {
   let dat = data.find(item => item.descr === descriptor);
@@ -32,7 +31,7 @@ function drawPosdataToSheet(sheetMat, posData, maxLevel) {
  * is a checkbox, otherwise null
  */
 function processPosdataCheckbox(mat, posdata) {
-  if (posdata.type !== InputTypeEnum.CHECKBOX) {
+  if (posdata.type !== defs.InputTypeEnum.CHECKBOX) {
     return null;
   }
 
@@ -56,7 +55,7 @@ function processPosdataCheckbox(mat, posdata) {
  * is a matrixrow, otherwise null
  */
 function processPosdataMatrixrow(mat, posdata) {
-  if (posdata.type !== InputTypeEnum.MATRIXROW) {
+  if (posdata.type !== defs.InputTypeEnum.MATRIXROW) {
     return null;
   }
 
@@ -79,7 +78,7 @@ function processPosdataMatrixrow(mat, posdata) {
  * @returns array of indexes of MATRIXROW if element is a matrix, otherwise null
  */
 function processPosdataMatrix(mat, posdata) {
-  if (posdata.type !== InputTypeEnum.MATRIX) {
+  if (posdata.type !== defs.InputTypeEnum.MATRIX) {
     return null;
   }
 
@@ -97,7 +96,7 @@ function processPosdataMatrix(mat, posdata) {
  * @returns extracted mat region of the text field if element is a matrix, otherwise null
  */
 function processPosdataText(mat, posdata) {
-  if (posdata.type !== InputTypeEnum.TEXT) {
+  if (posdata.type !== defs.InputTypeEnum.TEXT) {
     return null;
   }
 
@@ -118,7 +117,7 @@ function processPosdataText(mat, posdata) {
  * indexes is the return value of MATRIX if element is a matrixtext, otherwise null
  */
 function processPosdataMatrixText(mat, posdata) {
-  if (posdata.type !== InputTypeEnum.MATRIXTEXT) {
+  if (posdata.type !== defs.InputTypeEnum.MATRIXTEXT) {
     return null;
   }
 
@@ -142,7 +141,7 @@ function processPosdataMatrixText(mat, posdata) {
  * detected, otherwise null
  */
 function processPosdataQR(mat, posdata) {
-  if (posdata.type !== InputTypeEnum.QR) {
+  if (posdata.type !== defs.InputTypeEnum.QR) {
     return null;
   }
 

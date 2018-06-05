@@ -1,5 +1,6 @@
 const PDFDocument = require('pdfkit');
 const pdf = require('./scoreSheetPDFUtil');
+const defs = require('./scoreSheetUtil');
 const logger = require('../config/logger').mainLogger;
 
 /**
@@ -54,7 +55,7 @@ function drawFields(doc, pos_x, pos_y, config, map, stiles) {
   const mapLevelWidth = map.length * (config.fields.tileSize + config.fields.tileSpacing) + 2 - config.fields.tileSpacing;
 
   const posData = {
-    type: pdf.InputTypeEnum.FIELD,
+    type: defs.InputTypeEnum.FIELD,
     x: pos_x + config.fields.positions[0].x,
     y: pos_y + config.fields.positions[0].y,
     w: config.fields.positions[1].x + mapLevelWidth,
@@ -99,7 +100,7 @@ function drawFields(doc, pos_x, pos_y, config, map, stiles) {
     doc.restore();
 
     posData.children.push({
-      type: pdf.InputTypeEnum.FIELDTILE,
+      type: defs.InputTypeEnum.FIELDTILE,
       x: tile_pos_x,
       y: tile_pos_y,
       w: config.fields.tileSize,
@@ -236,7 +237,7 @@ function drawRun(doc, config, scoringRun) {
   savePos(pf, "field");
   pos_x += config.data.marginLeft;
   nextItem(pdf.drawMetadata(doc, pos_x, pos_y, config, scoringRun), "meta");
-  nextItem(pdf.drawCheckbox(doc, pos_x, pos_y, config.checkboxSize, "Enter scoring sheet manually", pdf.DirsEnum.RIGHT, "black"), "enterManually");
+  nextItem(pdf.drawCheckbox(doc, pos_x, pos_y, config.checkboxSize, "Enter scoring sheet manually", defs.DirsEnum.RIGHT, "black"), "enterManually");
   nextItem(pdf.drawEvacuationInputField(doc, config, pos_x, pos_y), "evacuation");
 
   if (scoringRun.map.numberOfDropTiles > 0) {
