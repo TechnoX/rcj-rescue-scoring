@@ -208,3 +208,43 @@ module.exports.processPosMarkers = function (sheetMat, posMarkersPosData) {
       ), new cv.Size(posMarkersPosData.w + posMarkersPosData.children[0].x, posMarkersPosData.h + posMarkersPosData.children[0].y)
     );
 };
+
+module.exports.processFieldData = function (sheetMat, posdata) {
+  let tiles = posdata.children.slice(0);
+
+  for (let i = 0; i < tiles.length; i++) {
+    for (let j = 0; j < tiles[i].children.length; j++) {
+      tiles[i].children[j].cbVal = this.processPosdataCheckbox(sheetMat, tiles[i].children[j]);
+    }
+  }
+
+  let procTiles = [];
+  let max = Math.max.apply(Math, tiles.map(el => Math.max.apply(Math, el.children.map(t => t.cbVal))));
+  for (let i = 0; i < tiles.length; i++) {
+    procTiles.push([]);
+    for (let j = 0; j < tiles[i].children.length; j++) {
+      procTiles[i].push([]);
+      procTiles[i][j].meta = tiles[i].children[j].meta;
+      procTiles[i][j].checked = tiles[i].children[j].cbVal > (max / 3);
+    }
+  }
+
+  return {
+    img: {
+      data: cv.imencode(
+        ".jpg",
+        sheetMat.getRegion(new cv.Rect(posdata.x, posdata.y, posdata.w, posdata.h))
+      ),
+      contentType: "image/jpg"
+    },
+    tilesData: procTiles
+  };
+};
+
+module.exports.findPosdataByDescr = function (data, descriptor) {
+  let dat = data.find(item => item.descr === descriptor);
+  if (typeof dat === 'undefined') {
+    return null;
+  }
+  return dat.posData;
+};

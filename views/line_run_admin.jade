@@ -95,12 +95,12 @@ block content
           button(ng-click="removeSelectedRun()" class='btn btn-danger' style="margin: 5px 5px 5px 5px;") {{"admin.lineRun.delS" | translate}}
           button(ng-click="go('/admin/'+ competitionId +'/line/runs/monitor')" class='btn btn-success' style="margin: 5px 5px 5px 5px; text-align:right;") {{"admin.lineRun.monitor" | translate}}
           button(ng-click="reset_kiosk()" class='btn btn-secondary' style="margin: 5px 5px 5px 5px; text-align:right;") Reset Kiosk
+
+      div
           form(style="")
-            input(type='file', ngf-select='', ng-model='files', ngf-max-size='5MB', required='', ngf-accept="'image/*'", ngf-pattern="'image/*'",  ngf-multiple='true' capture="environment")
-            br
-            br
-            button.btn.btn-info(ng-click='uploadSheets(files)') Upload
-            button.btn.btn-warning(ng-click='files = null', ng-show='files') Cancel
+          input(type='file', ngf-select='', ng-model='files', ngf-max-size='5MB', required='', ngf-accept="'image/*'", ngf-pattern="'image/*'",  ngf-multiple='true' capture="environment")
+          button.btn.btn-info(ng-click='uploadSheets(files)' style="margin: 5px 5px 5px 5px; text-align:right;") Upload scoring sheets
+          button.btn.btn-warning(ng-click='files = null', ng-show='files' style="margin: 5px 5px 5px 5px; text-align:right;") Cancel
       center
         .loader
           img(src="/images/loader2.gif")

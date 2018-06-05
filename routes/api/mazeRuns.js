@@ -1,5 +1,6 @@
 "use strict"
 const express = require('express')
+const multer = require('multer')
 const publicRouter = express.Router()
 const privateRouter = express.Router()
 const adminRouter = express.Router()
@@ -11,6 +12,8 @@ const logger = require('../../config/logger').mainLogger
 const fs = require('fs')
 const scoreCalculator = require('../../helper/scoreCalculator')
 const scoreSheetPDF = require('../../helper/scoreSheetPDFMaze');
+const scoreSheetProcessMaze = require('../../helper/scoreSheetProcessMaze');
+const scoreSheetProcessUtil = require('../../helper/scoreSheetProcessUtil');
 const auth = require('../../helper/authLevels')
 const ACCESSLEVELS = require('../../models/user').ACCESSLEVELS
 
@@ -564,6 +567,88 @@ publicRouter.get('/scoresheet', function (req, res, next) {
   })
 })
 
+/**
+ * Upload scoring sheet (single (jpg/png) or bunch (pdf)
+ */
+publicRouter.post('/scoresheet/:competition', function (req, res) {
+  const competition = req.params.competition;
+
+  console.log("competition:", competition);
+
+  let pathname = "tmp/";
+  fs.mkdir(pathname, function (err) {
+    if (err && err.code !== 'EEXIST') {
+      console.log(err);
+      return res.status(400).send({
+        msg: "Error creating tmp dir",
+        err: err.message
+      })
+    }
+  });
+
+  let storage = multer.diskStorage({
+    destination: function (req, file, callback) {
+      callback(null, pathname)
+    },
+    filename: function (req, file, callback) {
+      callback(null, "scoringsheet_" + Math.random().toString(36).substr(2, 10) + file.originalname)
+    }
+  });
+
+  let upload = multer({
+    storage: storage
+  }).single('file');
+
+  upload(req, res, function (err) {
+    if (err) {
+      return res.status(400).send({
+        msg: "Error uploading file",
+        err: err.message
+      })
+    }
+    let sheetRunID = scoreSheetProcessUtil.processPosdataQRFull(req.file.path);
+    if (sheetRunID == null) {
+      return res.status(400).send({
+        msg: "Error processing file",
+        err: err.message
+      })
+    }
+
+    mazeRun.findById(ObjectId(sheetRunID)).populate({
+      path    : 'map',
+      populate: {
+        path: 'tiles.tileType'
+      }
+    }).exec(function(err, run) {
+      if (err) {
+        logger.error(err)
+        res.status(400).send({
+          msg: "Could not get run",
+          err: err.message
+        })
+      } else {
+        const sheetData = scoreSheetProcessMaze.processScoreSheet(run.scoreSheet.positionData, req.file.path);
+        console.log(sheetData)
+        run.save((err) => {
+          if (err) {
+            logger.error(err);
+            res.status(400).send({
+              msg: "Error saving positiondata of run in db",
+              err: err.message
+            })
+          }
+        });
+
+        fs.unlink(req.file.path, (err) => {
+          if (err) throw err;
+        });
+      }
+    });
+
+    res.end('File is uploaded and processed');
+  })
+
+});
 
 adminRouter.get('/apteam/:cid/:teamid/:group', function (req, res, next) {
     const cid = req.params.cid
