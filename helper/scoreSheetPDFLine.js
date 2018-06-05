@@ -17,9 +17,9 @@ const globalConfig = {
     left: 30,
     top: 100
   },
-  checkboxSize: 10,
+  checkboxSize: 7,
   fields: {
-    tileSize: 38,
+    tileSize: 30,
     checkbox: {
       marginBorder: 1,
       marginCheckbox: 2
@@ -35,7 +35,7 @@ const globalConfig = {
     metadata: {
       sizeQR: 57,
       text: {
-        fontSize: 14
+        fontSize: 11
       }
     },
     inputs: {
@@ -49,6 +49,26 @@ const globalConfig = {
     height: 30
   }
 };
+
+/**
+ * Calculates the worst case amount of checkpoint passings based a map
+ * and the amount of checkpoint markers
+ * @param checkpointMarkersAmount amount of checkpoint marker
+ * @param tiles
+ * @returns {number}
+ */
+function calculateWorstCaseCheckpointAmount(map) {
+  let sortedTiles = map.tiles.slice(0).sort((t1, t2) => t2.index.length - t1.index.length);
+  let checkpointAmount = 0;
+  let usedCheckpointMarkers = 0;
+  for (let i = 0; i < sortedTiles.length && usedCheckpointMarkers < map.numberOfDropTiles; i++) {
+    if (sortedTiles[i].items.obstacles === 0 && sortedTiles[i].items.speedbumps === 0 && sortedTiles[i].items.rampPoints === false) {
+      checkpointAmount += sortedTiles[i].index.length;
+      usedCheckpointMarkers ++;
+    }
+  }
+  return checkpointAmount;
+}
 
 function drawFields(doc, pos_x, pos_y, config, map, stiles) {
   const mapLevelHeight = map.width * (config.fields.tileSize + config.fields.tileSpacing) + 2 - config.fields.tileSpacing;
@@ -221,7 +241,6 @@ function drawRun(doc, config, scoringRun) {
         stiles[t.index[j]].scoredItems.push(addSItem);
       }
     }
-
   }
   for (let i = 0; i < stiles.length - 2; i++) {
     if (stiles[i].scoredItems.length === 0 || stiles[i].scoredItems[0] === "ramp") {
@@ -230,7 +249,7 @@ function drawRun(doc, config, scoringRun) {
     }
   }
 
-  logger.debug(stiles);
+  console.log("worst case amount of checkpoint passings:",calculateWorstCaseCheckpointAmount(scoringRun.map));
 
   savePos(pdf.drawPositionMarkers(doc, config), "posMarkers");
   let pf = drawFields(doc, pos_x, pos_y, config, scoringRun.map, stiles);
