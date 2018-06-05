@@ -46,7 +46,7 @@ module.exports.processScoreSheet = function (posData, scoreSheetFileName) {
 
   let sheetData = {};
   sheetData.qr = proc.processPosdataQR(normalizedSheet, findPosdataByDescr(posData, 'meta'));
-  sheetData.enterManually = proc.processPosdataCheckbox(normalizedSheet, findPosdataByDescr(posData, 'enterManually')) > 10000;
+  sheetData.enterManually = proc.processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData, 'enterManually'));
   sheetData.evacuation = proc.processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData, 'evacuation'));
   sheetData.checkpoints = [];
   //console.log(posData);

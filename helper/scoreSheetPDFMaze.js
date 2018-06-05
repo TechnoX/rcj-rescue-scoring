@@ -199,7 +199,7 @@ function drawRun(doc, config, scoringRun) {
   savePos(pf, "field");
   pos_x += config.data.marginLeft;
   nextItem(pdf.drawMetadata(doc, pos_x, pos_y, config, scoringRun), "meta");
-  nextItem(pdf.drawCheckbox(doc, pos_x, pos_y, config.checkboxSize, "Enter scoring sheet manually", defs.DirsEnum.RIGHT, "black"), "enterManually");
+  nextItem(pdf.drawYesNoField(doc, config, pos_x, pos_y, "Enter scoring sheet manually"), "enterManually");
 
 
   nextItem(drawLoPInputField(doc, config, pos_x, pos_y), "lops");

@@ -91,7 +91,7 @@ module.exports.drawMetadata = function (doc, pos_x, pos_y, config, run) {
   let dateTime = new Date(run.startTime);
   doc.text("Time: " + dateTime.getHours() + ":" + dateTime.getMinutes(), pos_x, pos_y);
   pos_y += config.data.metadata.text.fontSize + 1;
-  return {x: pos_x, y: pos_y, posData: posData}
+  return {x: pos_x, y: Math.max(pos_y, posData.y + posData.h), posData: posData}
 };
 
 module.exports.tileAddCheckbox = function (doc, posDataTile, config, text, scoringID, color, index) {
