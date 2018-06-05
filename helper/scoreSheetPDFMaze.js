@@ -203,7 +203,7 @@ function drawRun(doc, config, scoringRun) {
 
 
   nextItem(drawLoPInputField(doc, config, pos_x, pos_y), "lops");
-  nextItem(pdf.drawExitBonusField(doc, config, pos_x, pos_y), "exitBonus");
+  nextItem(pdf.drawYesNoField(doc, config, pos_x, pos_y, "Exit Bonus"), "exitBonus");
   nextItem(pdf.drawTimeInputField(doc, config, pos_x, pos_y), "time");
   nextItem(pdf.drawTextInputField(doc, config, pos_x, pos_y, "Team:", config.signature.width, config.signature.height), "signTeam");
   nextItem(pdf.drawTextInputField(doc, config, pos_x, pos_y, "Referee:", config.signature.width, config.signature.height), "signRef");

@@ -208,10 +208,10 @@ module.exports.drawTimeInputField = function (doc, config, pos_x, pos_y) {
   return this.drawNumberInputField(doc, config, pos_x, pos_y, "Time:", columnText, rowText)
 };
 
-module.exports.drawExitBonusField = function (doc, config, pos_x, pos_y) {
+module.exports.drawYesNoField = function (doc, config, pos_x, pos_y, text) {
   const columnText = ["Y", "N"];
   const rowText = [""];
-  return this.drawNumberInputField(doc, config, pos_x, pos_y, "Exit Bonus (Yes/No):", columnText, rowText)
+  return this.drawNumberInputField(doc, config, pos_x, pos_y, text + " (Yes/No):", columnText, rowText)
 };
 
 module.exports.drawVictimInputField = function (doc, config, pos_x, pos_y, amount, text) {
