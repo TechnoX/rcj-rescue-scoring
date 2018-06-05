@@ -73,7 +73,10 @@ const mazeRunSchema = new Schema({
   },
   started  : {type: Boolean, default: false, index: true},
   comment  : {type: String, default: ""},
-  startTime: {type: Number, default: 0}
+  startTime: {type: Number, default: 0},
+  scoreSheet: { // all data connected to the scoring sheet should it be used
+    positionData: {type: Object, default: null}
+  },
 })
 
 mazeRunSchema.pre('save', function (next) {

@@ -10,6 +10,7 @@ const ObjectId = require('mongoose').Types.ObjectId
 const logger = require('../../config/logger').mainLogger
 const fs = require('fs')
 const scoreCalculator = require('../../helper/scoreCalculator')
+const scoreSheetPDF = require('../../helper/scoreSheetPDFMaze');
 const auth = require('../../helper/authLevels')
 const ACCESSLEVELS = require('../../models/user').ACCESSLEVELS
 
@@ -484,6 +485,83 @@ privateRouter.put('/:runid', function (req, res, next) {
                 })
             }
         })
+})
+
+/**
+ * @api {get} /scoreSheet Generate scoring sheets
+ * @apiName GetScoringSheet
+ * @apiGroup Get
+ * @apiVersion 1.0.1
+ *
+ * @apiSuccess (200) {String}   "Ok"
+ *
+ * @apiError (400) {String} msg The error message
+ */
+publicRouter.get('/scoresheet', function (req, res, next) {
+  const competition = req.query.competition || req.params.competition
+
+  if (competition == null || competition.constructor !== String) {
+    res.status(400).send({
+      msg: "Err competition"
+    })
+  }
+
+  var query = mazeRun.find({
+    competition: competition
+  })
+
+  query.select("competition round team field map startTime")
+  query.populate([
+    {
+      path  : "round",
+      select: "name"
+    },
+    {
+      path  : "team",
+      select: "name"
+    },
+    {
+      path  : "field",
+      select: "name"
+    },
+    {
+      path  : "map",
+      select: "name height width length startTile cells"
+    }
+  ])
+
+  query.lean().exec(function (err, dbRuns) {
+    if (err) {
+      logger.error(err)
+      res.status(400).send({
+        msg: "Could not get runs"
+      })
+    } else if (dbRuns) {
+      let posData = scoreSheetPDF.generateScoreSheet(res, dbRuns);
+      for (let i = 0; i < dbRuns.length; i++) {
+        mazeRun.findById(dbRuns[i]._id, (err, run) => {
+          if (err) {
+            logger.error(err)
+            res.status(400).send({
+              msg: "Could not get run",
+              err: err.message
+            })
+          } else {
+            run.scoreSheet.positionData = posData[i];
+            run.save((err) => {
+              if (err) {
+                logger.error(err)
+                res.status(400).send({
+                  msg: "Error saving positiondata of run in db",
+                  err: err.message
+                })
+              }
+            })
+          }
+        })
+      }
+    }
+  })
 })
 
 
