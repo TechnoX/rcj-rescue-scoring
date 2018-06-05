@@ -57,7 +57,8 @@ module.exports.processScoreSheet = function (posData, scoreSheetFileName) {
     sheetData.checkpoints.push(proc.processPosdataMatrixText(normalizedSheet, posDataCB))
   }
   sheetData.victimsAlive = proc.processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData, 'victimsAlive'));
-  sheetData.victimsDead = proc.processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData, 'victimsDead'));
+  sheetData.victimsDeadBeforeAlive = proc.processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData, 'victimsDeadBeforeAlive'));
+  sheetData.victimsDeadAfterAlive = proc.processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData, 'victimsDeadAfterAlive'));
   sheetData.time = proc.processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData, 'time'));
   sheetData.signTeam = proc.processPosdataText(normalizedSheet, findPosdataByDescr(posData, 'signTeam'));
   sheetData.signRef = proc.processPosdataText(normalizedSheet, findPosdataByDescr(posData, 'signRef'));

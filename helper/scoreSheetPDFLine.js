@@ -291,8 +291,14 @@ function drawRun(doc, config, scoringRun) {
     }
   }
 
-  nextItem(pdf.drawVictimInputField(doc, config, pos_x, pos_y, 9, "alive"), "victimsAlive");
-  nextItem(pdf.drawVictimInputField(doc, config, pos_x, pos_y, 9, "dead"), "victimsDead");
+  if (scoringRun.map.victims.live > 0) {
+    nextItem(pdf.drawVictimInputField(doc, config, pos_x, pos_y, scoringRun.map.victims.live, "alive"), "victimsAlive");
+  }
+  if (scoringRun.map.victims.dead > 0) {
+    nextItem(pdf.drawVictimInputField(doc, config, pos_x, pos_y, scoringRun.map.victims.dead, "dead before alive"), "victimsDeadBeforeAlive");
+    nextItem(pdf.drawVictimInputField(doc, config, pos_x, pos_y, scoringRun.map.victims.dead, "dead after alive"), "victimsDeadAfterAlive");
+  }
+
   nextItem(pdf.drawTimeInputField(doc, config, pos_x, pos_y), "time");
   nextItem(pdf.drawExitBonusField(doc, config, pos_x, pos_y), "exitBonus");
   nextItem(pdf.drawTextInputField(doc, config, pos_x, pos_y, "Team:", config.signature.width, config.signature.height), "signTeam");
