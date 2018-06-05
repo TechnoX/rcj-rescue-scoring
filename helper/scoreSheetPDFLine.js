@@ -180,7 +180,25 @@ function drawFields(doc, pos_x, pos_y, config, map, stiles) {
             pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "R", "ramp", i === 0 ? "#EB39E8" : "#F480F2", indexNum);
             break;
           case "checkpoint":
-            pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "C", "checkpoint", i === 0 ? "#0080FF" : "#14C8E8", indexNum);
+            if (posData.children[posData.children.length - 1].children.length === 1) {
+              // Don't add multiple checkpoints for multiple passings since we only want to know the position
+              break;
+            }
+
+            const posCheckbox = pdf.drawCheckbox(
+              doc,
+              posData.children[posData.children.length - 1].x + config.fields.tileSize - config.fields.checkbox.marginBorder - (config.checkboxSize * 2),
+              posData.children[posData.children.length - 1].y + config.fields.tileSize - config.fields.checkbox.marginBorder - config.checkboxSize,
+              config.checkboxSize,
+              "C",
+              defs.DirsEnum.RIGHT,
+              "#0080FF"
+            );
+            posCheckbox.posData.meta = {
+              id: "checkpoint",
+              tileIndex: indexNum
+            };
+            posData.children[posData.children.length - 1].children.push(posCheckbox.posData);
             break;
         }
       }
