@@ -59,7 +59,17 @@ const globalConfig = {
  */
 const DirsEnum = Object.freeze({RIGHT: 1, BOTTOM: 2, LEFT: 3, TOP: 4});
 
-const InputTypeEnum = Object.freeze({FIELD: "fld", FIELDTILE: "fldtl", POSMARK: "pos", CHECKBOX: "cb", TEXT: "txt", MATRIXROW: "mrow", MATRIX: "m", MATRIXTEXT: "mt", QR: "qr"});
+const InputTypeEnum = Object.freeze({
+  FIELD: "fld",
+  FIELDTILE: "fldtl",
+  POSMARK: "pos",
+  CHECKBOX: "cb",
+  TEXT: "txt",
+  MATRIXROW: "mrow",
+  MATRIX: "m",
+  MATRIXTEXT: "mt",
+  QR: "qr"
+});
 
 /**
  * Draws a checkbox with text
@@ -135,7 +145,14 @@ function tileIsDroptile(tile) {
 }
 
 function drawMetadata(doc, pos_x, pos_y, config, run) {
-  const posData = {type: InputTypeEnum.QR, x: pos_x, y: pos_y, w: config.data.metadata.sizeQR, h: config.data.metadata.sizeQR, children: []};
+  const posData = {
+    type: InputTypeEnum.QR,
+    x: pos_x,
+    y: pos_y,
+    w: config.data.metadata.sizeQR,
+    h: config.data.metadata.sizeQR,
+    children: []
+  };
 
   doc.image(qr.imageSync(run._id.toString(), {margin: 0}), pos_x, pos_y, {width: config.data.metadata.sizeQR});
   pos_x += config.data.metadata.sizeQR + config.data.inputs.marginsVertical;
@@ -162,26 +179,30 @@ function tileAddCheckbox(doc, posDataTile, config, text, scoringID, color, index
   }
 
   let checkbox_pos_x = posDataTile.x + config.fields.checkbox.marginBorder
-      + Math.floor(posDataTile.children.length / checkbox_vertical_amount)
-      * ((config.checkboxSize * 2) + config.fields.checkbox.marginCheckbox);
+    + Math.floor(posDataTile.children.length / checkbox_vertical_amount)
+    * ((config.checkboxSize * 2) + config.fields.checkbox.marginCheckbox);
   let checkbox_pos_y = posDataTile.y + config.fields.checkbox.marginBorder
-      + (posDataTile.children.length % checkbox_vertical_amount)
-      * (config.checkboxSize + config.fields.checkbox.marginCheckbox);
+    + (posDataTile.children.length % checkbox_vertical_amount)
+    * (config.checkboxSize + config.fields.checkbox.marginCheckbox);
 
   const posCheckbox = drawCheckbox(doc, checkbox_pos_x, checkbox_pos_y, config.checkboxSize, text, DirsEnum.RIGHT, color);
   posCheckbox.posData.meta = {
-    id : scoringID,
-    tileIndex : index
+    id: scoringID,
+    tileIndex: index
   }
   posDataTile.children.push(posCheckbox.posData);
 }
 
 function dirToAngle(dir) {
   switch (dir) {
-    case "bottom": return 0;
-    case "right": return 90;
-    case "top": return 180;
-    case "left": return 270;
+    case "bottom":
+      return 0;
+    case "right":
+      return 90;
+    case "top":
+      return 180;
+    case "left":
+      return 270;
   }
   return 0;
 }
@@ -253,46 +274,46 @@ function drawFields(doc, pos_x, pos_y, config, map, stiles) {
           tile_pos_y + (config.fields.tileSize / 2)
         ]
       });
-     /* doc.image("public/images/" + (tile.levelUp ? "up.png" : "down.png"),
-        tile_pos_x + (config.fields.tileSize / 2),
-        tile_pos_y + (config.fields.tileSize / 2), {width: config.fields.tileSize / 2});*/
+      /* doc.image("public/images/" + (tile.levelUp ? "up.png" : "down.png"),
+         tile_pos_x + (config.fields.tileSize / 2),
+         tile_pos_y + (config.fields.tileSize / 2), {width: config.fields.tileSize / 2});*/
       doc.restore()
     }
 
     if (map.startTile.x === tile.x && map.startTile.y === tile.y && map.startTile.z === tile.z) {
-            tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "St" ,"start", "#0080FF", tile.index[0])
+      tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "St", "start", "#0080FF", tile.index[0])
     }
-      for(let i=0,indexNum;indexNum=tile.index[i];i++){
-          let stile = stiles[indexNum];
-          for(let j=0;j<stile.scoredItems.length;j++){
-              switch(stile.scoredItems[j]){
-                  case "obstacle":
-                      if(i == 0) tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "O", "obstacle", "#A4603C", indexNum)
-                      else tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "O", "obstacle","#CAA28D", indexNum)
-                      break;
-                  case "speedbump":
-                      if(i == 0) tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "S", "speedbump","#046D0E", indexNum)
-                      else tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "S", "speedbump","#5CD717", indexNum)
-                      break;
-                  case "gap":
-                      if(i == 0) tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "G", "gap","#3A045E", indexNum)
-                      else tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "G", "gap","#9124CF", indexNum)
-                      break;
-                  case "intersection":
-                      if(i == 0 ) tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "I", "intersection","#B8080B", indexNum)
-                      else tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "I", "intersection","#FD0509", indexNum)
-                      break;
-                  case "ramp":
-                      if(i == 0) tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "R", "ramp","#EB39E8", indexNum)
-                      else tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "R", "ramp","#F480F2", indexNum)
-                      break;
-                  case "checkpoint":
-                      if(i == 0) tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "C", "checkpoint","#0080FF", indexNum)
-                      else tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "C", "checkpoint","#14C8E8", indexNum)
-                      break;
-                }
-          }
+    for (let i = 0, indexNum; indexNum = tile.index[i]; i++) {
+      let stile = stiles[indexNum];
+      for (let j = 0; j < stile.scoredItems.length; j++) {
+        switch (stile.scoredItems[j]) {
+          case "obstacle":
+            if (i == 0) tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "O", "obstacle", "#A4603C", indexNum)
+            else tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "O", "obstacle", "#CAA28D", indexNum)
+            break;
+          case "speedbump":
+            if (i == 0) tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "S", "speedbump", "#046D0E", indexNum)
+            else tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "S", "speedbump", "#5CD717", indexNum)
+            break;
+          case "gap":
+            if (i == 0) tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "G", "gap", "#3A045E", indexNum)
+            else tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "G", "gap", "#9124CF", indexNum)
+            break;
+          case "intersection":
+            if (i == 0) tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "I", "intersection", "#B8080B", indexNum)
+            else tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "I", "intersection", "#FD0509", indexNum)
+            break;
+          case "ramp":
+            if (i == 0) tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "R", "ramp", "#EB39E8", indexNum)
+            else tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "R", "ramp", "#F480F2", indexNum)
+            break;
+          case "checkpoint":
+            if (i == 0) tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "C", "checkpoint", "#0080FF", indexNum)
+            else tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "C", "checkpoint", "#14C8E8", indexNum)
+            break;
+        }
       }
+    }
   }
 
   return {
@@ -339,7 +360,11 @@ function drawCheckboxMatrix(doc, pos_x, pos_y, config, columnText, rowText) {
     }
   }
 
-  return {x: pos_x + rowTextWidth + columnText.length * config.checkboxSize, y: pos_y + rowText.length * config.checkboxSize, posData: posData}
+  return {
+    x: pos_x + rowTextWidth + columnText.length * config.checkboxSize,
+    y: pos_y + rowText.length * config.checkboxSize,
+    posData: posData
+  }
 }
 
 function drawTextInputField(doc, config, pos_x, pos_y, text, width, height) {
@@ -470,53 +495,53 @@ function drawRun(doc, config, scoringRun) {
     savePos(pos, descr);
     pos_y = pos.y + config.data.inputs.marginsVertical;
   }
-    
-    var stiles = [];
-    while (stiles.length < scoringRun.map.indexCount) {
-        stiles.push({
-            scoredItems:[]
-        });
+
+  var stiles = [];
+  while (stiles.length < scoringRun.map.indexCount) {
+    stiles.push({
+      scoredItems: []
+    });
+  }
+  for (let i = 0, t; t = scoringRun.map.tiles[i]; i++) {
+    for (let j = 0; j < t.index.length; j++) {
+      for (let k = 0; k < t.items.obstacles; k++) {
+        let addSItem = "obstacle";
+        stiles[t.index[j]].scoredItems.push(addSItem);
+      }
+
+      for (let k = 0; k < t.items.speedbumps; k++) {
+        let addSItem = "speedbump";
+        stiles[t.index[j]].scoredItems.push(addSItem);
+      }
+
+      for (let k = 0; k < t.tileType.gaps; k++) {
+        let addSItem = "gap";
+        stiles[t.index[j]].scoredItems.push(addSItem);
+      }
+
+      for (let k = 0; k < t.tileType.intersections; k++) {
+        let addSItem = "intersection";
+        stiles[t.index[j]].scoredItems.push(addSItem);
+      }
+
+      if (t.items.rampPoints) {
+        let addSItem = "ramp";
+        stiles[t.index[j]].scoredItems.push(addSItem);
+      }
     }
-    for(let i=0,t;t=scoringRun.map.tiles[i];i++){
-        for(let j=0;j<t.index.length;j++){
-            for(let k=0;k<t.items.obstacles;k++){
-                let addSItem = "obstacle";
-                stiles[t.index[j]].scoredItems.push(addSItem);
-            }
 
-            for(let k=0;k<t.items.speedbumps;k++){
-                let addSItem = "speedbump";
-                stiles[t.index[j]].scoredItems.push(addSItem);
-            }
-
-            for(let k=0;k<t.tileType.gaps;k++){
-                let addSItem =  "gap";
-                stiles[t.index[j]].scoredItems.push(addSItem);
-            }
-
-            for(let k=0;k<t.tileType.intersections;k++){
-                let addSItem = "intersection";
-                stiles[t.index[j]].scoredItems.push(addSItem);
-            }
-            
-            if(t.items.rampPoints){
-                let addSItem = "ramp";
-                stiles[t.index[j]].scoredItems.push(addSItem);
-            }
-        }
-
+  }
+  for (let i = 0; i < stiles.length - 2; i++) {
+    if (stiles[i].scoredItems.length == 0 || stiles[i].scoredItems[0] == "ramp") {
+      let addSItem = "checkpoint";
+      stiles[i].scoredItems.push(addSItem);
     }
-    for(let i=0; i < stiles.length-2;i++){
-        if(stiles[i].scoredItems.length == 0 || stiles[i].scoredItems[0] == "ramp"){
-            let addSItem = "checkpoint";
-            stiles[i].scoredItems.push(addSItem);
-        }
-    }
-    
-    logger.debug(stiles);
+  }
+
+  logger.debug(stiles);
 
   savePos(drawPositionMarkers(doc, config), "posMarkers");
-  let pf = drawFields(doc, pos_x, pos_y, config, scoringRun.map,stiles);
+  let pf = drawFields(doc, pos_x, pos_y, config, scoringRun.map, stiles);
   savePos(pf, "field");
   pos_x += config.data.marginLeft;
   nextItem(drawMetadata(doc, pos_x, pos_y, config, scoringRun), "meta");
@@ -552,7 +577,7 @@ function drawRun(doc, config, scoringRun) {
   return posDatas
 }
 
-module.exports.generateScoreSheet = function(res, rounds) {
+module.exports.generateScoreSheet = function (res, rounds) {
   let doc = new PDFDocument({autoFirstPage: false});
 
   doc.pipe(res);
