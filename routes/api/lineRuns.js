@@ -13,8 +13,8 @@ const fs = require('fs')
 const pathFinder = require('../../helper/pathFinder')
 const scoreCalculator = require('../../helper/scoreCalculator')
 const auth = require('../../helper/authLevels')
-const scoreSheetLinePDF = require('../../helper/scoreSheetLinePDF')
-const scoreSheetLineProcess = require('../../helper/scoreSheetLineProcess')
+const scoreSheetLinePDF = require('../../helper/scoreSheetPDFLine')
+const scoreSheetLineProcess = require('../../helper/scoreSheetProcessLine')
 const ACCESSLEVELS = require('../../models/user').ACCESSLEVELS
 
 var socketIo

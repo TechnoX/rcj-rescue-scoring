@@ -1,5 +1,5 @@
 const PDFDocument = require('pdfkit');
-const pdf = require('./scoreSheetUtilPDF');
+const pdf = require('./scoreSheetPDFUtil');
 const logger = require('../config/logger').mainLogger;
 
 /**
