@@ -15,6 +15,7 @@ const scoreCalculator = require('../../helper/scoreCalculator')
 const auth = require('../../helper/authLevels')
 const scoreSheetLinePDF = require('../../helper/scoreSheetPDFLine')
 const scoreSheetLineProcess = require('../../helper/scoreSheetProcessLine')
+const scoreSheetProcess = require('../../helper/scoreSheetProcessUtil')
 const ACCESSLEVELS = require('../../models/user').ACCESSLEVELS
 
 var socketIo
@@ -722,7 +723,7 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
         err: err.message
       })
     }
-    let sheetRunID = scoreSheetLineProcess.processPosdataQRFull(req.file.path);
+    let sheetRunID = scoreSheetProcess.processPosdataQRFull(req.file.path);
     if (sheetRunID == null) {
       return res.status(400).send({
         msg: "Error processing file",
