@@ -585,8 +585,13 @@ publicRouter.get('/scoresheetimg/:run/:img', function (req, res, next) {
           res.send(run.scoreSheet.rescuedLiveVictimsImage.data);
           break;
 
-        case "rescuedDead":
-          res.contentType(run.scoreSheet.rescuedDeadVictimsImage.contentType);
+        case "rescuedDeadBeforeLive":
+          res.contentType(run.scoreSheet.rescuedDeadBeforeLiveVictimsImage.contentType);
+          res.send(run.scoreSheet.rescuedDeadVictimsImage.data);
+          break;
+
+        case "rescuedDeadAfterLive":
+          res.contentType(run.scoreSheet.rescuedDeadAfterLiveVictimsImage.contentType);
           res.send(run.scoreSheet.rescuedDeadVictimsImage.data);
           break;
 
@@ -760,11 +765,21 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
           run.scoreSheet.LoPImages.set(i, sheetData.checkpoints[i].img)
         }
 
-        run.rescuedLiveVictims = sheetData.victimsAlive.indexes[0];
+        run.rescueOrder = [];
+        for (let i = 0; i < sheetData.victimsDeadBeforeAlive.indexes[0]; i++) {
+          run.rescueOrder.push({type: "D", effective: false});
+        }
+        run.scoreSheet.rescuedDeadBeforeLiveVictimsImage = sheetData.victimsDeadBeforeAlive.img;
+
+        for (let i = 0; i < sheetData.victimsAlive.indexes[0]; i++) {
+          run.rescueOrder.push({type: "L", effective: true});
+        }
         run.scoreSheet.rescuedLiveVictimsImage = sheetData.victimsAlive.img;
 
-        run.rescuedDeadVictims = sheetData.victimsDead.indexes[0];
-        run.scoreSheet.rescuedDeadVictimsImage = sheetData.victimsDead.img;
+        for (let i = 0; i < sheetData.victimsDeadAfterAlive.indexes[0]; i++) {
+          run.rescueOrder.push({type: "D", effective: true});
+        }
+        run.scoreSheet.rescuedDeadAfterLiveVictimsImage = sheetData.victimsDeadAfterAlive.img;
 
         run.time.minutes = sheetData.time.indexes[0];
         run.time.seconds = sheetData.time.indexes[1] * 10 + sheetData.time.indexes[2];
