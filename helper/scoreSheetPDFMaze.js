@@ -20,6 +20,7 @@ const globalConfig = {
   checkboxSize: 7,
   fields: {
     tileSize: 30,
+    wallTickness: 4, // Should be even
     checkbox: {
       marginBorder: 1,
       marginCheckbox: 2
@@ -63,15 +64,28 @@ function drawFields(doc, pos_x, pos_y, config, map) {
     children: []
   };
 
-  for (let z = 0; z < map.height && z < config.fields.positions.length; z++) {
-    doc.lineWidth(1)
-      .rect(
-        pos_x + config.fields.positions[z].x,
-        pos_y + config.fields.positions[z].y,
-        mapLevelHeight,
-        mapLevelWidth
-      )
-      .fillAndStroke("#EFEFEF", "black")
+  doc.lineWidth(0);
+
+  for (let i = 0, cell; cell = map.cells[i]; i++) {
+    if (cell.isWall) {
+      if (cell.x % 2 === 0) {
+        // Horizontal wall
+        doc.rect(
+            pos_x + (cell.x / 2) * config.fields.tileSize,
+            pos_y + ((cell.y - 1) / 2) * config.fields.tileSize + config.fields.wallTickness / 2,
+            config.fields.wallTickness,
+            config.fields.tileSize
+          ).fillAndStroke("black", "black")
+      } else {
+        // Vertical wall
+        doc.rect(
+          pos_x + ((cell.x - 1) / 2) * config.fields.tileSize + config.fields.wallTickness / 2,
+          pos_y + (cell.y / 2) * config.fields.tileSize,
+          config.fields.tileSize,
+          config.fields.wallTickness
+        ).fillAndStroke("black", "black")
+      }
+    }
   }
 
   return {
