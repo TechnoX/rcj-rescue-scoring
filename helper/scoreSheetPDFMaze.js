@@ -58,15 +58,15 @@ function drawLoPInputField(doc, config, pos_x, pos_y) {
 };
 
 function drawFields(doc, pos_x, pos_y, config, map) {
-  const mapLevelHeight = map.width * config.fields.tileSize;
-  const mapLevelWidth = map.length * config.fields.tileSize;
+  const mapLevelHeight = map.length * config.fields.tileSize;
+  const mapLevelWidth = map.width * config.fields.tileSize;
 
   const posData = {
     type: defs.InputTypeEnum.FIELD,
     x: pos_x + config.fields.positions[0].x,
     y: pos_y + config.fields.positions[0].y,
-    w: config.fields.positions[1].x + mapLevelWidth,
-    h: config.fields.positions[1].y + mapLevelHeight,
+    w: mapLevelWidth,
+    h: mapLevelHeight,
     children: []
   };
 
