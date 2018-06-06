@@ -1,17 +1,8 @@
 const cv = require('opencv4nodejs');
 const jsQR = require('jsqr');
+const defs = require('./scoreSheetUtil');
 
-const InputTypeEnum = Object.freeze({POSMARK: "pos", CHECKBOX: "cb", TEXT: "txt", MATRIXROW: "mrow", MATRIX: "m", MATRIXTEXT: "mt", QR: "qr"});
-
-function findPosdataByDescr(data, descriptor) {
-  let dat = data.find(item => item.descr === descriptor);
-  if (typeof dat === 'undefined') {
-    return null;
-  }
-  return dat.posData;
-}
-
-function drawPosdataToSheet(sheetMat, posData, maxLevel) {
+module.exports.drawPosdataToSheet = function (sheetMat, posData, maxLevel) {
   if (maxLevel <= 0) {
     return;
   }
@@ -19,9 +10,9 @@ function drawPosdataToSheet(sheetMat, posData, maxLevel) {
   sheetMat.drawRectangle(new cv.Rect(posData.x, posData.y, posData.w, posData.h), new cv.Vec3(0, 255, 0), 1, 8, 0);
 
   for (let i = 0; i < posData.children.length; i++) {
-    drawPosdataToSheet(sheetMat, posData.children[i], maxLevel - 1)
+    this.drawPosdataToSheet(sheetMat, posData.children[i], maxLevel - 1)
   }
-}
+};
 
 
 /**
@@ -31,8 +22,8 @@ function drawPosdataToSheet(sheetMat, posData, maxLevel) {
  * @returns number that is proportional to the amount of grey in the checkbox area if element
  * is a checkbox, otherwise null
  */
-function processPosdataCheckbox(mat, posdata) {
-  if (posdata.type !== InputTypeEnum.CHECKBOX) {
+module.exports.processPosdataCheckbox = function (mat, posdata) {
+  if (posdata.type !== defs.InputTypeEnum.CHECKBOX) {
     return null;
   }
 
@@ -45,7 +36,7 @@ function processPosdataCheckbox(mat, posdata) {
     }
   }
   return cumulative;
-}
+};
 
 
 /**
@@ -55,21 +46,21 @@ function processPosdataCheckbox(mat, posdata) {
  * @returns index of the column with the highest value of grey if element
  * is a matrixrow, otherwise null
  */
-function processPosdataMatrixrow(mat, posdata) {
-  if (posdata.type !== InputTypeEnum.MATRIXROW) {
+module.exports.processPosdataMatrixrow = function (mat, posdata) {
+  if (posdata.type !== defs.InputTypeEnum.MATRIXROW) {
     return null;
   }
 
   let valMax = 0, iMax = 0;
   for (let i = 0; i < posdata.children.length; i++) {
-    let val = processPosdataCheckbox(mat, posdata.children[i]);
+    let val = this.processPosdataCheckbox(mat, posdata.children[i]);
     if (val > valMax) {
       valMax = val;
       iMax = i;
     }
   }
   return iMax;
-}
+};
 
 
 /**
@@ -78,17 +69,17 @@ function processPosdataMatrixrow(mat, posdata) {
  * @param posdata posdata for the element to process
  * @returns array of indexes of MATRIXROW if element is a matrix, otherwise null
  */
-function processPosdataMatrix(mat, posdata) {
-  if (posdata.type !== InputTypeEnum.MATRIX) {
+module.exports.processPosdataMatrix = function (mat, posdata) {
+  if (posdata.type !== defs.InputTypeEnum.MATRIX) {
     return null;
   }
 
   let rowCrossedIndexes = [];
   for (let i = 0; i < posdata.children.length; i++) {
-    rowCrossedIndexes.push(processPosdataMatrixrow(mat, posdata.children[i]))
+    rowCrossedIndexes.push(this.processPosdataMatrixrow(mat, posdata.children[i]))
   }
   return rowCrossedIndexes;
-}
+};
 
 /**
  * processes a posdata text element on the normalized mat
@@ -96,8 +87,8 @@ function processPosdataMatrix(mat, posdata) {
  * @param posdata posdata for the element to process
  * @returns extracted mat region of the text field if element is a matrix, otherwise null
  */
-function processPosdataText(mat, posdata) {
-  if (posdata.type !== InputTypeEnum.TEXT) {
+module.exports.processPosdataText = function (mat, posdata) {
+  if (posdata.type !== defs.InputTypeEnum.TEXT) {
     return null;
   }
 
@@ -108,7 +99,7 @@ function processPosdataText(mat, posdata) {
     ),
     contentType: "image/jpg"
   };
-}
+};
 
 /**
  * processes a posdata matrixtext element on the normalized mat
@@ -117,8 +108,8 @@ function processPosdataText(mat, posdata) {
  * @returns object of the shape {img, indexes} where img is the mat of the whole matrix and text
  * indexes is the return value of MATRIX if element is a matrixtext, otherwise null
  */
-function processPosdataMatrixText(mat, posdata) {
-  if (posdata.type !== InputTypeEnum.MATRIXTEXT) {
+module.exports.processPosdataMatrixText = function (mat, posdata) {
+  if (posdata.type !== defs.InputTypeEnum.MATRIXTEXT) {
     return null;
   }
 
@@ -130,9 +121,9 @@ function processPosdataMatrixText(mat, posdata) {
       ),
       contentType: "image/jpg"
     },
-    indexes: processPosdataMatrix(mat, posdata.children[1].posData)
+    indexes: this.processPosdataMatrix(mat, posdata.children[1].posData)
   };
-}
+};
 
 /**
  * processes a posdata qr element on the normalized mat
@@ -141,8 +132,8 @@ function processPosdataMatrixText(mat, posdata) {
  * @returns data of the qr code as string if element is a qr and a qr could be
  * detected, otherwise null
  */
-function processPosdataQR(mat, posdata) {
-  if (posdata.type !== InputTypeEnum.QR) {
+module.exports.processPosdataQR = function (mat, posdata) {
+  if (posdata.type !== defs.InputTypeEnum.QR) {
     return null;
   }
 
@@ -159,9 +150,9 @@ function processPosdataQR(mat, posdata) {
     code = code.data
   }
   return code;
-}
+};
 
-module.exports.processPosdataQRFull = function(filename) {
+module.exports.processPosdataQRFull = function (filename) {
   let mat = cv.imread(filename).bgrToGray().resizeToMax(1000);
   let code = jsQR(
     new Uint8ClampedArray(mat.cvtColor(cv.COLOR_GRAY2BGRA).getData()),
@@ -172,39 +163,7 @@ module.exports.processPosdataQRFull = function(filename) {
     code = code.data
   }
   return code;
-}
-
-function processTileData(sheetMat, posdata) {
-  let tiles = posdata.children.slice(0);
-
-  for (let i = 0; i < tiles.length; i++) {
-    for (let j = 0; j < tiles[i].children.length; j++) {
-      tiles[i].children[j].cbVal = processPosdataCheckbox(sheetMat, tiles[i].children[j]);
-    }
-  }
-
-  let procTiles = [];
-  let max = Math.max.apply(Math, tiles.map(el => Math.max.apply(Math, el.children.map(t => t.cbVal))));
-  for (let i = 0; i < tiles.length; i++) {
-    procTiles.push([]);
-    for (let j = 0; j < tiles[i].children.length; j++) {
-      procTiles[i].push([]);
-      procTiles[i][j].meta = tiles[i].children[j].meta;
-      procTiles[i][j].checked = tiles[i].children[j].cbVal > (max / 3);
-    }
-  }
-
-  return {
-    img: {
-      data: cv.imencode(
-        ".jpg",
-        sheetMat.getRegion(new cv.Rect(posdata.x, posdata.y, posdata.w, posdata.h))
-      ),
-      contentType: "image/jpg"
-    },
-    tilesData: procTiles
-  };
-}
+};
 
 /**
  * Extracts position markers from the raw input image and scales the image in a way that
@@ -213,7 +172,7 @@ function processTileData(sheetMat, posdata) {
  * @param posMarkersPosData posData
  * @returns {Mat} normalized sheet
  */
-function processPosMarkers(sheetMat, posMarkersPosData) {
+module.exports.processPosMarkers = function (sheetMat, posMarkersPosData) {
   const params = new cv.SimpleBlobDetectorParams();
   params.filterByArea = false;
   params.filterByCircularity = true;
@@ -248,30 +207,4 @@ function processPosMarkers(sheetMat, posMarkersPosData) {
         ], cv.CV_32FC1
       ), new cv.Size(posMarkersPosData.w + posMarkersPosData.children[0].x, posMarkersPosData.h + posMarkersPosData.children[0].y)
     );
-}
-
-module.exports.processScoreSheet = function(posData, scoreSheetFileName) {
-  const normalizedSheet = processPosMarkers(cv.imread(scoreSheetFileName).bgrToGray(), findPosdataByDescr(posData, 'posMarkers'));
-
-  let sheetData = {};
-  sheetData.qr = processPosdataQR(normalizedSheet, findPosdataByDescr(posData, 'meta'));
-  sheetData.enterManually = processPosdataCheckbox(normalizedSheet, findPosdataByDescr(posData, 'enterManually')) > 10000;
-  sheetData.evacuation = processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData, 'evacuation'));
-  sheetData.checkpoints = [];
-  //console.log(posData);
-  for (let i = 0, posDataCB; (posDataCB = findPosdataByDescr(posData, 'cb' + i)) !== null; i++) {
-    if (posDataCB === null) {
-      break;
-    }
-    sheetData.checkpoints.push(processPosdataMatrixText(normalizedSheet, posDataCB))
-  }
-  sheetData.victimsAlive = processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData, 'victimsAlive'));
-  sheetData.victimsDead = processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData, 'victimsDead'));
-  sheetData.time = processPosdataMatrixText(normalizedSheet, findPosdataByDescr(posData, 'time'));
-  sheetData.signTeam = processPosdataText(normalizedSheet, findPosdataByDescr(posData, 'signTeam'));
-  sheetData.signRef = processPosdataText(normalizedSheet, findPosdataByDescr(posData, 'signRef'));
-  sheetData.exitBonus = processPosdataCheckbox(normalizedSheet, findPosdataByDescr(posData, 'exitBonus'));
-  sheetData.tiles = processTileData(normalizedSheet, findPosdataByDescr(posData, 'field'));
-
-  return sheetData;
 };

@@ -13,8 +13,9 @@ const fs = require('fs')
 const pathFinder = require('../../helper/pathFinder')
 const scoreCalculator = require('../../helper/scoreCalculator')
 const auth = require('../../helper/authLevels')
-const scoreSheetLinePDF = require('../../helper/scoreSheetLinePDF')
-const scoreSheetLineProcess = require('../../helper/scoreSheetLineProcess')
+const scoreSheetLinePDF = require('../../helper/scoreSheetPDFLine')
+const scoreSheetLineProcess = require('../../helper/scoreSheetProcessLine')
+const scoreSheetProcess = require('../../helper/scoreSheetProcessUtil')
 const ACCESSLEVELS = require('../../models/user').ACCESSLEVELS
 
 var socketIo
@@ -487,7 +488,7 @@ publicRouter.get('/scoresheet', function (req, res, next) {
     },
     {
       path  : "map",
-      select: "name height width length numberOfDropTiles finished startTile tiles indexCount",
+      select: "name height width length numberOfDropTiles finished startTile tiles indexCount victims",
       populate: {
         path: "tiles.tileType"
       }
@@ -584,8 +585,13 @@ publicRouter.get('/scoresheetimg/:run/:img', function (req, res, next) {
           res.send(run.scoreSheet.rescuedLiveVictimsImage.data);
           break;
 
-        case "rescuedDead":
-          res.contentType(run.scoreSheet.rescuedDeadVictimsImage.contentType);
+        case "rescuedDeadBeforeLive":
+          res.contentType(run.scoreSheet.rescuedDeadBeforeLiveVictimsImage.contentType);
+          res.send(run.scoreSheet.rescuedDeadVictimsImage.data);
+          break;
+
+        case "rescuedDeadAfterLive":
+          res.contentType(run.scoreSheet.rescuedDeadAfterLiveVictimsImage.contentType);
           res.send(run.scoreSheet.rescuedDeadVictimsImage.data);
           break;
 
@@ -722,7 +728,7 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
         err: err.message
       })
     }
-    let sheetRunID = scoreSheetLineProcess.processPosdataQRFull(req.file.path);
+    let sheetRunID = scoreSheetProcess.processPosdataQRFull(req.file.path);
     if (sheetRunID == null) {
       return res.status(400).send({
         msg: "Error processing file",
@@ -755,15 +761,31 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
         run.scoreSheet.evacuationLevelImage = sheetData.evacuation.img;
 
         for (let i = 0; i < sheetData.checkpoints.length && i < run.LoPs.length; i++) {
-          run.LoPs.set(i, sheetData.checkpoints[i].indexes[0]);
+          if (sheetData.checkpoints[i].indexes[0] === 0) {
+            // 0 means "N" = not reached was crossed
+            run.LoPs.set(i, 0);
+          } else {
+            run.LoPs.set(i, sheetData.checkpoints[i].indexes[0] - 1);
+          }
+
           run.scoreSheet.LoPImages.set(i, sheetData.checkpoints[i].img)
         }
 
-        run.rescuedLiveVictims = sheetData.victimsAlive.indexes[0];
+        run.rescueOrder = [];
+        for (let i = 0; i < sheetData.victimsDeadBeforeAlive.indexes[0]; i++) {
+          run.rescueOrder.push({type: "D", effective: false});
+        }
+        run.scoreSheet.rescuedDeadBeforeLiveVictimsImage = sheetData.victimsDeadBeforeAlive.img;
+
+        for (let i = 0; i < sheetData.victimsAlive.indexes[0]; i++) {
+          run.rescueOrder.push({type: "L", effective: true});
+        }
         run.scoreSheet.rescuedLiveVictimsImage = sheetData.victimsAlive.img;
 
-        run.rescuedDeadVictims = sheetData.victimsDead.indexes[0];
-        run.scoreSheet.rescuedDeadVictimsImage = sheetData.victimsDead.img;
+        for (let i = 0; i < sheetData.victimsDeadAfterAlive.indexes[0]; i++) {
+          run.rescueOrder.push({type: "D", effective: true});
+        }
+        run.scoreSheet.rescuedDeadAfterLiveVictimsImage = sheetData.victimsDeadAfterAlive.img;
 
         run.time.minutes = sheetData.time.indexes[0];
         run.time.seconds = sheetData.time.indexes[1] * 10 + sheetData.time.indexes[2];
@@ -777,8 +799,8 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
             if (tileData.meta.id === "checkpoint") {
               run.tiles[tileData.meta.tileIndex].isDropTile = tileData.checked;
             }
+            // TODO: mark the corresponding checkpoint as not reached if "N" is ticked
             run.tiles[tileData.meta.tileIndex].scoredItems.push({item: tileData.meta.id, scored: tileData.checked});
-            
           }
         }
         run.scoreSheet.tileDataImage = sheetData.tiles.img;
