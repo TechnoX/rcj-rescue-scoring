@@ -573,8 +573,6 @@ publicRouter.get('/scoresheet', function (req, res, next) {
 publicRouter.post('/scoresheet/:competition', function (req, res) {
   const competition = req.params.competition;
 
-  console.log("competition:", competition);
-
   let pathname = "tmp/";
   fs.mkdir(pathname, function (err) {
     if (err && err.code !== 'EEXIST') {
