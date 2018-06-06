@@ -629,17 +629,15 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
       } else {
         const sheetData = scoreSheetProcessMaze.processScoreSheet(run.scoreSheet.positionData, req.file.path);
 
-        const util = require('util')
-        // console.log(util.inspect(sheetData, {showHidden: false, depth: null}));
-        console.log(util.inspect(sheetData, {showHidden: false, depth: null}));
-        //console.log(run);
-
         run.LoPs = sheetData.lops.indexes[0] * 10 + sheetData.lops.indexes[1];
+        run.scoreSheet.LoPImage = sheetData.lops.img;
 
         run.time.minutes = sheetData.time.indexes[0];
         run.time.seconds = sheetData.time.indexes[1] * 10 + sheetData.time.indexes[2];
+        run.scoreSheet.timeImage = sheetData.time.img;
 
         run.exitBonus = sheetData.exitBonus.indexes[0] === 0;
+        run.scoreSheet.exitBonusImage = sheetData.exitBonus.img;
 
         run.tiles = [];
         for (let i = 0; i < run.map.cells.length; i++) {
@@ -700,12 +698,12 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
             }
           }
         }
+        run.scoreSheet.tileDataImage = sheetData.tiles.img;
 
         run.started = true;
         run.status = 4;
 
         var retScoreCals = scoreCalculator.calculateMazeScore(run).split(",");
-        console.log(retScoreCals)
         run.score = retScoreCals[0];
         run.foundVictims = retScoreCals[1];
         run.distKits = retScoreCals[2];
@@ -730,6 +728,52 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
   })
 
 });
+
+publicRouter.get('/scoresheetimg/:run/:img', function (req, res, next) {
+  var run_id = req.params.run;
+  var img_type = req.params.img;
+
+  if (!ObjectId.isValid(run_id)) {
+    return next()
+  }
+
+  mazeRun.findById(ObjectId(run_id), (err, run) => {
+    if (err) {
+      logger.error(err);
+      res.status(400).send({
+        msg: "Could not get run",
+        err: err.message
+      });
+    } else {
+      switch (img_type.toString()) {
+        case "lop":
+          res.contentType(run.scoreSheet.LoPImage.contentType);
+          res.send(run.scoreSheet.LoPImage.data);
+          break;
+
+        case "tiles":
+          res.contentType(run.scoreSheet.tileDataImage.contentType);
+          res.send(run.scoreSheet.tileDataImage.data);
+          break;
+
+        case "exitBonus":
+          res.contentType(run.scoreSheet.exitBonusImage.contentType);
+          res.send(run.scoreSheet.exitBonusImage.data);
+          break;
+
+        case "time":
+          res.contentType(run.scoreSheet.timeImage.contentType);
+          res.send(run.scoreSheet.timeImage.data);
+          break;
+
+        default:
+          res.status(400).send({
+            msg: "err"
+          })
+      }
+    }
+  });
+})
 
 adminRouter.get('/apteam/:cid/:teamid/:group', function (req, res, next) {
     const cid = req.params.cid
