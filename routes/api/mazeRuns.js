@@ -628,12 +628,93 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
         })
       } else {
         const sheetData = scoreSheetProcessMaze.processScoreSheet(run.scoreSheet.positionData, req.file.path);
-        console.log(sheetData)
+
+        const util = require('util')
+        // console.log(util.inspect(sheetData, {showHidden: false, depth: null}));
+        console.log(util.inspect(sheetData, {showHidden: false, depth: null}));
+        //console.log(run);
+
+        run.LoPs = sheetData.lops.indexes[0] * 10 + sheetData.lops.indexes[1];
+
+        run.time.minutes = sheetData.time.indexes[0];
+        run.time.seconds = sheetData.time.indexes[1] * 10 + sheetData.time.indexes[2];
+
+        run.exitBonus = sheetData.exitBonus.indexes[0] === 0;
+
+        run.tiles = [];
+        for (let i = 0; i < run.map.cells.length; i++) {
+          // First store the run tiles so that they are all accessible. Tiles without items are not listed in sheetData.tiles.tilesData
+          if (!run.map.cells[i].isTile) {
+            continue;
+          }
+
+          run.tiles.push({
+            x: run.map.cells[i].x, y: run.map.cells[i].y, z: run.map.cells[i].z
+          });
+        }
+
+        for (let i = 0; i < sheetData.tiles.tilesData.length; i++) {
+          for (let j = 0; j < sheetData.tiles.tilesData[i].length; j++) {
+            let tileData = sheetData.tiles.tilesData[i][j];
+
+            if (!tileData.checked) {
+                continue;
+            }
+            switch (tileData.meta.id) {
+              case "checkpoint":
+                run.tiles[i].scoredItems.checkpoint = true;
+                break;
+              case "speedbump":
+                run.tiles[i].scoredItems.speedbump = true;
+                break;
+              case "rampBottom":
+                run.tiles[i].scoredItems.rampBottom = true;
+                break;
+              case "rampTop":
+                run.tiles[i].scoredItems.rampTop = true;
+                break;
+              case "victims.top":
+                run.tiles[i].scoredItems.victims.top = true;
+                break;
+              case "victims.right":
+                run.tiles[i].scoredItems.victims.right = true;
+                break;
+              case "victims.bottom":
+                run.tiles[i].scoredItems.victims.bottom = true;
+                break;
+              case "victims.left":
+                run.tiles[i].scoredItems.victims.left = true;
+                break;
+              case "rescueKits.top":
+                run.tiles[i].scoredItems.rescueKits.top++;
+                break;
+              case "rescueKits.right":
+                run.tiles[i].scoredItems.rescueKits.right++;
+                break;
+              case "rescueKits.bottom":
+                run.tiles[i].scoredItems.rescueKits.bottom++;
+                break;
+              case "rescueKits.left":
+                run.tiles[i].scoredItems.rescueKits.left++;
+                break;
+            }
+          }
+        }
+
+        run.started = true;
+        run.status = 4;
+
+        var retScoreCals = scoreCalculator.calculateMazeScore(run).split(",");
+        console.log(retScoreCals)
+        run.score = retScoreCals[0];
+        run.foundVictims = retScoreCals[1];
+        run.distKits = retScoreCals[2];
+
         run.save((err) => {
           if (err) {
             logger.error(err);
             res.status(400).send({
-              msg: "Error saving positiondata of run in db",
+              msg: "Error saving run in db",
               err: err.message
             })
           }

@@ -4,10 +4,6 @@ const proc = require('./scoreSheetProcessUtil');
 module.exports.processScoreSheet = function (posData, scoreSheetFileName) {
   const normalizedSheet = proc.processPosMarkers(cv.imread(scoreSheetFileName).bgrToGray(), proc.findPosdataByDescr(posData, 'posMarkers'));
 
-  console.log(normalizedSheet)
-  cv.imwrite('helper/out.png', normalizedSheet)
-
-  
   let sheetData = {};
   sheetData.qr = proc.processPosdataQR(normalizedSheet, proc.findPosdataByDescr(posData, 'meta'));
   sheetData.enterManually = proc.processPosdataMatrixText(normalizedSheet, proc.findPosdataByDescr(posData, 'enterManually'));
@@ -15,7 +11,7 @@ module.exports.processScoreSheet = function (posData, scoreSheetFileName) {
   sheetData.time = proc.processPosdataMatrixText(normalizedSheet, proc.findPosdataByDescr(posData, 'time'));
   sheetData.signTeam = proc.processPosdataText(normalizedSheet, proc.findPosdataByDescr(posData, 'signTeam'));
   sheetData.signRef = proc.processPosdataText(normalizedSheet, proc.findPosdataByDescr(posData, 'signRef'));
-  sheetData.exitBonus = proc.processPosdataCheckbox(normalizedSheet, proc.findPosdataByDescr(posData, 'exitBonus'));
+  sheetData.exitBonus = proc.processPosdataMatrixText(normalizedSheet, proc.findPosdataByDescr(posData, 'exitBonus'));
   sheetData.tiles = proc.processFieldData(normalizedSheet, proc.findPosdataByDescr(posData, 'field'));
 
   return sheetData;

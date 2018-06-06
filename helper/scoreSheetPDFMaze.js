@@ -28,11 +28,11 @@ const globalConfig = {
     tileSpacing: 2, // Spacing between tiles
     positions: [ // Position for each z level. The scoring sheet can handle up to n levels.
       {x: 0, y: 0}, // Level 0
-      {x: 0, y: 390} // Level 1
+      {x: 0, y: 370} // Level 1
     ]
   },
   data: {
-    marginLeft: 400, // Distance from config.margin.left to text
+    marginLeft: 380, // Distance from config.margin.left to text
     metadata: {
       sizeQR: 57,
       text: {
@@ -119,7 +119,7 @@ function drawFields(doc, pos_x, pos_y, config, map) {
             config.fields.tileSize - config.fields.wallTickness / 2 - 2
           ).fillAndStroke("#a8a8a8", "black");
 
-          pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "C", "checkpoint", "#0080FF", 0);
+          pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "C", "checkpoint", "#0080FF", i);
         } else if (cell.tile.black) {
           doc.rect(
             tile_pos_x + 2,
@@ -130,44 +130,44 @@ function drawFields(doc, pos_x, pos_y, config, map) {
         }
 
         if (cell.tile.speedbump) {
-          pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "B", "speedbump", "#046D0E", 0);
+          pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "B", "speedbump", "#046D0E", i);
         }
 
         if (cell.tile.rampBottom) {
-          pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "R", "rampBot", "#EB39E8", 0);
+          pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "R", "rampBottom", "#EB39E8", i);
         } else if (cell.tile.rampTop) {
-          pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "R", "rampTop", "#EB39E8", 0);
+          pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "R", "rampTop", "#EB39E8", i);
         }
 
-        function addVictim(victimDir) {
+        function addVictim(victimDir, dir) {
           switch (victimDir) {
             case "Heated":
-              pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "V", "victimHeated", "#eb9000", 0);
-              pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "VK", "victimHeatedKit", "#eb9000", 0);
+              pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "V", "victims." + dir, "#eb9000", i);
+              pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "VK", "rescueKits." + dir, "#eb9000", i);
               break;
 
             case "H":
-              pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "H", "victimH", "#eb0200", 0);
-              for (let i = 0; i < 2; i++) {
-                pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "HK", "victimHKit", "#eb0200", 0);
+              pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "H", "victims." + dir, "#eb0200", i);
+              for (let j = 0; j < 2; j++) {
+                pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "HK", "rescueKits." + dir, "#eb0200", i);
               }
               break;
 
             case "S":
-              pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "S", "victimS", "#eb0047", 0);
-              pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "SK", "victimSKit", "#eb0047", 0);
+              pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "S", "victims." + dir, "#eb0047", i);
+              pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "SK", "rescueKits." + dir, "#eb0047", i);
               break;
 
             case "U":
-              pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "U", "victimU", "#77eb00", 0);
+              pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "U", "victims." + dir, "#77eb00", i);
               break;
           }
         }
 
-        addVictim(cell.tile.victims.top);
-        addVictim(cell.tile.victims.right);
-        addVictim(cell.tile.victims.bottom);
-        addVictim(cell.tile.victims.left);
+        addVictim(cell.tile.victims.top, "top");
+        addVictim(cell.tile.victims.right, "right");
+        addVictim(cell.tile.victims.bottom, "bottom");
+        addVictim(cell.tile.victims.left, "left");
       }
     }
   }
@@ -199,7 +199,7 @@ function drawRun(doc, config, scoringRun) {
   savePos(pf, "field");
   pos_x += config.data.marginLeft;
   nextItem(pdf.drawMetadata(doc, pos_x, pos_y, config, scoringRun), "meta");
-  nextItem(pdf.drawYesNoField(doc, config, pos_x, pos_y, "Enter scoring sheet manually"), "enterManually");
+  nextItem(pdf.drawYesNoField(doc, config, pos_x, pos_y, "Enter manually"), "enterManually");
 
 
   nextItem(drawLoPInputField(doc, config, pos_x, pos_y), "lops");
