@@ -22,7 +22,7 @@ module.exports.processScoreSheet = function (posData, scoreSheetFileName) {
   sheetData.time = proc.processPosdataMatrixText(normalizedSheet, proc.findPosdataByDescr(posData, 'time'));
   sheetData.signTeam = proc.processPosdataText(normalizedSheet, proc.findPosdataByDescr(posData, 'signTeam'));
   sheetData.signRef = proc.processPosdataText(normalizedSheet, proc.findPosdataByDescr(posData, 'signRef'));
-  sheetData.exitBonus = proc.processPosdataCheckbox(normalizedSheet, proc.findPosdataByDescr(posData, 'exitBonus'));
+  sheetData.exitBonus = proc.processPosdataMatrixText(normalizedSheet, proc.findPosdataByDescr(posData, 'exitBonus'));
   sheetData.tiles = proc.processFieldData(normalizedSheet, proc.findPosdataByDescr(posData, 'field'));
 
   return sheetData;

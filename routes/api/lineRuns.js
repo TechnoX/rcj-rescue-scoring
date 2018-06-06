@@ -791,7 +791,7 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
         run.time.seconds = sheetData.time.indexes[1] * 10 + sheetData.time.indexes[2];
         run.scoreSheet.timeImage = sheetData.time.img;
 
-        run.exitBonus = sheetData.exitBonus;
+        run.exitBonus = sheetData.exitBonus.indexes[0] === 0;
 
         for (let i = 0; i < sheetData.tiles.tilesData.length; i++) {
           for (let j = 0; j < sheetData.tiles.tilesData[i].length; j++) {
