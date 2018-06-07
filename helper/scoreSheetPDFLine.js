@@ -240,6 +240,7 @@ function drawRun(doc, config, scoringRun) {
       scoredItems: []
     });
   }
+  var noCheck = [];
   for (let i = 0, t; t = scoringRun.map.tiles[i]; i++) {
     for (let j = 0; j < t.index.length; j++) {
       for (let k = 0; k < t.items.obstacles; k++) {
@@ -266,10 +267,13 @@ function drawRun(doc, config, scoringRun) {
         let addSItem = "ramp";
         stiles[t.index[j]].scoredItems.push(addSItem);
       }
+      if(t.items.noCheckPoint){
+        noCheck[t.index[j]]= true;
+      }
     }
   }
   for (let i = 0; i < stiles.length - 2; i++) {
-    if (stiles[i].scoredItems.length === 0) {
+    if (stiles[i].scoredItems.length === 0 && !noCheck[i]) {
       let addSItem = "checkpoint";
       stiles[i].scoredItems.push(addSItem);
     }

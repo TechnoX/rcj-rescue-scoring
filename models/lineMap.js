@@ -61,6 +61,10 @@ const lineMapSchema = new Schema({
       rampPoints: {
         type: Boolean,
         default: false
+      },
+      noCheckPoint: {
+        type: Boolean,
+        default: false
       }
     },
     index    : {type: [Number], min: 0},

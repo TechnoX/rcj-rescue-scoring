@@ -46,7 +46,7 @@
                                     <b style="font-size:15px;color:#FF8300;">{{$index==0?'':$index}}</b>
                                     <br>
                                     <i class="fas fa-forward fa-rotate-90" aria-hidden="true"></i>
-                                    <br> {{!$last?'line.sign.checkpoint':'line.sign.evacuation' | translate}}
+                                    <br> {{!$last?'line.sign.checkpoint':'line.sign.Lexit' | translate}}
                                     <b style="font-size:15px;color:#FF8300;">{{!$last?$index+1:''}}</b>
 
                                 </div>
@@ -74,7 +74,7 @@
                     </div>
                     <h3 class="card-header"><i class="fas fa-ambulance" aria-hidden="true"></i> {{'line.judge.rescue' | translate}}　<span class="badge badge-danger">{{evacuationLevel-1?'line.judge.high':'line.judge.low' | translate}}</span></h3>
                     <div class="card-body">
-                        <div style="display:flex;" class="card-text">
+                        <!--<div style="display:flex;" class="card-text">
                             <div style="width:40%;font-size:20px;" align="center">
                                 {{'common.lops' | translate}}
                             </div>
@@ -97,8 +97,8 @@
                                 </div>
                             </div>
                         </div>
-                        <hr>
-                        <h6>救助済みの被災者</h6>
+                        <hr>-->
+                        <h6>Rescued Victims</h6>
                         <table border="1" style="width:100%; text-align: center; margin-top: 10px;" ng-repeat="j in range(6)" ng-if="victim_list.length > j*5 || j == 0">
                             <tr>
                                 <th style="text-align:center;" ng-repeat="i in range(5)">{{j*5 + i+1}}</th>

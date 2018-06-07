@@ -202,7 +202,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 let prevCheckPoint = 0;
                 let j = 0;
                 for(let i in $scope.stiles){
-                    if($scope.stiles[i].isDropTile){
+                    if($scope.stiles[i].isDropTile && $scope.stiles[i].scoredItems.length){
                         let tmp = {
                             dis: i - prevCheckPoint,
                             status: $scope.stiles[i].scoredItems[findItem("checkpoint",$scope.stiles[i].scoredItems)].scored,

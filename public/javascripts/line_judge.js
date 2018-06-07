@@ -248,7 +248,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                         });
                         flag = true;
                     }
-                    console.log($scope.stiles);
+                    //console.log($scope.stiles);
+                    var noCheck = [];
                     for(let i=0,t;t=response.data.tiles[i];i++){
                         for(let j=0;j<t.index.length;j++){
                             //console.log(t.items.obstacles);
@@ -292,12 +293,16 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                                 };
                                 $scope.stiles[t.index[j]].scoredItems.push(addSItem);
                             }
+                            
+                            if(t.items.noCheckPoint){
+                                noCheck[t.index[j]]= true;
+                            }
                         }
                         
                     }
                     
                     for(let i=0; i < $scope.stiles.length-2;i++){
-                        if($scope.stiles[i].scoredItems.length == 0 || $scope.stiles[i].scoredItems[0].item == "ramp"){
+                        if($scope.stiles[i].scoredItems.length == 0 && !noCheck[i]){
                             let addSItem = {
                                         item: "checkpoint",
                                         scored: false
@@ -307,7 +312,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     }
                 }
                 
-                console.log($scope.stiles);
+                //console.log($scope.stiles);
                 
                 if (flag) {
                     $scope.sync++;
@@ -690,7 +695,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         var total = (mtile.items.obstacles > 0 ||
             mtile.items.speedbumps > 0 ||
             mtile.tileType.gaps > 0 ||
-            mtile.tileType.intersections > 0) * mtile.index.length;
+            mtile.tileType.intersections > 0 || mtile.items.rampPoints || mtile.items.noCheckPoint) * mtile.index.length;
         
 
         // If the run is not started, we can place drop pucks on this tile
@@ -712,6 +717,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 var removed = false;
 
                 for (var i = 0; i < stile.length; i++) {
+                    console.log(stileIndex);
                     if(stileIndex[i] < $scope.mapIndexCount-2){
                         // If this tile already contains a droptile, we should remove it
                         if (stile[i].isDropTile) {

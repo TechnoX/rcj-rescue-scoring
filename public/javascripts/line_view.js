@@ -91,8 +91,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.evacuationLevel = response.data.evacuationLevel;
             $scope.exitBonus = response.data.exitBonus;
             $scope.field = response.data.field.name;
-            $scope.rescuedDeadVictims = response.data.rescuedDeadVictims;
-            $scope.rescuedLiveVictims = response.data.rescuedLiveVictims;
             $scope.score = response.data.score;
             $scope.showedUp = response.data.showedUp;
             $scope.started = response.data.started;
@@ -171,7 +169,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 let prevCheckPoint = 0;
                 let j = 0;
                 for(let i in $scope.stiles){
-                    if($scope.stiles[i].isDropTile){
+                    
+                    if($scope.stiles[i].isDropTile && $scope.stiles[i].scoredItems.length){
                         let tmp = {
                             dis: i - prevCheckPoint,
                             status: $scope.stiles[i].scoredItems[findItem("checkpoint",$scope.stiles[i].scoredItems)].scored,
@@ -216,6 +215,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             if (type == "L") tmp_point = 40;
             else tmp_point = 30;
         }
+         console.log($scope.actualUsedDropTiles);
         return Math.max(tmp_point - $scope.LoPs[$scope.actualUsedDropTiles] * 5, 0);
     }
 
@@ -891,7 +891,6 @@ app.directive('tile', function () {
 
                 for (var i = 0; i < tile.index.length; i++) {
                     for (let j=0; j<$scope.$parent.stiles[tile.index[i]].scoredItems.length;j++){
-                        console.log($scope.$parent.stiles[tile.index[i]].scoredItems[j])
                         switch ($scope.$parent.stiles[tile.index[i]].scoredItems[j].item){
                             case "gap":
                                 successfully += 10 * $scope.$parent.stiles[tile.index[i]].scoredItems[j].scored;
