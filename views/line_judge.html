@@ -153,7 +153,7 @@
                                         <b style="font-size:15px;color:#FF8300;">{{$index==0?'':$index}}</b>
                                         <br>
                                         <i class="fas fa-forward fa-rotate-90" aria-hidden="true"></i>
-                                        <br> {{!$last?'line.judge.checkpoint':'line.judge.evacuation' | translate}}
+                                        <br> {{!$last?'line.judge.checkpoint':'line.judge.Lexit' | translate}}
                                         <b style="font-size:15px;color:#FF8300;">{{!$last?$index+1:''}}</b>
 
                                     </div>
@@ -182,7 +182,7 @@
 
                         <h3 class="card-header"><i class="fas fa-ambulance" aria-hidden="true"></i> {{'line.judge.rescue' | translate}}　<span class="badge badge-danger">{{evacuationLevel-1?'line.judge.high':'line.judge.low' | translate}}</span></h3>
                         <div class="card-body">
-                            <div style="display:flex;" class="card-text">
+                            <!--<div style="display:flex;" class="card-text">
                                 <div style="width:40%;font-size:20px;" align="center">
                                     {{'common.lops' | translate}}
                                 </div>
@@ -205,7 +205,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <hr>
+                            <hr>-->
                             <div class="row">
                                 <div class="col-6" ng-click="addVictimTmp('L')">
                                     <span>Max : {{maxLiveVictims}}</span>
