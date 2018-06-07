@@ -27,11 +27,11 @@ const globalConfig = {
     tileSpacing: 2, // Spacing between tiles
     positions: [ // Position for each z level. The scoring sheet can handle up to n levels.
       {x: 0, y: 0}, // Level 0
-      {x: 0, y: 325} // Level 1
+      {x: 0, y: 330} // Level 1
     ]
   },
   data: {
-    marginLeft: 330, // Distance from config.margin.left to text
+    marginLeft: 300, // Distance from config.margin.left to text
     metadata: {
       sizeQR: 57,
       text: {
@@ -222,9 +222,16 @@ function drawRun(doc, config, scoringRun) {
     return pos;
   }
 
-  function nextItem(pos, descr) {
+  function nextItemBelow(pos, descr) {
     savePos(pos, descr);
     pos_y = pos.y + config.data.inputs.marginsVertical;
+    return pos;
+  }
+
+  function nextItemRight(pos, descr, space) {
+    savePos(pos, descr);
+    pos_x = pos.x + space;
+    return pos;
   }
 
   let stiles = [];
@@ -272,46 +279,51 @@ function drawRun(doc, config, scoringRun) {
   let pf = drawFields(doc, pos_x, pos_y, config, scoringRun.map, stiles);
   savePos(pf, "field");
   pos_x += config.data.marginLeft;
-  nextItem(pdf.drawMetadata(doc, pos_x, pos_y, config, scoringRun), "meta");
-  nextItem(pdf.drawYesNoField(doc, config, pos_x, pos_y, "Enter manually"), "enterManually");
-  nextItem(pdf.drawEvacuationInputField(doc, config, pos_x, pos_y), "evacuation");
+  let pos_x_origin = pos_x;
+  nextItemBelow(pdf.drawMetadata(doc, pos_x, pos_y, config, scoringRun), "meta");
+  nextItemBelow(pdf.drawEvacuationInputField(doc, config, pos_x, pos_y), "evacuation");
 
   let checkpointAmount = calculateWorstCaseCheckpointAmount(scoringRun.map);
 
   if (checkpointAmount > 0) {
-    let pos_x_left = pos_x;
     for (let i = 0; i < checkpointAmount; i++) {
       let pos = savePos(drawLOPInputField(doc, config, pos_x, pos_y, "Until CP " + (i + 1)), "cb" + i);
       if (i % 2 === 0 && i < (checkpointAmount - 1)) {
         pos_x = pos.x + config.data.inputs.marginsVertical;
       } else {
         pos_y = pos.y + config.data.inputs.marginsVertical;
-        pos_x = pos_x_left;
+        pos_x = pos_x_origin;
       }
     }
   }
 
   if (scoringRun.map.victims.dead > 0) {
-    nextItem(pdf.drawVictimInputField(doc, config, pos_x, pos_y, scoringRun.map.victims.dead, "dead before alive"), "victimsDeadBeforeAlive");
+    nextItemBelow(pdf.drawVictimInputField(doc, config, pos_x, pos_y, scoringRun.map.victims.dead, "dead before alive"), "victimsDeadBeforeAlive");
   }
 
   if (scoringRun.map.victims.live > 0) {
-    nextItem(pdf.drawVictimInputField(doc, config, pos_x, pos_y, scoringRun.map.victims.live, "alive"), "victimsAlive");
+    nextItemBelow(pdf.drawVictimInputField(doc, config, pos_x, pos_y, scoringRun.map.victims.live, "alive"), "victimsAlive");
   }
   if (scoringRun.map.victims.dead > 0) {
-    nextItem(pdf.drawVictimInputField(doc, config, pos_x, pos_y, scoringRun.map.victims.dead, "dead after alive"), "victimsDeadAfterAlive");
+    nextItemBelow(pdf.drawVictimInputField(doc, config, pos_x, pos_y, scoringRun.map.victims.dead, "dead after alive"), "victimsDeadAfterAlive");
   }
 
-  nextItem(pdf.drawTimeInputField(doc, config, pos_x, pos_y), "time");
-  nextItem(pdf.drawYesNoField(doc, config, pos_x, pos_y, "Exit Bonus"), "exitBonus");
-  nextItem(pdf.drawTextInputField(doc, config, pos_x, pos_y, "Team:", config.signature.width, config.signature.height), "signTeam");
-  nextItem(pdf.drawTextInputField(doc, config, pos_x, pos_y, "Referee:", config.signature.width, config.signature.height), "signRef");
+  nextItemRight(pdf.drawTimeInputField(doc, config, pos_x, pos_y), "time", 10);
+  nextItemBelow(pdf.drawYesNoField(doc, config, pos_x, pos_y, "Exit Evac."), "exitBonus");
+  pos_x = pos_x_origin;
+  pos_y += 15;
+  nextItemBelow(pdf.drawTextInputField(doc, config, pos_x, pos_y, "Team:", config.signature.width, config.signature.height), "signTeam");
+  nextItemBelow(pdf.drawTextInputField(doc, config, pos_x, pos_y, "Referee:", config.signature.width, config.signature.height), "signRef");
+  nextItemRight(pdf.drawYesNoField(doc, config, pos_x, pos_y, "Accept Result?"), "acceptResult", 80);
+  nextItemBelow(pdf.drawYesNoField(doc, config, pos_x, pos_y, "Comments?"), "comment");
+  pos_x = pos_x_origin;
+  nextItemBelow(pdf.drawYesNoField(doc, config, pos_x, pos_y, "Enter manually"), "enterManually");
 
   return posDatas
 }
 
 function drawLOPInputField(doc, config, pos_x, pos_y, text) {
-  const columnText = ["N", "0", "1", "2", "3", "4", "5", "6", "7+"];
+  const columnText = ["N", "0", "1", "2", "3", "4", "5", "6", "7", "8+"];
   const rowText = [""];
   return pdf.drawNumberInputField(doc, config, pos_x, pos_y, text, columnText, rowText)
 }
