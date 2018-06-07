@@ -277,7 +277,7 @@ function drawRun(doc, config, scoringRun) {
   savePos(pf, "field");
   pos_x += config.data.marginLeft;
   nextItem(pdf.drawMetadata(doc, pos_x, pos_y, config, scoringRun), "meta");
-  nextItem(pdf.drawYesNoField(doc, config, pos_x, pos_y, "Enter scoring sheet manually"), "enterManually");
+  nextItem(pdf.drawYesNoField(doc, config, pos_x, pos_y, "Enter manually"), "enterManually");
   nextItem(pdf.drawEvacuationInputField(doc, config, pos_x, pos_y), "evacuation");
 
   let checkpointAmount = calculateWorstCaseCheckpointAmount(scoringRun.map);

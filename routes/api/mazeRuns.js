@@ -1,5 +1,6 @@
 "use strict"
 const express = require('express')
+const multer = require('multer')
 const publicRouter = express.Router()
 const privateRouter = express.Router()
 const adminRouter = express.Router()
@@ -11,6 +12,8 @@ const logger = require('../../config/logger').mainLogger
 const fs = require('fs')
 const scoreCalculator = require('../../helper/scoreCalculator')
 const scoreSheetPDF = require('../../helper/scoreSheetPDFMaze');
+const scoreSheetProcessMaze = require('../../helper/scoreSheetProcessMaze');
+const scoreSheetProcessUtil = require('../../helper/scoreSheetProcessUtil');
 const auth = require('../../helper/authLevels')
 const ACCESSLEVELS = require('../../models/user').ACCESSLEVELS
 
@@ -564,6 +567,211 @@ publicRouter.get('/scoresheet', function (req, res, next) {
   })
 })
 
+/**
+ * Upload scoring sheet (single (jpg/png) or bunch (pdf)
+ */
+publicRouter.post('/scoresheet/:competition', function (req, res) {
+  const competition = req.params.competition;
+
+  let pathname = "tmp/";
+  fs.mkdir(pathname, function (err) {
+    if (err && err.code !== 'EEXIST') {
+      console.log(err);
+      return res.status(400).send({
+        msg: "Error creating tmp dir",
+        err: err.message
+      })
+    }
+  });
+
+  let storage = multer.diskStorage({
+    destination: function (req, file, callback) {
+      callback(null, pathname)
+    },
+    filename: function (req, file, callback) {
+      callback(null, "scoringsheet_" + Math.random().toString(36).substr(2, 10) + file.originalname)
+    }
+  });
+
+  let upload = multer({
+    storage: storage
+  }).single('file');
+
+  upload(req, res, function (err) {
+    if (err) {
+      return res.status(400).send({
+        msg: "Error uploading file",
+        err: err.message
+      })
+    }
+    let sheetRunID = scoreSheetProcessUtil.processPosdataQRFull(req.file.path);
+    if (sheetRunID == null) {
+      return res.status(400).send({
+        msg: "Error processing file",
+        err: err.message
+      })
+    }
+
+    mazeRun.findById(ObjectId(sheetRunID)).populate({
+      path    : 'map',
+      populate: {
+        path: 'tiles.tileType'
+      }
+    }).exec(function(err, run) {
+      if (err) {
+        logger.error(err)
+        res.status(400).send({
+          msg: "Could not get run",
+          err: err.message
+        })
+      } else {
+        const sheetData = scoreSheetProcessMaze.processScoreSheet(run.scoreSheet.positionData, req.file.path);
+
+        run.LoPs = sheetData.lops.indexes[0] * 10 + sheetData.lops.indexes[1];
+        run.scoreSheet.LoPImage = sheetData.lops.img;
+
+        run.time.minutes = sheetData.time.indexes[0];
+        run.time.seconds = sheetData.time.indexes[1] * 10 + sheetData.time.indexes[2];
+        run.scoreSheet.timeImage = sheetData.time.img;
+
+        run.exitBonus = sheetData.exitBonus.indexes[0] === 0;
+        run.scoreSheet.exitBonusImage = sheetData.exitBonus.img;
+
+        run.tiles = [];
+        for (let i = 0; i < run.map.cells.length; i++) {
+          // First store the run tiles so that they are all accessible. Tiles without items are not listed in sheetData.tiles.tilesData
+          if (!run.map.cells[i].isTile) {
+            continue;
+          }
+
+          run.tiles.push({
+            x: run.map.cells[i].x, y: run.map.cells[i].y, z: run.map.cells[i].z
+          });
+        }
+
+        for (let i = 0; i < sheetData.tiles.tilesData.length; i++) {
+          for (let j = 0; j < sheetData.tiles.tilesData[i].length; j++) {
+            let tileData = sheetData.tiles.tilesData[i][j];
+
+            if (!tileData.checked) {
+                continue;
+            }
+            switch (tileData.meta.id) {
+              case "checkpoint":
+                run.tiles[i].scoredItems.checkpoint = true;
+                break;
+              case "speedbump":
+                run.tiles[i].scoredItems.speedbump = true;
+                break;
+              case "rampBottom":
+                run.tiles[i].scoredItems.rampBottom = true;
+                break;
+              case "rampTop":
+                run.tiles[i].scoredItems.rampTop = true;
+                break;
+              case "victims.top":
+                run.tiles[i].scoredItems.victims.top = true;
+                break;
+              case "victims.right":
+                run.tiles[i].scoredItems.victims.right = true;
+                break;
+              case "victims.bottom":
+                run.tiles[i].scoredItems.victims.bottom = true;
+                break;
+              case "victims.left":
+                run.tiles[i].scoredItems.victims.left = true;
+                break;
+              case "rescueKits.top":
+                run.tiles[i].scoredItems.rescueKits.top++;
+                break;
+              case "rescueKits.right":
+                run.tiles[i].scoredItems.rescueKits.right++;
+                break;
+              case "rescueKits.bottom":
+                run.tiles[i].scoredItems.rescueKits.bottom++;
+                break;
+              case "rescueKits.left":
+                run.tiles[i].scoredItems.rescueKits.left++;
+                break;
+            }
+          }
+        }
+        run.scoreSheet.tileDataImage = sheetData.tiles.img;
+
+        run.started = true;
+        run.status = 4;
+
+        var retScoreCals = scoreCalculator.calculateMazeScore(run).split(",");
+        run.score = retScoreCals[0];
+        run.foundVictims = retScoreCals[1];
+        run.distKits = retScoreCals[2];
+
+        run.save((err) => {
+          if (err) {
+            logger.error(err);
+            res.status(400).send({
+              msg: "Error saving run in db",
+              err: err.message
+            })
+          }
+        });
+
+        fs.unlink(req.file.path, (err) => {
+          if (err) throw err;
+        });
+      }
+    });
+
+    res.end('File is uploaded and processed');
+  })
+
+});
+
+publicRouter.get('/scoresheetimg/:run/:img', function (req, res, next) {
+  var run_id = req.params.run;
+  var img_type = req.params.img;
+
+  if (!ObjectId.isValid(run_id)) {
+    return next()
+  }
+
+  mazeRun.findById(ObjectId(run_id), (err, run) => {
+    if (err) {
+      logger.error(err);
+      res.status(400).send({
+        msg: "Could not get run",
+        err: err.message
+      });
+    } else {
+      switch (img_type.toString()) {
+        case "lop":
+          res.contentType(run.scoreSheet.LoPImage.contentType);
+          res.send(run.scoreSheet.LoPImage.data);
+          break;
+
+        case "tiles":
+          res.contentType(run.scoreSheet.tileDataImage.contentType);
+          res.send(run.scoreSheet.tileDataImage.data);
+          break;
+
+        case "exitBonus":
+          res.contentType(run.scoreSheet.exitBonusImage.contentType);
+          res.send(run.scoreSheet.exitBonusImage.data);
+          break;
+
+        case "time":
+          res.contentType(run.scoreSheet.timeImage.contentType);
+          res.send(run.scoreSheet.timeImage.data);
+          break;
+
+        default:
+          res.status(400).send({
+            msg: "err"
+          })
+      }
+    }
+  });
+})
 
 adminRouter.get('/apteam/:cid/:teamid/:group', function (req, res, next) {
     const cid = req.params.cid

@@ -1,5 +1,8 @@
 var socket;
-var app = angular.module("RunAdmin", ['ngTouch','ngAnimate', 'ui.bootstrap', 'ui.bootstrap.datetimepicker', 'pascalprecht.translate', 'ngCookies', 'ngFileUpload']).controller('RunAdminController', ['$scope', '$http', '$log', '$location', 'Upload', function ($scope, $http, $log, $location, Upload) {
+var app = angular.module(
+  "RunAdmin", ['ngTouch','ngAnimate', 'ui.bootstrap', 'ui.bootstrap.datetimepicker', 'pascalprecht.translate', 'ngCookies', 'ngFileUpload']
+).controller('RunAdminController', ['$scope', '$http', '$log', '$location', 'Upload',
+  function ($scope, $http, $log, $location, Upload) {
         $scope.competitionId = competitionId
 
         updateRunList();

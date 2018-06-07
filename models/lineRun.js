@@ -75,7 +75,6 @@ const lineRunSchema = new Schema({
   test: {type: Boolean, default: false},
   scoreSheet: { // all data connected to the scoring sheet should it be used
     positionData: {type: Object, default: null},
-    reviewed: {type: ObjectId, ref: 'User', default: null},
 
     LoPImages: [{ data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}}],
     tileDataImage: { data: Buffer, contentType: String }, // Image representing the up to two arena levels
