@@ -712,6 +712,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 var removed = false;
 
                 for (var i = 0; i < stile.length; i++) {
+                    console.log(stileIndex);
                     if(stileIndex[i] < $scope.mapIndexCount-2){
                         // If this tile already contains a droptile, we should remove it
                         if (stile[i].isDropTile) {
