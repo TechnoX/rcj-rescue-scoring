@@ -44,30 +44,18 @@ var app = angular.module(
         })
 
         $http.get("/api/competitions/" + competitionId +
-            "/LineNL/teams").then(function (response) {
+            "/Line/teams").then(function (response) {
             $scope.teams = response.data
-            $http.get("/api/competitions/" + competitionId +
-                "/LineWL/teams").then(function (response) {
-                $scope.teams = $scope.teams.concat(response.data)
-            })
         })
 
         $http.get("/api/competitions/" + competitionId +
-            "/LineNL/rounds").then(function (response) {
+            "/Line/rounds").then(function (response) {
             $scope.rounds = response.data
-            $http.get("/api/competitions/" + competitionId +
-                "/LineWL/rounds").then(function (response) {
-                $scope.rounds = $scope.rounds.concat(response.data)
-            })
         })
 
         $http.get("/api/competitions/" + competitionId +
-            "/LineNL/fields").then(function (response) {
+            "/Line/fields").then(function (response) {
             $scope.fields = response.data
-            $http.get("/api/competitions/" + competitionId +
-                "/LineWL/fields").then(function (response) {
-                $scope.fields = $scope.fields.concat(response.data)
-            })
         })
 
         $http.get("/api/competitions/" + competitionId +
