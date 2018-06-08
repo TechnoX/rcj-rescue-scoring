@@ -1,4 +1,3 @@
-'ngTouch',// register the directive with your app module
 var app = angular.module('ddApp', ['ngTouch','ngAnimate', 'ui.bootstrap', 'pascalprecht.translate', 'ngCookies']);
 var scp;
 var allFieldOpen = 0;
@@ -21,16 +20,12 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     
     
     $http.get("/api/competitions/" + competitionId +
-        "/LineNL/fields").then(function (response) {
+        "/Line/fields").then(function (response) {
         $scope.fields = response.data
         $http.get("/api/competitions/" + competitionId +
-            "/LineWL/fields").then(function (response) {
+            "/Maze/fields").then(function (response) {
             $scope.fields = $scope.fields.concat(response.data)
-            $http.get("/api/competitions/" + competitionId +
-                "/Maze/fields").then(function (response) {
-                $scope.fields = $scope.fields.concat(response.data)
-                console.log($scope.fields);
-            })
+            console.log($scope.fields);
         })
     })
 

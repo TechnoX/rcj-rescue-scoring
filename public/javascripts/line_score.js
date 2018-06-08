@@ -63,8 +63,8 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
 
             //console.log(runs)
 
-            $scope.nipponRuns = []
-            var nipponTeamRuns = {}
+            //$scope.nipponRuns = []
+            //var nipponTeamRuns = {}
             $scope.worldRuns = []
             var worldTeamRuns = {}
 
@@ -83,7 +83,7 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
                 if (run.status >= 2 || run.score != 0 || run.time.minutes != 0 ||
                     run.time.seconds != 0) {
                     //console.log(run)
-                    if (run.team.league == "LineNL") {
+                    /*if (run.team.league == "LineNL") {
 
 
                         if (nipponTeamRuns[run.team._id] === undefined) {
@@ -110,7 +110,7 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
                         }
                         $scope.nipponRuns.push(run)
 
-                    } else if (run.team.league == "LineWL") {
+                    } else if (run.team.league == "LineWL") {*/
                         if (worldTeamRuns[run.team._id] === undefined) {
                             worldTeamRuns[run.team._id] = {
                                 team: {
@@ -134,13 +134,13 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
                             run.isplaying = true
                         }
                         $scope.worldRuns.push(run)
-                    }
+                    //}
                 }
             }
             //$scope.nipponRuns.sort(sortRuns)
             //$scope.worldRuns.sort(sortRuns)
 
-            $scope.nipponRunsTop = []
+            /*$scope.nipponRunsTop = []
             for (var i in nipponTeamRuns) {
                 var teamRun = nipponTeamRuns[i]
                 $scope.nipponRunsTop.push({
@@ -153,7 +153,7 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
                     isplaying: teamRun.isplaying
                 })
             }
-            $scope.nipponRunsTop.sort(sortRuns)
+            $scope.nipponRunsTop.sort(sortRuns)*/
 
             $scope.worldRunsTop = []
             for (var i in worldTeamRuns) {
@@ -209,7 +209,6 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
 
 
     function sumBest(runs) {
-        //console.log(runs);
         if (runs.length == 1) {
             return {
                 score: runs[0].score,

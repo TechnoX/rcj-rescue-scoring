@@ -95,12 +95,10 @@
           <h4 class="alert-heading">Network Error</h4>
           <div class="row">
               <div class="col-md-10">
-                  <p>サーバに競技情報を保存するのに失敗しました．ネットワーク接続を確認してください．
-                  競技の記録はこのまま継続することができますが，サーバには保存されていません．
-                  システム運用担当者を呼んでください．</p>
+                  <p>Failed to save the scoring run data on the server. Check the network connection.  The record of scoring run can be continued as it is, but it is not stored in the server.  Please call system administrator.</p>
               </div>
               <div class="col-md-2">
-                  <button class="btn btn-warning" type="button" ng-click="saveEverything()">再送信</button>
+                  <button class="btn btn-warning" type="button" ng-click="saveEverything()">Re send</button>
               </div>
           </div>
         </div>
@@ -112,7 +110,7 @@
                 <div class="alert alert-info" role="alert" ng-show="numberOfDropTiles - placedDropTiles == 0 && !startedScoring && !fromSign">
                     {{'line.judge.ready' | translate}}<br><strong style="font-size:20px;">{{'line.judge.push_start' | translate}}</strong>
                 </div>
-                <div class="card" ng-if="league == 'LineWL'" ng-show="!startedScoring || fromSign">
+                <!--<div class="card" ng-if="league != 'LineNL'" ng-show="!startedScoring || fromSign">-->
                     <h4 class="card-header"><i class="fas fa-ambulance" aria-hidden="true"></i> {{'line.judge.select_elevel' | translate}}</h4>
                     <div class="card-body">
                         <div class="row">
@@ -131,7 +129,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                <!--</div>-->
                 <br>
 
 
