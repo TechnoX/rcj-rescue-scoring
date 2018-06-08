@@ -11,7 +11,7 @@ const globalConfig = {
   positionMarkers: [
     {x: 10, y: 20}, // upper left
     {x: 10, y: 760}, // lower left
-    {x: 570, y: 760}, // lower right
+    {x: 580, y: 760}, // lower right
   ],
   margin: {
     left: 30,
@@ -212,6 +212,15 @@ function drawFields(doc, pos_x, pos_y, config, map, stiles) {
   };
 }
 
+function drawVictimInputField(doc, config, pos_x, pos_y, amount) {
+  const columnText = ["D", "A"];
+  const rowText = [];
+  for (let i = 0; i < amount; i++) {
+    rowText.push("" + (i + 1));
+  }
+  return pdf.drawNumberInputField(doc, config, pos_x, pos_y, "Victim order", columnText, rowText)
+}
+
 function drawRun(doc, config, scoringRun) {
   let posDatas = [];
   let pos_y = config.margin.top;
@@ -291,7 +300,11 @@ function drawRun(doc, config, scoringRun) {
 
   if (checkpointAmount > 0) {
     for (let i = 0; i < checkpointAmount; i++) {
-      let pos = savePos(drawLOPInputField(doc, config, pos_x, pos_y, "Until CP " + (i + 1)), "cb" + i);
+      let text = "After CP " + i + ":";
+      if (i === 0) {
+        text = "After Start:";
+      }
+      let pos = savePos(drawLOPInputField(doc, config, pos_x, pos_y, text, "cb" + i));
       if (i % 2 === 0 && i < (checkpointAmount - 1)) {
         pos_x = pos.x + config.data.inputs.marginsVertical;
       } else {
@@ -301,27 +314,20 @@ function drawRun(doc, config, scoringRun) {
     }
   }
 
-  if (scoringRun.map.victims.dead > 0) {
-    nextItemBelow(pdf.drawVictimInputField(doc, config, pos_x, pos_y, scoringRun.map.victims.dead, "dead before alive"), "victimsDeadBeforeAlive");
+  let victimSum = scoringRun.map.victims.dead + scoringRun.map.victims.live;
+  if (victimSum > 0) {
+    nextItemRight(drawVictimInputField(doc, config, pos_x, pos_y, victimSum), "victims", 10);
   }
 
-  if (scoringRun.map.victims.live > 0) {
-    nextItemBelow(pdf.drawVictimInputField(doc, config, pos_x, pos_y, scoringRun.map.victims.live, "alive"), "victimsAlive");
-  }
-  if (scoringRun.map.victims.dead > 0) {
-    nextItemBelow(pdf.drawVictimInputField(doc, config, pos_x, pos_y, scoringRun.map.victims.dead, "dead after alive"), "victimsDeadAfterAlive");
-  }
-
-  nextItemRight(pdf.drawTimeInputField(doc, config, pos_x, pos_y), "time", 10);
   nextItemBelow(pdf.drawYesNoField(doc, config, pos_x, pos_y, "Exit Evac."), "exitBonus");
+  nextItemBelow(pdf.drawTimeInputField(doc, config, pos_x, pos_y), "time");
+  nextItemBelow(pdf.drawYesNoField(doc, config, pos_x, pos_y, "Accept Result?"), "acceptResult");
   pos_x = pos_x_origin;
-  pos_y += 15;
   nextItemBelow(pdf.drawTextInputField(doc, config, pos_x, pos_y, "Team:", config.signature.width, config.signature.height), "signTeam");
   nextItemBelow(pdf.drawTextInputField(doc, config, pos_x, pos_y, "Referee:", config.signature.width, config.signature.height), "signRef");
-  nextItemRight(pdf.drawYesNoField(doc, config, pos_x, pos_y, "Accept Result?"), "acceptResult", 80);
-  nextItemBelow(pdf.drawYesNoField(doc, config, pos_x, pos_y, "Comments?"), "comment");
-  pos_x = pos_x_origin;
+  nextItemRight(pdf.drawYesNoField(doc, config, pos_x, pos_y, "Comments?"), "comment", 80);
   nextItemBelow(pdf.drawYesNoField(doc, config, pos_x, pos_y, "Enter manually"), "enterManually");
+  pos_x = pos_x_origin;
 
   return posDatas
 }

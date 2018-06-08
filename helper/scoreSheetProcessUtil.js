@@ -19,8 +19,10 @@ module.exports.drawPosdataToSheet = function (sheetMat, posData, maxLevel) {
  * processes a posdata checkbox element on the normalized mat
  * @param mat normalized mat
  * @param posdata posdata for the element to process
- * @returns number that is proportional to the amount of grey in the checkbox area if element
- * is a checkbox, otherwise null
+ * @returns null if element is not a checkbox
+ * otherwise a value between 0 and 255 depending on the blackness of the checkbox.
+ * If pixels in the middle of the checkbox are marked black it counts higher than
+ * on the border.
  */
 module.exports.processPosdataCheckbox = function (mat, posdata) {
   if (posdata.type !== defs.InputTypeEnum.CHECKBOX) {
@@ -30,12 +32,24 @@ module.exports.processPosdataCheckbox = function (mat, posdata) {
   let matPosdata = mat.getRegion(new cv.Rect(posdata.x, posdata.y, posdata.w, posdata.h));
 
   let cumulative = 0;
+  let cnt = 0;
   for (let y = 0; y < posdata.h; y++) {
     for (let x = 0; x < posdata.w; x++) {
-      cumulative += (255 - matPosdata.at(y, x));
+      // Have different factors - if the checkbox is black in the middle it counts more than on the
+      // border. The distribution looks basically like this:
+      // 1 2 1 depending on the size of the box it adapts
+      // 2 3 2
+      // 1 2 1
+      let facY = posdata.h / 2 - Math.abs(y - posdata.h / 2);
+      let facX = posdata.w / 2 - Math.abs(x - posdata.w / 2);
+      let fac = ((facY * facX) + 1);
+      cumulative += fac * (255 - matPosdata.at(y, x));
+      cnt += fac;
     }
   }
-  return cumulative;
+  cumulative /= cnt;
+
+  return Math.round(cumulative);
 };
 
 

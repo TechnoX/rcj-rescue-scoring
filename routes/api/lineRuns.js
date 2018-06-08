@@ -781,8 +781,7 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
     let sheetRunID = scoreSheetProcess.processPosdataQRFull(req.file.path);
     if (sheetRunID == null) {
       return res.status(400).send({
-        msg: "Error processing file",
-        err: err.message
+        msg: "Error processing file"
       })
     }
 
@@ -800,6 +799,7 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
         })
       } else {
         const sheetData = scoreSheetLineProcess.processScoreSheet(run.scoreSheet.positionData, req.file.path);
+
         run.tiles = []
         while (run.tiles.length < run.map.indexCount) {
             run.tiles.push({
@@ -822,20 +822,16 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
         }
 
         run.rescueOrder = [];
-        for (let i = 0; i < sheetData.victimsDeadBeforeAlive.indexes[0]; i++) {
-          run.rescueOrder.push({type: "D", effective: false});
-        }
-        run.scoreSheet.rescuedDeadBeforeLiveVictimsImage = sheetData.victimsDeadBeforeAlive.img;
 
-        for (let i = 0; i < sheetData.victimsAlive.indexes[0]; i++) {
-          run.rescueOrder.push({type: "L", effective: true});
+        let rescuedLiveVictims = 0;
+        for (let i = 0; i < sheetData.victimOrder.indexes.length; i++) {
+          let victimType = "D";
+          if (sheetData.victimOrder.indexes[i] === 1) {
+            victimType = "L";
+            rescuedLiveVictims ++;
+          }
+          run.rescueOrder.push({type: victimType, effective: victimType === "L" || rescuedLiveVictims === run.map.victims.live});
         }
-        run.scoreSheet.rescuedLiveVictimsImage = sheetData.victimsAlive.img;
-
-        for (let i = 0; i < sheetData.victimsDeadAfterAlive.indexes[0]; i++) {
-          run.rescueOrder.push({type: "D", effective: true});
-        }
-        run.scoreSheet.rescuedDeadAfterLiveVictimsImage = sheetData.victimsDeadAfterAlive.img;
 
         run.time.minutes = sheetData.time.indexes[0];
         run.time.seconds = sheetData.time.indexes[1] * 10 + sheetData.time.indexes[2];
@@ -858,7 +854,6 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
         run.score = scoreCalculator.calculateLineScore(run);
         run.started = true;
         run.status = 4;
-        
 
         run.save((err) => {
           if (err) {
