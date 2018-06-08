@@ -565,11 +565,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 dead++;
             }
         }
-        for (let i = 0; i < dead; i++) {
-            $scope.addVictim("D");
-        }
         for (let i = 0; i < live; i++) {
             $scope.addVictim("L");
+        }
+        for (let i = 0; i < dead; i++) {
+            $scope.addVictim("D");
         }
         $scope.victim_tmp_clear();
 
