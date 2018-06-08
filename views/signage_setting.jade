@@ -1,0 +1,37 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'SignageSetting'
+
+append scripts
+  script.
+  script(src='/javascripts/signage_setting.js')
+
+block location
+    a.breadcrumb-item(ng-click="go('/home')") Home
+    a.breadcrumb-item(ng-click="go('/admin')") Admin
+    span.breadcrumb-item.active Signage setting
+
+block content
+  .row
+    .col-md-2
+    .col-md-8
+      h1 {{"admin.home.signage" | translate}}
+      button(onclick="location.href='/signage/setting/editor'" class='btn btn-primary') {{"signage.create" | translate}}
+      br
+      br
+      table.custom
+        thead
+            tr
+              th {{"common.name" | translate}}
+              th {{"common.operation" | translate}}
+        tbody
+            tr(ng-repeat='sign in signs')
+              td
+                a(ng-bind='sign.name' ng-href="/signage/setting/editor/{{sign._id}}")
+              td
+                button.btn.btn-info(type='button', ng-click='go("/signage/"+sign._id+"/0")' style="margin-right:10px;") {{"common.view" | translate}}
+                button.btn.btn-danger(type='button', ng-click='removeSig(sign)') {{"common.delete" | translate}}
+                
+

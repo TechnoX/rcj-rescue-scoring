@@ -32,7 +32,7 @@ function getMazeMaps(req, res) {
     query = mazeMap.find({})
   }
   
-  query.select("competition name")
+  query.select("competition name parent")
   
   query.lean().exec(function (err, data) {
     if (err) {
@@ -102,6 +102,7 @@ adminRouter.post('/', function (req, res) {
   
   const newMap = new mazeMap({
     competition: map.competition,
+    parent : map.parent,
     name       : map.name,
     height     : map.height,
     width      : map.width,
@@ -325,10 +326,13 @@ adminRouter.delete('/:map', function (req, res, next) {
   })
 })
 
-adminRouter.get('/name/:name', function (req, res, next) {
+
+adminRouter.get('/name/:competitionid/:name', function (req, res, next) {
   var name = req.params.name
+  var id = req.params.competitionid
   
   mazeMap.find({
+    "competition": id,
     "name": name
   }, function (err, data) {
     if (err) {
@@ -339,7 +343,7 @@ adminRouter.get('/name/:name', function (req, res, next) {
     } else {
       res.status(200).send(data)
     }
-  })
+  }).select("_id")
 })
 
 

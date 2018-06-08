@@ -1,5 +1,3 @@
-"use strict"
-const _ = require('underscore')
 const mongoose = require('mongoose')
 const validator = require('validator')
 const Schema = mongoose.Schema
@@ -7,7 +5,14 @@ const ObjectId = Schema.Types.ObjectId
 
 const logger = require('../config/logger').mainLogger
 
-const leagues = require("./../leagues")
+const LINE_LEAGUES = ["Line"]
+const MAZE_LEAGUES = ["Maze"]
+
+const LEAGUES = [].concat(LINE_LEAGUES, MAZE_LEAGUES)
+
+module.exports.LINE_LEAGUES = LINE_LEAGUES
+module.exports.MAZE_LEAGUES = MAZE_LEAGUES
+module.exports.LEAGUES = LEAGUES
 
 
 /**
@@ -22,7 +27,40 @@ const leagues = require("./../leagues")
 
 
 const competitionSchema = new Schema({
-  name: {type: String, required: true, unique: true}
+  name: {type: String, required: true, unique: true},
+  message: {type: String}
+})
+
+const signageSchema = new Schema({
+  name       : {type: String, required: true}, 
+  content :[{
+      duration: {type: Number, required: true},
+      type: {type: String, required: true},
+      url: {type: String, required: true},
+      group : {type: String , default: '0'},
+      disable: {type: Boolean, default: false}
+  }],
+  news : {type: [String]}
+})
+
+signageSchema.pre('save', function (next) {
+  const self = this
+  if (self.isNew) {
+    Signage.findOne({
+      name       : self.name
+    }, function (err, dbSignage) {
+      if (err) {
+        return next(err)
+      } else if (dbSignage) {
+        err = new Error('Signage setting with name "' + self.name + '" already exists!')
+        return next(err)
+      } else {
+        return next()
+      }
+    })
+  } else {
+    return next()
+  }
 })
 
 const roundSchema = new Schema({
@@ -33,7 +71,7 @@ const roundSchema = new Schema({
     index   : true
   },
   name       : {type: String, required: true},
-  league     : {type: String, enum: leagues.names, required: true, index: true}
+  league     : {type: String, enum: LEAGUES, required: true, index: true}
 })
 
 roundSchema.pre('save', function (next) {
@@ -66,7 +104,11 @@ const teamSchema = new Schema({
     index   : true
   },
   name       : {type: String, required: true},
-  league     : {type: String, enum: leagues.names, required: true, index: true}
+  league     : {type: String, enum: LEAGUES, required: true, index: true},
+  inspected  : {type: Boolean, default: false},
+  comment    : {type: String, default: ""},
+  interviewer: {type: String, default: ""},
+  docPublic  : {type: Boolean, default: false}
 })
 
 teamSchema.pre('save', function (next) {
@@ -99,7 +141,7 @@ const fieldSchema = new Schema({
     index   : true
   },
   name       : {type: String, required: true},
-  league     : {type: String, enum: leagues.names, required: true, index: true}
+  league     : {type: String, enum: LEAGUES, required: true, index: true}
 })
 
 fieldSchema.pre('save', function (next) {
@@ -126,12 +168,14 @@ fieldSchema.pre('save', function (next) {
 
 
 const Competition = mongoose.model('Competition', competitionSchema)
+const Signage = mongoose.model('Signage', signageSchema)
 const Round = mongoose.model('Round', roundSchema)
 const Team = mongoose.model('Team', teamSchema)
 const Field = mongoose.model('Field', fieldSchema)
 
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
 module.exports.competition = Competition
+module.exports.signage = Signage
 module.exports.round = Round
 module.exports.team = Team
 module.exports.field = Field

@@ -1,15 +1,146 @@
 <div class="modal-header">
-  <h3 class="modal-title">Score Items</h3>
+    <h3 class="modal-title">{{'line.judge.m_score' | translate}}</h3>
 </div>
 <div class="modal-body">
-  <label>Passed (note this is not attempts!):</label>
-  <ul>
-    <li ng-repeat="pass in mtile.index track by $index">
-      <input type="checkbox" ng-model="stiles[pass].scored" id="{{ 'passed-' + $index }}"><label class="checkbox" for="{{ 'passed-' + $index }}">Passed {{words[$index]}} time</label>
-    </li>
-  </ul>
-</div>
+    <label>{{'line.judge.m_score_d' | translate}}</label>
+      <table class="custom" style="padding: 0px;max-width:300px;background-color:#585858;border-collapse:separate;border-spacing:0.1px;" align="center">
+          <tr style="height:100px;">
+              <td width="100px" style="padding: 0px;position: relative;background-color: #e6e6e6;">
+                  <img ng-src="/images/tiles/{{nineTile[0].tileType.image}}" style="position:absolute;left: 0px; top: 0px;" width="100%" height="auto" class="rot{{tilerotate(nineTile[0].rot)}}" ng-class="{'drop-tile': isDropTile(nineTile[0]) || isStart(nineTile[0])}">
+                  <i class="fa fa-cube fa-fw fa-2x" ng-show="nineTile[0].items.obstacles>0" style="text-align:right; padding:1px 2px; color:#6e2c00; opacity:0.9; position:absolute;top:0px;"></i>
+                  <i class="fa fa-bars fa-fw fa-rotate-270 fa-2x" ng-show="nineTile[0].items.speedbumps>0" style=" padding:1px 2px; color:#abb2b9; opacity:0.9; position:absolute;top:5px;left:0px"></i>
+                  <i class="fa fa-play-circle-o fa-fw fa-2x" ng-show="isStart(nineTile[0])" style="padding:1px 2px; color:#73e673; opacity:0.9; position:absolute;top:5px;left:0px"></i>
+                  <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[0].levelUp)" ng-show="nineTile[0].levelUp" style="padding-top:4px; color:#3498db; opacity:0.4;"></i>
+                  <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[0].levelDown)" ng-show="nineTile[0].levelDown" style="padding-top:4px; color:#ff8095; opacity:0.4;"></i>
+              </td>
+              <td width="100px" style="padding: 0px;position: relative;background-color: #e6e6e6;" ng-click="toggle_scored(next.top)">
+                  <img ng-src="/images/tiles/{{nineTile[1].tileType.image}}" style="position:absolute;left: 0px; top: 0px;" width="100%" height="auto" class="rot{{tilerotate(nineTile[1].rot)}}" ng-class="{'drop-tile': isDropTile(nineTile[1]) || isStart(nineTile[1])}">
+                  <i class="fa fa-cube fa-fw fa-2x" ng-show="nineTile[1].items.obstacles>0" style="text-align:right; padding:1px 2px; color:#6e2c00; opacity:0.9; position:absolute;top:0px;"></i>
+                  <i class="fa fa-bars fa-fw fa-rotate-270 fa-2x" ng-show="nineTile[1].items.speedbumps>0" style=" padding:1px 2px; color:#abb2b9; opacity:0.9; position:absolute;top:5px;left:0px"></i>
+                  <i class="fa fa-play-circle-o fa-fw fa-2x" ng-show="isStart(nineTile[1])" style="padding:1px 2px; color:#73e673; opacity:0.9; position:absolute;top:5px;left:0px"></i>
+                  <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[1].levelUp)" ng-show="nineTile[1].levelUp" style="padding-top:4px; color:#3498db; opacity:0.4;"></i>
+                  <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[1].levelDown)" ng-show="nineTile[1].levelDown" style="padding-top:4px; color:#ff8095; opacity:0.4;"></i>
+                  <div ng-if="next.top">
+                      <div ng-show="dirStatus(stiles[next.top]) == 'done'">
+                          <img src="/images/next-robot-done.png" style="position:absolute;left: 0px; top: 0px; " width="100%" height="auto">
+                          <i class="fas fa-check fa-fw fa-3x" style="padding-top:4px; color:#27ae60; opacity:0.9;position:absolute;top:0px;left:0px;"></i>
+                      </div>
+                      <div ng-show="dirStatus(stiles[next.top]) == 'halfdone'">
+                          <img src="/images/next-robot-done.png" style="position:absolute;left: 0px; top: 0px; " width="100%" height="auto">
+                          <i class="fas fa-play fa-fw fa-rotate-270 fa-3x" style="padding-top:4px; color:#f4d03f; opacity:0.9;position:absolute;top:0px;left:0px;"></i>
+                      </div>
+                      <div ng-show="dirStatus(stiles[next.top]) == 'undone'">
+                          <img src="/images/next-robot-undone.png" style="position:absolute;left: 0px; top: 0px;opacity:0.5;" width="100%" height="auto">
+                          <i class="fas fa-times fa-fw fa-3x" style="padding-top:4px; color:#e74c3c; opacity:0.9;position:absolute;top:0px;left:0px;"></i>
+                      </div>
+                  </div>
+              </td>
+              <td width="100px" style="padding: 0px;position: relative;background-color: #e6e6e6;">
+                  <img ng-src="/images/tiles/{{nineTile[2].tileType.image}}" style="position:absolute;left: 0px; top: 0px;"  width="100%" height="auto" class="rot{{tilerotate(nineTile[2].rot)}}" ng-class="{'drop-tile': isDropTile(nineTile[2]) || isStart(nineTile[2])}">
+                  <i class="fa fa-cube fa-fw fa-2x" ng-show="nineTile[2].items.obstacles>0" style="text-align:right; padding:1px 2px; color:#6e2c00; opacity:0.9; position:absolute;top:0px;"></i>
+                  <i class="fa fa-bars fa-fw fa-rotate-270 fa-2x" ng-show="nineTile[2].items.speedbumps>0" style=" padding:1px 2px; color:#abb2b9; opacity:0.9; position:absolute;top:5px;left:0px"></i>
+                  <i class="fa fa-play-circle-o fa-fw fa-2x" ng-show="isStart(nineTile[2])" style="padding:1px 2px; color:#73e673; opacity:0.9; position:absolute;top:5px;left:0px"></i>
+                  <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[2].levelUp)" ng-show="nineTile[2].levelUp" style="padding-top:4px; color:#3498db; opacity:0.4;"></i>
+                  <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[2].levelDown)" ng-show="nineTile[2].levelDown" style="padding-top:4px; color:#ff8095; opacity:0.4;"></i>
+              </td>
+          </tr>
+          <tr style="height:100px;">
+              <td width="100px" style="padding: 0px;position: relative;background-color: #e6e6e6;" ng-click="toggle_scored(next.left)">
+                  <img ng-src="/images/tiles/{{nineTile[3].tileType.image}}" style="position:absolute;left: 0px; top: 0px;" width="100%" height="auto" class="rot{{tilerotate(nineTile[3].rot)}}" ng-class="{'drop-tile': isDropTile(nineTile[3]) || isStart(nineTile[3])}">
+                  <i class="fa fa-cube fa-fw fa-2x" ng-show="nineTile[3].items.obstacles>0" style="text-align:right; padding:1px 2px; color:#6e2c00; opacity:0.9; position:absolute;top:0px;"></i>
+                  <i class="fa fa-bars fa-fw fa-rotate-270 fa-2x" ng-show="nineTile[3].items.speedbumps>0" style=" padding:1px 2px; color:#abb2b9; opacity:0.9; position:absolute;top:5px;left:0px"></i>
+                  <i class="fa fa-play-circle-o fa-fw fa-2x" ng-show="isStart(nineTile[3])" style="padding:1px 2px; color:#73e673; opacity:0.9; position:absolute;top:5px;left:0px"></i>
+                  <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[3].levelUp)" ng-show="nineTile[3].levelUp" style="padding-top:4px; color:#3498db; opacity:0.4;"></i>
+                  <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[3].levelDown)" ng-show="nineTile[3].levelDown" style="padding-top:4px; color:#ff8095; opacity:0.4;"></i>
+                  <div ng-if="next.left">
+                      <div ng-show="dirStatus(stiles[next.left]) == 'done'">
+                          <img src="/images/next-robot-done.png" style="position:absolute;left: 0px; top: 0px; " width="100%" height="auto"  class="rot270">
+                          <i class="fas fa-check fa-fw fa-3x" style="padding-top:4px; color:#27ae60; opacity:0.9;position:absolute;bottom:0px;left:0px;"></i>
+                      </div>
+                      <div ng-show="dirStatus(stiles[next.left]) == 'halfdone'">
+                          <img src="/images/next-robot-done.png" style="position:absolute;left: 0px; top: 0px; " width="100%" height="auto"  class="rot270">
+                          <i class="fas fa-play fa-fw fa-rotate-270 fa-3x" style="padding-top:4px; color:#f4d03f; opacity:0.9;position:absolute;bottom:0px;left:0px;"></i>
+                      </div>
+                      <div ng-show="dirStatus(stiles[next.left]) == 'undone'">
+                          <img src="/images/next-robot-undone.png" style="position:absolute;left: 0px; top: 0px;opacity:0.5;" width="100%" height="auto"  class="rot270">
+                          <i class="fas fa-times fa-fw fa-3x" style="padding-top:4px; color:#e74c3c; opacity:0.9;position:absolute;bottom:0px;left:0px;"></i>
+                      </div>
+                  </div>
+              </td>
+              <td width="100px" style="padding: 0px;position: relative;background-color: #e6e6e6;">
+                  <img ng-src="/images/tiles/{{nineTile[4].tileType.image}}" style="position:absolute;left: 0px; top: 0px;" width="100%" height="auto" class="rot{{tilerotate(nineTile[4].rot)}}" ng-class="{'drop-tile': isDropTile(nineTile[4]) || isStart(nineTile[4])}">
+                  <i class="fa fa-cube fa-fw fa-2x" ng-show="nineTile[4].items.obstacles>0" style="text-align:right; padding:1px 2px; color:#6e2c00; opacity:0.9; position:absolute;top:0px;"></i>
+                  <i class="fa fa-bars fa-fw fa-rotate-270 fa-2x" ng-show="nineTile[4].items.speedbumps>0" style=" padding:1px 2px; color:#abb2b9; opacity:0.9; position:absolute;top:5px;left:0px"></i>
+                  <i class="fa fa-play-circle-o fa-fw fa-2x" ng-show="isStart(nineTile[4])" style="padding:1px 2px; color:#73e673; opacity:0.9; position:absolute;top:5px;left:0px"></i>
+                  <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[4].levelUp)" ng-show="nineTile[4].levelUp" style="padding-top:4px; color:#3498db; opacity:0.4;"></i>
+                  <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[4].levelDown)" ng-show="nineTile[4].levelDown" style="padding-top:4px; color:#ff8095; opacity:0.4;"></i>
+              </td>
+              <td width="100px" style="padding: 0px;position: relative;background-color: #e6e6e6;" ng-click="toggle_scored(next.right)">
+                  <img ng-src="/images/tiles/{{nineTile[5].tileType.image}}" style="position:absolute;left: 0px; top: 0px;" width="100%" height="auto" class="rot{{tilerotate(nineTile[5].rot)}}" ng-class="{'drop-tile': isDropTile(nineTile[5]) || isStart(nineTile[5])}">
+                  <i class="fa fa-cube fa-fw fa-2x" ng-show="nineTile[5].items.obstacles>0" style="text-align:right; padding:1px 2px; color:#6e2c00; opacity:0.9; position:absolute;top:0px;"></i>
+                  <i class="fa fa-bars fa-fw fa-rotate-270 fa-2x" ng-show="nineTile[5].items.speedbumps>0" style=" padding:1px 2px; color:#abb2b9; opacity:0.9; position:absolute;top:5px;left:0px"></i>
+                  <i class="fa fa-play-circle-o fa-fw fa-2x" ng-show="isStart(nineTile[5])" style="padding:1px 2px; color:#73e673; opacity:0.9; position:absolute;top:5px;left:0px"></i>
+                  <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[5].levelUp)" ng-show="nineTile[5].levelUp" style="padding-top:4px; color:#3498db; opacity:0.4;"></i>
+                  <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[5].levelDown)" ng-show="nineTile[5].levelDown" style="padding-top:4px; color:#ff8095; opacity:0.4;"></i>
+                  <div ng-if="next.right">
+                      <div ng-show="dirStatus(stiles[next.right]) == 'done'">
+                          <img src="/images/next-robot-done.png" style="position:absolute;left: 0px; top: 0px; " width="100%" height="auto" class="rot90">
+                          <i class="fas fa-check fa-fw fa-3x" style="padding-top:4px; color:#27ae60; opacity:0.9;position:absolute;top:0px;right:0px;"></i>
+                      </div>
+                      <div ng-show="dirStatus(stiles[next.right]) == 'halfdone'">
+                          <img src="/images/next-robot-done.png" style="position:absolute;left: 0px; top: 0px; " width="100%" height="auto" class="rot90">
+                          <i class="fas fa-play fa-fw fa-rotate-270 fa-3x" style="padding-top:4px; color:#f4d03f; opacity:0.9;position:absolute;top:0px;right:0px;"></i>
+                      </div>
+                      <div ng-show="dirStatus(stiles[next.right]) == 'undone'">
+                          <img src="/images/next-robot-undone.png" style="position:absolute;left: 0px; top: 0px;opacity:0.5;" width="100%" height="auto" class="rot90">
+                          <i class="fas fa-times fa-fw fa-3x" style="padding-top:4px; color:#e74c3c; opacity:0.9;position:absolute;top:0px;right:0px;"></i>
+                      </div>
+                  </div>
+              </td>
+          </tr>
+          <tr style="height:100px;">
+              <td width="100px" style="padding: 0px;position: relative;background-color: #e6e6e6;">
+                  <img ng-src="/images/tiles/{{nineTile[6].tileType.image}}" style="position:absolute;left: 0px; top: 0px;" width="100%" height="auto" class="rot{{tilerotate(nineTile[6].rot)}}" ng-class="{'drop-tile': isDropTile(nineTile[6]) || isStart(nineTile[6])}">
+                  <i class="fa fa-cube fa-fw fa-2x" ng-show="nineTile[6].items.obstacles>0" style="text-align:right; padding:1px 2px; color:#6e2c00; opacity:0.9; position:absolute;top:0px;"></i>
+                  <i class="fa fa-bars fa-fw fa-rotate-270 fa-2x" ng-show="nineTile[6].items.speedbumps>0" style=" padding:1px 2px; color:#abb2b9; opacity:0.9; position:absolute;top:5px;left:0px"></i>
+                  <i class="fa fa-play-circle-o fa-fw fa-2x" ng-show="isStart(nineTile[6])" style="padding:1px 2px; color:#73e673; opacity:0.9; position:absolute;top:5px;left:0px"></i>
+                  <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[6].levelUp)" ng-show="nineTile[6].levelUp" style="padding-top:4px; color:#3498db; opacity:0.4;"></i>
+                  <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[6].levelDown)" ng-show="nineTile[6].levelDown" style="padding-top:4px; color:#ff8095; opacity:0.4;"></i>
+              </td>
+              <td width="100px" style="padding: 0px;position: relative;background-color: #e6e6e6;" ng-click="toggle_scored(next.bottom)">
+                  <img ng-src="/images/tiles/{{nineTile[7].tileType.image}}" style="position:absolute;left: 0px; top: 0px;" width="100%" height="auto" class="rot{{tilerotate(nineTile[7].rot)}}" ng-class="{'drop-tile': isDropTile(nineTile[7]) || isStart(nineTile[7])}">
+                  <i class="fa fa-cube fa-fw fa-2x" ng-show="nineTile[7].items.obstacles>0" style="text-align:right; padding:1px 2px; color:#6e2c00; opacity:0.9; position:absolute;top:0px;"></i>
+                  <i class="fa fa-bars fa-fw fa-rotate-270 fa-2x" ng-show="nineTile[7].items.speedbumps>0" style=" padding:1px 2px; color:#abb2b9; opacity:0.9; position:absolute;top:5px;left:0px"></i>
+                  <i class="fa fa-play-circle-o fa-fw fa-2x" ng-show="isStart(nineTile[7])" style="padding:1px 2px; color:#73e673; opacity:0.9; position:absolute;top:5px;left:0px"></i>
+                  <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[7].levelUp)" ng-show="nineTile[7].levelUp" style="padding-top:4px; color:#3498db; opacity:0.4;"></i>
+                  <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[7].levelDown)" ng-show="nineTile[7].levelDown" style="padding-top:4px; color:#ff8095; opacity:0.4;"></i>
+                  <div ng-if="next.bottom">
+                      <div ng-show="dirStatus(stiles[next.bottom]) == 'done'">
+                          <img src="/images/next-robot-done.png" style="position:absolute;left: 0px; top: 0px; " width="100%" height="auto" class="rot180">
+                          <i class="fas fa-check fa-fw fa-3x" style="padding-top:4px; color:#27ae60; opacity:0.9;position:absolute;bottom:0px;right:0px;"></i>
+                      </div>
+                      <div ng-show="dirStatus(stiles[next.bottom]) == 'halfdone'">
+                          <img src="/images/next-robot-done.png" style="position:absolute;left: 0px; top: 0px; " width="100%" height="auto" class="rot180">
+                          <i class="fas fa-play fa-fw fa-rotate-270 fa-3x" style="padding-top:4px; color:#f4d03f; opacity:0.9;position:absolute;bottom:0px;right:0px;"></i>
+                      </div>
+                      <div ng-show="dirStatus(stiles[next.bottom]) == 'undone'">
+                          <img src="/images/next-robot-undone.png" style="position:absolute;left: 0px; top: 0px;opacity:0.5;" width="100%" height="auto" class="rot180">
+                          <i class="fas fa-times fa-fw fa-3x" style="padding-top:4px; color:#e74c3c; opacity:0.9;position:absolute;bottom:0px;right:0px;"></i>
+                      </div>
+                  </div>
+              </td>
+              <td width="100px" style="padding: 0px;position: relative;background-color: #e6e6e6;">
+                  <img ng-src="/images/tiles/{{nineTile[8].tileType.image}}" style="position:absolute;left: 0px; top: 0px;" width="100%" height="auto" class="rot{{tilerotate(nineTile[8].rot)}}" ng-class="{'drop-tile': isDropTile(nineTile[8]) || isStart(nineTile[8])}">
+                  <i class="fa fa-cube fa-fw fa-2x" ng-show="nineTile[8].items.obstacles>0" style="text-align:right; padding:1px 2px; color:#6e2c00; opacity:0.9; position:absolute;top:0px;"></i>
+                  <i class="fa fa-bars fa-fw fa-rotate-270 fa-2x" ng-show="nineTile[8].items.speedbumps>0" style=" padding:1px 2px; color:#abb2b9; opacity:0.9; position:absolute;top:5px;left:0px"></i>
+                  <i class="fa fa-play-circle-o fa-fw fa-2x" ng-show="isStart(nineTile[8])" style="padding:1px 2px; color:#73e673; opacity:0.9; position:absolute;top:5px;left:0px"></i>
+                  <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[8].levelUp)" ng-show="nineTile[8].levelUp" style="padding-top:4px; color:#3498db; opacity:0.4;"></i>
+                  <i class="fa fa-angle-double-down  fa-fw fa-4x" ng-class="rotateRamp(nineTile[8].levelDown)" ng-show="nineTile[8].levelDown" style="padding-top:4px; color:#ff8095; opacity:0.4;"></i>
+              </td>
+          </tr>
+      </table>
+  </div>
 
 <div class="modal-footer">
-  <button class="btn btn-success btn-lg btn-block" type="button" ng-click="ok()">OK</button>
+    <button class="btn btn-info btn-lg btn-block" type="button" ng-click="ok()">OK</button>
 </div>

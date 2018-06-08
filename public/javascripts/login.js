@@ -1,21 +1,27 @@
 //- -*- tab-width: 2 -*-
 
-angular.module("login", []).controller("loginController", function ($scope, $http) {
-  
+var app = angular.module('login', ['ngTouch','ngAnimate', 'ui.bootstrap', 'pascalprecht.translate', 'ngCookies']);
+
+app.controller('loginController', ['$scope', '$log', '$timeout', '$http', '$translate', function ($scope, $log, $timeout, $http, $translate) {
+    $scope.isFailed = false;
+    $scope.return = false;
+    var return_path = ""
+    var match = location.search.match(/page=(.*?)(&|$)/);
+    if (match) {
+        return_path = decodeURIComponent(match[1]);
+    }
+    if(return_path != "") $scope.return = true;  
+    $scope.go = function (path) {
+        window.location = path
+    }
   $scope.login = function () {
     $http.post("/api/auth/login", {
       username: $scope.username,
       password: $scope.password
     }).then(function (response) {
-      console.log(response)
-      var return_path = ""
-      var match = location.search.match(/site=(.*?)(&|$)/);
-      if (match) {
-        return_path = decodeURIComponent(match[1]);
-      }
-      window.location.replace(return_path)
+      window.location.replace('')
     }, function () {
-      swal("Oops!", "Failed to login. Please check ID and password once agains", "error");
+      $scope.isFailed = true;
     })
   }
-})
+}])

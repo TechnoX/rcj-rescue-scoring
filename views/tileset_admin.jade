@@ -23,8 +23,8 @@ append css
     }
 
 block location
-    a.breadcrumb-item(href='/home') Home
-    a.breadcrumb-item(href='/admin') Admin
+    a.breadcrumb-item(ng-click="go('/home')") Home
+    a.breadcrumb-item(ng-click="go('/admin')") Admin
     span.breadcrumb-item.active Line tilesets
 
 block content
@@ -33,24 +33,24 @@ block content
       .row
         .col-md-offset-2.col-md-8
           .form-group
-            label.control-label New tileset:
+            label.control-label {{"admin.line_tSet.new_tSet" | translate}}
             input.control-input(ng-model='newTileSetName')
-            button(ng-click='createNewTileSet()') Create
+            button(ng-click='createNewTileSet()') {{"common.create" | translate}}
       .row
         .col-md-offset-2.col-md-8
           .form-group
-            label.control-label Tileset:
+            label.control-label {{"admin.line_tSet.tSet" | translate}}
             select(ng-model='tileSet' ng-options='set as set.name for set in tileSets')
-            button(ng-click='delete()') Delete
+            button(ng-click='delete()') {{"common.delete" | translate}}
       .row
         .col-md-offset-5.col-md-2
-            button.btn.btn-primary.btn-lg.btn-block(ng-click='save()') Save!
+            button.btn.btn-primary.btn-lg.btn-block(ng-click='save()') {{"common.save" | translate}}
       .row
         .col-md-6
-          h2 Available tiles
+          h2 {{"admin.line_tSet.available" | translate}}
           img.tile.tile-container(ng-repeat='tileType in tileTypes' ng-src='/images/tiles/{{tileType.image}}' ng-click='addTile(tileType)')
         .col-md-6
-          h2 Tiles in {{tileSet.name}}
+          h2 {{ 'admin.line_tSet.tIn' | translate:translationData }}
           span.tile-container(ng-repeat='tile in tileSet.tiles track by tile.tileType._id')
             img.tile(ng-src='/images/tiles/{{tile.tileType.image}}' ng-click='removeTile(tile)')
             span(ng-bind='tile.count')

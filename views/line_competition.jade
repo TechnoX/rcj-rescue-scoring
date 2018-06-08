@@ -1,77 +1,90 @@
 //- -*- tab-width: 2 -*-
 extends includes/layout
 
+
 block vars
   - var ngAppDef = 'LineCompetition'
 
 append scripts
   script.
     var competitionId = "#{id}"
+    var isJudge = "#{judge}"
   script(src='/javascripts/line_competition.js')
 
-append css
-  style(type='text/css').
-    .started {
-      background-color: #ecf0f1;
-    }
-
-    .passed {
-      opacity: 0.5;
-    }
 
 block location
-  a.breadcrumb-item(href="/home") Home
-  a.breadcrumb-item(href="/line") Line
-  span.breadcrumb-item.active {{competition.name}}
+  a.breadcrumb-item(ng-click="go('/home')") Home
+  a.breadcrumb-item(ng-click="go('/home/'+competitionId)") {{competition.name}}
+  span.breadcrumb-item.active Line
 
 
 block content
   .row
     .col-md-1
     .col-md-10
-      h1 Line runs - {{competition.name}}
+      h1 {{'line.competition.title' | translate}} - {{competition.name}}
       br
-      a.btn.btn-outline-info.btn-lg.btn-block(ng-href='/line/{{competition._id}}/score') Result (preliminary report ranking)
+      button(ng-click="go('/line/' + competition._id + '/score')" class='btn btn-outline-info btn-lg btn-block') 
+        i.fas.fa-trophy(aria-hidden='true') {{'line.competition.result' | translate}}
+      br
+      button(ng-click="go('/interview/' + competition._id + '?return=/line/'+competitionId)" class='btn btn-outline-success btn-lg btn-block') 
+        i.fas.fa-microphone(aria-hidden='true') {{'common.interview' | translate}}
       br
       .refine
-        h6 Refine by round
-        span(ng-repeat='(key, value) in rounds track by key')
-          input(type='checkbox' ng-model='rounds[key]' id="check_{{key}}")
-          label.checkbox(for="check_{{key}}") {{key}}
-        h6 Refine by field
-        span(ng-repeat='(key, value) in fields track by key')
-          input(type='checkbox' ng-model='fields[key]' id="check_{{key}}")
-          label.checkbox(for="check_{{key}}") {{key}}
+        .card.border-dark.mb-3(style='width:100%;')
+          .card-header.bg-transparent.border-dark.fa-2x
+            i.fas.fa-search(aria-hidden='true') {{'line.competition.refine.filter' | translate}}
+          .card-body.text-dark
+            h6.card-title {{'line.competition.refine.round' | translate}}
+            span(ng-repeat='(key, value) in rounds track by key ')
+              input(type='checkbox' ng-model='rounds[key]' id="checkR_{{key}}")
+              label.checkbox(for="checkR_{{key}}") {{key}}
+            hr
+            h6.card-title {{'line.competition.refine.field' | translate}}
+            span(ng-repeat="(key, value) in fields track by key")
+              input(type='checkbox' ng-model='fields[key]' id="checkF_{{key}}")
+              label.checkbox(for="checkF_{{key}}") {{key}}
+            hr
+            h6.card-title {{'line.competition.refine.team' | translate}}
+            .input-group
+              span#basic-addon1.input-group-addon
+                i.fas.fa-users(aria-hidden='true')
+              input.form-control(type='text', placeholder='Team name', aria-label='Username', aria-describedby='basic-addon1' ng-model='teamName')
+
+
+            
+
+        h4
+            
+        
       hr
       input#showEnd(type='checkbox' ng-model='show_ended' ng-change='update_list()')
-      label.checkbox(for='showEnd') Display ended runs
+      label.checkbox(for='showEnd') {{'line.competition.endedrun' | translate}}
       br
       center
         .loader(ng-show="runs==null")
           img(src="/images/loader2.gif")
-          p Now Loading...
-      table(class="comp")
-        thead
-          tr
-            th StartTime
-            th Round
-            th Team
-            th Field
-            th
-            th
-        tbody
-          - var tdClass = "{started : run.status>=3, passed : run.startTime<curTime}"
-          tr(ng-repeat='run in runs | filter:list_filter | orderBy:"[startTime,round.name,field.name,team.name]" ')
-            td(ng-bind='run.startTime | date:"dd EEE HH:mm"' ng-class='#{tdClass}')
-            td(ng-bind='run.round.name' ng-class='#{tdClass}')
-            td(ng-bind='run.team.name' ng-class='#{tdClass}')
-            td(ng-bind='run.field.name' ng-class='#{tdClass}')
-            td
-              a.btn.btn-info(ng-href='/line/view/{{run._id}}') View
+          p {{'common.loading' | translate}}
 
-            td(ng-class='#{tdClass}')
-              button(ng-click="no_judge()" class='btn btn-danger' ng-if="run.status>=3" ) Judge
-              button(ng-click="go_judge('/line/judge/' + run._id)" class='btn btn-danger' ng-if="run.status<3" ) Judge
-      br
-      br
-      br
+
+      #compe
+          table(class="custom" style="margin-bottom:50px;")
+            thead
+              tr
+                th {{'common.team' | translate}}
+                th {{'common.starttime' | translate}}
+                th {{'common.round' | translate}}
+                th {{'common.field' | translate}}
+                th
+            tbody
+              tr(ng-repeat='run in runs | filter:list_filter | orderBy:"[startTime,round.name,field.name,team.name]" ')
+                td(ng-bind='run.team.name' ng-class="{'end' : run.status>=3,'delay' : run.startTime<curTime}")
+                td(ng-bind='run.startTime | date:"dd EEE HH:mm"' data-content="{{'common.starttime' | translate}}")
+                td(ng-bind='run.round.name' data-content="{{'common.round' | translate}}")
+                td(ng-bind='run.field.name' data-content="{{'common.field' | translate}}")
+                td
+                  button(ng-if= "run.field != null" ng-click="go('/line/view/' + run._id)" class='btn btn-info' style="width:45%; margin-right:5px;") {{'common.view' | translate}}
+                  button(ng-if= "run.field == null" ng-click="go('/home/access_denied')" class='btn btn-info' style="width:45%; margin-right:5px;") {{'common.view' | translate}}
+                  //button(ng-click="no_judge()" class='btn btn-danger' ng-if="run.status>=3"  style="width:45%;") {{'common.judge' | translate}}
+                  button(ng-click="go_judge('/line/judge/' + run._id , run.team.name)" class='btn btn-danger' ng-if="run.status<2 && isJudge == 1"  style="width:45%;") {{'common.judge' | translate}}
+

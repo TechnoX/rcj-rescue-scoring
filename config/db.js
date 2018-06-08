@@ -9,7 +9,7 @@ var logger = require('../config/logger').mainLogger;
 var env = require('node-env-file');
 env('process.env');
 
-
+mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DB_CONNECT_STR);
 var db = mongoose.connection;
 

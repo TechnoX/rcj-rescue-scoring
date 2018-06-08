@@ -1,9 +1,21 @@
-table {
+table.map {
     border-collapse: collapse;
+    width: initial !important;
 }
 
-td {
-    border: 1px solid grey;
+table.map th {
+    font-weight: bold;
+    vertical-align: top;
+}
+
+table.map td {
+    vertical-align: top;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+table.map tr:nth-child(2n+1) {
+    background: initial;
 }
 
 
@@ -25,13 +37,9 @@ table tr:nth-child(even) {
     width: 40px;
 }*/
 
-td {
-    padding: 0px!important;
-}
-
 .wall {
     background-color: navy;
-    padding: 5px!important;
+    padding: 5px;
 }
 
 .wall.linear {
@@ -39,11 +47,12 @@ td {
 }
 
 .tile {
-    background-color: LightSeaGreen;
+    background-color: #b4ffd5;
+    padding: 0px!important;
 }
 
 .tile.linear {
-    background-color: lightblue;
+    background-color: #fffdea;
 }
 
 .wallspot:hover {

@@ -10,10 +10,10 @@ append scripts
   script(src='/javascripts/line_run_bulk.js')
 
 block location
-    a.breadcrumb-item(href='/home') Home
-    a.breadcrumb-item(href='/admin') Admin
-    a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition.name}}
-    a.breadcrumb-item(ng-href='/admin/{{competitionId}}/line/runs') Line runs
+    a.breadcrumb-item(ng-click="go('/home')") Home
+    a.breadcrumb-item(ng-click="go('/admin')") Admin
+    a.breadcrumb-item(ng-click="go('/admin/'+competitionId)") {{competition.name}}
+    a.breadcrumb-item(ng-click="go('/admin/'+competitionId+'/line/runs')") Line runs
     span.breadcrumb-item.active Bulk Registration
 
 
@@ -21,76 +21,74 @@ block content
   .row
     .col-md-1
     .col-md-10
-      h1 {{competition.name}} - Run Bulk Registration
+      h1 {{competition.name}} - {{"admin.lineRunBulk.title" | translate}}
       br
       br
-      h3 STEP1 Download the template file
-      p Download the template file from the link below.
+      h3 {{"admin.lineRunBulk.s1T" | translate}}
+      p {{"admin.lineRunBulk.s1D" | translate}}
       a(href="/tmp/run_bulk.csv") Download!
       br
       br
-      h3 STEP2 Edit the file
-      p Open the csv format of Excel etc. with editable software and fill the information.
-      | For Round, select one from the following and enter.
-      table
+      h3 {{"admin.lineRunBulk.s2T" | translate}}
+      p {{"admin.lineRunBulk.s2D1" | translate}}
+      p {{"admin.lineRunBulk.s2D2" | translate}}
+      table.custom
         thead
             tr
-              th Round
+              th {{"common.round" | translate}}
         tbody
             tr(ng-repeat='round in rounds')
               td(ng-bind='round.name')
       hr
-      p For Team name, select one from the following and enter.
-      table
+      p {{"admin.lineRunBulk.s2D3" | translate}}
+      table.custom
         thead
             tr
-              th Team name
+              th {{"common.team" | translate}}
         tbody
             tr(ng-repeat='team in teams')
               td(ng-bind='team.name')
       hr
-      p For Map name, select one from the following and enter.
-      table
+      p {{"admin.lineRunBulk.s2D4" | translate}}
+      table.custom
         thead
             tr
-              th Map name
+              th {{"common.map" | translate}}
         tbody
             tr(ng-repeat='map in maps')
               td(ng-bind='map.name')
       hr
-      p For Field name, select one from the following and enter.
-      table
+      p {{"admin.lineRunBulk.s2D5" | translate}}
+      table.custom
         thead
             tr
-              th Field name
+              th {{"common.field" | translate}}
         tbody
             tr(ng-repeat='field in fields')
               td(ng-bind='field.name')
       hr
-      p Enter start time in the following format
+      p {{"admin.lineRunBulk.s2D6" | translate}}
       p yyyy/mm/dd hh:ss
       | ex) 2017/07/27 10:35
       hr
-      p Please save with comma separated by Shift-JIS.
-      |　When the end of the team name ends with a space, an error will occur during run registration.
       br
-      h3 STEP3 Upload the file
+      h3 {{"admin.lineRunBulk.s3T" | translate}}
       input#select(type="file" name="select")
-      p After selecting the file, please check the contents displayed below.
-      #result The table will display here.
+      p {{"admin.lineRunBulk.s3D" | translate}}
+      #result
       br
       br
       center(ng-if="processing")
         img(src="/images/loader2.gif")
-        p {{now}} / {{total}} Registration in progress ...
+        p {{now}} / {{total}} {{"admin.lineRunBulk.inpro" | translate}}
       center(ng-if="completed" style="color:#2ecc71;")
-        i.fa.fa-check-circle-o.fa-5x(aria-hidden="true")
-        p {{total}} Registration completed
+        i.far.fa-check-circle.fa-5x(aria-hidden="true")
+        p {{total}} {{"admin.lineRunBulk.complete" | translate}}
       center(ng-if="error" style="color:#e74c3c;")
-        i.fa.fa-exclamation-circle.fa-5x(aria-hidden="true")
+        i.fas.fa-exclamation-circle.fa-5x(aria-hidden="true")
         p {{now}} / {{total}} ERROR
       br
       br
-      button(ng-click="addRun()" class='btn btn-primary') Execution
+      button(ng-click="addRun()" class='btn btn-primary') {{"admin.lineRunBulk.exe" | translate}}
       
       

@@ -6,6 +6,18 @@ block vars
 
 append scripts
   script(src='/javascripts/home.js')
+  //script.
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js');
+      });
+      window.addEventListener('install', (event) => {
+          event.waitUntil(self.skipWaiting());
+        });
+      window.addEventListener('activate', (event) => {
+          event.waitUntil(self.clients.claim());
+      });
+    }
 
 block location
   span.breadcrumb-item.active Home
@@ -14,48 +26,32 @@ block content
   .row
     .col-md-1
     .col-md-10
-      i.fa.fa-code-fork.fa-2x(aria-hidden="true") &nbsp;RCJ Scoring System 2017
+      h2
+          img(src="/images/logo.png" width='40px' height='40px')
+          | &nbsp;RCJ Scoring System 2018
       br
+      h6 {{'home.about' | translate}}
       br
       br
       
       if typeof(user) == "undefined"
-        a.btn.btn-warning.btn-lg.btn-block(href='/login')
-            i.fa.fa-sign-in(aria-hidden='true') &nbsp;Login
+        button(onclick="location.href='/login'" class='btn btn-warning btn-lg btn-block')
+            i.fas.fa-sign-in-alt(aria-hidden='true') &nbsp; {{'home.login' | translate}}
       else
-        a.btn.btn-outline-danger.btn-lg.btn-block(href='/logout')
-            i.fa.fa-sign-out(aria-hidden='true') &nbsp;Logout
+        button(onclick="location.href='/logout'" class='btn btn-outline-danger btn-lg btn-block')
+            i.fas.fa-sign-out-alt(aria-hidden='true') &nbsp; {{'home.logout' | translate}}
       br
       br
-      
-      .row
-        .col-sm-6
-          .card(style='width: 100%;')
-              a(href='/line')
-                img.card-img-top(src='/images/line.png', alt='Card image cap' style="width:100%; height=auto;")
-              .card-block
-                h4.card-title Rescue Line
-                p.card-text
-                  | Put in a description of Rescue Line
-                a.btn.btn-primary.btn-lg.btn-block(href='/line') Go Line
-        .col-sm-6
-            .card(style='width: 100%;')
-              a(href='/maze')
-                img.card-img-top(src='/images/maze.png', alt='Card image cap' style="width:100%; height=auto;")
-              .card-block
-                h4.card-title Rescue Maze
-                p.card-text
-                  | Put in a description of Rescue Maze
-                a.btn.btn-primary.btn-lg.btn-block(href='/maze') Go Maze
+      button(ng-click="go('/home/' + competition._id)" class='button-s button-bb' ng-repeat='competition in competitions') {{competition.name}}
       br 
       br
       br
       if typeof(user) != "undefined"
         if user.admin
-            a.button-s.button-bb(href='/admin') Competition Management
+            button(onclick="location.href='/admin'" class='btn btn-outline-success btn-lg btn-block') {{'home.management' | translate}}
         else
-            a.button-s.button-bb(href='/' disabled) Competition Management
-            p ※ The you logged in account, [#{user.username}], does not have permission to access Competition Management.
+            button(onclick="location.href='/'" class='btn btn-outline-success btn-lg btn-block' disabled) {{'home.management' | translate}}
+            p(translate="home.access_level", translate-values='{account: "'+ user.username + '"}')
       br
       br
       br

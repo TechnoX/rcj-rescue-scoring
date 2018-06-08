@@ -1,39 +1,64 @@
 <div class="modal-header">
-    <h3 class="modal-title">Score items</h3>
+    <h3 class="modal-title">{{"maze.view.m_score" | translate}}</h3>
 </div>
 <div class="modal-body">
     <ul>
         <li ng-show="cell.tile.checkpoint">
-            <input type="checkbox" ng-model="tile.scoredItems.checkpoint" id="hasCheckpoint" disabled="disabled"><label for="hasCheckpoint" class="checkbox">Reach checkpoint</label>
+            <input type="checkbox" ng-model="tile.scoredItems.checkpoint" id="hasCheckpoint" disabled><label for="hasCheckpoint" class="checkbox" ng-style="{backgroundColor: tile.scoredItems.checkpoint ? '#d3f5d3': '#f5d3d4'}">{{"maze.view.m_reach" | translate}}</label>
         </li>
         <li ng-show="cell.tile.speedbump">
-            <input type="checkbox" ng-model="tile.scoredItems.speedbump" id="hasSpeedbumps" disabled="disabled"><label class="checkbox" for="hasSpeedbumps">Speedbumps</label>
+            <input type="checkbox" ng-model="tile.scoredItems.speedbump" id="hasSpeedbumps" disabled><label class="checkbox" for="hasSpeedbumps" ng-style="{backgroundColor: tile.scoredItems.speedbump ? '#d3f5d3': '#f5d3d4'}">{{"maze.view.m_bump" | translate}}</label>
         </li>
         <li ng-show="cell.tile.rampBottom">
-            <input type="checkbox" ng-model="tile.scoredItems.rampBottom" id="hasRampBottom" disabled="disabled"><label class="checkbox" for="hasRampBottom">Ramp bottom</label>
+            <input type="checkbox" ng-model="tile.scoredItems.rampBottom" id="hasRampBottom" disabled><label class="checkbox" for="hasRampBottom" ng-style="{backgroundColor: tile.scoredItems.rampBottom ? '#d3f5d3': '#f5d3d4'}">{{"maze.view.m_rampb" | translate}}</label>
         </li>
         <li ng-show="cell.tile.rampTop">
-            <input type="checkbox" ng-model="tile.scoredItems.rampTop" id="hasRampTop" disabled="disabled"><label class="checkbox" for="hasRampTop">Ramp top</label>
+            <input type="checkbox" ng-model="tile.scoredItems.rampTop" id="hasRampTop" disabled><label class="checkbox" for="hasRampTop" ng-style="{backgroundColor: tile.scoredItems.rampTop ? '#d3f5d3': '#f5d3d4'}">{{"maze.view.m_rampt" | translate}}</label>
         </li>
 
-        <li ng-show="hasVictims">
-            <label>Flash within 15cm from victim:</label>
-            <ul>
-                <li ng-repeat="(direction, type) in cell.tile.victims track by $index" ng-show="type != 'None'">
-                    <input type="checkbox" ng-model="tile.scoredItems.victims[direction]" id="{{ 'victim-' + $index }}" disabled="disabled"><label class="checkbox" for="{{ 'victim-' + $index }}">Victim {{direction}}</label>
-                </li>
-            </ul>
-        </li>
-        <li ng-show="hasVictims">
-            <label>Delivered rescue kits:</label>
-            <ul>
-                <li ng-repeat="(direction, type) in cell.tile.victims" ng-show="type != 'None'">
-                    <strong>{{ tile.scoredItems.rescueKits[direction] }} Victim {{direction}}</strong>
-                </li>
-            </ul>
-        </li>
+        <div ng-show="hasVictims">
+            <i class="far fa-2x fa-lightbulb" aria-hidden="true" style="color:#f8b500;">&nbsp;</i>{{"maze.view.m_flash" | translate}}
+                <div ng-repeat="(direction, type) in cell.tile.victims track by $index" ng-show="type != 'None'" style="margin-left:50px;" >
+                    <input type="checkbox" ng-model="tile.scoredItems.victims[direction]" id="{{ 'victim-' + $index }}" disabled><label class="checkbox" for="{{ 'victim-' + $index }}" ng-style="{backgroundColor: lightStatus(tile.scoredItems.victims[direction],tile.scoredItems.rescueKits[direction]) ? '#d3f5d3': '#f5d3d4'}">
+                    <img src="/images/thermometer.png" height=45px ng-if="type=='Heated'">
+                    <img src="/images/H.png" height=45px ng-if="type=='H'">
+                    <img src="/images/U.png" height=45px ng-if="type=='U'">
+                    <img src="/images/S.png" height=45px ng-if="type=='S'">
+                    <i class="fa-2x">{{modalRotate(direction)}}</i>
+                    </label>
+                </div>
+        <div>
+        <div ng-show="hasVictims">
+            <i class="fas fa-2x fa-medkit" aria-hidden="true" style="color:#c53d43;">&nbsp;</i>{{"maze.view.m_kit" | translate}}
+                <div ng-repeat="(direction, type) in cell.tile.victims" ng-show="type != 'None'" style="margin-left:50px;">
+                    <div class="input-group" style="width:100%;" >
+                        <span class="input-group-addon" ng-style="{backgroundColor: kitStatus(tile.scoredItems.victims[direction],tile.scoredItems.rescueKits[direction],type) ? '#d3f5d3': '#f5d3d4'}">
+                               <img src="/images/thermometer.png" height=30px ng-if="type=='Heated'">
+                                <img src="/images/H.png" height=30px ng-if="type=='H'">
+                                <img src="/images/U.png" height=30px ng-if="type=='U'">
+                                <img src="/images/S.png" height=30px ng-if="type=='S'">
+                                &nbsp;{{modalRotate(direction)}}
+                        </span>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-danger"  disabled>
+                                <i class="fa fa-2x fa-minus" aria-hidden="true"></i>
+                            </button>
+                        </span>
+                        <input type="text" name="quant[2]" class="form-control input-number" ng-model="tile.scoredItems.rescueKits[direction]" min="1" max="12" readonly="readonly" style="font-size:25px;" ng-style="{backgroundColor: kitStatus(tile.scoredItems.victims[direction],tile.scoredItems.rescueKits[direction],type) ? '#d3f5d3': '#f5d3d4'}">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-success" disabled>
+                                <i class="fa fa-2x fa-plus" aria-hidden="true"></i>
+                            </button>
+                        </span>
+                    </div>
+                    <br>
+                </div>
+
+        </div>
     </ul>
 </div>
+
+
 <div class="modal-footer">
     <button class="btn btn-primary btn-lg btn-block" type="button" ng-click="ok()">OK</button>
 </div>

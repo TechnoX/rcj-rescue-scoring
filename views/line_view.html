@@ -1,213 +1,402 @@
 <nav class="navbar" style="background-color: #3498db; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%">
     <!-- Navbar content -->
-    <div class="row">
-        <div class="col-md-6 col-sm4 col-12">
-            <li class="navbar-brand" href="#"><i class="fa fa-spinner fa-pulse fa-fw"></i> {{team}}</li>
-        </div>
-        <div class="col-md-3 col-sm4 col-7">
-            <i class="fa fa-calculator fa-2x" aria-hidden="true"></i>
-            <li class="navbar-brand" href="#"> {{score}} points</li>
-        </div>
-        <div class="col-md-3 col-sm4 col-5">
-            <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i>
-            <li class="navbar-brand" href="#" ng-if="!retired"> {{minutes*60*1000+seconds*1000 | date:'mm:ss'}}</li>
-            <li class="navbar-brand" href="#" ng-if="retired"> Retire</li>
-        </div>
+    <div class="col-md-6 col-sm4 col-12">
+        <li class="navbar-brand" href="#"><i class="fas fa-spinner  fa-spin fa-fw"></i> {{team}}</li>
+    </div>
+    <div class="col-md-3 col-sm4 col-7">
+        <i class="fas fa-calculator fa-2x" aria-hidden="true"></i>
+        <li class="navbar-brand" href="#"> {{score}} {{'common.point' | translate}}</li>
+    </div>
+    <div class="col-md-3 col-sm4 col-5">
+        <i class="fas fa-stopwatch fa-2x" aria-hidden="true"></i>
+        <li class="navbar-brand" href="#"> {{minutes*60*1000+seconds*1000 | date:'m:ss'}}</li>
     </div>
 
 </nav>
-<div class="container">
+<div class="container nav-cont">
     <div class="row">
         <div class="col-md12">
-            <button class="btn btn-secondary" style="margin:0 10px 10px 0;" type="button" ng-click="go('/line/' + competition_id)"><i class="fa fa-undo" aria-hidden="true"> Back</i></button>
+            <button class="btn btn-secondary" style="margin:0 10px 10px 0;" type="button" ng-click="getParam('return')? go(getParam('return')):go('/line/' + competition_id)"><i class="fa fa-undo" aria-hidden="true"> {{'common.back' | translate}}</i></button>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
             <div id="lops" class="card">
-                <h3 class="card-header"><i class="fa fa-info-circle" aria-hidden="true"></i> Basic Informations</h3>
-                <pre>
-                        <ul class="list-group list-group-flush scrool" style="margin:0 0 0 0; padding:0;overflow: scroll;"><!--
-                          --><li class="list-group-item">Competition : {{competition}}</li><!--
-                          --><li class="list-group-item">Round       : {{round}}</li><!--
-                          --><li class="list-group-item">Field       : {{field}}</li><!--
-                          --><li class="list-group-item">Team　　     : {{team}}</li><!--
-                          --><li class="list-group-item">League　　　 : {{league}}</li><!--
-                          --></ul><!--
-                      --></pre>
+                <h3 class="card-header"><i class="fa fa-info-circle" aria-hidden="true"></i> {{'line.view.info' | translate}}</h3>
+                <table class="table" style="margin-bottom:0;">
+                    <tbody>
+                        <tr>
+                            <th>
+                                {{'common.competition' | translate}}
+                            </th>
+                            <td>
+                                {{competition}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                {{'common.round' | translate}}
+                            </th>
+                            <td>
+                                {{round}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                {{'common.field' | translate}}
+                            </th>
+                            <td>
+                                {{field}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                {{'common.team' | translate}}
+                            </th>
+                            <td>
+                                {{team}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                {{'common.league' | translate}}
+                            </th>
+                            <td>
+                                {{league}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
         </div>
     </div>
     <br>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-5 col-lg-4" style="margin-bottom:70px;">
             <div id="card_area" class="scrool" style="overflow: scroll;">
                 <div id="lops" class="card">
-                    <h3 class="card-header"><i class="fa fa-undo" aria-hidden="true"></i> LoPs</h3>
-                    <div class="card-block">
+                    <h3 class="card-header"><i class="fas fa-step-forward" aria-hidden="true"></i> {{'common.lops' | translate}}</h3>
+                    <div class="card-body">
                         <div ng-repeat="dropTile in range(actualUsedDropTiles+1) track by $index">
-                            <p class="card-text">
-                                <b>{{$index==0?'Start':('Checkpoint ' + ($index))}}</b> to <b>{{!$last?('Checkpoint ' + ($index+1)):'Evacuation zone'}}</b><br>
-                                <div class="input-group" style="width:100%; height:35px;">
-                                    <span class="input-group-btn">
-                                        <button type="button" class="btn btn-danger" disabled>
-                                            <i class="fa fa-minus" aria-hidden="true"></i>
-                                        </button>
-                                    </span>
-                                    <div style="background-color: #F2F2F2; width:100px; text-align: center;">
-                                      <span class="count">{{LoPs[$index]?LoPs[$index]:0}}</span>
-                                    </div>
-                                    <span class="input-group-btn">
-                                        <button type="button" class="btn btn-success" disabled>
-                                            <i class="fa fa-plus" aria-hidden="true"></i>
-                                        </button>
-                                    </span>
+                            <div style="display:flex;" class="card-text">
+                                <div style="width:40%;font-size:10px;" align="center">
+                                    {{$index==0?'line.view.start':'line.view.checkpoint'|translate}}
+                                    <b style="font-size:15px;color:#FF8300;">{{$index==0?'':$index}}</b>
+                                    <br>
+                                    <i class="fas fa-forward fa-rotate-90" aria-hidden="true"></i>
+                                    <br> {{!$last?'line.view.checkpoint':'line.view.Lexit' | translate}}
+                                    <b style="font-size:15px;color:#FF8300;">{{!$last?$index+1:''}}</b>
+
                                 </div>
-                            </p>
+                                <div style="width:60%;position: relative;">
+                                    <div class="input-group" style="width:100%; height:35px;position:absolute;top: 0;bottom: 0;margin: auto;">
+                                        <span class="input-group-btn">
+                                        <button type="button" class="btn btn-danger" disabled>
+                                            <i class="fas fa-minus" aria-hidden="true"></i>
+                                        </button>
+                                    </span>
+                                        <div style="background-color: #F2F2F2; width:100px; text-align: center;">
+                                            <span class="count">{{LoPs[$index]?LoPs[$index]:0}}</span>
+                                        </div>
+                                        <span class="input-group-btn">
+                                        <button type="button" class="btn btn-success" disabled>
+                                            <i class="fas fa-plus" aria-hidden="true"></i>
+                                        </button>
+                                    </span>
+                                    </div>
+                                </div>
+                            </div>
                             <hr ng-show="!$last" />
                         </div>
 
                     </div>
-                </div>
-                <div id="resc" class="card">
-                    <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> Rescuing victims　<span class="badge badge-danger">{{evacuationLevel-1?"High":"Low"}} evacuation point</span></h3>
-                    <div class="card-block">
-                        <p class="card-text">【LIVE Victims】Number：　　 <span class="badge badge-info">{{30 + (evacuationLevel-1)*10}}　points /victim</span></p>
-                        <div class="input-group" style="width:100%; height:35px;">
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-danger" disabled>
-                                    <i class="fa fa-minus" aria-hidden="true"></i>
-                                </button>
-                            </span>
-                            <div style="background-color: #F2F2F2; width:100px; text-align: center;">
-                              <span class="count">{{rescuedLiveVictims}}</span>
+                    <h3 class="card-header"><i class="fas fa-ambulance" aria-hidden="true"></i> {{'line.judge.rescue' | translate}}　<span class="badge badge-danger">{{evacuationLevel-1?'line.judge.high':'line.judge.low' | translate}}</span></h3>
+                    <div class="card-body">
+                        <!--<div style="display:flex;" class="card-text">
+                            <div style="width:40%;font-size:20px;" align="center">
+                                {{'common.lops' | translate}}
                             </div>
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-success" disabled>
-                                    <i class="fa fa-plus" aria-hidden="true"></i>
-                                </button>
-                            </span>
+                            <div style="width:60%;position: relative;">
+                                <div class="input-group" style="width:100%; height:35px;position:absolute;top: 0;bottom: 0;margin: auto;">
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-danger" disabled>
+                                            <i class="fas fa-minus" aria-hidden="true"></i>
+                                        </button>
+                                    </span>
+                                    <div style="background-color: #F2F2F2; width:100px; text-align: center;">
+                                        <img src="/images/loader2.gif" alt="" ng-show="processing[actualUsedDropTiles] == true" style="height:100%; width:auto;">
+                                        <span class="count" ng-show="processing[actualUsedDropTiles] != true">{{LoPs[actualUsedDropTiles]?LoPs[actualUsedDropTiles]:0}}</span>
+                                    </div>
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-success" disabled>
+                                            <i class="fas fa-plus" aria-hidden="true"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>-->
+                        <h6>Rescued Victims</h6>
+                        <table border="1" style="width:100%; text-align: center; margin-top: 10px;" ng-repeat="j in range(6)" ng-if="victim_list.length > j*5 || j == 0">
+                            <tr>
+                                <th style="text-align:center;" ng-repeat="i in range(5)">{{j*5 + i+1}}</th>
+                            </tr>
+                            <tr>
+                                <td ng-repeat="i in range(5)" ng-style="{'background-color': victim_list[j*5 + i].effective?'#FFD9B7':'#ccc'}">
+                                    <img src="/images/liveVictim.png" width=30px ng-if="victim_list[j*5 + i].type == 'L'" />
+                                    <img src="/images/deadVictim.png" width=30px ng-if="victim_list[j*5 + i].type == 'D'" />
+                                    <span style="width:30px;" ng-hide="victim_list[j*5 + i]">---</span>
+                                    <br>
+                                    <span ng-show="victim_list[j*5 + i]">{{calc_victim_points(victim_list[j*5 + i].type,victim_list[j*5 + i].effective)}} P</span>
+                                </td>
+                            </tr>
+                        </table>
+                        <hr>
+
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">{{'line.view.exit' | translate}}<span class="badge badge-info">20　points</span></p>
+                        <div class="col-md-12" style="position: relative;">
+                            <img src="/images/line_bonus.png" class="img-thumbnail" width=186.3px height=118px ng-style="{'background-color': exitBonus?'#2ecc71':'#D91E18'}">
+                            <div style="position:absolute; top:25px; left:65px;">
+                                <i class="fas fa-check fa-fw fa-5x" ng-show="exitBonus" style="color:#27ae60; opacity:0.9;"></i>
+                                <i class="fas fa-times fa-fw fa-5x" ng-show="!exitBonus" style="padding-top:4px; color:#e74c3c; opacity:0.9;"></i>
+                            </div>
+
                         </div>
                     </div>
-                    <hr>
-                    <div class="card-block">
-                        <p class="card-text">【DEAD Victims】Number： 　　　　<span class="badge badge-info">{{15 + (evacuationLevel-1)*5}} points /victim</span></p>
-                        <div class="input-group" style="width:100%; height:35px;">
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-danger" disabled>
-                                    <i class="fa fa-minus" aria-hidden="true"></i>
-                                </button>
-                            </span>
-                            <div style="background-color: #F2F2F2; width:100px; text-align: center;">
-                              <span class="count">{{rescuedDeadVictims}}</span>
-                            </div>
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-success" disabled>
-                                    <i class="fa fa-plus" aria-hidden="true"></i>
-                                </button>
-                            </span>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="card-block">
-                        <p class="card-text">Robot exited the evacuation zone after touching at least one victim: <span class="badge badge-info">20 points</span></p>
-                        <input type="checkbox" ng-model="exitBonus" ng-change="changeExitBonus()" id="scoredrun" disabled><label class="checkbox" for="scoredrun">Success</label><br>
-                    </div>
                 </div>
+
+
             </div>
         </div>
-
-        <div class="col-md-6 tilearea" style="height=600px">
-            <div ng-repeat="r in range(length)" class="row" ng-if="visType=='stacked'" tile-load-finished=''>
-                <div ng-repeat="c in range(width)" class="slot">
-                    <tile tile="mtiles[c+','+r+','+z]" ng-repeat="z in range(height)" ng-click="showElements(c,r,z)" ng-style="{'opacity': getOpacity(c,r)}">
-                    </tile>
+        <div class="col-md-7 col-lg-8 tilearea">
+            <div style="text-align:left;float:left;">
+                <div class="btn-group">
+                    <span class="input-group-addon"><i class="fas fa-arrows-alt-v" aria-hidden="true"></i></span>
+                    <button type="button" class="btn btn-outline-dark" ng-click="changeFloor(zz)" ng-repeat="zz in range(height)" ng-class="{active: zz == z}">&nbsp;{{zz}}&nbsp;</button>
                 </div>
             </div>
-            <div ng-if="visType=='slider'">
-                <rzslider rz-slider-model="z" rz-slider-options="sliderOptions" ng-show="height>1"></rzslider>
-                <div ng-repeat="r in range(length)" class="row" tile-load-finished=''>
+            <div style="text-align:right;float:right;">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-outline-dark" ng-click="tileRot(-90)">&nbsp;<i class="fas fa-undo" aria-hidden="true"></i>&nbsp;</button>
+                    <button type="button" class="btn btn-outline-dark" ng-click="tileRot(90)">&nbsp;<i class="fas fa-redo" aria-hidden="true"></i>&nbsp;</button>
+                </div>
+            </div>
+            <div style="clear:both;"></div>
+            <div class="mx-auto" style="margin-top:5px;" id="wrapTile">
+                <div ng-repeat="r in range(length)" ng-if="sRotate==0" style="display: flex;">
+                    <div style="text-align:center;">
+                        <div ng-repeat="c in range(width)" class="slot">
+                            <tile tile="mtiles[c+','+r+','+z]" ng-click="showElements(c,r,z)"></tile>
+                        </div>
+                    </div>
+                </div>
+                <div ng-repeat="r in range(length)" ng-if="sRotate==180" style="display: flex;">
                     <div ng-repeat="c in range(width)" class="slot">
-                        <tile tile="mtiles[c+','+r+','+z]" ng-click="showElements(c,r,z)"></tile>
+                        <tile tile="mtiles[width - c -1+','+(length - r -1)+','+z]" ng-click="showElements(width - c -1,length - r -1,z)"></tile>
+                    </div>
+                </div>
+                <div ng-repeat="r in range(width)" ng-if="sRotate==270" style="display: flex;">
+                    <div ng-repeat="c in range(length)" class="slot">
+                        <tile tile="mtiles[width - r -1+','+c+','+z]" ng-click="showElements(width-r-1,c,z)"></tile>
+                    </div>
+                </div>
+                <div ng-repeat="r in range(width)" ng-if="sRotate==90" style="display: flex;">
+                    <div ng-repeat="c in range(length)" class="slot">
+                        <tile tile="mtiles[r+','+ (length - c-1) +','+z]" ng-click="showElements(r,length-c-1,z)"></tile>
                     </div>
                 </div>
             </div>
-            <div ng-repeat="z in range(height)" style="float: left; border-left: 3px solid black;" ng-if="visType=='side'" tile-load-finished=''>
-                <div ng-repeat="r in range(length)">
-                    <div ng-repeat="c in range(width)" class="slot">
-                        <tile tile="mtiles[c+','+r+','+z]" ng-click="showElements(c,r,z)"></tile>
-                    </div>
-                </div>
-            </div>
-            <form>
-                <input type="radio" ng-model="visType" value="stacked" id="stacked"><label class="radio" for="stacked">Stacked　</label>
-                <input type="radio" ng-model="visType" value="slider" checked id="slider"><label class="radio" for="slider">Slider</label>
-                <input type="radio" ng-model="visType" value="side" id="side-by-side"><label class="radio" for="side-by-side">Side-by-Side</label>
-            </form>
+            <br>
+            <h2 style="text-align:center;">{{'common.stotal' | translate}} : {{score - checkTotal() - ( victimPoints() + (20 * exitBonus))}} {{'common.point' |translate}}</h2>
         </div>
     </div>
-    <div class="alert alert-success" style="margin:100 0 0 0;" role="alert">
+
+    <h2>{{'line.sign.checkPointScore' | translate}}</h2>
+
+    <div class="row" 　style="margin-bottom:50px;text-align:center;display: flex;flex-wrap: wrap;">
+        <div class="col-md-3" ng-repeat="cp in checkPointDistance track by $index">
+            <div class="alert" ng-class="{'alert-success': cp.status , 'alert-danger': !cp.status}" style="margin-bottom:30px;text-align:center;" role="alert">
+                <div style="min-height:100px">
+                    <h6 style="text-align:center;">
+                        {{$index==0?'line.sign.start':'line.sign.checkpoint'|translate}}
+                        <b style="font-size:20px;color:#FF8300;">{{$index==0?'':$index}}</b>
+                    </h6>
+                    <i class="fas fa-road fa-2x"> {{cp.dis}}</i> {{'common.tile' | translate}}
+                    <br>
+                    <div ng-if="$index>0"><i class="fas fa-step-forward fa-2x"> {{LoPs[$index-1]}}</i> {{'common.times' | translate}}</div>
+                    <i class="fas fa-2x" ng-if="$index==0"></i>
+                </div>
+                <h1>{{cp.point}} {{'common.point' | translate}}</h1>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="alert alert-warning" style="margin-bottom:30px;text-align:center;" role="alert">
+                <div style="min-height:100px">
+                    <h3>{{'line.sign.checkpoint'|translate}} {{'common.stotal' | translate}}</h3>
+                </div>
+
+                <h1>{{checkTotal()}} {{'common.point' | translate}}</h1>
+            </div>
+        </div>
+    </div>
+
+    <h2>{{'line.sign.rescue' | translate}} / {{'line.sign.exitBonus' | translate}}</h2>
+    <div class="alert alert-info" style="margin-bottom:50px;text-align:center;" role="alert">
+        <div class="row">
+            <div class="col-md-5">
+                <!--<p style="height:30px;">{{'line.judge.rescue' | translate}}【{{evacuationLevel-1?'line.judge.high':'line.judge.low' | translate}}】</p>-->
+                <div class="row">
+                    <div class="col-6" ng-click="addVictimTmp('L')">
+                        <span>Max : {{maxLiveVictims}}</span>
+                        <br>
+                        <div class="victim_btn" style="width:100%;position: relative; background-color: #E1FFFE;">
+                            <img src="/images/liveVictim.png" class="img-thumbnail" width=60px>
+
+                            <br>
+                            <span style="font-size:1.5vw;color:#444;">{{evacuationLevel-1?'40':'30'}}<span style="font-size:10px;">p</span> - ({{LoPs[actualUsedDropTiles]}}<span style="font-size:10px;">times</span> x 5<span style="font-size:10px;">p</span>)</span>
+                            <span class="badge badge-info" style="margin-top:10px;"><span style="font-size:25px;">{{calc_victim_points("L",true)}}</span>　points /victim</span>
+                        </div>
+                    </div>
+                    <div class="col-6" style="" ng-click="addVictimTmp('D')">
+                        <span>Max : {{maxLiveVictims}}</span>
+                        <br>
+                        <div class="victim_btn" style="width:100%;position: relative; background-color: #E1FFFE;">
+                            <img src="/images/deadVictim.png" class="img-thumbnail" width=60px>
+                            <br>
+                            <span style="font-size:1.5vw;color:#444;">{{evacuationLevel-1?'20':'15'}}<span style="font-size:10px;">p</span> - ({{LoPs[actualUsedDropTiles]}}<span style="font-size:10px;">times</span> x 5<span style="font-size:10px;">p</span>)</span>
+                            <span class="badge badge-info" style="margin-top:10px;"><span style="font-size:25px;">{{calc_victim_points("D",true)}}</span>　points /victim</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <table border="1" style="width:100%; text-align: center; margin-top: 10px;" ng-repeat="j in range(6)" ng-if="victim_list.length > j*5 || j == 0">
+                    <tr>
+                        <th style="text-align:center;background-color:#fff;" ng-repeat="i in range(5)">{{j*5 + i+1}}</th>
+                    </tr>
+                    <tr>
+                        <td ng-repeat="i in range(5)" ng-style="{'background-color': victim_list[j*5 + i].effective?'#BDF4CB':'#ccc'}" ng-dblclick="delete_victim(j*5 + i)">
+                            <img src="/images/liveVictim.png" width=30px ng-if="victim_list[j*5 + i].type == 'L'" />
+                            <img src="/images/deadVictim.png" width=30px ng-if="victim_list[j*5 + i].type == 'D'" />
+                            <span style="width:30px;" ng-hide="victim_list[j*5 + i]">---</span>
+                            <br>
+                            <span ng-show="victim_list[j*5 + i]">{{calc_victim_points(victim_list[j*5 + i].type,victim_list[j*5 + i].effective)}} P</span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-5"></div>
+            <div class="col-md-1" style="margin-top:20px;">
+                <p style="height:30px;"></p>
+                <h1>+</h1>
+            </div>
+            <div class="col-md-2" style="margin-top:20px;">
+                <p style="text-align:center;height:30px;">{{'line.sign.exitBonus' | translate}}</p>
+                <i class="fas fa-home fa-2x"> {{exitBonus}}</i><br><br>
+                <h1>{{ 20 * exitBonus}} {{'common.point' | translate}}</h1>
+            </div>
+            <div class="col-md-1" style="margin-top:20px;">
+                <p style="height:30px;"></p>
+                <h1>=</h1>
+            </div>
+            <div class="col-md-3" style="margin-top:20px;">
+                <p style="height:30px;">{{'common.stotal' | translate}}</p>
+                <h1>{{ victimPoints() + (20 * exitBonus)}} {{'common.point' | translate}}</h1>
+            </div>
+        </div>
+    </div>
+
+    <h2>{{'line.sign.calc' | translate}}</h2>
+    <div class="alert alert-dark" style="margin-bottom:50px;text-align:center;" role="alert">
+        <div class="row">
+            <div class="col-md-2">
+                <p style="height:30px;">{{'line.sign.item' | translate}}</p>
+                <h1>{{score - checkTotal() - ( victimPoints() + (20 * exitBonus))}} {{'common.point' | translate}}</h1>
+            </div>
+            <div class="col-md-1">
+                <p style="height:30px;"></p>
+                <h1>+</h1>
+            </div>
+            <div class="col-md-2">
+                <p style="height:30px;">{{'line.sign.checkPointScore' | translate}}</p>
+                <h1>{{checkTotal()}} {{'common.point' | translate}}</h1>
+            </div>
+            <div class="col-md-1">
+                <p style="height:30px;"></p>
+                <h1>+</h1>
+            </div>
+            <div class="col-md-2">
+                <p style="text-align:center;height:30px;">{{'line.sign.rescue' | translate}} / {{'line.sign.exitBonus' | translate}}</p>
+                <h1>{{ victimPoints() + (20 * exitBonus)}} {{'common.point' | translate}}</h1>
+            </div>
+            <div class="col-md-1">
+                <p style="height:30px;"></p>
+                <h1>=</h1>
+            </div>
+            <div class="col-md-3">
+                <p style="height:30px;"></p>
+                <h1>{{score}} {{'common.point' | translate}}</h1>
+            </div>
+        </div>
+    </div>
+    <div class="alert alert-success" style="margin:30 0 0 0;" role="alert">
         <div class="row">
             <div class="col-md-6">
-                <div class="hidden-xs-down">
-                    <i class="fa fa-calculator fa-3x" aria-hidden="true"> : {{score}} points</i>
+                <div class="d-none d-sm-block">
+                    <i class="fa fa-calculator fa-3x" aria-hidden="true"> : {{score}} {{'common.point' | translate}}</i>
                 </div>
-                <div class="hidden-sm-up">
-                    <i class="fa fa-calculator fa-2x" aria-hidden="true"> : {{score}} points</i>
-                </div>
-            </div>
-            <div class="col-md-6" ng-if='!retired'>
-                <div class="hidden-xs-down">
-                    <i class="fa fa-clock-o fa-3x" aria-hidden="true"> : {{minutes}} min {{seconds}} sec</i>
-                </div>
-                <div class="hidden-sm-up">
-                    <i class="fa fa-clock-o fa-2x" aria-hidden="true"> : {{minutes}} min {{seconds}} sec</i>
+                <div class="d-sm-none">
+                    <i class="fa fa-calculator fa-2x" aria-hidden="true"> : {{score}} {{'common.point' | translate}}</i>
                 </div>
             </div>
-            <div class="col-md-6" ng-if='retired'>
-                <div class="hidden-xs-down">
-                    <i class="fa fa-clock-o fa-3x" aria-hidden="true"> : Retire</i>
+            <div class="col-md-6">
+                <div class="d-none d-sm-block">
+                    <i class="fas fa-stopwatch fa-3x" aria-hidden="true"> : {{minutes}} {{'common.min' | translate}} {{seconds}} {{'common.sec' | translate}}</i>
                 </div>
-                <div class="hidden-sm-up">
-                    <i class="fa fa-clock-o fa-2x" aria-hidden="true"> : Retire</i>
+                <div class="d-sm-none">
+                    <i class="fas fa-stopwatch fa-2x" aria-hidden="true"> : {{minutes}} {{'common.min' | translate}} {{seconds}} {{'common.sec' | translate}}</i>
                 </div>
             </div>
         </div>
     </div>
-    <!--
-    <div class="row" style="margin:30 0 0 0;">
+    <div class="row" style="margin:30 0 30 0;">
         <div class="col-md-12">
             <div id="sign" class="card">
-              <h3 class="card-header"><i class="fa fa-commenting-o" aria-hidden="true"></i> Comment</h3>
-              <div class="card-block">
-                  <p class="card-text  text-info ">
-                      If you have any comments about the run, please write in the box below.
-                  </p>
-                  <div class="form-group">
-                    <textarea class="form-control" ng-model="comment" rows="3" disabled></textarea>
-                  </div>
-              </div>
-                <h3 class="card-header"><i class="fa fa-key" aria-hidden="true"></i> Sign</h3>
-                <div class="card-block">
-                    <p class="card-text  text-warning " ng-if="!retired">
-                        By wiritng a sign below, you accept that the [Score：{{score}}] [Time：{{minutes}} min {{seconds}} sec] are correct. Your team also further undertakes to not appeal the score at a later stage.
+                <h3 class="card-header"><i class="fas fa-comment" aria-hidden="true"></i> {{'line.view.comment' | translate}}</h3>
+                <div class="card-body">
+                    <p class="card-text  text-info ">
+                        {{'line.view.comment_e' | translate}}
                     </p>
-                    <p class="card-text  text-warning " ng-if="retired">
-                        By wiritng a sign below, you accept that the [Score：{{score}}] [Time：Retire] are correct. Your team also further undertakes to not appeal the score at a later stage.
+                    <div class="form-group">
+                        <textarea class="form-control" ng-model="comment" rows="3" disabled></textarea>
+                    </div>
+                </div>
+                <h3 class="card-header"><i class="fas fa-pencil-alt" aria-hidden="true"></i> {{'line.view.sign' | translate}}</h3>
+                <div class="card-body">
+                    <p class="card-text  text-warning" translate="line.view.sign_e">
                     </p>
-                    <h2>Captain Sign</h2>
-                    <img ng-src="{{cap_sig}}" style="max-width: 100%;height: auto;" />
+                    <div class="sign-box sign-box-cap">
+                        <p class="sign-box-title sign-box-title-cap" translate="line.view.cap_sign">
+                        </p>
+                        <img ng-src="{{cap_sig}}" style="max-width: 100%;height: auto;" />
+                    </div>
                     <hr>
-                    <h2>Referee Sign</h2>
-                    <img ng-src="{{ref_sig}}" style="max-width: 100%;height: auto;" />
+                    <div class="sign-box sign-box-ref">
+                        <p class="sign-box-title sign-box-title-ref" translate="line.view.ref_sign">
+                        </p>
+                        <img ng-src="{{ref_sig}}" style="max-width: 100%;height: auto;" />
+                    </div>
                     <hr>
-                    <h2>Co-Referee Sign</h2>
-                    <img ng-src="{{refas_sig}}" style="max-width: 100%;height: auto;" />
+                    <div class="sign-box sign-box-ref">
+                        <p class="sign-box-title sign-box-title-ref" translate="line.view.cref_sign">
+                        </p>
+                        <img ng-src="{{refas_sig}}" style="max-width: 100%;height: auto;" />
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    -->
-    <div class="row"></div>
 </div>

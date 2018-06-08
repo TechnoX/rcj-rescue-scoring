@@ -9,42 +9,21 @@ append scripts
     var competitionId = "#{id}"
     var get = !{JSON.stringify(get)}
   script(src = '/components/datatables/media/js/jquery.dataTables.min.js')
-  script(src = '/components/angular-datatables/dist/angular-datatables.min.js')
-  script(src="/components/socket.io-client/socket.io.js")
+  script(src = '/components/angular-datatables/demo/src/archives/dist/angular-datatables.min.js')
   script(src='/javascripts/line_score.js')
 
-append css
-  link(rel='stylesheet', href='/components/datatables/media/css/jquery.dataTables.min.css')
-  style(type='text/css').
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    table td {
-      padding: 7px;
-      border: #4e95a4 1px solid;
-    }
-
-    table thead {
-      background: #a8d1f3;
-    }
-
-    table tbody tr:hover {
-      background: #A0A0FF;
-    }
 
 block location
-    a.breadcrumb-item(onclick="location.href='/home'") Home
-    a.breadcrumb-item(onclick="location.href='/line'") Line
-    a.breadcrumb-item(ng-click='go("/line/"+ competitionId )') {{competition.name}}
+    a.breadcrumb-item(ng-click="go('/home')") Home
+    a.breadcrumb-item(ng-click='go("/home/"+ competitionId)') {{competition.name}}
+    a.breadcrumb-item(ng-click="go('/line/'+ competitionId)") Line
     span.breadcrumb-item.active Score
 
 block content
   .row
   .col-md12
     button.btn.btn-secondary(style='margin:0 10px 10px 0;', type='button', ng-click="go('/line/' + competitionId)")
-      i.fa.fa-undo(aria-hidden='true')  Back
+      i.fas.fa-undo(aria-hidden='true') {{'common.back' | translate }}
   //.row
     .col-12
       .alert.alert-info(role='alert')
@@ -53,97 +32,95 @@ block content
   br
   .row#rank
     //.col-lg-6
-    .col-lg-12
-      h3 Line - Rank
-      h6 Showing sum of the 9 best rounds
-      table(style="overflow: scroll;")
+      h3 日本リーグ - 順位
+      table.custom(style="overflow: scroll;")
         thead
           tr
-            th.text-center Rank
-            th.text-center Team Name
-            th.text-center Score
-            th.text-center Time
-            th.text-center Rescued
-            th.text-center LoPs
+            th.text-center {{'common.rank' | translate}}
+            th.text-center {{'common.team' | translate}}
+            th.text-center {{'common.score' | translate}}
+            th.text-center {{'common.time' | translate}}
+            th.text-center {{'common.rescued' | translate}}
+            th.text-center {{'common.lops' | translate}}
         tbody
-          tr(ng-repeat='run in primaryRunsTop track by $index')
+          tr(ng-repeat='run in nipponRunsTop track by $index')
             td.text-center(ng-bind='$index + 1' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
             td.text-center(ng-bind='run.team.name' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
             td.text-center(ng-bind='run.score' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
-            td.text-center(ng-if="!run.retired" ng-style="run.isplaying && {'background-color': '#ffffa8'}"){{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+            td.text-center(ng-if="!run.retired" ng-style="run.isplaying && {'background-color': '#ffffa8'}") {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
             td.text-center(ng-if="run.retired" ng-style="run.isplaying && {'background-color': '#ffffa8'}") R
             td.text-center(ng-bind='run.rescuedVictims' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
             td.text-center(ng-bind='run.LoPsNum' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
-  //
-    .col-lg-6
-      h3 Secondary - Rank
-      table(style="overflow: scroll;")
+    .col-lg-12
+      h3 Line - Top ranking
+      table.custom(style="overflow: scroll;")
         thead
           tr
-            th.text-center Rank
-            th.text-center Team Name
-            th.text-center Score
-            th.text-center Time
-            th.text-center Rescued
-            th.text-center LoPs
+            th.text-center {{'common.rank' | translate}}
+            th.text-center {{'common.team' | translate}}
+            th.text-center {{'common.score' | translate}}
+            th.text-center {{'common.time' | translate}}
+            th.text-center {{'common.rescued' | translate}}
+            th.text-center {{'common.lops' | translate}}
         tbody
-          tr(ng-repeat='run in secondaryRunsTop track by $index')
-            td.text-center(ng-bind='$index + 1')
-            td.text-center(ng-bind='run.team.name')
-            td.text-center(ng-bind='run.score')
-            td.text-center(ng-if="!run.retired"){{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
-            td.text-center(ng-if="run.retired") R
-            td.text-center(ng-bind='run.rescuedVictims')
-            td.text-center(ng-bind='run.LoPsNum')
+          tr(ng-repeat='run in worldRunsTop track by $index')
+            td.text-center(ng-bind='$index + 1' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+            td.text-center(ng-bind='run.team.name' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+            td.text-center(ng-bind='run.score' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+            td.text-center(ng-if="!run.retired" ng-style="run.isplaying && {'background-color': '#ffffa8'}") {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+            td.text-center(ng-if="run.retired" ng-style="run.isplaying && {'background-color': '#ffffa8'}") R
+            td.text-center(ng-bind='run.rescuedVictims' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+            td.text-center(ng-bind='run.LoPsNum' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
   .row
     hr
   .row#allRuns
     //.col-lg-6
-    .col-lg-12
-      h3 Line - All runs
-      label Sort by round:
-        input(type="checkbox" style='display:inline;' ng-model="sortOrder" ng-true-value="'[startTime,round.name,field.name,team.name]'" ng-false-value="'-score'")
-      //span {{sortOrder}}
-      table(style="overflow: scroll;")
+      h3 日本リーグ - 全競技
+      label {{'line.score.sort' | translate}}
+        input(type="checkbox" style='display:inline;' ng-model="sortOrderNL" ng-true-value="'[startTime,round.name,field.name,team.name]'" ng-false-value="'-score'")
+      table.custom(style="overflow: scroll;")
         thead
           tr
-            th.text-center Team Name
-            th.text-center Round
-            th.text-center Field
-            th.text-center Score
-            th.text-center Time
-            th.text-center Rescued
-            th.text-center LoPs
+            th.text-center {{'common.team' | translate}}
+            th.text-center {{'common.round' | translate}}
+            th.text-center {{'common.field' | translate}}
+            th.text-center {{'common.score' | translate}}
+            th.text-center {{'common.time' | translate}}
+            th.text-center {{'common.rescued' | translate}}
+            th.text-center {{'common.lops' | translate}}
         tbody
-          tr(ng-repeat='run in primaryRuns | orderBy:sortOrder')
+          tr(ng-repeat='run in nipponRuns | orderBy:sortOrderNL')
             td.text-center(ng-bind='run.team.name' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
             td.text-center(ng-bind='run.round.name'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
             td.text-center(ng-bind='run.field.name'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
             td.text-center(ng-bind='run.score'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
-            td.text-center(ng-if="!run.retired"  ng-style="run.isplaying && {'background-color': '#ffffa8'}"){{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+            td.text-center(ng-if="!run.retired"  ng-style="run.isplaying && {'background-color': '#ffffa8'}") {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
             td.text-center(ng-if="run.retired"  ng-style="run.isplaying && {'background-color': '#ffffa8'}") R
-            td.text-center(ng-bind='run.rescuedLiveVictims + run.rescuedDeadVictims'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+            td.text-center(ng-bind='run.rescueOrder.length'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
             td.text-center(ng-bind='run.LoPsNum'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
-  //
-    .col-lg-6
-      h3 Secondary - All
-      table(style="overflow: scroll; width:100%;")
+    .col-lg-12
+      h3 Line - All runs
+      label {{'line.score.sort' | translate}}
+        input(type="checkbox" style='display:inline;' ng-model="sortOrderWL" ng-true-value="'[startTime,round.name,field.name,team.name]'" ng-false-value="'-score'")
+      table.custom(style="overflow: scroll;")
         thead
           tr
-            th.text-center Team Name
-            th.text-center Round
-            th.text-center Field
-            th.text-center Score
-            th.text-center Time
-            th.text-center Rescued
-            th.text-center LoPs
+            th.text-center {{'common.team' | translate}}
+            th.text-center {{'common.round' | translate}}
+            th.text-center {{'common.field' | translate}}
+            th.text-center {{'common.score' | translate}}
+            th.text-center {{'common.time' | translate}}
+            th.text-center {{'common.rescued' | translate}}
+            th.text-center {{'common.lops' | translate}}
         tbody
-          tr(ng-repeat='run in secondaryRuns')
-                td.text-center(ng-bind='run.team.name')
-                td.text-center(ng-bind='run.round.name')
-                td.text-center(ng-bind='run.field.name')
-                td.text-center(ng-bind='run.score')
-                td.text-center(ng-if="!run.retired"){{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
-                td.text-center(ng-if="run.retired") R
-                td.text-center(ng-bind='run.rescuedLiveVictims + run.rescuedDeadVictims')
-                td.text-center(ng-bind='run.LoPsNum')
+          tr(ng-repeat='run in worldRuns | orderBy:sortOrderWL')
+            td.text-center(ng-bind='run.team.name' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+            td.text-center(ng-bind='run.round.name'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+            td.text-center(ng-bind='run.field.name'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+            td.text-center(ng-bind='run.score'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+            td.text-center(ng-if="!run.retired"  ng-style="run.isplaying && {'background-color': '#ffffa8'}") {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+            td.text-center(ng-if="run.retired"  ng-style="run.isplaying && {'background-color': '#ffffa8'}") R
+            td.text-center(ng-bind='run.rescueOrder.length'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
+            td.text-center(ng-bind='run.LoPsNum'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")        
+   
+   

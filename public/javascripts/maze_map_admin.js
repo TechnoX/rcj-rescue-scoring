@@ -1,4 +1,4 @@
-angular.module("MapAdmin", []).controller("MapAdminController", function ($scope, $http) {
+var app = angular.module("MapAdmin", ['ngTouch','pascalprecht.translate', 'ngCookies']).controller("MapAdminController", function ($scope, $http) {
   $scope.competitionId = competitionId
   
   updateMapList()
@@ -24,4 +24,8 @@ angular.module("MapAdmin", []).controller("MapAdminController", function ($scope
       $scope.maps = response.data
     })
   }
+    
+    $scope.go = function (path) {
+        window.location = path
+    }
 })

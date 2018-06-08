@@ -1,30 +1,27 @@
-<p class="text-right chnumtxt" style="font-size: 10px; color: #f39c12; z-index:2;position: relative; padding: 2 2 0 0;">{{checkpointNumber(tile)}}</p>
+<p class="text-right chnumtxt" style="font-size: 10px; color: #f39c12; z-index:2;position: relative; padding: 2 2 0 0;" >{{checkpointNumber(tile)}}</p>
 
 <!--<p class="text-right chnumtxt" style="font-size: 10px; color: #2c3e50; z-index:2;position: relative; padding: 2 2 0 0;" ng-show="tileN">{{tileNumber(tile)}}</p>-->
 
-<img ng-src="/images/tiles/{{tile.tileType.image}}"  class="rot{{tile.rot}} tile-image" ng-class="{'drop-tile': isDropTile(tile) || isStart(tile)}" ng-show="tile.tileType.image">
-<!--<img ng-src="/images/speedbump.png" class="tile-image" ng-show="tile.items.speedbumps>0">-->
-<i class="fa fa-bars fa-fw fa-rotate-270 tile-image tile-font-1-25" ng-show="tile.items.speedbumps>0" style="text-align:right; padding:1px 2px; color:#abb2b9; opacity:0.9;"></i>
-<!--<img ng-src="/images/obstacle.png" class="tile-image" ng-show="tile.items.obstacles>0">-->
-<i class="fa fa-cube fa-fw tile-image tile-font-1-25" ng-show="tile.items.obstacles>0" style="text-align:right; padding:1px 2px; color:#6e2c00; opacity:0.9;"></i>
-<!--<img ng-src="/images/gap.png" class="tile-image" ng-show="tile.items.gaps>0">
-<img ng-src="/images/intersection.png" class="tile-image" ng-show="tile.items.intersections>0">-->
-
-<!--<img src="/images/up.png" class="tile-image" ng-show="tile.levelUp" ng-class="rotateRamp(tile.levelUp)">-->
-<i class="fa fa-caret-square-o-down fa-fw tile-image tile-font" ng-class="rotateRamp(tile.levelUp)" ng-show="tile.levelUp" style="padding-top:4px; color:#3498db; opacity:0.9;"></i>
-<!--<img src="/images/down.png" class="tile-image" ng-show="tile.levelDown" ng-class="rotateRamp(tile.levelDown)">-->
-<i class="fa fa-caret-square-o-down fa-fw tile-image tile-font" ng-class="rotateRamp(tile.levelDown)" ng-show="tile.levelDown" style="padding-top:4px; color:#ff8095; opacity:0.9;"></i>
+<img ng-src="/images/tiles/{{tile.tileType.image}}"  class="rot{{tilerotate(tile.rot)}} tile-image" ng-class="{'drop-tile': isDropTile(tile) || isStart(tile)}" ng-show="tile.tileType.image">
+<i class="fas fa-minus fa-fw tile-image tile-font-1-25" ng-show="tile.items.speedbumps>0" style="text-align:left; padding:0px 2px; color:#abb2b9; opacity:0.7;"></i>
+<i class="fas fa-minus fa-fw tile-image tile-font-1-25" ng-show="tile.items.speedbumps>1" style="text-align:left; padding:10px 2px; color:#abb2b9; opacity:0.7;"></i>
+<i class="fas fa-minus fa-fw tile-image tile-font-1-25" ng-show="tile.items.speedbumps>2" style="text-align:left; padding:20px 2px; color:#abb2b9; opacity:0.7;"></i>
+<i class="fas fa-minus fa-fw tile-image tile-font-1-25" ng-show="tile.items.speedbumps>3" style="text-align:left; padding:30px 2px; color:#abb2b9; opacity:0.7;"></i>
+<i class="fas fa-minus fa-fw tile-image tile-font-1-25" ng-show="tile.items.speedbumps>4" style="text-align:left; padding:40px 2px; color:#abb2b9; opacity:0.7;"></i>
 
 
+<i class="fas fa-cube fa-fw tile-image tile-font-1-25" ng-show="tile.items.obstacles>0" style="text-align:right; padding:1px 2px; color:#6e2c00; opacity:0.9;"></i>
 
-<!--<img src="/images/start.png" class="tile-image" ng-show="isStart(tile)">-->
-<i class="fa fa-play-circle-o fa-fw tile-image tile-font-1-25" ng-show="isStart(tile)" style="text-align:left; padding:1px 2px; color:#73e673; opacity:0.9;"></i>
+<i class="fas fa-thumbtack fa-fw tile-image tile-font-1-25" ng-show="tile.items.rampPoints" style="text-align:center; color:#F44336; opacity:0.7;"></i>
+<i class="fas fa-angle-double-down  fa-fw tile-image tile-font fa-3x" ng-class="rotateRamp(tile.levelUp)" ng-show="tile.levelUp" style="padding-top:4px; color:#3498db; opacity:0.6;"></i>
+<i class="fas fa-angle-double-down  fa-fw tile-image tile-font fa-3x" ng-class="rotateRamp(tile.levelDown)" ng-show="tile.levelDown" style="padding-top:4px; color:#ff8095; opacity:0.6;"></i>
 
 
-<!--<img src="/images/done.png" class="tile-image" ng-show="tileStatus(tile) == 'done'">-->
-<i class="fa fa-check fa-fw tile-image tile-font" ng-show="tileStatus(tile) == 'done'" style="padding-top:4px; color:#27ae60; opacity:0.9;"></i>
-<!--<img src="/images/halfdone.png" class="tile-image" ng-show="tileStatus(tile) == 'halfdone'">-->
-<i class="fa fa-play fa-fw fa-rotate-270 tile-image tile-font" ng-show="tileStatus(tile) == 'halfdone'" style="padding-top:4px; color:#f4d03f; opacity:0.9;"></i>
-<!--<img src="/images/undone.png" class="tile-image" ng-show="tileStatus(tile) == 'undone'">-->
-<i class="fa fa-times fa-fw tile-image tile-font" ng-show="tileStatus(tile) == 'undone'" style="padding-top:4px; color:#e74c3c; opacity:0.9;"></i>
-<img src="/images/loader2.gif" class="tile-image" ng-show="tileStatus(tile) == 'processing'">
+
+<i class="far fa-play-circle fa-fw tile-image tile-font-1-25" ng-show="isStart(tile)" style="text-align:left; padding:1px 2px; color:#73e673; opacity:0.9;"></i>
+
+<i class="fas fa-check fa-fw tile-image tile-font" ng-show="tileStatus(tile) == 'done'" style="padding-top:4px; color:#27ae60; opacity:0.9;"></i>
+<i class="fas fa-play fa-fw fa-rotate-270 tile-image tile-font" ng-show="tileStatus(tile) == 'halfdone'" style="padding-top:4px; color:#f4d03f; opacity:0.9;"></i>
+<i class="fas fa-times fa-fw tile-image tile-font" ng-show="tileStatus(tile) == 'undone'" style="padding-top:6px; color:#e74c3c; opacity:0.9;"></i>
+
+<p class="tile-point" ng-if="tileStatus(tile) && !isDropTile(tile) && !isStart(tile)" style="color:#444; opacity:1;z-index:6;position: relative;text-align:center;">{{tilePoint(tile)}}</p>

@@ -1,0 +1,10 @@
+//- -*- tab-width: 2 -*-
+doctype html
+- var ngAppDef = ""
+- var ngInit = ""
+block vars
+html(style='height:100%; overflow-y:scroll;' ng-app='#{ngAppDef}' ng-init='#{ngInit}')
+    include ./head.jade
+    body(ng-controller='#{ngAppDef}Controller')
+        .container-fluid(style='overflow: hidden;')
+            block content

@@ -1,0 +1,89 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'SignEditor'
+
+append scripts
+  script.
+    var sigId = "#{id}"
+  script(src="/javascripts/sign_editor.js")
+  
+block location
+    a.breadcrumb-item(ng-click="go('/home')") Home
+    a.breadcrumb-item(ng-click="go('/admin')") Admin
+    a.breadcrumb-item(ng-click="go('/signage/setting')") Signage setting
+    span.breadcrumb-item.active Signage editor
+
+block content
+    h1 {{"signage.editor.title" | translate}}
+    div(style='margin-top:50px;')
+      .row
+        .col-md-12
+          .input-group
+            span.input-group-addon {{"signage.editor.name" | translate}}
+            input.form-control(type='text', ng-model='name')
+            span.input-group-btn
+              button.btn.btn-secondary(type='button', ng-click='save()') {{"signage.editor.save" | translate}}
+          br
+          .input-group
+            span.input-group-addon {{"signage.editor.name" | translate}}
+            input.form-control(type='text', ng-model='nameAs')
+            span.input-group-btn
+              button.btn.btn-secondary(type='button', ng-click='saveAs()') {{"signage.editor.saveAs" | translate}}
+      br
+      div(style="text-align : center;")
+        button.btn.btn-warning(type='button', ng-click='refresh()') Refresh Signage
+      br
+      br
+      .row
+        .col-md-12
+            h3 表示コンテンツ設定
+            p type...  iframe / img / movie
+            div(style="text-align : center;")
+                button.btn.btn-success(type='button', ng-click='addContents(0)')
+                    i.fas.fa-plus
+            div(style="margin: 20px;" ng-repeat="content in contents track by $index")
+                .input-group(style="width:100%;margin 0 auto;")
+                    span.input-group-addon {{$index+1}}
+                    span.input-group-addon 継続時間
+                    input.form-control(type='number', ng-model='content.duration' style="width:70px;!important")
+                    span.input-group-addon タイプ
+                    select.form-control(ng-model='content.type' style="width:150px;")
+                      option(value='iframe') iframe
+                      option(value='img') 画像
+                      option(value='movie') 動画
+                    span.input-group-addon 表示対象
+                    select.form-control(ng-model='content.group' style="width:150px;")
+                      option(value='0') 全表示
+                      option(value='1') 1
+                      option(value='2') 2
+                      option(value='3') 3
+                      option(value='4') 4
+                      option(value='5') 5
+                    span.input-group-addon 無効
+                    input.form-control(type='checkbox' ng-model="content.disable")
+                    span.input-group-addon URL
+                    input.form-control(type='text', ng-model='content.url' style="width:1000px;")
+                    button.btn.btn-danger(type='button', ng-click='removeContents($index)')
+                        i.fas.fa-times
+                div(style="text-align : center;margin:20px;")
+                    button.btn.btn-success(type='button', ng-click='addContents($index+1)')
+                        i.fas.fa-plus
+            br
+            br
+            br
+            h3 News設定
+            div(style="text-align : center;")
+                button.btn.btn-success(type='button', ng-click='addNews(0)')
+                    i.fas.fa-plus
+            div(style="margin: 20px;" ng-repeat="new in news track by $index")
+                .input-group(style="width:1200px;margin 0 auto;")
+                    span.input-group-addon {{$index+1}}
+                    input.form-control(type='text', ng-model='new.txt' style="width:950px;")
+                    button.btn.btn-danger(type='button', ng-click='removeNews($index)')
+                        i.fas.fa-times
+                div(style="text-align : center;margin:20px;")
+                    button.btn.btn-success(type='button', ng-click='addNews($index+1)')
+                        i.fas.fa-plus
+                

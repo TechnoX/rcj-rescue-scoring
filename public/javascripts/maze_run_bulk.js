@@ -1,6 +1,6 @@
 var xmlHttp;
 
-angular.module("RunAdmin", []).controller("RunAdminController", function ($scope, $http) {
+var app = angular.module("RunAdmin", ['ngTouch','pascalprecht.translate', 'ngCookies']).controller("RunAdminController", function ($scope, $http) {
   $scope.competitionId = competitionId
   
   $http.get("/api/competitions/" + competitionId).then(function (response) {
@@ -21,8 +21,50 @@ angular.module("RunAdmin", []).controller("RunAdminController", function ($scope
   })
   $http.get("/api/competitions/" + competitionId +
             "/Maze/maps").then(function (response) {
-    $scope.maps = response.data
+     $scope.maps = []
+    for (let i = 0, j = 0; i < response.data.length; i++) {
+        if (!response.data[i].parent) {
+            $scope.maps[j] = response.data[i]
+            j++;
+        }
+    }
   })
+    
+  function find(array,key){
+    for(let data of array){
+        if(data.name === key)return data._id;
+    }
+    swal("Error", key + " is not exist!", "error");
+    return -1;
+  }
+    
+    function findT(array,key){
+        for(let data of array){
+            if(data.name === key)return data._id;
+        }
+        var group = parseInt(key);
+        if(isNaN(group)){
+            swal("Error", key + " is not exist!", "error");
+            return -1;
+        }
+        else{
+            return null;
+        }
+    }
+    
+    function findTG(array,key){
+        for(let data of array){
+            if(data.name === key)return null;
+        }
+        var group = parseInt(key);
+        if(!isNaN(group)){
+            
+            return group;
+        }
+        swal("Error", key + " is not exist!", "error");
+        return -1;
+    }
+
   
   $scope.addRun = function () {
     $scope.processing = true;
@@ -32,67 +74,33 @@ angular.module("RunAdmin", []).controller("RunAdminController", function ($scope
     next_add();
   }
   
-  get_round = function () {
-    $http.get("/api/competitions/" + competitionId +
-              "/rounds/Maze/" + obj[$scope.now][0]).then(function (response) {
-      $scope.now_round = response.data;
-      setTimeout(get_team, 100);
-    }, function (error) {
-      console.log(error)
-    })
-  }
-  
-  get_team = function () {
-    $http.get("/api/competitions/" + competitionId +
-              "/teams/Maze/" + obj[$scope.now][1]).then(function (response) {
-      $scope.now_team = response.data;
-      setTimeout(get_field, 100);
-    }, function (error) {
-      console.log(error)
-    })
-  }
-  
-  get_field = function () {
-    $http.get("/api/competitions/" + competitionId +
-              "/fields/Maze/" + obj[$scope.now][3]).then(function (response) {
-      $scope.now_field = response.data;
-      setTimeout(get_map, 100);
-    }, function (error) {
-      console.log(error)
-    })
-  }
-  
-  get_map = function () {
-    $http.get("/api/maps/maze/name/" +
-              obj[$scope.now][2]).then(function (response) {
-      $scope.now_map = response.data;
-      setTimeout(exe, 100);
-    }, function (error) {
-      console.log(error)
-    })
-  }
+  $scope.go = function (path) {
+        window.location = path
+    }
   
   exe = function () {
     var time = new Date(obj[$scope.now][4]);
     var run = {
-      round      : $scope.now_round[0]._id,
-      team       : $scope.now_team[0]._id,
-      field      : $scope.now_field[0]._id,
-      map        : $scope.now_map[0]._id,
-      competition: competitionId,
-      startTime  : time.getTime()
+            round: find($scope.rounds,obj[$scope.now][0]),
+            team: findT($scope.teams,obj[$scope.now][1]),
+            group: findTG($scope.teams,obj[$scope.now][1]),
+            field: find($scope.fields,obj[$scope.now][3]),
+            map: find($scope.maps,obj[$scope.now][2]),
+            competition: competitionId,
+            startTime: time.getTime()
     }
-    console.log(run)
     
     $http.post("/api/runs/maze", run).then(function (response) {
-      setTimeout(next_add, 100);
+      next_add();
     }, function (error) {
       console.log(error)
       swal("Oops!", error.data.err, "error");
       $scope.processing = false;
       $scope.completed = false;
       $scope.error = true;
-      $scope.$apply();
+      if ($scope.$root.$$phase != '$apply' && $scope.$root.$$phase != '$digest') {
+             $scope.$apply();
+      }
       return;
     })
     
@@ -105,15 +113,16 @@ angular.module("RunAdmin", []).controller("RunAdminController", function ($scope
       $scope.processing = false;
       $scope.completed = true;
       $scope.error = false;
-      $scope.$apply();
+      if ($scope.$root.$$phase != '$apply' && $scope.$root.$$phase != '$digest') {
+             $scope.$apply();
+      }
       return;
     }
-    setTimeout(get_round, 10);
+    setTimeout(exe, 10);
     
   }
   
   
-  $(window).on('load', function () {
     
     // File APIに対応しているか確認
     if (window.File) {
@@ -133,11 +142,11 @@ angular.module("RunAdmin", []).controller("RunAdminController", function ($scope
         // ファイル読み取りに成功したとき
         reader.onload = function () {
           // 行単位で配列にする
-          obj = $.csv(",", "", "\n")(reader.result);
+          obj = $.csv()(reader.result);
           console.log(obj)
           
           // tableで出力
-          var insert = '<table><thead><tr><th>Round</th><th>Team name</th><th>Map name</th><th>Field name</th><th>Start Time</th></tr></thead><tbody>';
+          var insert = '<table class="custom"><thead><tr><th>Round</th><th>Team name</th><th>Map name</th><th>Field name</th><th>Start Time</th></tr></thead><tbody>';
           for (var i = 1; i < obj.length; i++) {
             insert += '<tr>';
             insert += '<td>';
@@ -169,7 +178,6 @@ angular.module("RunAdmin", []).controller("RunAdminController", function ($scope
         reader.readAsText(fileData, 'Shift_JIS');
       }, false);
     }
-  });
   
   /* Usage:
    *  jQuery.csv()(csvtext)		returns an array of arrays representing the CSV text.

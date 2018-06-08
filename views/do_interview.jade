@@ -1,0 +1,287 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'InterviewTeam'
+
+append scripts
+  script.
+    var competitionId = "#{id}"
+    var teamId = "#{tid}"
+  script(src='/javascripts/do_interview.js')
+  //if lt IE 9
+    script(type='text/javascript', src='/components/jSignature/libs/flashcanvas.js')
+  script(src='/components/jSignature/libs/jSignature.min.js')
+  script.
+      $(document).ready(function() {
+      $("#int_sig").jSignature()
+      })
+  script(src='/components/ng-file-upload/ng-file-upload-all.min.js')
+  script(src='/components/lightbox2/dist/js/lightbox.min.js')
+  
+append css
+    link(rel='stylesheet',href='/components/lightbox2/dist/css/lightbox.min.css')
+
+block location
+    a.breadcrumb-item(onclick="location.href='/home'") Home
+    a.breadcrumb-item(ng-click='go("/home/"+ competitionId)') {{competition.name}}
+    a.breadcrumb-item(ng-click="go('/interview/' + competitionId)") Interview
+    span.breadcrumb-item.active {{team.name}}
+
+
+block content
+  .row
+    .col-md-1
+    .col-md-10
+      h1 {{team.name}} - {{"common.interview" | translate}}
+      button.btn.btn-secondary(style='margin:0 10px 10px 0;', type='button', ng-click="getParam('return')? go(getParam('return')):go('/interview/' + competitionId)")
+        i.fas.fa-undo(aria-hidden='true') {{'common.back' | translate}}
+      br
+      h2 {{'interview.runs' | translate}}
+      #compe
+          table(class="custom")
+            thead
+              tr
+                th {{'common.round' | translate}}
+                th {{'common.field' | translate}}
+                th {{'common.starttime' | translate}}
+                th {{'common.score' | translate}}
+                th {{'common.time' | translate}}
+                th {{'common.lops' | translate}}
+                th
+            tbody
+              tr(ng-repeat='run in lruns | filter: teamId | orderBy:"[startTime,round.name,field.name,team.name]" ')
+                td(ng-bind='run.round.name' data-content="{{'common.round' | translate}}")
+                td(ng-bind='run.field.name' data-content="{{'common.field' | translate}}")
+                td(ng-bind='run.startTime | date:"dd EEE HH:mm"' data-content="{{'common.starttime' | translate}}")
+                td {{run.score}}
+                td {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+                td {{run.LoPsNum}}
+                td
+                  button(ng-click="go('/line/view/' + run._id + '?return=/interview/'+competitionId + '/do/'+teamId)" class='btn btn-info' style="width:45%; margin-right:5px;") {{'common.view' | translate}}
+              tr(ng-repeat='run in mruns | filter: teamId | orderBy:"[startTime]" ')
+                td(ng-bind='run.round.name' data-content="{{'common.round' | translate}}")
+                td(ng-bind='run.field.name' data-content="{{'common.field' | translate}}")
+                td(ng-bind='run.startTime | date:"dd EEE HH:mm"' data-content="{{'common.starttime' | translate}}")
+                td(ng-bind='run.score' data-content="{{'common.score' | translate}}")
+                td {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+                td {{run.LoPs}}
+                td
+                  button(ng-click="go('/maze/view/' + run._id + '?return=/interview/'+competitionId + '/do/'+teamId)" class='btn btn-info' style="width:45%; margin-right:5px;") {{'common.view' | translate}}
+      br
+      .row(style="margin-bottom:30px;")
+        .col-md-6
+          .card
+              h3.card-header
+                i.far.fa-images(aria-hidden='true') {{'interview.me_pic' | translate}}
+              .card-body
+                div
+                    a(style="max-width: 100%;height: auto; margin-bottom:20px;" ng-href="/api/teams/pic/{{competitionId}}/{{teamId}}/member{{picMeTime}}" data-lightbox="image")
+                        img.img-thumbnail(style="max-width: 100%;height: auto;margin-bottom:20px;" ng-src="/api/teams/pic/{{competitionId}}/{{teamId}}/member{{picMeTime}}")
+                div(style="background:#ffffb7;border: thin dashed;")
+                    form(style="")
+                      input(type='file', ngf-select='', ng-model='picFileMe', ngf-max-size='5MB', required='', ngf-accept="'image/*'", ngf-pattern="'image/*'",  ngf-multiple='false' capture="environment")
+
+                      button.btn.btn-info(ng-show='picFileMe' ng-click='uploadPicMe(picFileMe,"member")') {{'interview.upload' | translate}}
+                      button.btn.btn-warning(ng-click='picFileMe = null', ng-show='picFileMe') {{'common.cancel' | translate}}
+        .col-md-6
+          .card
+              h3.card-header
+                i.far.fa-images(aria-hidden='true') {{'interview.ma_pic' | translate}}
+              .card-body
+                div
+                    a(style="max-width: 100%;height: auto; margin-bottom:20px;" ng-href="/api/teams/pic/{{competitionId}}/{{teamId}}/machine{{picMaTime}}" data-lightbox="image")
+                        img.img-thumbnail(style="max-width: 100%;height: auto;margin-bottom:20px;" ng-src="/api/teams/pic/{{competitionId}}/{{teamId}}/machine{{picMaTime}}")
+                div(style="background:#ffffb7;border: thin dashed;")
+                    form(style="")
+                      input(type='file', ngf-select='', ng-model='picFileMa', ngf-max-size='5MB', required='', ngf-accept="'image/*'", ngf-pattern="'image/*'",  ngf-multiple='false' capture="environment")
+
+                      button.btn.btn-info(ng-show='picFileMa' ng-click='uploadPicMa(picFileMa,"machine")') {{'interview.upload' | translate}}
+                      button.btn.btn-warning(ng-click='picFileMa = null', ng-show='picFileMa') {{'common.cancel' | translate}}
+      #picture.card
+          h3.card-header
+            i.far.fa-images(aria-hidden='true') {{'interview.ad_pic' | translate}}
+          .card-body
+            .row
+                .col-md-4(ng-repeat='i in range(picN)')
+                    a(style="max-width: 100%;height: auto; margin-bottom:20px;" ng-href="/api/teams/pic/{{competitionId}}/{{teamId}}/{{i}}" ng-if="showImg[i]" data-lightbox="image")
+                        img.img-thumbnail(style="max-width: 100%;height: auto;margin-bottom:20px;" ng-src="/api/teams/pic/{{competitionId}}/{{teamId}}/{{i}}")
+                .col-md-4(style="background:#ffffb7;border: thin dashed;")
+                    i.fa.fa-plus-circle.fa-2x(aria-hidden='true') {{'interview.add' | translate}}
+                    form(style="")
+                      input(type='file', ngf-select='', ng-model='picFile', ngf-max-size='5MB', required='', ngf-accept="'image/*'", ngf-pattern="'image/*'",  ngf-multiple='false' capture="environment")
+                      br
+                      br
+                      button.btn.btn-info(ng-click='uploadPic(picFile,picN)') {{'interview.upload' | translate}}
+                      button.btn.btn-warning(ng-click='picFile = null', ng-show='picFile') {{'common.cancel' | translate}}
+                
+      br
+      
+
+
+      br
+      div(ng-show="doc")
+          #teaminfo.card
+              h3.card-header
+                i.far.fa-file-alt(aria-hidden='true') {{'interview.teaminfo' | translate}}
+              .card-body
+                p {{'interview.teamname' | translate}}
+                h3 {{doc.team}}
+                hr
+                p {{'interview.howtoread' | translate}}
+                h3 {{doc.yomi}}
+                hr
+                p {{'interview.organization' | translate}}
+                h3 {{doc.dantai}}
+          br
+          #member.card
+              h3.card-header
+                i.far.fa-file-alt(aria-hidden='true') {{'interview.member' | translate}}
+              .card-body
+                i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{'interview.nameread' | translate}}
+                p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;") {{doc.member}}
+                //textarea(style="width:100%; background:  #eaf9de;" rows="6" readonly) {{doc.member}}
+                hr
+                i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{'interview.role' | translate}}
+                p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;") {{doc.role}}
+                div(style="padding-left:50px;")
+                    span {{'interview.comment' | translate}}
+                    textarea(style="width:100%;" rows="3" ng-model="doc.roleC") {{doc.roleC}}
+          br
+          #member.card
+              h3.card-header
+                i.far.fa-file-alt(aria-hidden='true') {{'interview.hard' | translate}}
+              .card-body
+                i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.hardware.q1.q}}
+                p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.hardware.q1.a}}
+                div(style="padding-left:50px;")
+                    span {{'interview.comment' | translate}}
+                    textarea(style="width:100%;" rows="3" ng-model="doc.hardware.q1.c") {{doc.hardware.q1.c}}
+                hr
+                i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.hardware.q2.q}}
+                p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.hardware.q2.a}}
+                div(style="padding-left:50px;")
+                    span {{'interview.comment' | translate}}
+                    textarea(style="width:100%;" rows="3" ng-model="doc.hardware.q2.c") {{doc.hardware.q2.c}}
+                hr
+                i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.hardware.q3.q}}
+                p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.hardware.q3.a}}
+                div(style="padding-left:50px;")
+                    span {{'interview.comment' | translate}}
+                    textarea(style="width:100%;" rows="3" ng-model="doc.hardware.q3.c") {{doc.hardware.q3.c}}
+                div(ng-show="doc.hardware.q4.q")
+                    hr
+                    i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.hardware.q4.q}}
+                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.hardware.q4.a}}
+                    div(style="padding-left:50px;")
+                        span {{'interview.comment' | translate}}
+                        textarea(style="width:100%;" rows="3" ng-model="doc.hardware.q4.c") {{doc.hardware.q4.c}}
+                div(ng-show="doc.hardware.q5.q")
+                    hr
+                    i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.hardware.q5.q}}
+                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.hardware.q5.a}}
+                    div(style="padding-left:50px;")
+                        span {{'interview.comment' | translate}}
+                        textarea(style="width:100%;" rows="3" ng-model="doc.hardware.q5.c") {{doc.hardware.q5.c}}
+                div(ng-show="doc.hardware.q6.q")
+                    hr
+                    i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.hardware.q6.q}}
+                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.hardware.q6.a}}
+                    div(style="padding-left:50px;")
+                        span {{'interview.comment' | translate}}
+                        textarea(style="width:100%;" rows="3" ng-model="doc.hardware.q6.c") {{doc.hardware.q6.c}}
+                div(ng-show="doc.hardware.q7.q")
+                    hr
+                    i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.hardware.q7.q}}
+                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.hardware.q7.a}}
+                    div(style="padding-left:50px;")
+                        span {{'interview.comment' | translate}}
+                        textarea(style="width:100%;" rows="3" ng-model="doc.hardware.q7.c") {{doc.hardware.q7.c}}
+          br
+          #member.card
+              h3.card-header
+                i.far.fa-file-alt(aria-hidden='true') {{'interview.soft' | translate}}
+              .card-body
+                i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.software.q1.q}}
+                p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.software.q1.a}}
+                div(style="padding-left:50px;")
+                    span {{'interview.comment' | translate}}
+                    textarea(style="width:100%;" rows="3" ng-model="doc.software.q1.c") {{doc.software.q1.c}}
+                hr
+                i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.software.q2.q}}
+                p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.software.q2.a}}
+                div(style="padding-left:50px;")
+                    span {{'interview.comment' | translate}}
+                    textarea(style="width:100%;" rows="3" ng-model="doc.software.q2.c") {{doc.software.q2.c}}
+                hr
+                i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.software.q3.q}}
+                p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.software.q3.a}}
+                div(style="padding-left:50px;")
+                    span {{'interview.comment' | translate}}
+                    textarea(style="width:100%;" rows="3" ng-model="doc.software.q3.c") {{doc.software.q3.c}}
+                div(ng-show="doc.software.q4.q")
+                    hr
+                    i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.software.q4.q}}
+                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.software.q4.a}}
+                    div(style="padding-left:50px;")
+                        span {{'interview.comment' | translate}}
+                        textarea(style="width:100%;" rows="3" ng-model="doc.software.q4.c") {{doc.software.q4.c}}
+                div(ng-show="doc.software.q5.q")
+                    hr
+                    i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.software.q5.q}}
+                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.software.q5.a}}
+                    div(style="padding-left:50px;")
+                        span {{'interview.comment' | translate}}
+                        textarea(style="width:100%;" rows="3" ng-model="doc.software.q5.c") {{doc.software.q5.c}}
+                div(ng-show="doc.software.q6.q")
+                    hr
+                    i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.software.q6.q}}
+                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.software.q6.a}}
+                    div(style="padding-left:50px;")
+                        span {{'interview.comment' | translate}}
+                        textarea(style="width:100%;" rows="3" ng-model="doc.software.q6.c") {{doc.software.q6.c}}
+                div(ng-show="doc.software.q7.q")
+                    hr
+                    i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.software.q7.q}}
+                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.software.q7.a}}
+                    div(style="padding-left:50px;")
+                        span {{'interview.comment' | translate}}
+                        textarea(style="width:100%;" rows="3" ng-model="doc.software.q7.c") {{doc.software.q7.c}}
+          br
+          #ikigomi.card
+              h3.card-header
+                i.far.fa-file-alt(aria-hidden='true') {{'interview.motivation' | translate}}
+              .card-body
+                    p(style="white-space: pre-wrap;margin-left:30px;background:#f5f5f5;")  {{doc.ikigomi}}
+          br
+          #attach.card
+              h3.card-header
+                i.far.fa-file-pdf(aria-hidden='true') {{'interview.attach' | translate}}
+              .card-body
+                    iframe(ng-src="{{'/components/pdfjs/web/viewer.html?file=/api/teams/pdf/' + competitionId + '/' +teamId+'/doc'}}" style="width:100%; height:600px;" )
+          br
+          #poster.card
+              h3.card-header
+                i.far.fa-file-pdf(aria-hidden='true') {{'interview.poster' | translate}}
+              .card-body
+                    iframe(ng-src="{{'/components/pdfjs/web/viewer.html?file=/api/teams/pdf/' + competitionId + '/' +teamId+'/poster'}}" style="width:100%; height:600px;" )
+
+      br
+      br
+      #sign.card
+          h3.card-header
+            i.fa.fa-edit(aria-hidden='true') {{'interview.interviewer_field' | translate}}
+          .card-body
+            p.card-text.text-info {{'interview.field_description' | translate}}
+            .form-group
+              textarea.form-control(ng-model='team.comment', rows='8')
+            h2 {{'interview.sign' | translate}}
+            #int_sig(style="width: 100%;border: 1px dashed black;")
+      br
+      button.btn.btn-danger.btn-block(type='button', style='padding:30 0 30 0', ng-click='send()')
+        i.fa.fa-paper-plane.fa-2x(aria-hidden='true')  {{'interview.complete' | translate}}
+      br
+      br
+
+
+

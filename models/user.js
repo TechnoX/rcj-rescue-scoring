@@ -50,6 +50,7 @@ const ACCESSLEVELS = {
   SUPERADMIN: 15,
   ADMIN     : 10,
   JUDGE     : 5,
+  VIEW      : 1,
   NONE      : 0
 }
 module.exports.ACCESSLEVELS = ACCESSLEVELS
@@ -153,39 +154,28 @@ userSchema.methods.comparePassword = function (candidatePassword, cb) {
 }
 
 userSchema.plugin(timestamps);
-var User = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
 
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
 module.exports.user = User;
 
 //User.remove({}, function (err) {
 
-var testUser = new User({
-  username       : "admin",
-  //password       : "adminpass",
-  admin          : true,
-  superDuperAdmin: true
-});
-var testUser2 = new User({
-  username    : "judge",
-  //password    : "judgepass",
-  competitions: [{
-    id         : "5976b89445524f1e629f63f5",
-    accessLevel: ACCESSLEVELS.JUDGE
-  }, {
-    id         : "59759831aa67ba5178a2751e",
-    accessLevel: ACCESSLEVELS.JUDGE
-  }]
+var DefaultUser = new User({
+  username       : process.env.dUsername,
+  password       :  process.env.dPassword,
+  admin          :  process.env.dAdmin,
+  superDuperAdmin:  process.env.dSDAdmin
 });
 
-User.findOne({username: testUser.username}, function (err, dbUser) {
+User.findOne({username: DefaultUser.username}, function (err, dbUser) {
   if (dbUser) {
-    if (testUser.password != null) {
-      dbUser.password = testUser.password
+    if (DefaultUser.password != null) {
+      dbUser.password = DefaultUser.password
     }
-    dbUser.admin = testUser.admin
-    dbUser.superDuperAdmin = testUser.superDuperAdmin
-    dbUser.competitions = testUser.competitions
+    dbUser.admin = DefaultUser.admin
+    dbUser.superDuperAdmin = DefaultUser.superDuperAdmin
+    dbUser.competitions = DefaultUser.competitions
     
     //logger.debug(dbUser)
     
@@ -195,7 +185,7 @@ User.findOne({username: testUser.username}, function (err, dbUser) {
       }
     })
   } else {
-    testUser.save(function (err) {
+    DefaultUser.save(function (err) {
       if (err) {
         logger.error(err)
       }
@@ -205,31 +195,3 @@ User.findOne({username: testUser.username}, function (err, dbUser) {
     });
   }
 })
-
-User.findOne({username: testUser2.username}, function (err, dbUser) {
-  if (dbUser) {
-    if (testUser2.password != null) {
-      dbUser.password = testUser2.password
-    }
-    dbUser.admin = testUser2.admin
-    dbUser.superDuperAdmin = testUser2.superDuperAdmin
-    dbUser.competitions = testUser2.competitions
-    
-    dbUser.save(function (err) {
-      if (err) {
-        logger.error(err)
-      }
-    })
-  } else {
-    testUser2.save(function (err) {
-      if (err) {
-        logger.error(err)
-      }
-      else {
-        console.log("saved judge user for the first time, this will only get saved if it is a new installation");
-      }
-    });
-  }
-})
-
-//})

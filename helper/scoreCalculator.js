@@ -7,63 +7,102 @@ const logger = require('../config/logger').mainLogger
  * @returns {number}
  */
 module.exports.calculateLineScore = function (run) {
-  var score = 0
-  
-  var mapTiles = []
-  for (let i = 0; i < run.map.tiles.length; i++) {
-    let tile = run.map.tiles[i]
-    
-    for (let j = 0; j < tile.index.length; j++) {
-      let index = tile.index[j]
-      
-      mapTiles[index] = tile
+ try {
+        //console.log(run);
+        var score = 0
+
+        var mapTiles = []
+        for (let i = 0; i < run.map.tiles.length; i++) {
+            let tile = run.map.tiles[i]
+
+            for (let j = 0; j < tile.index.length; j++) {
+                let index = tile.index[j]
+
+                mapTiles[index] = tile
+            }
+        }
+
+        let lastDropTile = 0
+        let dropTileCount = 0
+
+        //console.log(mapTiles);
+        for (let i = 0; i < run.tiles.length; i++) {
+            let tile = run.tiles[i]
+            //console.log(tile.scoredItems)
+            for (let j=0; j<tile.scoredItems.length;j++){
+                switch (tile.scoredItems[j].item){
+                    case "checkpoint":
+                        let tileCount = i - lastDropTile;
+                        score += Math.max(tileCount * (5 - 2 * run.LoPs[dropTileCount]), 0) * tile.scoredItems[j].scored;
+                        //console.log(Math.max(tileCount * (5 - 2 * run.LoPs[dropTileCount]), 0) * tile.scoredItems[j].scored)
+                        break;
+                    case "gap":
+                        score += 10 * tile.scoredItems[j].scored;
+                        break;
+                    case "intersection":
+                        score += 15 * tile.scoredItems[j].scored;
+                        break;
+                    case "obstacle":
+                        score += 10 * tile.scoredItems[j].scored;
+                        break;
+                    case "speedbump":
+                        score += 5 * tile.scoredItems[j].scored;
+                        break;
+                    case "ramp":
+                        score += 5 * tile.scoredItems[j].scored;
+                        break;
+                }
+                
+            }
+
+            if (tile.isDropTile) {
+                lastDropTile = i
+                dropTileCount++
+            }
+        }
+
+        if (run.rescueOrder) {
+            if (run.evacuationLevel == 1) {
+                for (let victim of run.rescueOrder) {
+                    if (victim.effective) {
+                        if (victim.type == "L") {
+                            score += Math.max(30 - run.LoPs[dropTileCount] * 5, 0)
+                        } else {
+                            score += Math.max(20 - run.LoPs[dropTileCount] * 5, 0)
+                        }
+                    }else{
+                        score += Math.max(5 - run.LoPs[dropTileCount] * 5, 0)
+                    }
+                }
+            } else if (run.evacuationLevel == 2) {
+                for (let victim of run.rescueOrder) {
+                    if (victim.effective) {
+                        if (victim.type == "L") {
+                            score += Math.max(40 - run.LoPs[dropTileCount] * 5, 0)
+                        } else {
+                            score += Math.max(30 - run.LoPs[dropTileCount] * 5, 0)
+                        }
+                    }else{
+                        score += Math.max(5 - run.LoPs[dropTileCount] * 5, 0)
+                    }
+                }
+            }
+        }
+
+        if (run.exitBonus) {
+            score += 20
+        }
+
+        // 5 points for placing robot on first droptile (start)
+        // Implicit showedUp if anything else is scored
+        if (run.showedUp || score > 0) {
+            score += 5
+        }
+        if(isNaN(score)) return 0
+        return score
+    } catch (e) {
+
     }
-  }
-  
-  let lastDropTile = 0
-  let dropTileCount = 0
-  
-  for (let i = 0; i < run.tiles.length; i++) {
-    let tile = run.tiles[i]
-    
-    if (tile.scored) {
-      if (tile.isDropTile) {
-        let tileCount = i - lastDropTile
-        score += Math.max(tileCount * (3 - run.LoPs[dropTileCount]), 0)
-      }
-      
-      score += mapTiles[i].tileType.gaps * 10
-      score += mapTiles[i].tileType.intersections * 15
-      score += mapTiles[i].items.obstacles * 10
-      score += mapTiles[i].items.speedbumps * 5
-    }
-    
-    if (tile.isDropTile) {
-      lastDropTile = i
-      dropTileCount++
-    }
-  }
-  
-  if (run.evacuationLevel == 1) {
-    score += run.rescuedLiveVictims * 30
-    score += run.rescuedDeadVictims * 15
-    
-  } else if (run.evacuationLevel == 2) {
-    score += run.rescuedLiveVictims * 40
-    score += run.rescuedDeadVictims * 20
-  }
-  
-  if (run.exitBonus) {
-    score += 20
-  }
-  
-  // 3 points for placing robot on first droptile (start)
-  // Implicit showedUp if anything else is scored
-  if (run.showedUp || score > 0) {
-    score += 3
-  }
-  
-  return score
 }
 
 /**
@@ -161,5 +200,5 @@ module.exports.calculateMazeScore = function (run) {
     score += victims * 10
   }
   
-  return score
+  return score+","+victims+","+Math.min(rescueKits, 12)
 }

@@ -1,55 +1,118 @@
-<h1>Rescue Maze map editor</h1>
-<p>Press the walls to create a new layout</p>
-
+<h1>{{"admin.mazeMapEditor.title" | translate}}</h1>
+<p>{{"admin.mazeMapEditor.desc" | translate}}</p>
+<h2 ng-if="parent">{{"admin.mazeMapEditor.parent" | translate}}</h2>
+<button class="btn btn-info" type="button" ng-click="saveMap(parent)" ng-if="parent">{{"admin.mazeMapEditor.backToParent" | translate}}</button>
 <div style="margin-top:50px;">
-  <div class="row">
-    <div class="col-md-12">
-      <button class="btn btn-primary" type="button" ng-click="saveMap()">Save map</button> <button class="btn btn-primary" type="button" ng-click="saveMapAs()">Save map as: </button> <input type="text" ng-model="saveasname"><br>
-      <label>Name of design: <input type="text" ng-model="name"></label><br>
-      <label>Max height: <input type="number" ng-model="height" ng-change="sliderOptions.ceil = height - 1" min="1"></label><br>
-      <label>Max width: <input type="number" ng-model="width" min="1" ></label><br>
-      <label>Max length: <input type="number" ng-model="length" min="1" ></label><br>
-      <input type="checkbox" ng-model="finished" id="isFinished"><label class="checkbox" for="isFinished">Finished for using in runs</label><br>
-      <div class="error" ng-show="startNotSet()">No start tile is defined!</div>
+    <div class="row">
+        <div class="col-md-6">
+            <button class="btn btn-dark" type="button" ng-click="export()">{{"admin.mazeMapEditor.export" | translate}}</button>
+        </div>
+        <div class="col-md-6">
+            <input id="select" type="file" name="select">
+        </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-md-2">
-      <rzslider rz-slider-model="z" rz-slider-options="sliderOptions" ng-show="height > 1"></rzslider>
+    <br>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="input-group">
+                <span class="input-group-addon">{{"admin.mazeMapEditor.name" | translate}}</span>
+                <input type="text" class="form-control" ng-model="name">
+                <span class="input-group-btn">
+                    <button class="btn btn-secondary" type="button" ng-click="saveMap()">{{"admin.mazeMapEditor.save" | translate}}</button>
+                </span>
+            </div>
+            <br>
+            <div class="input-group" ng-if="!parent">
+                <span class="input-group-addon">{{"admin.mazeMapEditor.name" | translate}}</span>
+                <input type="text" class="form-control" ng-model="asname">
+                <span class="input-group-addon">@
+                    <select ng-model='$parent.se_competition' ng-options='b_competitions._id as b_competitions.name for b_competitions in competitions'></select>
+                </span>
+                <span class="input-group-btn">
+                    <button class="btn btn-secondary" type="button" ng-click="saveMapAs(asname)">{{"admin.mazeMapEditor.saveAs" | translate}}</button>
+                </span>
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">{{"admin.mazeMapEditor.height" | translate}}</span>
+                <input type="number" ng-model="height" ng-change="sliderOptions.ceil = height - 1" min="1">
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">{{"admin.mazeMapEditor.width" | translate}}</span>
+                <input type="number" ng-model="width" min="1" >
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">{{"admin.mazeMapEditor.length" | translate}}</span>
+                <input type="number" ng-model="length" min="1" >
+            </div>
+            <br>
+            <div ng-if="!parent">
+                <h3>{{"admin.mazeMapEditor.pattern" | translate}}</h3>
+                <p ng-if="mapId == ''">
+                    {{"admin.mazeMapEditor.patSave" | translate}}
+                </p>
+                <table class="custom" style="width: initial; margin:0;" ng-if="mapId != ''">
+                    <tr>
+                        <th>No.</th>
+                        <th>{{"common.map" | translate}}</th>
+                        <th>{{"common.operation" | translate}}</th>
+                        <th>{{"common.operation" | translate}}</th>
+                    </tr>
+                    <tr ng-repeat='i in range(6)'>
+                        <th>{{i+1}}</th>
+                        <td><select ng-model='dice[i]' ng-options='b_maps._id as b_maps.name for b_maps in maps'></select> 
+                        </td>
+                        <td><button class="" type="button" ng-click="childNew(i+1)">{{"admin.mazeMapEditor.create" | translate}}</button></td>
+                        <td><button class="" type="button" ng-click="saveMap(dice[i])">{{"admin.mazeMapEditor.edit" | translate}}</button></td>
+                    </tr>
+                </table>
+            </div>
+            <br>
+            <div ng-show="(dice[0]&&dice[1]&&dice[2]&&dice[3]&&dice[4]&&dice[5]) || parent">
+                <input type="checkbox" ng-model="finished" id="isFinished"><label class="checkbox" for="isFinished">{{"admin.mazeMapEditor.finished" | translate}}</label>
+            </div>
+            <div class="error" ng-hide="(dice[0]&&dice[1]&&dice[2]&&dice[3]&&dice[4]&&dice[5])||parent">{{"admin.mazeMapEditor.patYet" | translate}}</div>
+            <br>
+            <div class="error" ng-show="startNotSet()">{{"admin.mazeMapEditor.noStart" | translate}}</div>
+        </div>
     </div>
-    <div class="col-md-10">
-      <table>
-      <tr ng-repeat="r in range(2*length + 1)">
-	<td ng-repeat="c in range(2*width + 1)" ng-class="{'wallspot': $odd != $parent.$odd, 'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall, 'checkpoint': cells[c+','+r+','+z].tile.checkpoint, 'black': cells[c+','+r+','+z].tile.black, 'linear': cells[c+','+r+','+z].isLinear}"
-	    ng-click="cellClick(c, r, z, $odd != $parent.$odd, $odd && $parent.$odd)">
-	  <div class="tile-image-container" ng-show="cells[c+','+r+','+z].isTile">
-	    <img ng-src="/images/log.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.speedbump">
-	    <img ng-src="/images/elevator.png" class="tile-image" ng-show="!isUndefined(cells[c+','+r+','+z].tile.changeFloorTo) && cells[c+','+r+','+z].tile.changeFloorTo != z">
-	    <img ng-src="/images/start.png" class="tile-image" ng-show="startTile.x == c && startTile.y == r && startTile.z == z">
-	    <img ng-src="/images/ramp_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.rampTop">
-	    <img ng-src="/images/ramp_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.rampBottom">
-	    <img ng-src="/images/heated_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'Heated'">
-	    <img ng-src="/images/heated_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'Heated'">
-	    <img ng-src="/images/heated_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'Heated'">
-	    <img ng-src="/images/heated_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'Heated'">
-	    <img ng-src="/images/h_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'H'">
-	    <img ng-src="/images/h_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'H'">
-	    <img ng-src="/images/h_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'H'">
-	    <img ng-src="/images/h_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'H'">
-	    <img ng-src="/images/s_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'S'">
-	    <img ng-src="/images/s_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'S'">
-	    <img ng-src="/images/s_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'S'">
-	    <img ng-src="/images/s_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'S'">
-	    <img ng-src="/images/u_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'U'">
-	    <img ng-src="/images/u_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'U'">
-	    <img ng-src="/images/u_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'U'">
-	    <img ng-src="/images/u_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'U'">
-	  </div>
-	</td>
-      </tr>
-      </table>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="btn-group" style="margin-bottom:5px;">
+                  <span class="input-group-addon"><i class="fas fa-arrows-alt-v" aria-hidden="true"></i></span>
+                  <button type="button" class="btn btn-outline-dark" ng-click="changeFloor(zz)" ng-repeat="zz in range(height)" ng-class="{active: zz == z}">&nbsp;{{zz}}&nbsp;</button>
+            </div>
+            <table>
+                <tr ng-repeat="r in range(2*length + 1)">
+                    <td ng-repeat="c in range(2*width + 1)" ng-class="{'wallspot': $odd != $parent.$odd, 'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall, 'checkpoint': cells[c+','+r+','+z].tile.checkpoint, 'black': cells[c+','+r+','+z].tile.black, 'linear': cells[c+','+r+','+z].isLinear}" ng-click="cellClick(c, r, z, $odd != $parent.$odd, $odd && $parent.$odd)">
+                        <div class="tile-image-container" ng-show="cells[c+','+r+','+z].isTile">
+                            <img ng-src="/images/log.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.speedbump">
+                            <img ng-src="/images/elevator.png" class="tile-image" ng-show="!isUndefined(cells[c+','+r+','+z].tile.changeFloorTo) && cells[c+','+r+','+z].tile.changeFloorTo != z">
+                            <img ng-src="/images/start.png" class="tile-image" ng-show="startTile.x == c && startTile.y == r && startTile.z == z">
+                            <img ng-src="/images/ramp_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.rampTop">
+                            <img ng-src="/images/ramp_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.rampBottom">
+                            <img ng-src="/images/heated_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'Heated'">
+                            <img ng-src="/images/heated_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'Heated'">
+                            <img ng-src="/images/heated_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'Heated'">
+                            <img ng-src="/images/heated_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'Heated'">
+                            <img ng-src="/images/h_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'H'">
+                            <img ng-src="/images/h_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'H'">
+                            <img ng-src="/images/h_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'H'">
+                            <img ng-src="/images/h_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'H'">
+                            <img ng-src="/images/s_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'S'">
+                            <img ng-src="/images/s_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'S'">
+                            <img ng-src="/images/s_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'S'">
+                            <img ng-src="/images/s_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'S'">
+                            <img ng-src="/images/u_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'U'">
+                            <img ng-src="/images/u_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'U'">
+                            <img ng-src="/images/u_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'U'">
+                            <img ng-src="/images/u_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'U'">
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
-  </div>
 </div>
-
-

@@ -101,7 +101,8 @@ adminRouter.post('/', function (req, res) {
       z: map.startTile.z
     },
     numberOfDropTiles: map.numberOfDropTiles,
-    finished         : map.finished
+    finished         : map.finished,
+    victims          : map.victims
   })
   
   //logger.debug(newMap)
@@ -481,10 +482,12 @@ adminRouter.delete('/tilesets/:tileset', function (req, res, next) {
 })
 
 
-privateRouter.get('/name/:name', function (req, res, next) {
+privateRouter.get('/name/:competitionid/:name', function (req, res, next) {
   var name = req.params.name
+  var id = req.params.competitionid
   
   lineMap.find({
+    "competition": id,
     "name": name
   }, function (err, data) {
     if (err) {
@@ -495,7 +498,7 @@ privateRouter.get('/name/:name', function (req, res, next) {
     } else {
       res.status(200).send(data)
     }
-  })
+  }).select("_id")
 })
 
 
