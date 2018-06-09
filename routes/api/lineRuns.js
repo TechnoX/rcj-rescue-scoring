@@ -534,6 +534,17 @@ publicRouter.get('/scoresheet', function (req, res, next) {
 })
 
 publicRouter.get('/scoresheetimg/:run/:img', function (req, res, next) {
+  function checkAndSend(image) {
+    if (!image.contentType) {
+      res.status(404).send({
+        msg: "image has not been registered yet",
+      });
+      return;
+    }
+    res.contentType(image.contentType);
+    res.send(image.data);
+  }
+
   var run_id = req.params.run;
   var img_type = req.params.img;
 
@@ -565,91 +576,27 @@ publicRouter.get('/scoresheetimg/:run/:img', function (req, res, next) {
             });
             return;
           }
-          if(!run.scoreSheet.LoPImages[number].contentType){
-              res.status(404).send({
-                msg: "Score sheet image has not been registered yet",
-              });
-              return;
-          }
-          res.contentType(run.scoreSheet.LoPImages[number].contentType);
-          res.send(run.scoreSheet.LoPImages[number].data);
+          checkAndSend(run.scoreSheet.LoPImages[number]);
           break;
 
         case "tiles":
-          if(!run.scoreSheet.tileDataImage.contentType){
-              res.status(404).send({
-                msg: "Score sheet image has not been registered yet",
-              });
-              return;
-          }
-          res.contentType(run.scoreSheet.tileDataImage.contentType);
-          res.send(run.scoreSheet.tileDataImage.data);
+          checkAndSend(run.scoreSheet.tileDataImage);
           break;
 
         case "evacuationLevel":
-          if(!run.scoreSheet.evacuationLevelImage.contentType){
-              res.status(404).send({
-                msg: "Score sheet image has not been registered yet",
-              });
-              return;
-          }
-          res.contentType(run.scoreSheet.evacuationLevelImage.contentType);
-          res.send(run.scoreSheet.evacuationLevelImage.data);
+          checkAndSend(run.scoreSheet.evacuationLevelImage);
           break;
 
         case "evacuationBonus":
-          if(!run.scoreSheet.evacuationBonusImage.contentType){
-              res.status(404).send({
-                msg: "Score sheet image has not been registered yet",
-              });
-              return;
-          }
-          res.contentType(run.scoreSheet.evacuationBonusImage.contentType);
-          res.send(run.scoreSheet.evacuationBonusImage.data);
+          checkAndSend(run.scoreSheet.evacuationBonusImage);
           break;
 
-        case "rescuedLive":
-          if(!run.scoreSheet.rescuedLiveVictimsImage.contentType){
-              res.status(404).send({
-                msg: "Score sheet image has not been registered yet",
-              });
-              return;
-          }
-          res.contentType(run.scoreSheet.rescuedLiveVictimsImage.contentType);
-          res.send(run.scoreSheet.rescuedLiveVictimsImage.data);
-          break;
-
-        case "rescuedDeadBeforeLive":
-          if(!run.scoreSheet.rescuedDeadBeforeLiveVictimsImage.contentType){
-              res.status(404).send({
-                msg: "Score sheet image has not been registered yet",
-              });
-              return;
-          }
-          res.contentType(run.scoreSheet.rescuedDeadBeforeLiveVictimsImage.contentType);
-          res.send(run.scoreSheet.rescuedDeadVictimsImage.data);
-          break;
-
-        case "rescuedDeadAfterLive":
-          if(!run.scoreSheet.rescuedDeadAfterLiveVictimsImage.contentType){
-              res.status(404).send({
-                msg: "Score sheet image has not been registered yet",
-              });
-              return;
-          }
-          res.contentType(run.scoreSheet.rescuedDeadAfterLiveVictimsImage.contentType);
-          res.send(run.scoreSheet.rescuedDeadVictimsImage.data);
+        case "victims":
+          checkAndSend(run.scoreSheet.rescuedVictimsImage);
           break;
 
         case "time":
-          if(!run.scoreSheet.timeImage.contentType){
-              res.status(404).send({
-                msg: "Score sheet image has not been registered yet",
-              });
-              return;
-          }
-          res.contentType(run.scoreSheet.timeImage.contentType);
-          res.send(run.scoreSheet.timeImage.data);
+          checkAndSend(run.scoreSheet.timeImage);
           break;
 
         default:

@@ -80,9 +80,7 @@ const lineRunSchema = new Schema({
     tileDataImage: { data: Buffer, contentType: String }, // Image representing the up to two arena levels
     evacuationLevelImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
     evacuationBonusImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
-    rescuedLiveVictimsImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
-    rescuedDeadBeforeLiveVictimsImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
-    rescuedDeadAfterLiveVictimsImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
+    rescuedVictimsImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
     timeImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}}
   },
 })
