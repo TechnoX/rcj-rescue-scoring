@@ -728,6 +728,17 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
 });
 
 publicRouter.get('/scoresheetimg/:run/:img', function (req, res, next) {
+  function checkAndSend(image) {
+    if (!image.contentType) {
+      res.status(404).send({
+        msg: "image has not been registered yet",
+      });
+      return;
+    }
+    res.contentType(image.contentType);
+    res.send(image.data);
+  }
+
   var run_id = req.params.run;
   var img_type = req.params.img;
 
@@ -745,23 +756,19 @@ publicRouter.get('/scoresheetimg/:run/:img', function (req, res, next) {
     } else {
       switch (img_type.toString()) {
         case "lop":
-          res.contentType(run.scoreSheet.LoPImage.contentType);
-          res.send(run.scoreSheet.LoPImage.data);
+          checkAndSend(run.scoreSheet.LoPImage);
           break;
 
         case "tiles":
-          res.contentType(run.scoreSheet.tileDataImage.contentType);
-          res.send(run.scoreSheet.tileDataImage.data);
+          checkAndSend(run.scoreSheet.tileDataImage);
           break;
 
         case "exitBonus":
-          res.contentType(run.scoreSheet.exitBonusImage.contentType);
-          res.send(run.scoreSheet.exitBonusImage.data);
+          checkAndSend(run.scoreSheet.exitBonusImage);
           break;
 
         case "time":
-          res.contentType(run.scoreSheet.timeImage.contentType);
-          res.send(run.scoreSheet.timeImage.data);
+          checkAndSend(run.scoreSheet.timeImage);
           break;
 
         default:
