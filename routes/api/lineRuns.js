@@ -763,23 +763,9 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
         run.evacuationLevel = sheetData.evacuation.indexes[0] + 1;
         run.scoreSheet.evacuationLevelImage = sheetData.evacuation.img;
 
-        run.rescueOrder = [];
-
-        let rescuedLiveVictims = 0;
-        for (let i = 0; i < sheetData.victimOrder.indexes.length; i++) {
-          let victimType = "D";
-          if (sheetData.victimOrder.indexes[i] === 1) {
-            victimType = "L";
-            rescuedLiveVictims ++;
-          }
-          run.rescueOrder.push({type: victimType, effective: victimType === "L" || rescuedLiveVictims === run.map.victims.live});
-        }
-
         run.time.minutes = sheetData.time.indexes[0];
         run.time.seconds = sheetData.time.indexes[1] * 10 + sheetData.time.indexes[2];
         run.scoreSheet.timeImage = sheetData.time.img;
-
-        run.exitBonus = sheetData.exitBonus.indexes[0] === 0;
 
         // First step: extract the indexes in run.tiles which are marked as checkpoints in sheetData.tiles.tilesData,
         // store the run tiles.isDropTile and scoredItem checkpoint for the corresponding tiles
@@ -829,6 +815,22 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
           }
 
           run.scoreSheet.LoPImages.push(sheetData.checkpoints[i].img)
+        }
+
+        // If the robot didn't reach a certain checkpoint don't look at victims and exit bonus
+        if (!notReached) {
+          run.rescueOrder = [];
+
+          let rescuedLiveVictims = 0;
+          for (let i = 0; i < sheetData.victimOrder.indexes.length; i++) {
+            let victimType = "D";
+            if (sheetData.victimOrder.indexes[i] === 1) {
+              victimType = "L";
+              rescuedLiveVictims ++;
+            }
+            run.rescueOrder.push({type: victimType, effective: victimType === "L" || rescuedLiveVictims === run.map.victims.live});
+          }
+          run.exitBonus = sheetData.exitBonus.indexes[0] === 0;
         }
 
         run.scoreSheet.tileDataImage = sheetData.tiles.img;
