@@ -6,6 +6,11 @@ block vars
 
 append scripts
   script(src='/javascripts/home.js')
+  script.
+    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+    for(let registration of registrations) {
+    registration.unregister()
+    } })
   //script.
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
@@ -33,7 +38,7 @@ block content
       h6 {{'home.about' | translate}}
       br
       br
-      
+
       if typeof(user) == "undefined"
         button(onclick="location.href='/login'" class='btn btn-warning btn-lg btn-block')
             i.fas.fa-sign-in-alt(aria-hidden='true') &nbsp; {{'home.login' | translate}}
@@ -43,7 +48,7 @@ block content
       br
       br
       button(ng-click="go('/home/' + competition._id)" class='button-s button-bb' ng-repeat='competition in competitions') {{competition.name}}
-      br 
+      br
       br
       br
       if typeof(user) != "undefined"
@@ -55,4 +60,3 @@ block content
       br
       br
       br
-      
