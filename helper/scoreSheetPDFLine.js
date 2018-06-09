@@ -97,8 +97,8 @@ function drawFields(doc, pos_x, pos_y, config, map, stiles) {
   pos_x++;
   pos_y++;
 
-  for (let i = 0; i < map.tiles.length; i++) {
-    const tile = map.tiles[i];
+  for (let mapTileIndex = 0; mapTileIndex < map.tiles.length; mapTileIndex++) {
+    const tile = map.tiles[mapTileIndex];
     if (tile.z >= config.fields.positions.length) {
       console.log("Warning: Score sheet can't handle enough line levels!");
       continue // Skip levels that have no position data
@@ -304,7 +304,7 @@ function drawRun(doc, config, scoringRun) {
       if (i === 0) {
         text = "After Start:";
       }
-      let pos = savePos(drawLOPInputField(doc, config, pos_x, pos_y, text, "cb" + i));
+      let pos = savePos(drawLOPInputField(doc, config, pos_x, pos_y, text), "cb" + i);
       if (i % 2 === 0 && i < (checkpointAmount - 1)) {
         pos_x = pos.x + config.data.inputs.marginsVertical;
       } else {
