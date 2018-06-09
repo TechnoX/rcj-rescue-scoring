@@ -59,7 +59,7 @@ const globalConfig = {
  */
 function calculateWorstCaseCheckpointAmount(map) {
   let sortedTiles = map.tiles.slice(0).sort((t1, t2) => t2.index.length - t1.index.length);
-  let checkpointAmount = 0;
+  let checkpointAmount = 1; // Start counts as checkpoint
   let usedCheckpointMarkers = 0;
   for (let i = 0; i < sortedTiles.length && usedCheckpointMarkers < map.numberOfDropTiles; i++) {
     if (sortedTiles[i].items.obstacles === 0 && sortedTiles[i].items.speedbumps === 0 && sortedTiles[i].items.rampPoints === false) {

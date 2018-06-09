@@ -750,7 +750,7 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
         })
       } else {
         const sheetData = scoreSheetLineProcess.processScoreSheet(run.scoreSheet.positionData, req.file.path);
-
+        
         run.scoreSheet.fullSheet = sheetData.rawSheet;
 
         run.tiles = [];
@@ -783,7 +783,7 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
 
         // First step: extract the indexes in run.tiles which are marked as checkpoints in sheetData.tiles.tilesData,
         // store the run tiles.isDropTile and scoredItem checkpoint for the corresponding tiles
-        let checkpointRunTileIndexes = [];
+        let checkpointRunTileIndexes = [0]; // Start: first CP
         for (let i = 0; i < sheetData.tiles.tilesData.length; i++) {
           if (sheetData.tiles.tilesData[i].length === 1 && sheetData.tiles.tilesData[i][0].meta.id === "checkpoint" && sheetData.tiles.tilesData[i][0].checked) {
             for (let j = 0; j < run.map.tiles[i].index.length; j++) {
@@ -810,6 +810,7 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
           }
         }
 
+        run.LoPs = [];
         // Now check transfer the information if checkpoint was scored from LOP Input field
         for (let i = 0; i < checkpointRunTileIndexes.length && i < sheetData.checkpoints.length; i++) {
           if (sheetData.checkpoints[i].indexes[0] === 0) {
