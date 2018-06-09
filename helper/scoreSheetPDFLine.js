@@ -71,15 +71,15 @@ function calculateWorstCaseCheckpointAmount(map) {
 }
 
 function drawFields(doc, pos_x, pos_y, config, map, stiles) {
-  const mapLevelHeight = map.width * (config.fields.tileSize + config.fields.tileSpacing) + 2 - config.fields.tileSpacing;
-  const mapLevelWidth = map.length * (config.fields.tileSize + config.fields.tileSpacing) + 2 - config.fields.tileSpacing;
+  const mapLevelHeight = map.length * (config.fields.tileSize + config.fields.tileSpacing) + 2 - config.fields.tileSpacing;
+  const mapLevelWidth = map.width * (config.fields.tileSize + config.fields.tileSpacing) + 2 - config.fields.tileSpacing;
 
   const posData = {
     type: defs.InputTypeEnum.FIELD,
     x: pos_x + config.fields.positions[0].x,
     y: pos_y + config.fields.positions[0].y,
-    w: config.fields.positions[1].x + mapLevelWidth,
-    h: config.fields.positions[1].y + mapLevelHeight,
+    w: config.fields.positions[map.height === 1 ? 0 : 1].x + mapLevelWidth,
+    h: config.fields.positions[map.height === 1 ? 0 : 1].y + mapLevelHeight,
     children: []
   };
 
@@ -88,8 +88,8 @@ function drawFields(doc, pos_x, pos_y, config, map, stiles) {
       .rect(
         pos_x + config.fields.positions[z].x,
         pos_y + config.fields.positions[z].y,
-        mapLevelHeight,
-        mapLevelWidth
+        mapLevelWidth,
+        mapLevelHeight
       )
       .fillAndStroke("#EFEFEF", "black")
   }
