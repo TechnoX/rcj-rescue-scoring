@@ -200,7 +200,7 @@ module.exports.processPosMarkers = function (sheetMat, posMarkersPosData) {
   params.maxThreshold = 200;
 
   const detector = new cv.SimpleBlobDetector(params);
-  const allKeypoints = detector.detect(sheetMat.gaussianBlur(new cv.Size(5, 5), 0, 0, cv.BORDER_CONSTANT));
+  const allKeypoints = detector.detect(sheetMat.gaussianBlur(new cv.Size(11, 11), 0, 0, cv.BORDER_CONSTANT));
   const largestKeypoints = allKeypoints.sort((k1, k2) => k2.size - k1.size).slice(0, 3);
 
   const keyPointsSortX = largestKeypoints.slice(0).sort((k1, k2) => k2.point.x - k1.point.x);
