@@ -2,9 +2,11 @@ const cv = require('opencv4nodejs');
 const proc = require('./scoreSheetProcessUtil');
 
 module.exports.processScoreSheet = function (posData, scoreSheetFileName) {
-  const normalizedSheet = proc.processPosMarkers(cv.imread(scoreSheetFileName).bgrToGray(), proc.findPosdataByDescr(posData, 'posMarkers'));
+  const processedPosMarkers = proc.processPosMarkers(cv.imread(scoreSheetFileName).bgrToGray(), proc.findPosdataByDescr(posData, 'posMarkers'));
+  const normalizedSheet = processedPosMarkers.normalizedMat;
 
   let sheetData = {};
+  sheetData.rawSheet = processedPosMarkers.img;
   sheetData.qr = proc.processPosdataQR(normalizedSheet, proc.findPosdataByDescr(posData, 'meta'));
   sheetData.enterManually = proc.processPosdataMatrixText(normalizedSheet, proc.findPosdataByDescr(posData, 'enterManually'));
   sheetData.lops = proc.processPosdataMatrixText(normalizedSheet, proc.findPosdataByDescr(posData, 'lops'));

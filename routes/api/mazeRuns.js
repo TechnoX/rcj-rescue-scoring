@@ -627,6 +627,8 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
       } else {
         const sheetData = scoreSheetProcessMaze.processScoreSheet(run.scoreSheet.positionData, req.file.path);
 
+        run.scoreSheet.fullSheet = sheetData.rawSheet;
+
         run.LoPs = sheetData.lops.indexes[0] * 10 + sheetData.lops.indexes[1];
         run.scoreSheet.LoPImage = sheetData.lops.img;
 
@@ -755,6 +757,10 @@ publicRouter.get('/scoresheetimg/:run/:img', function (req, res, next) {
       });
     } else {
       switch (img_type.toString()) {
+        case "sheet":
+          checkAndSend(run.scoreSheet.fullSheet);
+          break;
+
         case "lop":
           checkAndSend(run.scoreSheet.LoPImage);
           break;

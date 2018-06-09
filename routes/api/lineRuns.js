@@ -562,6 +562,10 @@ publicRouter.get('/scoresheetimg/:run/:img', function (req, res, next) {
     } else {
       const img_type_split = img_type.toString().split("_");
       switch (img_type_split[0]) {
+        case "sheet":
+          checkAndSend(run.scoreSheet.fullSheet);
+          break;
+
         case "lop":
           if (img_type_split.length < 2) {
             res.status(400).send({
@@ -747,7 +751,9 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
       } else {
         const sheetData = scoreSheetLineProcess.processScoreSheet(run.scoreSheet.positionData, req.file.path);
 
-        run.tiles = []
+        run.scoreSheet.fullSheet = sheetData.rawSheet;
+
+        run.tiles = [];
         while (run.tiles.length < run.map.indexCount) {
             run.tiles.push({
                 scoredItems:[],

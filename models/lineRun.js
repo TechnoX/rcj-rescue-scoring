@@ -81,7 +81,8 @@ const lineRunSchema = new Schema({
     evacuationLevelImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
     evacuationBonusImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
     rescuedVictimsImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
-    timeImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}}
+    timeImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
+    fullSheet: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}}
   },
 })
 

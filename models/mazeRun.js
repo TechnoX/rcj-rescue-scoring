@@ -80,7 +80,8 @@ const mazeRunSchema = new Schema({
     LoPImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
     tileDataImage: { data: Buffer, contentType: String }, // Image representing the up to two arena levels
     exitBonusImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
-    timeImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}}
+    timeImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
+    fullSheet: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}}
   },
 })
 

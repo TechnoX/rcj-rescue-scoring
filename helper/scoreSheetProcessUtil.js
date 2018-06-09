@@ -206,7 +206,7 @@ module.exports.processPosMarkers = function (sheetMat, posMarkersPosData) {
   const keyPointsSortX = largestKeypoints.slice(0).sort((k1, k2) => k2.point.x - k1.point.x);
   const keyPointsSortY = largestKeypoints.slice(0).sort((k1, k2) => k2.point.y - k1.point.y);
 
-  return sheetMat.getRegion(
+  const normalizedMat = sheetMat.getRegion(
     new cv.Rect(
       keyPointsSortX[2].point.x,
       keyPointsSortY[2].point.y,
@@ -221,6 +221,14 @@ module.exports.processPosMarkers = function (sheetMat, posMarkersPosData) {
         ], cv.CV_32FC1
       ), new cv.Size(posMarkersPosData.w + posMarkersPosData.children[0].x, posMarkersPosData.h + posMarkersPosData.children[0].y)
     );
+
+  return {
+    normalizedMat: normalizedMat,
+    img: {
+      data: cv.imencode(".jpg", normalizedMat),
+      contentType: "image/jpg"
+    }
+  }
 };
 
 module.exports.processFieldData = function (sheetMat, posdata) {
