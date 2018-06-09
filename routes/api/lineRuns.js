@@ -757,17 +757,6 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
         run.evacuationLevel = sheetData.evacuation.indexes[0] + 1;
         run.scoreSheet.evacuationLevelImage = sheetData.evacuation.img;
 
-        for (let i = 0; i < sheetData.checkpoints.length && i < run.LoPs.length; i++) {
-          if (sheetData.checkpoints[i].indexes[0] === 0) {
-            // 0 means "N" = not reached was crossed
-            run.LoPs.set(i, 0);
-          } else {
-            run.LoPs.set(i, sheetData.checkpoints[i].indexes[0] - 1);
-          }
-
-          run.scoreSheet.LoPImages.set(i, sheetData.checkpoints[i].img)
-        }
-
         run.rescueOrder = [];
 
         let rescuedLiveVictims = 0;
@@ -786,18 +775,55 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
 
         run.exitBonus = sheetData.exitBonus.indexes[0] === 0;
 
+        // First step: extract the indexes in run.tiles which are marked as checkpoints in sheetData.tiles.tilesData,
+        // store the run tiles.isDropTile and scoredItem checkpoint for the corresponding tiles
+        let checkpointRunTileIndexes = [];
+        for (let i = 0; i < sheetData.tiles.tilesData.length; i++) {
+          if (sheetData.tiles.tilesData[i].length === 1 && sheetData.tiles.tilesData[i][0].meta.id === "checkpoint" && sheetData.tiles.tilesData[i][0].checked) {
+            for (let j = 0; j < run.map.tiles[i].index.length; j++) {
+              let runTileIndex = run.map.tiles[i].index[j];
+              checkpointRunTileIndexes.push(runTileIndex);
+              run.tiles[runTileIndex].isDropTile = true;
+              run.tiles[runTileIndex].scoredItems.push({item: "checkpoint", scored: false});
+            }
+          }
+        }
+        checkpointRunTileIndexes.sort(function(a, b){return a - b});
+
+        // Now copy all the scoring elements and the information if they were scored to
+        // run.tiles, except for checkpoints, since the checked means that the checkpoint
+        // marker was placed here, but not that it was scored
         for (let i = 0; i < sheetData.tiles.tilesData.length; i++) {
           for (let j = 0; j < sheetData.tiles.tilesData[i].length; j++) {
             let tileData = sheetData.tiles.tilesData[i][j];
             if (tileData.meta.id === "checkpoint") {
-              run.tiles[tileData.meta.tileIndex].isDropTile = tileData.checked;
+              // Ignore checkpoints for now
+              continue;
             }
-            // TODO: mark the corresponding checkpoint as not reached if "N" is ticked
             run.tiles[tileData.meta.tileIndex].scoredItems.push({item: tileData.meta.id, scored: tileData.checked});
           }
         }
+
+        // Now check transfer the information if checkpoint was scored from LOP Input field
+        for (let i = 0; i < checkpointRunTileIndexes.length && i < sheetData.checkpoints.length; i++) {
+          if (sheetData.checkpoints[i].indexes[0] === 0) {
+            // 0 means "N" = not reached was crossed
+            run.LoPs.push(0);
+            // is initially set to not scored
+          } else {
+            run.LoPs.push(sheetData.checkpoints[i].indexes[0] - 1);
+            for (let j = 0; j < run.tiles[checkpointRunTileIndexes[i]].scoredItems.length; j++) {
+              if (run.tiles[checkpointRunTileIndexes[i]].scoredItems[j].item === "checkpoint") {
+                run.tiles[checkpointRunTileIndexes[i]].scoredItems[j].scored = true;
+              }
+            }
+          }
+
+          run.scoreSheet.LoPImages.push(sheetData.checkpoints[i].img)
+        }
+
         run.scoreSheet.tileDataImage = sheetData.tiles.img;
-        run.showedUp =  run.tiles[0].scoredItems[0].scored;
+        run.showedUp = run.tiles[0].scoredItems[0].scored;
         run.score = scoreCalculator.calculateLineScore(run);
         run.started = true;
         run.status = 4;
