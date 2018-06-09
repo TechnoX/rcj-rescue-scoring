@@ -57,6 +57,22 @@ function drawLoPInputField(doc, config, pos_x, pos_y) {
   return pdf.drawNumberInputField(doc, config, pos_x, pos_y, "LOPs:", columnText, rowText)
 };
 
+function drawBlackTile(doc, pos_x, pos_y, size) {
+  for (let i = 0; i < size; i += 4) {
+    doc.moveTo(pos_x, pos_y + i).lineTo(pos_x + size - i, pos_y + size)
+    doc.moveTo(pos_x + i, pos_y).lineTo(pos_x + size, pos_y + size - i)
+  }
+}
+
+function drawSilverTile(doc, pos_x, pos_y, size) {
+  doc.rect(
+    pos_x,
+    pos_y,
+    size,
+    size
+  ).fillAndStroke("#dddddd", "black");
+}
+
 function drawFields(doc, pos_x, pos_y, config, map) {
   const mapLevelHeight = map.length * config.fields.tileSize;
   const mapLevelWidth = map.width * config.fields.tileSize;
@@ -112,21 +128,17 @@ function drawFields(doc, pos_x, pos_y, config, map) {
 
       if (cell.isTile) {
         if (cell.tile.checkpoint) {
-          doc.rect(
-            tile_pos_x + 2,
-            tile_pos_y + 2,
-            config.fields.tileSize - config.fields.wallTickness / 2 - 2,
-            config.fields.tileSize - config.fields.wallTickness / 2 - 2
-          ).fillAndStroke("#a8a8a8", "black");
+          drawSilverTile(doc, tile_pos_x + 2, tile_pos_y + 2, config.fields.tileSize - config.fields.wallTickness / 2 - 2);
+
+          if (map.startTile.x === cell.x && map.startTile.y === cell.y && map.startTile.z === cell.z) {
+            doc.image("public/images/start.png",
+              tile_pos_x + 5,
+              tile_pos_y + 5, {fit: [config.fields.tileSize, config.fields.tileSize]});
+          }
 
           pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "C", "checkpoint", "#0080FF", i);
         } else if (cell.tile.black) {
-          doc.rect(
-            tile_pos_x + 2,
-            tile_pos_y + 2,
-            config.fields.tileSize - config.fields.wallTickness / 2 - 2,
-            config.fields.tileSize - config.fields.wallTickness / 2 - 2
-          ).fillAndStroke("#272727", "black");
+          drawBlackTile(doc, tile_pos_x + 2, tile_pos_y + 2, config.fields.tileSize - config.fields.wallTickness / 2 - 2);
         }
 
         if (cell.tile.speedbump) {
@@ -199,8 +211,6 @@ function drawRun(doc, config, scoringRun) {
   savePos(pf, "field");
   pos_x += config.data.marginLeft;
   nextItem(pdf.drawMetadata(doc, pos_x, pos_y, config, scoringRun), "meta");
-  nextItem(pdf.drawYesNoField(doc, config, pos_x, pos_y, "Enter manually"), "enterManually");
-
 
   nextItem(drawLoPInputField(doc, config, pos_x, pos_y), "lops");
   nextItem(pdf.drawYesNoField(doc, config, pos_x, pos_y, "Exit Bonus"), "exitBonus");
