@@ -62,7 +62,7 @@ const lineRunSchema = new Schema({
     minutes: {type: Number, min: 0, max: 8, default: 0},
     seconds: {type: Number, min: 0, max: 59, default: 0},
   },
-  status            : {type: Number, min: -1, default: -1},
+  status            : {type: Number, min: -1, default: 0},
   retired           : {type: Boolean, default: false},
   sign              : {
     captain   : {type: String, default: ""},
