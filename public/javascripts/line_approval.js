@@ -226,7 +226,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 };
                 run.retired = $scope.retired;
                 run.status = 5;
-                $http.put("https://rcjscore.cf/api/runs/line/" + runId, run).then(function (response) {
+                $http.put("/api/runs/line/" + runId, run).then(function (response) {
                     var run = {}
                     run.status = 5;
                     $http.put("/api/runs/line/" + runId, run).then(function (response) {
