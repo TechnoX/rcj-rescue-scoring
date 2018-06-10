@@ -192,7 +192,7 @@ function drawFields(doc, pos_x, pos_y, config, map, stiles) {
               config.checkboxSize,
               "C",
               defs.DirsEnum.RIGHT,
-              "#0080FF"
+              "#e67e22"
             );
             posCheckbox.posData.meta = {
               id: "checkpoint",
@@ -289,6 +289,10 @@ function drawRun(doc, config, scoringRun) {
   }
 
   savePos(pdf.drawPositionMarkers(doc, config), "posMarkers");
+  //Draw competition name & logo
+  pdf.drawText(doc,50,20,scoringRun.competition.name + "  Scoring Sheet",20,"black");
+  pdf.drawImage(doc,460,5,"public/images/competition_logo.jpg",130,100,"right");
+
   let pf = drawFields(doc, pos_x, pos_y, config, scoringRun.map, stiles);
   savePos(pf, "field");
   pos_x += config.data.marginLeft;

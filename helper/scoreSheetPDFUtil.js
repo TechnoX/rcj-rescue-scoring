@@ -182,6 +182,16 @@ module.exports.drawTextInputField = function (doc, config, pos_x, pos_y, text, w
   return {x: pos_x, y: pos_y, posData: posData}
 };
 
+module.exports.drawText = function(doc, pos_x, pos_y, text, size, color) {
+  doc.fontSize(size)
+    .fillColor(color)
+    .text(text, pos_x, pos_y);
+};
+
+module.exports.drawImage = function(doc, pos_x, pos_y, uri, width, height, align){
+  doc.image(uri, pos_x, pos_y,{fit: [width, height],align: align});
+};
+
 module.exports.drawNumberInputField = function (doc, config, pos_x, pos_y, text, columnText, rowText) {
   const posText = this.drawTextInputField(doc, config, pos_x, pos_y, text, config.data.inputs.textFieldWidth, (rowText.length + 1) * config.checkboxSize);
   posText.x += 2;

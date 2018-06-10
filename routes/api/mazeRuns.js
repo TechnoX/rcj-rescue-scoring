@@ -550,6 +550,10 @@ publicRouter.get('/scoresheet', function (req, res, next) {
   query.select("competition round team field map startTime")
   query.populate([
     {
+      path  : "competition",
+      select: "name"
+    },
+    {
       path  : "round",
       select: "name"
     },
@@ -604,7 +608,7 @@ publicRouter.get('/scoresheet', function (req, res, next) {
 /**
  * Upload scoring sheet (single (jpg/png) or bunch (pdf)
  */
-publicRouter.post('/scoresheet/:competition', function (req, res) {
+adminRouter.post('/scoresheet/:competition', function (req, res) {
   const competition = req.params.competition;
 
   let pathname = "tmp/";
@@ -763,7 +767,7 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
 
 });
 
-publicRouter.get('/scoresheetimg/:run/:img', function (req, res, next) {
+privateRouter.get('/scoresheetimg/:run/:img', function (req, res, next) {
   function checkAndSend(image) {
     if (!image.contentType) {
       res.status(404).send({
