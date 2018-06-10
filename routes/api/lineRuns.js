@@ -834,8 +834,7 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
         run.LoPs = [];
         let notReached = false; // As soon as one of the checkpoints is marked as not reached all following checkpoints are considered not reached
         // Now check transfer the information if checkpoint was scored from LOP Input field
-        for (let i = 0; i < checkpointRunTileIndexes.length + 1 && i < sheetData.checkpoints.length + 1 ; i++) {
-          console.log(sheetData.checkpoints[i]);
+        for (let i = 0; i < checkpointRunTileIndexes.length + 1 && i < sheetData.checkpoints.length ; i++) {
           if (sheetData.checkpoints[i].indexes[0] === 0 || notReached) {
             // 0 means "N" = not reached was crossed
 
@@ -856,11 +855,14 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
             }
 
           }
-
-          run.scoreSheet.LoPImages.push(sheetData.checkpoints[i].img)
         }
 
-        console.log(notReached);
+        run.scoreSheet.LoPImages = [];
+        for(let i = 0; i < sheetData.checkpoints.length; i++){
+          run.scoreSheet.LoPImages.push(sheetData.checkpoints[i].img);
+        }
+
+
 
         // If the robot didn't reach a certain checkpoint don't look at victims and exit bonus
         if (!notReached) {
