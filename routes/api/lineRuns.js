@@ -774,9 +774,11 @@ publicRouter.post('/scoresheet/:competition', function (req, res) {
           if (sheetData.tiles.tilesData[i].length === 1 && sheetData.tiles.tilesData[i][0].meta.id === "checkpoint" && sheetData.tiles.tilesData[i][0].checked) {
             for (let j = 0; j < run.map.tiles[i].index.length; j++) {
               let runTileIndex = run.map.tiles[i].index[j];
-              checkpointRunTileIndexes.push(runTileIndex);
-              run.tiles[runTileIndex].isDropTile = true;
-              run.tiles[runTileIndex].scoredItems.push({item: "checkpoint", scored: false});
+              if(runTileIndex < run.map.indexCount - 2) {
+                  checkpointRunTileIndexes.push(runTileIndex);
+                  run.tiles[runTileIndex].isDropTile = true;
+                  run.tiles[runTileIndex].scoredItems.push({item: "checkpoint", scored: false});
+              }
             }
           }
         }
