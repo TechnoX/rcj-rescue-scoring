@@ -802,7 +802,7 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
 
         // First step: extract the indexes in run.tiles which are marked as checkpoints in sheetData.tiles.tilesData,
         // store the run tiles.isDropTile and scoredItem checkpoint for the corresponding tiles
-        let checkpointRunTileIndexes = [0]; // Start: first CP
+        let checkpointRunTileIndexes = []; // Start: first CP
         for (let i = 0; i < sheetData.tiles.tilesData.length; i++) {
           if (sheetData.tiles.tilesData[i].length === 1 && sheetData.tiles.tilesData[i][0].meta.id === "checkpoint" && sheetData.tiles.tilesData[i][0].checked) {
             for (let j = 0; j < run.map.tiles[i].index.length; j++) {
@@ -834,23 +834,33 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
         run.LoPs = [];
         let notReached = false; // As soon as one of the checkpoints is marked as not reached all following checkpoints are considered not reached
         // Now check transfer the information if checkpoint was scored from LOP Input field
-        for (let i = 0; i < checkpointRunTileIndexes.length && i < sheetData.checkpoints.length; i++) {
+        for (let i = 0; i < checkpointRunTileIndexes.length + 1 && i < sheetData.checkpoints.length + 1 ; i++) {
+          console.log(sheetData.checkpoints[i]);
           if (sheetData.checkpoints[i].indexes[0] === 0 || notReached) {
             // 0 means "N" = not reached was crossed
+
             run.LoPs.push(0);
             notReached = true;
             // is initially set to not scored
           } else {
-            run.LoPs.push(sheetData.checkpoints[i].indexes[0] - 1);
-            for (let j = 0; j < run.tiles[checkpointRunTileIndexes[i]].scoredItems.length; j++) {
-              if (run.tiles[checkpointRunTileIndexes[i]].scoredItems[j].item === "checkpoint") {
-                run.tiles[checkpointRunTileIndexes[i]].scoredItems[j].scored = true;
+            if(checkpointRunTileIndexes[i]){
+              run.LoPs.push(sheetData.checkpoints[i].indexes[0] - 1);
+              //console.log(checkpointRunTileIndexes);
+              for (let j = 0; j < run.tiles[checkpointRunTileIndexes[i]].scoredItems.length; j++) {
+                if (run.tiles[checkpointRunTileIndexes[i]].scoredItems[j].item === "checkpoint") {
+                  run.tiles[checkpointRunTileIndexes[i]].scoredItems[j].scored = true;
+                }
               }
+            }else{
+              run.LoPs.push(sheetData.checkpoints[i].indexes[0] - 1);
             }
+
           }
 
           run.scoreSheet.LoPImages.push(sheetData.checkpoints[i].img)
         }
+
+        console.log(notReached);
 
         // If the robot didn't reach a certain checkpoint don't look at victims and exit bonus
         if (!notReached) {
@@ -866,6 +876,9 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
             run.rescueOrder.push({type: victimType, effective: victimType === "L" || rescuedLiveVictims === run.map.victims.live});
           }
           run.exitBonus = sheetData.exitBonus.indexes[0] === 0;
+        }else{
+          run.rescueOrder = [];
+          run.exitBonus = 0;
         }
 
         run.scoreSheet.tileDataImage = sheetData.tiles.img;
