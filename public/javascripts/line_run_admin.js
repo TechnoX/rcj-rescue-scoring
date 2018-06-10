@@ -251,6 +251,10 @@ var app = angular.module(
             })
         }
 
+        $scope.go_scoreSheet = function (runid) {
+            window.location = "/api/runs/line/scoresheet?run=" + runid
+        }
+
         $scope.go_judge = function (runid) {
             swal({
                 title: "Go judge page?",

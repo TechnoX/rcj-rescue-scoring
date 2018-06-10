@@ -143,6 +143,7 @@ block content
               .dropdown
                   button#dropdownMenu.btn.btn-secondary.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') {{"common.action" | translate}}
                   .dropdown-menu(aria-labelledby='dropdownMenu')
+                    button.dropdown-item(type='button' ng-click="go_scoreSheet(run._id)") {{"common.generateSheet" | translate}}
                     button.dropdown-item(type='button' ng-click="go('/maze/view/' + run._id)") {{"common.view" | translate}}
                     button.dropdown-item(type='button' ng-click="go_judge(run._id)") {{"common.judge" | translate}}
                     button.dropdown-item(type='button' ng-click="go_sign(run._id)") {{"common.sign" | translate}}

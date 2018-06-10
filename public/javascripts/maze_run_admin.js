@@ -250,6 +250,12 @@ var app = angular.module("RunAdmin", ['ngTouch','ngAnimate', 'ui.bootstrap', 'ui
             })
         }
 
+
+
+        $scope.go_scoreSheet = function (runid) {
+            window.location = "/api/runs/maze/scoresheet?run=" + runid
+        }
+
         $scope.go_judge = function (runid) {
             swal({
                 title: "Go judge page?",
