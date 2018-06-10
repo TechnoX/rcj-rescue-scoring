@@ -501,17 +501,47 @@ privateRouter.put('/:runid', function (req, res, next) {
  * @apiError (400) {String} msg The error message
  */
 publicRouter.get('/scoresheet', function (req, res, next) {
-  const competition = req.query.competition || req.params.competition
-
-  if (competition == null || competition.constructor !== String) {
-    res.status(400).send({
-      msg: "Err competition"
-    })
+  function isInt(value) {
+    let x = parseFloat(value);
+    return !isNaN(value) && (x | 0) === x;
   }
 
-  var query = mazeRun.find({
-    competition: competition
-  })
+  const run = req.query.run || req.params.run;
+  const competition = req.query.competition || req.params.competition;
+  const field = req.query.field || req.params.field;
+  const startTime = req.query.startTime || req.params.startTime;
+  const endTime = req.query.endTime || req.params.endTime;
+
+  if (competition === null && run === null) {
+    return next();
+  }
+
+  let queryObj = {};
+  let sortObj = {};
+  if (ObjectId.isValid(competition)) {
+    queryObj.competition = ObjectId(competition);
+  }
+  if (ObjectId.isValid(field)) {
+    queryObj.field = ObjectId(field);
+  }
+  if (ObjectId.isValid(run)) {
+    queryObj._id = ObjectId(run);
+  }
+
+  sortObj.field = 1;
+  sortObj.startTime = 1; // sorting by field has the highest priority, followed by time
+
+  if (isInt(startTime) && isInt(endTime)) {
+    queryObj.startTime = {$gte: startTime, $lte: endTime}
+  } else {
+    if (isInt(startTime)) {
+      queryObj.startTime = {$gte: startTime}
+    } else if (isInt(endTime)) {
+      queryObj.startTime = {$lte: endTime}
+    }
+  }
+
+  var query = mazeRun.find(queryObj).sort(sortObj);
 
   query.select("competition round team field map startTime")
   query.populate([
