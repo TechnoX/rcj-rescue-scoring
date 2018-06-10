@@ -149,13 +149,18 @@
         </div>
     </div>
 
-    <h2>{{'line.sign.rescue' | translate}} / {{'line.sign.exitBonus' | translate}}</h2>
+    <h2>{{'line.sign.rescue' | translate}} 【{{evacuationLevel-1?'line.sign.high':'line.sign.low' | translate}}】 / {{'line.sign.exitBonus' | translate}}</h2>
     <div class="alert alert-info" style="margin-bottom:50px;text-align:center;" role="alert">
         <div class="row">
             <div class="col-md-5">
                 <!--<p style="height:30px;">{{'line.judge.rescue' | translate}}【{{evacuationLevel-1?'line.judge.high':'line.judge.low' | translate}}】</p>-->
+                <div style="font-size: 20px;text-align: left;">
+                    {{evacuationLevel-1?'line.sign.high':'line.sign.low' | translate}}:&nbsp;<img ng-src="/api/runs/line/scoresheetimg/{{runId}}/evacuationLevel"><br><br>
+                    <i class="fas fa-step-forward"> {{LoPs[actualUsedDropTiles]}}</i> {{'common.times' | translate}}:&nbsp;
+                    <img ng-src="/api/runs/line/scoresheetimg/{{runId}}/lop_{{actualUsedDropTiles}}"><br>
+                </div>
                 <div class="row">
-                    <div class="col-6" ng-click="addVictimTmp('L')">
+                    <div class="col-6">
                         <span>Max : {{maxLiveVictims}}</span>
                         <br>
                         <div class="victim_btn" style="width:100%;position: relative; background-color: #E1FFFE;">
@@ -166,7 +171,7 @@
                             <span class="badge badge-info" style="margin-top:10px;"><span style="font-size:25px;">{{calc_victim_points("L",true)}}</span>　points /victim</span>
                         </div>
                     </div>
-                    <div class="col-6" style="" ng-click="addVictimTmp('D')">
+                    <div class="col-6" style="">
                         <span>Max : {{maxLiveVictims}}</span>
                         <br>
                         <div class="victim_btn" style="width:100%;position: relative; background-color: #E1FFFE;">
@@ -177,8 +182,9 @@
                         </div>
                     </div>
                 </div>
+
             </div>
-            <div class="col-md-7">
+            <div class="col-md-6">
                 <table border="1" style="width:100%; text-align: center; margin-top: 10px;" ng-repeat="j in range(6)" ng-if="victim_list.length > j*5 || j == 0">
                     <tr>
                         <th style="text-align:center;background-color:#fff;" ng-repeat="i in range(5)">{{j*5 + i+1}}</th>
@@ -194,6 +200,9 @@
                     </tr>
                 </table>
             </div>
+            <div class="col-md-1">
+                <img ng-src="/api/runs/line/scoresheetimg/{{runId}}/victims">
+            </div>
             <div class="col-md-5"></div>
             <div class="col-md-1" style="margin-top:20px;">
                 <p style="height:30px;"></p>
@@ -202,6 +211,7 @@
             <div class="col-md-2" style="margin-top:20px;">
                 <p style="text-align:center;height:30px;">{{'line.sign.exitBonus' | translate}}</p>
                 <i class="fas fa-home fa-2x"> {{exitBonus}}</i><br><br>
+                <img ng-src="/api/runs/line/scoresheetimg/{{runId}}/evacuationBonus">
                 <h1>{{ 20 * exitBonus}} {{'common.point' | translate}}</h1>
             </div>
             <div class="col-md-1" style="margin-top:20px;">
@@ -265,6 +275,7 @@
                 <div class="d-sm-none">
                     <i class="fas fa-stopwatch fa-2x" aria-hidden="true"> : {{minutes}} {{'common.min' | translate}} {{seconds}} {{'common.sec' | translate}}</i>
                 </div>
+                <img ng-src="/api/runs/line/scoresheetimg/{{runId}}/time">
             </div>
         </div>
     </div>
