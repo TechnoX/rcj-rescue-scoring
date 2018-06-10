@@ -129,7 +129,7 @@ block content
             td(ng-bind='run.score' ng-style="{'background-color':run.status==5?'#bdafdb':''}")
             td(ng-bind="run.time.minutes*60*1000+run.time.seconds*1000 | date:'mm:ss'" ng-style="{'background-color':run.status==5?'#bdafdb':''}")
             td(ng-style="{'background-color':run.status==4?'#ffadad':''}")
-              span(ng-if="run.status==-1") チェックポイント未設定
+              span(ng-if="run.status==-1") Not yet set check points
               span(ng-if="run.status==0") {{"admin.lineRun.st0" | translate}}
               span(ng-if="run.status==1") {{"admin.lineRun.st1" | translate}}
               span(ng-if="run.status==2") {{"admin.lineRun.st2" | translate}}
@@ -151,7 +151,7 @@ block content
               .dropdown
                   button#dropdownMenu.btn.btn-secondary.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') {{"common.action" | translate}}
                   .dropdown-menu(aria-labelledby='dropdownMenu')
-                    button.dropdown-item(type='button' ng-click="set_kiosk(run._id)") Kioskにチェクポイント設定画面を表示
+                    //button.dropdown-item(type='button' ng-click="set_kiosk(run._id)") Kioskにチェクポイント設定画面を表示
                     button.dropdown-item(type='button' ng-click="go_scoreSheet(run._id)") {{"common.generateSheet" | translate}}
                     button.dropdown-item(type='button' ng-click="go('/line/view/' + run._id)") {{"common.view" | translate}}
                     button.dropdown-item(type='button' ng-click="go_judge(run._id)") {{"common.judge" | translate}}
