@@ -509,10 +509,11 @@ publicRouter.get('/scoresheet', function (req, res, next) {
   const run = req.query.run || req.params.run;
   const competition = req.query.competition || req.params.competition;
   const field = req.query.field || req.params.field;
+  const round = req.query.round || req.params.round;
   const startTime = req.query.startTime || req.params.startTime;
   const endTime = req.query.endTime || req.params.endTime;
 
-  if (competition === null && run === null) {
+  if (competition === null && run === null && round === null) {
     return next();
   }
 
@@ -523,6 +524,9 @@ publicRouter.get('/scoresheet', function (req, res, next) {
   }
   if (ObjectId.isValid(field)) {
     queryObj.field = ObjectId(field);
+  }
+  if (ObjectId.isValid(round)) {
+    queryObj.round = ObjectId(round);
   }
   if (ObjectId.isValid(run)) {
     queryObj._id = ObjectId(run);
