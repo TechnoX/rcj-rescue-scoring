@@ -516,6 +516,10 @@ adminRouter.get('/scoresheet', function (req, res, next) {
   query.select("competition round team field map startTime")
   query.populate([
     {
+      path  : "competition",
+      select: "name"
+    },
+    {
       path  : "round",
       select: "name"
     },
