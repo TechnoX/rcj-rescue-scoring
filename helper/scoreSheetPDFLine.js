@@ -290,7 +290,7 @@ function drawRun(doc, config, scoringRun) {
 
   savePos(pdf.drawPositionMarkers(doc, config), "posMarkers");
   //Draw competition name & logo
-  pdf.drawText(doc,50,20,scoringRun.competition.name + "  Scoring Sheet",20,"black");
+  pdf.drawText(doc,50,20,scoringRun.competition.name + "  Score Sheet",20,"black");
   pdf.drawImage(doc,460,5,"public/images/competition_logo.jpg",130,100,"right");
 
   let pf = drawFields(doc, pos_x, pos_y, config, scoringRun.map, stiles);
