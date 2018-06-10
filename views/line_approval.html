@@ -74,7 +74,7 @@
     <br>
     <div class="row">
         <div class="col-md-5 col-lg-4" style="margin-bottom:70px;">
-            <img ng-src="/api/runs/line/scoresheetimg/{{runId}}/tiles">
+            <img ng-src="/api/runs/line/scoresheetimg/{{runId}}/tiles" style="width: 100%">
         </div>
         <div class="col-md-7 col-lg-8 tilearea">
             <div style="text-align:left;float:left;">
@@ -133,7 +133,7 @@
                     <br>
                     <div ng-if="$index>0"><i class="fas fa-step-forward fa-2x"> {{LoPs[$index-1]}}</i> {{'common.times' | translate}}</div>
                     <i class="fas fa-2x" ng-if="$index==0"></i>
-                    <img ng-if="$index!=0" ng-src="/api/runs/line/scoresheetimg/{{runId}}/lop_{{$index-1}}">
+                    <img ng-if="$index!=0" ng-src="/api/runs/line/scoresheetimg/{{runId}}/lop_{{$index-1}}" style="width: 70%; max-width: 150px">
                 </div>
                 <h1>{{cp.point}} {{'common.point' | translate}}</h1>
             </div>
@@ -155,9 +155,9 @@
             <div class="col-md-5">
                 <!--<p style="height:30px;">{{'line.judge.rescue' | translate}}【{{evacuationLevel-1?'line.judge.high':'line.judge.low' | translate}}】</p>-->
                 <div style="font-size: 20px;text-align: left;">
-                    {{evacuationLevel-1?'line.sign.high':'line.sign.low' | translate}}:&nbsp;<img ng-src="/api/runs/line/scoresheetimg/{{runId}}/evacuationLevel"><br><br>
+                    {{evacuationLevel-1?'line.sign.high':'line.sign.low' | translate}}:&nbsp;<img ng-src="/api/runs/line/scoresheetimg/{{runId}}/evacuationLevel" style="width: 70%; max-width: 150px"><br><br>
                     <i class="fas fa-step-forward"> {{LoPs[actualUsedDropTiles]}}</i> {{'common.times' | translate}}:&nbsp;
-                    <img ng-src="/api/runs/line/scoresheetimg/{{runId}}/lop_{{actualUsedDropTiles}}"><br>
+                    <img ng-src="/api/runs/line/scoresheetimg/{{runId}}/lop_{{actualUsedDropTiles}}" style="width: 70%; max-width: 150px"><br>
                 </div>
                 <div class="row">
                     <div class="col-6">
@@ -201,7 +201,7 @@
                 </table>
             </div>
             <div class="col-md-1">
-                <img ng-src="/api/runs/line/scoresheetimg/{{runId}}/victims">
+                <img ng-src="/api/runs/line/scoresheetimg/{{runId}}/victims" style="width: 100%">
             </div>
             <div class="col-md-5"></div>
             <div class="col-md-1" style="margin-top:20px;">
@@ -211,7 +211,7 @@
             <div class="col-md-2" style="margin-top:20px;">
                 <p style="text-align:center;height:30px;">{{'line.sign.exitBonus' | translate}}</p>
                 <i class="fas fa-home fa-2x"> {{exitBonus}}</i><br><br>
-                <img ng-src="/api/runs/line/scoresheetimg/{{runId}}/evacuationBonus">
+                <img ng-src="/api/runs/line/scoresheetimg/{{runId}}/evacuationBonus" style="width: 100%">
                 <h1>{{ 20 * exitBonus}} {{'common.point' | translate}}</h1>
             </div>
             <div class="col-md-1" style="margin-top:20px;">
@@ -275,7 +275,7 @@
                 <div class="d-sm-none">
                     <i class="fas fa-stopwatch fa-2x" aria-hidden="true"> : {{minutes}} {{'common.min' | translate}} {{seconds}} {{'common.sec' | translate}}</i>
                 </div>
-                <img ng-src="/api/runs/line/scoresheetimg/{{runId}}/time">
+                <img ng-src="/api/runs/line/scoresheetimg/{{runId}}/time" style="width: 100%; max-width: 250px">
             </div>
         </div>
     </div>

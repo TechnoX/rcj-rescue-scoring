@@ -882,7 +882,6 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
           } else {
             if(checkpointRunTileIndexes[i]){
               run.LoPs.push(sheetData.checkpoints[i].indexes[0] - 1);
-              //console.log(checkpointRunTileIndexes);
               for (let j = 0; j < run.tiles[checkpointRunTileIndexes[i]].scoredItems.length; j++) {
                 if (run.tiles[checkpointRunTileIndexes[i]].scoredItems[j].item === "checkpoint") {
                   run.tiles[checkpointRunTileIndexes[i]].scoredItems[j].scored = true;
@@ -900,12 +899,10 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
           run.scoreSheet.LoPImages.push(sheetData.checkpoints[i].img);
         }
 
-
-
-        // If the robot didn't reach a certain checkpoint don't look at victims and exit bonus
+        run.rescueOrder = [];
+        run.exitBonus = 0;
         if (!notReached) {
-          run.rescueOrder = [];
-
+          // If the robot didn't reach a certain checkpoint don't look at victims and exit bonus
           let rescuedLiveVictims = 0;
           for (let i = 0; i < sheetData.victimOrder.indexes.length; i++) {
             let victimType = "D";
@@ -916,10 +913,9 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
             run.rescueOrder.push({type: victimType, effective: victimType === "L" || rescuedLiveVictims === run.map.victims.live});
           }
           run.exitBonus = sheetData.exitBonus.indexes[0] === 0;
-        }else{
-          run.rescueOrder = [];
-          run.exitBonus = 0;
         }
+        run.scoreSheet.evacuationBonusImage = sheetData.exitBonus.img;
+        run.scoreSheet.rescuedVictimsImage = sheetData.victimOrder.img;
 
         run.scoreSheet.tileDataImage = sheetData.tiles.img;
         run.showedUp = run.tiles[0].scoredItems[0].scored;
