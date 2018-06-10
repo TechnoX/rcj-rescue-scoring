@@ -89,7 +89,7 @@ module.exports.drawMetadata = function (doc, pos_x, pos_y, config, run) {
   doc.text("Team " + run.team.name, pos_x, pos_y);
   pos_y += config.data.metadata.text.fontSize + 1;
   let dateTime = new Date(run.startTime);
-  doc.text("Time: " + dateTime.getHours() + ":" + dateTime.getMinutes(), pos_x, pos_y);
+  doc.text("Time: " + ("0" + dateTime.getHours()).slice(-2) + ":" + ("0" + dateTime.getMinutes()).slice(-2), pos_x, pos_y);
   pos_y += config.data.metadata.text.fontSize + 1;
   return {x: pos_x, y: Math.max(pos_y, posData.y + posData.h), posData: posData}
 };
