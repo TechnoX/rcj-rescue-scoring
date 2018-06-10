@@ -53,7 +53,7 @@ const globalConfig = {
 
 function drawLoPInputField(doc, config, pos_x, pos_y) {
   const columnText = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-  const rowText = ["", ""];
+  const rowText = [" 1", "10"];
   return pdf.drawNumberInputField(doc, config, pos_x, pos_y, "LOPs:", columnText, rowText)
 };
 
