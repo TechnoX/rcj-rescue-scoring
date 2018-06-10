@@ -463,7 +463,7 @@ privateRouter.put('/:runid', function (req, res, next) {
  *
  * @apiError (400) {String} msg The error message
  */
-publicRouter.get('/scoresheet', function (req, res, next) {
+adminRouter.get('/scoresheet', function (req, res, next) {
   const competition = req.query.competition || req.params.competition
 
   if (competition == null || competition.constructor !== String) {
@@ -533,7 +533,7 @@ publicRouter.get('/scoresheet', function (req, res, next) {
   })
 })
 
-publicRouter.get('/scoresheetimg/:run/:img', function (req, res, next) {
+privateRouter.get('/scoresheetimg/:run/:img', function (req, res, next) {
   function checkAndSend(image) {
     if (!image.contentType) {
       res.status(404).send({
@@ -695,7 +695,7 @@ adminRouter.post('/', function (req, res) {
 /**
  * Upload scoring sheet (single (jpg/png) or bunch (pdf)
  */
-publicRouter.post('/scoresheet/:competition', function (req, res) {
+adminRouter.post('/scoresheet/:competition', function (req, res) {
   const competition = req.params.competition;
 
   let pathname = "tmp/";
