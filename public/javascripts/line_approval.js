@@ -503,10 +503,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             //console.log('window：' + window.innerHeight);
             if ($scope.sRotate % 180 == 0) {
                 var tilesize_w = ($('.tilearea').width() - 2 * width) / width;
-                var tilesize_h = (window.innerHeight - 110) / length;
+                var tilesize_h = (window.innerHeight - 230) / length;
             } else {
                 var tilesize_w = ($('.tilearea').width() - 2 * length) / length;
-                var tilesize_h = (window.innerHeight - 110) / width;
+                var tilesize_h = (window.innerHeight - 230) / width;
             }
 
             //console.log('tilesize_w:' + tilesize_w);
