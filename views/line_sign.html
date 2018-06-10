@@ -210,7 +210,7 @@
             <div class="col-md-5">
                 <!--<p style="height:30px;">{{'line.judge.rescue' | translate}}【{{evacuationLevel-1?'line.judge.high':'line.judge.low' | translate}}】</p>-->
                 <div class="row">
-                    <div class="col-6" ng-click="addVictimTmp('L')">
+                    <div class="col-6">
                         <span>Max : {{maxLiveVictims}}</span>
                         <br>
                         <div class="victim_btn" style="width:100%;position: relative; background-color: #E1FFFE;">
@@ -221,8 +221,8 @@
                             <span class="badge badge-info" style="margin-top:10px;"><span style="font-size:25px;">{{calc_victim_points("L",true)}}</span>　points /victim</span>
                         </div>
                     </div>
-                    <div class="col-6" style="" ng-click="addVictimTmp('D')">
-                        <span>Max : {{maxLiveVictims}}</span>
+                    <div class="col-6" style="">
+                        <span>Max : {{maxDeadVictims}}</span>
                         <br>
                         <div class="victim_btn" style="width:100%;position: relative; background-color: #E1FFFE;">
                             <img src="/images/deadVictim.png" class="img-thumbnail" width=60px>
