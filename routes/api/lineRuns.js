@@ -188,6 +188,55 @@ function getLatestLineRun(req, res) {
 }
 module.exports.getLatestLineRun = getLatestLineRun
 
+adminRouter.get('/nextApproval/:competitionid', function (req, res, next) {
+  var id = req.params.competitionid
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+  var query = lineRun.findOne({
+    competition: id,
+    status     : 4
+  })
+  query.exec(function (err, data) {
+    if (err) {
+      logger.error(err)
+      return res.status(400).send({
+        msg: "Could not get runs"
+      })
+    } else {
+        if(data){
+          data.status = 5;
+          data.save(function (err) {
+            if (err) {
+              logger.error(err)
+              return res.status(400).send({
+                err: err.message,
+                msg: "Could not save run"
+              })
+            } else {
+              if (socketIo !== undefined) {
+                socketIo.sockets.in('runs/line').emit('changed')
+                socketIo.sockets.in('competition/' +
+                  data.competition).emit('changed')
+                socketIo.sockets.in('runs/' + data._id).emit('data', data)
+                socketIo.sockets.in('fields/' +
+                  data.field).emit('data', {
+                  newRun: data._id
+                })
+              }
+              return res.status(200).send(data._id);
+            }
+
+          })
+        }else {
+          return res.status(400).send({
+            msg: "Could not get runs"
+          });
+        }
+    }
+  })
+})
+
 publicRouter.get('/find/:competitionid/:field/:status', function (req, res, next) {
   var id = req.params.competitionid
   var field_id = req.params.field

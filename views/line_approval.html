@@ -282,6 +282,14 @@
             </div>
         </div>
     </div>
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-6">
+            <button class="btn btn-danger" style="margin:0 10px 10px 0;" type="button" ng-click="go('/line/judge/' + runId + '?return=' + getParam('return'))"><i class="far fa-edit" aria-hidden="true"> {{'line.sign.to_judge' | translate}}</i></button>
+        </div>
+        <div class="col-6" style="text-align: right;">
+            <a class="btn btn-info" ng-href="/api/runs/line/scoresheetimg/{{runId}}/sheet" target="_blank"><i class="far fa-file-alt" aria-hidden="true" > Show full size score sheet</i></a>
+        </div>
+    </div>
     <div class="alert alert-success" style="margin:30 0 0 0;" role="alert">
         <div class="row">
             <div class="col-md-6">
@@ -341,7 +349,7 @@
         </div>
     </div>
     <div class="row" style="margin:100 0 100 0;">
-        <button type="button" class="btn btn-danger btn-lg btn-block" style="padding:30 0 30 0" ng-click="send_public()"><i class="fa fa-paper-plane fa-2x" aria-hidden="true" > Approval!</i></button>
+        <button type="button" class="btn btn-danger btn-lg btn-block" style="padding:30 0 30 0" ng-click="approval()"><i class="fa fa-paper-plane" aria-hidden="true" > Approval & Next</i></button>
     </div>
 </div>
 

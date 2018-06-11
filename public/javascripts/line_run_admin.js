@@ -271,18 +271,57 @@ var app = angular.module(
         }
 
         $scope.go_approval = function (runid) {
-            swal({
+            if(runid){
+              swal({
                 title: "Go approval page?",
                 text: "Are you sure you want to go approval page?",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonText: "GO!",
                 confirmButtonColor: "#ec6c62"
-            }).then((result) => {
+              }).then((result) => {
                 if (result.value) {
-                    $scope.go('/line/approval/' + runid + '/');
+                  $scope.go('/line/approval/' + runid + '/');
                 }
-            })
+              })
+            }else{
+              $http.get("/api/runs/line/nextApproval/" + $scope.competitionId).then(function (response) {
+                console.log(response);
+                $scope.go("/line/approval/"+response.data);
+              }, function () {
+                swal({
+                  text: "There are no runs that requires approval anymore.",
+                  type: 'info',
+                  showCancelButton: false,
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: 'OK'
+                }).then(() => {
+                })
+              });
+            }
+
+        }
+
+        $scope.approval = function () {
+          $http.put("/api/runs/line/" + runId, {status:6}).then(function (response) {
+            $http.get("/api/runs/line/nextApproval/" + $scope.competition_id).then(function (response) {
+              console.log(response);
+              $scope.go("/line/approval/"+response.data+"?return="+$scope.getParam('return'));
+            }, function (response) {
+              swal({
+                text: "There is no need for approval anymore.",
+                type: 'info',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+              }).then(() => {
+                $scope.go($scope.getParam('return'));
+              })
+            });
+          }, function (response) {
+            swal("Oops", "It could not be sent normally. Please call the system manager.(Local)", "error");
+            console.log("Error: " + response.statusText);
+          });
         }
         
         $scope.set_kiosk = function (runid){
