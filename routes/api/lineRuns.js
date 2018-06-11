@@ -917,8 +917,6 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
         run.scoreSheet.evacuationBonusImage = sheetData.exitBonus.img;
         run.scoreSheet.rescuedVictimsImage = sheetData.victimOrder.img;
 
-        run.scoreSheet.rescuedVictimsImage = sheetData.victimOrder.img;
-        run.scoreSheet.evacuationBonusImage = sheetData.exitBonus.img;
 
         run.scoreSheet.tileDataImage = sheetData.tiles.img;
         run.showedUp = run.tiles[0].scoredItems[0].scored;
