@@ -113,6 +113,7 @@
                 <!--<div class="card" ng-if="league != 'LineNL'" ng-show="!startedScoring || fromSign">-->
                     <h4 class="card-header"><i class="fas fa-ambulance" aria-hidden="true"></i> {{'line.judge.select_elevel' | translate}}</h4>
                     <div class="card-body">
+                        <img ng-src="/api/runs/line/scoresheetimg/{{runId}}/evacuationLevel" ng-if="fromApproval"><br>
                         <div class="row">
                             <div class="col-6" style="position: relative;" ng-click="changeLevel(1)">
 
@@ -172,6 +173,7 @@
                                     </span>
                                         </div>
                                     </div>
+                                    <img ng-src="/api/runs/line/scoresheetimg/{{runId}}/lop_{{$index}}" ng-if="fromApproval">
                                 </div>
                                 <hr ng-show="!$last" />
                             </div>
@@ -205,6 +207,7 @@
                             </div>
                             <hr>-->
                             <div class="row">
+
                                 <div class="col-6" ng-click="addVictimTmp('L')">
                                     <span>Max : {{maxLiveVictims}}</span>
                                     <br>
@@ -259,6 +262,7 @@
                                     </td>
                                 </tr>
                             </table>
+                            <img ng-src="/api/runs/line/scoresheetimg/{{runId}}/victims" ng-if="fromApproval">
                             <hr>
                         
                         </div>
@@ -273,6 +277,7 @@
                                 </div>
 
                             </div>
+                            <img ng-src="/api/runs/line/scoresheetimg/{{runId}}/evacuationBonus" ng-if="fromApproval">
                         </div>
 
                     </div>
@@ -320,6 +325,7 @@
                         </div>
                     </div>
                 </div>
+                <img ng-src="/api/runs/line/scoresheetimg/{{runId}}/tiles" ng-if="fromApproval">
             </div>
         </div>
 
@@ -351,7 +357,8 @@
                         </div>
                         <div class="col-sm-5">
                             <div style="text-align:right;">
-                                <button class="btn btn-danger" type="button" ng-click="confirm()" ng-disabled="startedTime" ng-hide="networkError"><i class="fas fa-arrow-right fa-2x" aria-hidden="true"> {{'line.judge.toSign'| translate}}</i></button>
+                                <button class="btn btn-danger" type="button" ng-click="confirm()" ng-disabled="startedTime" ng-hide="networkError || fromApproval"><i class="fas fa-arrow-right fa-2x" aria-hidden="true"> {{'line.judge.toSign'| translate}}</i></button>
+                                <button class="btn btn-danger" type="button" ng-click="backApproval()" ng-disabled="startedTime" ng-show="fromApproval && !networkError"><i class="fas fa-arrow-right fa-2x" aria-hidden="true"> Go back to Approval</i></button>
                                 <button class="btn btn-danger" type="button" ng-click="handover()" ng-disabled="startedTime" ng-show="networkError">Hand over to another device</button>
                             </div>
                         </div>
