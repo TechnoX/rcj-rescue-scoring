@@ -75,46 +75,10 @@
     </div>
     <br>
     <div class="row">
-        <div class="col-md-4 col-lg-3" style="margin-bottom:30px;">
-            <div id="card_area" class="scrool" style="overflow: scroll;">
-                <div class="card">
-                    <h3 class="card-header"><i class="fas fa-step-forward" aria-hidden="true"></i> {{'common.lops' | translate}}</h3>
-                    <div class="card-body">
-                        <p class="card-text">
-                            <b>{{'maze.view.total_lops' | translate}}</b><br>
-                            <div class="input-group" style="width:100%; height:35px;">
-                                <span class="input-group-btn">
-                                    <button type="button" class="btn btn-danger" disabled="disabled">
-                                        <i class="fas fa-minus" aria-hidden="true"></i>
-                                    </button>
-                                </span>
-                                <div style="background-color: #F2F2F2; width:100px; text-align: center;">
-                                  <span class="count">{{LoPs}}</span>
-                                </div>
-                                <span class="input-group-btn">
-                                    <button type="button" class="btn btn-success" disabled="disabled">
-                                        <i class="fas fa-plus" aria-hidden="true"></i>
-                                    </button>
-                                </span>
-                            </div>
-                        </p>
-                    </div>
-                    <h3 class="card-header"><i class="fa fa-home" aria-hidden="true"></i> {{'common.other' | translate}}</h3>
-                    <div class="card-body">
-                        <div class="col-md-12" style="position: relative;">
-                            <strong>{{'maze.judge.return' | translate}}</strong><br>
-                            <img src="/images/maze_bonus.png" class="img-thumbnail" width=100px height=100px ng-style="{'background-color': exitBonus?'#2ecc71':'#D91E18'}">
-                            <div style="position:absolute; top:30px; left:25px;">
-                                <i class="fas fa-check fa-fw fa-5x" ng-show="exitBonus && !exitBonusP" style="color:#27ae60; opacity:0.9;"></i>
-                                <i class="fas fa-times fa-fw fa-5x" ng-show="!exitBonus && !exitBonusP" style="padding-top:4px; color:#e74c3c; opacity:0.9;"></i>
-                          </div>
-                            
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="col-md-4" style="margin-bottom:30px;">
+
         </div>
-        <div class="col-md-8 col-lg-9 tilearea"  style="margin-top:0px;">
+        <div class="col-md-8 tilearea"  style="margin-top:0px;">
                 <div style="text-align:left;float:left;">
                     <div class="btn-group">
                       <span class="input-group-addon"><i class="fas fa-arrows-alt-v" aria-hidden="true"></i></span>
@@ -404,5 +368,8 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="row" style="margin:100 0 100 0;">
+        <button type="button" class="btn btn-danger btn-lg btn-block" style="padding:30 0 30 0" ng-click="approval()"><i class="fa fa-paper-plane" aria-hidden="true" > Approval & Next</i></button>
     </div>
 </div>
