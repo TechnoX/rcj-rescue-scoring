@@ -198,7 +198,57 @@ function getLatestMazeRun(req, res) {
         }
     })
 }
-module.exports.getLatestMazeRun = getLatestMazeRun
+module.exports.getLatestMazeRun = getLatestMazeRun;
+
+adminRouter.get('/nextApproval/:competitionid', function (req, res, next) {
+  var id = req.params.competitionid
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+  var query = mazeRun.findOne({
+    competition: id,
+    status     : 4
+  })
+  query.exec(function (err, data) {
+    if (err) {
+      logger.error(err)
+      return res.status(400).send({
+        msg: "Could not get runs"
+      })
+    } else {
+      if(data){
+        data.status = 5;
+        data.save(function (err) {
+          if (err) {
+            logger.error(err)
+            return res.status(400).send({
+              err: err.message,
+              msg: "Could not save run"
+            })
+          } else {
+            if (socketIo !== undefined) {
+              socketIo.sockets.in('runs/maze').emit('changed')
+              socketIo.sockets.in('competition/' +
+                data.competition).emit('changed')
+              socketIo.sockets.in('runs/' + data._id).emit('data', data)
+              socketIo.sockets.in('fields/' +
+                data.field).emit('data', {
+                newRun: data._id
+              })
+            }
+            return res.status(200).send(data._id);
+          }
+
+        })
+      }else {
+        return res.status(400).send({
+          msg: "Could not get runs"
+        });
+      }
+    }
+  })
+})
+
 
 publicRouter.get('/find/:competitionid/:field/:status', function (req, res, next) {
     var id = req.params.competitionid
@@ -764,7 +814,7 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
 
 privateRouter.get('/scoresheetimg/:run/:img', function (req, res, next) {
   function checkAndSend(image) {
-    if (!image.contentType) {
+    if (!image && !image.contentType) {
       res.status(404).send({
         msg: "image has not been registered yet",
       });
