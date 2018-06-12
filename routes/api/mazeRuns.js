@@ -501,11 +501,6 @@ privateRouter.put('/:runid', function (req, res, next) {
  * @apiError (400) {String} msg The error message
  */
 publicRouter.get('/scoresheet', function (req, res, next) {
-  function isInt(value) {
-    let x = parseFloat(value);
-    return !isNaN(value) && (x | 0) === x;
-  }
-
   const run = req.query.run || req.params.run;
   const competition = req.query.competition || req.params.competition;
   const field = req.query.field || req.params.field;
@@ -513,7 +508,7 @@ publicRouter.get('/scoresheet', function (req, res, next) {
   const startTime = req.query.startTime || req.params.startTime;
   const endTime = req.query.endTime || req.params.endTime;
 
-  if (competition === null && run === null && round === null) {
+  if (!competition && !run && !round) {
     return next();
   }
 
@@ -535,13 +530,13 @@ publicRouter.get('/scoresheet', function (req, res, next) {
   sortObj.field = 1;
   sortObj.startTime = 1; // sorting by field has the highest priority, followed by time
 
-  if (isInt(startTime) && isInt(endTime)) {
-    queryObj.startTime = {$gte: startTime, $lte: endTime}
+  if (startTime && endTime) {
+    queryObj.startTime = {$gte: parseInt(startTime), $lte: parseInt(endTime)}
   } else {
-    if (isInt(startTime)) {
-      queryObj.startTime = {$gte: startTime}
-    } else if (isInt(endTime)) {
-      queryObj.startTime = {$lte: endTime}
+    if (startTime) {
+      queryObj.startTime = {$gte: parseInt(startTime)}
+    } else if (endTime) {
+      queryObj.startTime = {$lte: parseInt(endTime)}
     }
   }
 

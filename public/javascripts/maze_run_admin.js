@@ -336,6 +336,40 @@ var app = angular.module("RunAdmin", ['ngTouch','ngAnimate', 'ui.bootstrap', 'ui
             $scope.startDate.setMilliseconds(0)
         }
 
+        var scoreSheetStart = new Date(Date.now())
+        scoreSheetStart.setHours(0);
+        scoreSheetStart.setMinutes(0)
+        scoreSheetStart.setSeconds(0)
+        scoreSheetStart.setMilliseconds(0)
+
+        $scope.scoreSheetStartDateTime = scoreSheetStart
+
+        $scope.scoreSheetStartDatePopup = {
+            opened: false
+        }
+        $scope.openScoreSheetStartDate = function () {
+            $scope.scoreSheetStartDatePopup.opened = true
+        }
+
+        var scoreSheetEnd = new Date(Date.now() + 1000 * 60 * 60 * 24)
+        scoreSheetEnd.setHours(0);
+        scoreSheetEnd.setMinutes(0)
+        scoreSheetEnd.setSeconds(0)
+        scoreSheetEnd.setMilliseconds(0)
+
+        $scope.scoreSheetEndDateTime = scoreSheetEnd
+
+        $scope.scoreSheetEndDatePopup = {
+            opened: false
+        }
+        $scope.openScoreSheetEndDate = function () {
+            $scope.scoreSheetEndDatePopup.opened = true
+        }
+
+        $scope.go_scoreSheetInTimeRange = function () {
+            window.open("/api/runs/maze/scoresheet?competition=" + $scope.competitionId + "&startTime=" + $scope.scoreSheetStartDateTime.getTime(), "_blank")
+        }
+
 }])
     .directive("runsReadFinished", function ($timeout) {
         return function (scope, element, attrs) {

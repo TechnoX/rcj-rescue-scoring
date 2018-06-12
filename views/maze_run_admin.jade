@@ -89,16 +89,39 @@ block content
               span#basic-addon1.input-group-addon
                 i.fas.fa-users(aria-hidden='true')
               input.form-control(type='text', placeholder='Team name', aria-label='Username', aria-describedby='basic-addon1' ng-model='teamName')
+
+      .row
+        .col-md-10
+          h3 Scoresheets
+      .row
+        .col-md-2
+          div
+            p.input-group
+              span.input-group-btn
+                button.btn.btn-info(type="button" ng-click="openScoreSheetStartDate()")
+                  i.fa.fa-calendar(aria-hidden='true')
+              input.form-control(type="text" uib-datepicker-popup ng-model="scoreSheetStartDateTime" is-open="scoreSheetStartDatePopup.opened" datepicker-options="startDateOptions" close-text="Close")
+            div(uib-timepicker ng-model="scoreSheetStartDateTime" hour-step="1" minute-step="5" show-meridian="false" show-spinners='true' style="border-bottom:0px;border-left:0px;")
+        .col-md-2
+          div
+            p.input-group
+              span.input-group-btn
+                button.btn.btn-info(type="button" ng-click="openScoreSheetEndDate()")
+                  i.fa.fa-calendar(aria-hidden='true')
+              input.form-control(type="text" uib-datepicker-popup ng-model="scoreSheetEndDateTime" is-open="scoreSheetEndDatePopup.opened" datepicker-options="startDateOptions" close-text="Close")
+            div(uib-timepicker ng-model="scoreSheetEndDateTime" hour-step="1" minute-step="5" show-meridian="false" show-spinners='true' style="border-bottom:0px;border-left:0px;")
+        .col-md-3
+          button(ng-click="go_scoreSheetInTimeRange()" class='btn btn-primary' target="_blank" style="margin: 5px 5px 5px 5px;") {{"common.generateSheet" | translate}}
+        .col-md-3
+          form(style="")
+          input(type='file', ngf-select='', ng-model='files', ngf-max-size='5MB', required='', ngf-accept="'image/*'", ngf-pattern="'image/*'",  ngf-multiple='true' capture="environment")
+          button.btn.btn-info(ng-click='uploadSheets(files)' style="margin: 5px 5px 5px 5px; text-align:right;") Upload scoring sheets
+          button.btn.btn-warning(ng-click='files = null', ng-show='files' style="margin: 5px 5px 5px 5px; text-align:right;") Cancel
+
       div
           button(ng-click="selectAll()" class='btn btn-primary' style="margin: 5px 5px 5px 5px;") {{"admin.mazeRun.selectAll" | translate}}
           button(ng-click="removeSelectedRun()" class='btn btn-danger' style="margin: 5px 5px 5px 5px;") {{"admin.mazeRun.delS" | translate}}
           button(ng-click="go('/admin/'+ competitionId +'/maze/runs/monitor')" class='btn btn-success' style="margin: 5px 5px 5px 5px; text-align:right;") {{"admin.mazeRun.monitor" | translate}}
-
-      div
-          form(style="")
-          input(type='file', ngf-select='', ng-model='files', required='', ngf-accept="'image/*'", ngf-pattern="'image/*'",  ngf-multiple='true' capture="environment")
-          button.btn.btn-info(ng-click='uploadSheets(files)' style="margin: 5px 5px 5px 5px; text-align:right;") Upload scoring sheets
-          button.btn.btn-warning(ng-click='files = null', ng-show='files' style="margin: 5px 5px 5px 5px; text-align:right;") Cancel
 
       center
         .loader

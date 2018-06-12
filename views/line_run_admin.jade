@@ -68,7 +68,7 @@ block content
             td
               button(ng-click='addRun()') {{"admin.lineRun.add" | translate}}
       a(ng-href='/admin/{{competitionId}}/line/runs/bulk') {{"admin.lineRun.bulk" | translate}}
-          
+
       .refine
         .card.border-dark.mb-3(style='width:100%;')
           .card-header.bg-transparent.border-dark.fa-2x
@@ -90,17 +90,41 @@ block content
                 i.fas.fa-users(aria-hidden='true')
               input.form-control(type='text', placeholder='Team name', aria-label='Username', aria-describedby='basic-addon1' ng-model='teamName')
               
-      div
-          button(ng-click="selectAll()" class='btn btn-primary' style="margin: 5px 5px 5px 5px;") {{"admin.lineRun.selectAll" | translate}}
-          button(ng-click="removeSelectedRun()" class='btn btn-danger' style="margin: 5px 5px 5px 5px;") {{"admin.lineRun.delS" | translate}}
-          button(ng-click="go('/admin/'+ competitionId +'/line/runs/monitor')" class='btn btn-success' style="margin: 5px 5px 5px 5px; text-align:right;") {{"admin.lineRun.monitor" | translate}}
-          //button(ng-click="reset_kiosk()" class='btn btn-secondary' style="margin: 5px 5px 5px 5px; text-align:right;") Reset Kiosk
-          button(ng-click="go_approval()" class='btn btn-secondary' style="margin: 5px 5px 5px 5px; text-align:right;") Approval
-      div
+      .row
+        .col-md-10
+          h3 Scoresheets
+      .row
+        .col-md-2
+          div
+            p.input-group
+              span.input-group-btn
+                button.btn.btn-info(type="button" ng-click="openScoreSheetStartDate()")
+                  i.fa.fa-calendar(aria-hidden='true')
+              input.form-control(type="text" uib-datepicker-popup ng-model="scoreSheetStartDateTime" is-open="scoreSheetStartDatePopup.opened" datepicker-options="startDateOptions" close-text="Close")
+            div(uib-timepicker ng-model="scoreSheetStartDateTime" hour-step="1" minute-step="5" show-meridian="false" show-spinners='true' style="border-bottom:0px;border-left:0px;")
+        .col-md-2
+          div
+            p.input-group
+              span.input-group-btn
+                button.btn.btn-info(type="button" ng-click="openScoreSheetEndDate()")
+                  i.fa.fa-calendar(aria-hidden='true')
+              input.form-control(type="text" uib-datepicker-popup ng-model="scoreSheetEndDateTime" is-open="scoreSheetEndDatePopup.opened" datepicker-options="startDateOptions" close-text="Close")
+            div(uib-timepicker ng-model="scoreSheetEndDateTime" hour-step="1" minute-step="5" show-meridian="false" show-spinners='true' style="border-bottom:0px;border-left:0px;")
+        .col-md-3
+          button(ng-click="go_scoreSheetInTimeRange()" class='btn btn-primary' target="_blank" style="margin: 5px 5px 5px 5px;") {{"common.generateSheet" | translate}}
+        .col-md-3
           form(style="")
           input(type='file', ngf-select='', ng-model='files', ngf-max-size='5MB', required='', ngf-accept="'image/*'", ngf-pattern="'image/*'",  ngf-multiple='true' capture="environment")
           button.btn.btn-info(ng-click='uploadSheets(files)' style="margin: 5px 5px 5px 5px; text-align:right;") Upload scoring sheets
           button.btn.btn-warning(ng-click='files = null', ng-show='files' style="margin: 5px 5px 5px 5px; text-align:right;") Cancel
+
+      div
+        button(ng-click="selectAll()" class='btn btn-primary' style="margin: 5px 5px 5px 5px;") {{"admin.lineRun.selectAll" | translate}}
+        button(ng-click="removeSelectedRun()" class='btn btn-danger' style="margin: 5px 5px 5px 5px;") {{"admin.lineRun.delS" | translate}}
+        button(ng-click="go('/admin/'+ competitionId +'/line/runs/monitor')" class='btn btn-success' style="margin: 5px 5px 5px 5px; text-align:right;") {{"admin.lineRun.monitor" | translate}}
+        //button(ng-click="reset_kiosk()" class='btn btn-secondary' style="margin: 5px 5px 5px 5px; text-align:right;") Reset Kiosk
+        button(ng-click="go_approval()" class='btn btn-secondary' style="margin: 5px 5px 5px 5px; text-align:right;") Approval
+
       center
         .loader
           img(src="/images/loader2.gif")
