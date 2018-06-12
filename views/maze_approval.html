@@ -74,6 +74,14 @@
         </div>
     </div>
     <br>
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-6">
+            <button class="btn btn-danger" style="margin:0 10px 10px 0;" type="button" ng-click="go('/maze/judge/' + runId + '?return=' + getParam('return'))"><i class="far fa-edit" aria-hidden="true"> {{'line.sign.to_judge' | translate}}</i></button>
+        </div>
+        <div class="col-6" style="text-align: right;">
+            <a class="btn btn-info" ng-href="/api/runs/maze/scoresheetimg/{{runId}}/sheet" target="_blank"><i class="far fa-file-alt" aria-hidden="true" > Show full size score sheet</i></a>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-4" style="margin-bottom:30px;">
 
@@ -242,6 +250,14 @@
             <h2 style="text-align:center;">{{score - foundVictims * 10 * exitBonus - reliability()}} {{'common.point' |translate}}</h2>
         </div>
     </div>
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-6">
+            <button class="btn btn-danger" style="margin:0 10px 10px 0;" type="button" ng-click="go('/maze/judge/' + runId + '?return=' + getParam('return'))"><i class="far fa-edit" aria-hidden="true"> {{'line.sign.to_judge' | translate}}</i></button>
+        </div>
+        <div class="col-6" style="text-align: right;">
+            <a class="btn btn-info" ng-href="/api/runs/maze/scoresheetimg/{{runId}}/sheet" target="_blank"><i class="far fa-file-alt" aria-hidden="true" > Show full size score sheet</i></a>
+        </div>
+    </div>
     <h2>{{'maze.sign.reliability' | translate}}</h2>
     <div class="alert alert-info" style="margin-bottom:30px;text-align:center;" role="alert">
         <div class="row">
@@ -311,7 +327,14 @@
         </div>
     </div>
 
-
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-6">
+            <button class="btn btn-danger" style="margin:0 10px 10px 0;" type="button" ng-click="go('/maze/judge/' + runId + '?return=' + getParam('return'))"><i class="far fa-edit" aria-hidden="true"> {{'line.sign.to_judge' | translate}}</i></button>
+        </div>
+        <div class="col-6" style="text-align: right;">
+            <a class="btn btn-info" ng-href="/api/runs/maze/scoresheetimg/{{runId}}/sheet" target="_blank"><i class="far fa-file-alt" aria-hidden="true" > Show full size score sheet</i></a>
+        </div>
+    </div>
     <div class="alert alert-success" style="margin:50 0 0 0;" role="alert">
         <div class="row">
             <div class="col-md-6">
