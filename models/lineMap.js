@@ -849,6 +849,36 @@ const tileTypes = [
       "left" : "right"
     },
     "_id"          : "58cfd6549792e9313b1610d8"
+  },
+  {
+    "image"        : "tile-72.png",
+    "gaps"         : 0,
+    "intersections": 0,
+    "paths"        : {
+      "bottom": "right",
+      "right" : "bottom"
+    },
+    "_id"          : "58cfd6549792e9313b1610d9"
+  },
+  {
+    "image"        : "tile-73.png",
+    "gaps"         : 0,
+    "intersections": 0,
+    "paths"        : {
+      "bottom": "right",
+      "right" : "bottom"
+    },
+    "_id"          : "58cfd6549792e9313b1610da"
+  },
+  {
+    "image"        : "tile-74.png",
+    "gaps"         : 0,
+    "intersections": 0,
+    "paths"        : {
+      "bottom": "top",
+      "top" : "bottom"
+    },
+    "_id"          : "58cfd6549792e9313b1610db"
   }
 ]
 
