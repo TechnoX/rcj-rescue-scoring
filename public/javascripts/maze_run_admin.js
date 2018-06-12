@@ -281,7 +281,7 @@ var app = angular.module("RunAdmin", ['ngTouch','ngAnimate', 'ui.bootstrap', 'ui
                 confirmButtonColor: "#ec6c62"
             }).then((result) => {
                 if (result.value) {
-                    $scope.go('/admin/approval/' + runid + '/');
+                    $scope.go('/maze/approval/' + runid + '/');
                 }
             })
         }
