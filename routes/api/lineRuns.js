@@ -961,6 +961,13 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
         run.scoreSheet.evacuationBonusImage = sheetData.exitBonus.img;
         run.scoreSheet.rescuedVictimsImage = sheetData.victimOrder.img;
 
+        if (sheetData.hasComment.indexes[0] === 0) { // Yes
+          run.comment = "Comments on sheet"
+        }
+
+        if (sheetData.acceptResult.indexes[0] === 1) { // No
+          run.acceptResult = false;
+        }
 
         run.scoreSheet.tileDataImage = sheetData.tiles.img;
         run.showedUp = run.tiles[0].scoredItems[0].scored;

@@ -64,6 +64,7 @@ const lineRunSchema = new Schema({
   },
   status            : {type: Number, min: -1, default: 0},
   retired           : {type: Boolean, default: false},
+  acceptResult : {type: Boolean, default: true},
   sign              : {
     captain   : {type: String, default: ""},
     referee   : {type: String, default: ""},
@@ -82,6 +83,8 @@ const lineRunSchema = new Schema({
     evacuationBonusImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
     rescuedVictimsImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
     timeImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
+    commentFieldImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
+    acceptResultImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
     fullSheet: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}}
   },
 })

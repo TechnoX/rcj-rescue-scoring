@@ -783,6 +783,14 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
         }
         run.scoreSheet.tileDataImage = sheetData.tiles.img;
 
+        if (sheetData.hasComment.indexes[0] === 0) { // Yes
+          run.comment = "Comments on sheet"
+        }
+
+        if (sheetData.acceptResult.indexes[0] === 1) { // No
+          run.acceptResult = false;
+        }
+        
         run.started = true;
         run.status = 4;
 

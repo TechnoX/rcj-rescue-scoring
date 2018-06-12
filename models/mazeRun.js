@@ -73,6 +73,7 @@ const mazeRunSchema = new Schema({
   },
   started  : {type: Boolean, default: false, index: true},
   comment  : {type: String, default: ""},
+  acceptResult : {type: Boolean, default: true},
   startTime: {type: Number, default: 0},
   scoreSheet: { // all data connected to the scoring sheet should it be used
     positionData: {type: Object, default: null},
@@ -81,6 +82,8 @@ const mazeRunSchema = new Schema({
     tileDataImage: { data: Buffer, contentType: String }, // Image representing the up to two arena levels
     exitBonusImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
     timeImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
+    commentFieldImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
+    acceptResultImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
     fullSheet: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}}
   },
 })
