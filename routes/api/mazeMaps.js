@@ -50,7 +50,7 @@ module.exports.getMazeMaps = getMazeMaps
 
 adminRouter.post('/', function (req, res) {
   const map = req.body
-  
+
   //logger.debug(map)
   
   const cells = []
@@ -185,13 +185,16 @@ const copyProperties = function (obj, dbObj) {
 
 adminRouter.put('/:map', function (req, res, next) {
   const id = req.params.map
-  
+
   if (!ObjectId.isValid(id)) {
     return next()
   }
   
   const map = req.body
-  
+  for (let i = 0; i < map.dice.length; i++) {
+    map.dice[i] = ObjectId(map.dice[i]);
+  }
+
   // Exclude fields that are not allowed to be publicly changed
   delete map._id
   delete map.__v
