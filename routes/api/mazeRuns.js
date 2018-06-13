@@ -5,6 +5,7 @@ const publicRouter = express.Router()
 const privateRouter = express.Router()
 const adminRouter = express.Router()
 const mazeRun = require('../../models/mazeRun').mazeRun
+const mazeMap = require('../../models/mazeMap').mazeMap
 const validator = require('validator')
 const async = require('async')
 const ObjectId = require('mongoose').Types.ObjectId
@@ -592,7 +593,7 @@ publicRouter.get('/scoresheet', function (req, res, next) {
 
   var query = mazeRun.find(queryObj).sort(sortObj);
 
-  query.select("competition round team field map startTime")
+  query.select("competition round team field map startTime tiles")
   query.populate([
     {
       path  : "competition",
@@ -612,7 +613,10 @@ publicRouter.get('/scoresheet', function (req, res, next) {
     },
     {
       path  : "map",
-      select: "name height width length startTile cells"
+      select: "name height width length startTile cells dice",
+      populate: {
+          path: "dice"
+      }
     }
   ])
 
@@ -623,6 +627,12 @@ publicRouter.get('/scoresheet', function (req, res, next) {
         msg: "Could not get runs"
       })
     } else if (dbRuns) {
+      for (let i = 0; i < dbRuns.length; i++) {
+        if (dbRuns[i].tiles.length === 0) {
+          let randomMapIndex = Math.floor(Math.random() * dbRuns[i].map.dice.length);
+          dbRuns[i].map = dbRuns[i].map.dice[randomMapIndex];
+        }
+      }
       let posData = scoreSheetPDF.generateScoreSheet(res, dbRuns);
       for (let i = 0; i < dbRuns.length; i++) {
         mazeRun.findById(dbRuns[i]._id, (err, run) => {
