@@ -59,8 +59,8 @@ function drawLoPInputField(doc, config, pos_x, pos_y) {
 
 function drawBlackTile(doc, pos_x, pos_y, size) {
   for (let i = 0; i < size; i += 4) {
-    doc.moveTo(pos_x, pos_y + i).lineTo(pos_x + size - i, pos_y + size)
-    doc.moveTo(pos_x + i, pos_y).lineTo(pos_x + size, pos_y + size - i)
+    doc.moveTo(pos_x, pos_y + i).lineTo(pos_x + size - i, pos_y + size).stroke("black")
+    doc.moveTo(pos_x + i, pos_y).lineTo(pos_x + size, pos_y + size - i).stroke("black")
   }
 }
 
