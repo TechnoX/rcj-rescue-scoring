@@ -5,6 +5,11 @@ module.exports.processScoreSheet = function (posData, scoreSheetFileName) {
   const processedPosMarkers = proc.processPosMarkers(cv.imread(scoreSheetFileName).bgrToGray(), proc.findPosdataByDescr(posData, 'posMarkers'));
   const normalizedSheet = processedPosMarkers.normalizedMat;
 
+  /*proc.drawPosdataToSheet(normalizedSheet, proc.findPosdataByDescr(posData, 'field'), 4);
+  proc.drawPosdataToSheet(normalizedSheet, proc.findPosdataByDescr(posData, 'time'), 4);
+  proc.drawPosdataToSheet(normalizedSheet, proc.findPosdataByDescr(posData, 'lops'), 4);
+  proc.drawPosdataToSheet(normalizedSheet, proc.findPosdataByDescr(posData, 'exitBonus'), 4);*/
+
   let sheetData = {};
   sheetData.rawSheet = processedPosMarkers.img;
   sheetData.qr = proc.processPosdataQR(normalizedSheet, proc.findPosdataByDescr(posData, 'meta'));

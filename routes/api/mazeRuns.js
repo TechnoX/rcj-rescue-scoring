@@ -727,6 +727,9 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
 
         run.time.minutes = sheetData.time.indexes[0];
         run.time.seconds = sheetData.time.indexes[1] * 10 + sheetData.time.indexes[2];
+        if (run.time.seconds >= 60) {
+            run.time.seconds = 59;
+        }
         run.scoreSheet.timeImage = sheetData.time.img;
 
         run.exitBonus = sheetData.exitBonus.indexes[0] === 0;
@@ -800,7 +803,7 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
         if (sheetData.acceptResult.indexes[0] === 1) { // No
           run.acceptResult = false;
         }
-        
+
         run.started = true;
         run.status = 4;
 

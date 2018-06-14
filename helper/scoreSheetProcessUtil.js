@@ -33,8 +33,8 @@ module.exports.processPosdataCheckbox = function (mat, posdata) {
 
   let cumulative = 0;
   let cnt = 0;
-  for (let y = 0; y < posdata.h; y++) {
-    for (let x = 0; x < posdata.w; x++) {
+  for (let y = posdata.h / 3; y < (posdata.h / 3) * 2; y++) {
+    for (let x = posdata.w / 3; x < (posdata.w / 3) * 2; x++) {
       // Have different factors - if the checkbox is black in the middle it counts more than on the
       // border. The distribution looks basically like this:
       // 1 2 1 depending on the size of the box it adapts
@@ -201,30 +201,31 @@ module.exports.processPosMarkers = function (sheetMat, posMarkersPosData) {
   params.maxThreshold = 200;
 
   const detector = new cv.SimpleBlobDetector(params);
-  const allKeypoints = detector.detect(sheetMat.gaussianBlur(new cv.Size(11, 11), 0, 0, cv.BORDER_CONSTANT));
-  const largestKeypoints = allKeypoints.sort((k1, k2) => k2.size - k1.size).slice(0, 3);
+  const allKeypoints = detector.detect(sheetMat.gaussianBlur(new cv.Size(9, 9), 0, 0, cv.BORDER_CONSTANT));
+  const largestKeypoints = allKeypoints.sort((k1, k2) => k2.size - k1.size).slice(0, 4);
 
-  const keyPointsSortX = largestKeypoints.slice(0).sort((k1, k2) => k2.point.x - k1.point.x);
   const keyPointsSortY = largestKeypoints.slice(0).sort((k1, k2) => k2.point.y - k1.point.y);
+  const keyPointsSortXR = keyPointsSortY.slice(0, 2).sort((k1, k2) => k2.point.x - k1.point.x);
+  const keyPointsSortXL = keyPointsSortY.slice(2, 4).sort((k1, k2) => k2.point.x - k1.point.x);
 
-  const normalizedMat = sheetMat.getRegion(
-    new cv.Rect(
-      keyPointsSortX[2].point.x,
-      keyPointsSortY[2].point.y,
-      keyPointsSortX[0].point.x - keyPointsSortX[2].point.x,
-      keyPointsSortY[0].point.y - keyPointsSortY[2].point.y
-    )
-  ).resizeToMax(posMarkersPosData.h)
-    .warpAffine(
-      new cv.Mat([
-          [1, 0, posMarkersPosData.children[0].x + posMarkersPosData.children[0].w / 2],
-          [0, 1, posMarkersPosData.children[0].y + posMarkersPosData.children[0].h / 2]
-        ], cv.CV_32FC1
-      ), new cv.Size(posMarkersPosData.w + posMarkersPosData.children[0].x, posMarkersPosData.h + posMarkersPosData.children[0].y)
-    );
+  const sourcePoints = [
+    keyPointsSortXL[1].point, // Upper left
+    keyPointsSortXR[1].point, // Lower left
+    keyPointsSortXR[0].point, // Lower right
+    keyPointsSortXL[0].point // Upper right
+  ];
+  const destinationPoints = [
+    new cv.Point2(posMarkersPosData.children[0].x + posMarkersPosData.children[0].w / 2, posMarkersPosData.children[0].y + posMarkersPosData.children[0].h / 2), // Upper left
+    new cv.Point2(posMarkersPosData.children[0].x + posMarkersPosData.children[0].w / 2, posMarkersPosData.children[0].y + posMarkersPosData.h + posMarkersPosData.children[0].h / 2), // Lower left
+    new cv.Point2(posMarkersPosData.children[0].x + posMarkersPosData.w + posMarkersPosData.children[0].w / 2, posMarkersPosData.children[0].y + posMarkersPosData.h + posMarkersPosData.children[0].h / 2), // Lower right
+    new cv.Point2(posMarkersPosData.children[0].x + posMarkersPosData.w + posMarkersPosData.children[0].w / 2, posMarkersPosData.children[0].y + posMarkersPosData.children[0].h / 2) // Upper right
+  ];
+
+  const m = cv.getPerspectiveTransform(sourcePoints, destinationPoints);
+  const normalizedMat = sheetMat.warpPerspective(m, new cv.Size(posMarkersPosData.w + posMarkersPosData.children[0].x, posMarkersPosData.h + posMarkersPosData.children[0].y))
 
   return {
-    normalizedMat: normalizedMat,
+    normalizedMat: normalizedMat,//.adaptiveThreshold(255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, 11, 15),
     img: {
       data: cv.imencode(".jpg", normalizedMat),
       contentType: "image/jpg"
@@ -242,13 +243,12 @@ module.exports.processFieldData = function (sheetMat, posdata) {
   }
 
   let procTiles = [];
-  let max = Math.max.apply(Math, tiles.map(el => Math.max.apply(Math, el.children.map(t => t.cbVal))));
   for (let i = 0; i < tiles.length; i++) {
     procTiles.push([]);
     for (let j = 0; j < tiles[i].children.length; j++) {
       procTiles[i].push([]);
       procTiles[i][j].meta = tiles[i].children[j].meta;
-      procTiles[i][j].checked = tiles[i].children[j].cbVal > (max / 3);
+      procTiles[i][j].checked = tiles[i].children[j].cbVal > 100;
     }
   }
 
