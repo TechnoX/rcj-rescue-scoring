@@ -8,6 +8,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.countWords = ["Bottom", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Ninth"];
 
+    $scope.runId = runId;
 
     $scope.cells = {};
     $scope.tiles = {};
