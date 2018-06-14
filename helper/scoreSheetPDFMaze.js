@@ -12,6 +12,7 @@ const globalConfig = {
     {x: 10, y: 20}, // upper left
     {x: 10, y: 760}, // lower left
     {x: 570, y: 760}, // lower right
+    {x: 580, y: 20}, // upper right
   ],
   margin: {
     left: 30,
