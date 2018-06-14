@@ -62,16 +62,16 @@ function drawBlackTile(doc, pos_x, pos_y, size) {
   for (let i = 0; i < size; i += 4) {
     doc.moveTo(pos_x, pos_y + i).lineTo(pos_x + size - i, pos_y + size).stroke("black")
     doc.moveTo(pos_x + i, pos_y).lineTo(pos_x + size, pos_y + size - i).stroke("black")
+    doc.moveTo(pos_x, pos_y + i).lineTo(pos_x + i, pos_y).stroke("black")
+    doc.moveTo(pos_x + i, pos_y + size).lineTo(pos_x + size, pos_y + i).stroke("black")
   }
 }
 
 function drawSilverTile(doc, pos_x, pos_y, size) {
-  doc.rect(
-    pos_x,
-    pos_y,
-    size,
-    size
-  ).fillAndStroke("#dddddd", "black");
+  for (let i = 0; i < size; i += 5) {
+    doc.moveTo(pos_x, pos_y + i).lineTo(pos_x + size - i, pos_y + size).stroke("black")
+    doc.moveTo(pos_x + i, pos_y).lineTo(pos_x + size, pos_y + size - i).stroke("black")
+  }
 }
 
 function drawFields(doc, pos_x, pos_y, config, map) {
