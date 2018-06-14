@@ -694,14 +694,14 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
     if (err) {
       return res.status(400).send({
         msg: "Error uploading file",
-        err: err.message
+        //err: err.message
       })
     }
     let sheetRunID = scoreSheetProcessUtil.processPosdataQRFull(req.file.path);
     if (sheetRunID == null) {
       return res.status(400).send({
         msg: "Error processing file",
-        err: err.message
+        //err: err.message
       })
     }
 
@@ -715,7 +715,7 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
         logger.error(err)
         res.status(400).send({
           msg: "Could not get run",
-          err: err.message
+          //err: err.message
         })
       } else {
         const sheetData = scoreSheetProcessMaze.processScoreSheet(run.scoreSheet.positionData, req.file.path);
