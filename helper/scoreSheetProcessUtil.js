@@ -7,6 +7,10 @@ module.exports.drawPosdataToSheet = function (sheetMat, posData, maxLevel) {
     return;
   }
 
+  if (typeof posData.posData !== 'undefined') {
+    posData = posData.posData;
+  }
+
   sheetMat.drawRectangle(new cv.Rect(posData.x, posData.y, posData.w, posData.h), new cv.Vec3(0, 255, 0), 1, 8, 0);
 
   for (let i = 0; i < posData.children.length; i++) {
@@ -201,7 +205,7 @@ module.exports.processPosMarkers = function (sheetMat, posMarkersPosData) {
   params.maxThreshold = 200;
 
   const detector = new cv.SimpleBlobDetector(params);
-  const allKeypoints = detector.detect(sheetMat.gaussianBlur(new cv.Size(9, 9), 0, 0, cv.BORDER_CONSTANT));
+  const allKeypoints = detector.detect(sheetMat.gaussianBlur(new cv.Size(11, 11), 0, 0, cv.BORDER_CONSTANT));
   const largestKeypoints = allKeypoints.sort((k1, k2) => k2.size - k1.size).slice(0, 4);
 
   const keyPointsSortY = largestKeypoints.slice(0).sort((k1, k2) => k2.point.y - k1.point.y);
@@ -214,15 +218,31 @@ module.exports.processPosMarkers = function (sheetMat, posMarkersPosData) {
     keyPointsSortXR[0].point, // Lower right
     keyPointsSortXL[0].point // Upper right
   ];
+  const offset_x = posMarkersPosData.children[0].w / 2;
+  const offset_y = posMarkersPosData.children[0].h / 2;
   const destinationPoints = [
-    new cv.Point2(posMarkersPosData.children[0].x + posMarkersPosData.children[0].w / 2, posMarkersPosData.children[0].y + posMarkersPosData.children[0].h / 2), // Upper left
-    new cv.Point2(posMarkersPosData.children[0].x + posMarkersPosData.children[0].w / 2, posMarkersPosData.children[0].y + posMarkersPosData.h + posMarkersPosData.children[0].h / 2), // Lower left
-    new cv.Point2(posMarkersPosData.children[0].x + posMarkersPosData.w + posMarkersPosData.children[0].w / 2, posMarkersPosData.children[0].y + posMarkersPosData.h + posMarkersPosData.children[0].h / 2), // Lower right
-    new cv.Point2(posMarkersPosData.children[0].x + posMarkersPosData.w + posMarkersPosData.children[0].w / 2, posMarkersPosData.children[0].y + posMarkersPosData.children[0].h / 2) // Upper right
+    new cv.Point2( // Upper left
+      posMarkersPosData.children[0].x + offset_x,
+      posMarkersPosData.children[0].y + offset_y
+    ), new cv.Point2( // Lower left
+      posMarkersPosData.children[0].x + offset_x,
+      posMarkersPosData.children[0].y + posMarkersPosData.h + offset_y
+    ), new cv.Point2( // Lower right
+      posMarkersPosData.children[0].x + posMarkersPosData.w + offset_x,
+      posMarkersPosData.children[0].y + posMarkersPosData.h + offset_y
+    ), new cv.Point2( // Upper right
+      posMarkersPosData.children[0].x + posMarkersPosData.w + offset_x,
+      posMarkersPosData.children[0].y + offset_y
+    )
   ];
 
-  const m = cv.getPerspectiveTransform(sourcePoints, destinationPoints);
-  const normalizedMat = sheetMat.warpPerspective(m, new cv.Size(posMarkersPosData.w + posMarkersPosData.children[0].x, posMarkersPosData.h + posMarkersPosData.children[0].y))
+  const normalizedMat = sheetMat.warpPerspective(
+    cv.getPerspectiveTransform(sourcePoints, destinationPoints),
+    new cv.Size(
+      posMarkersPosData.w + posMarkersPosData.children[0].x,
+      posMarkersPosData.h + posMarkersPosData.children[0].y
+    )
+  );
 
   return {
     normalizedMat: normalizedMat,//.adaptiveThreshold(255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, 11, 15),
@@ -270,4 +290,19 @@ module.exports.findPosdataByDescr = function (data, descriptor) {
     return null;
   }
   return dat.posData;
+};
+
+module.exports.scalePosData = function(posData, fac) {
+  if (typeof posData.posData !== 'undefined') {
+    posData = posData.posData;
+  }
+
+  posData.w *= fac;
+  posData.h *= fac;
+  posData.x *= fac;
+  posData.y *= fac;
+
+  for (let i = 0; i < posData.children.length; i++) {
+    this.scalePosData(posData.children[i], fac)
+  }
 };
