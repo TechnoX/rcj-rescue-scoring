@@ -1,14 +1,17 @@
 const cv = require('opencv4nodejs');
 const proc = require('./scoreSheetProcessUtil');
 
-module.exports.processScoreSheet = function (posData, scoreSheetFileName) {
+module.exports.processScoreSheet = function (posDataRaw, scoreSheetFileName) {
+  const posData = JSON.parse(JSON.stringify(posDataRaw)); // Deep copy
+  for (let i = 0; i < posData.length; i++) {
+    // The input posData has a small resolution of less than 10px per checkbox, while the
+    // input image has a much higher resolution that would be good to use. So we scale the
+    // posData elements.
+    proc.scalePosData(posData[i].posData, 2);
+  }
+
   const processedPosMarkers = proc.processPosMarkers(cv.imread(scoreSheetFileName).bgrToGray(), proc.findPosdataByDescr(posData, 'posMarkers'));
   const normalizedSheet = processedPosMarkers.normalizedMat;
-
-  /*proc.drawPosdataToSheet(normalizedSheet, proc.findPosdataByDescr(posData, 'field'), 4);
-  proc.drawPosdataToSheet(normalizedSheet, proc.findPosdataByDescr(posData, 'time'), 4);
-  proc.drawPosdataToSheet(normalizedSheet, proc.findPosdataByDescr(posData, 'lops'), 4);
-  proc.drawPosdataToSheet(normalizedSheet, proc.findPosdataByDescr(posData, 'exitBonus'), 4);*/
 
   let sheetData = {};
   sheetData.rawSheet = processedPosMarkers.img;
