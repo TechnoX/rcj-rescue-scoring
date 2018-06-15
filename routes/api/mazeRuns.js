@@ -551,7 +551,7 @@ privateRouter.put('/:runid', function (req, res, next) {
  *
  * @apiError (400) {String} msg The error message
  */
-publicRouter.get('/scoresheet', function (req, res, next) {
+adminRouter.get('/scoresheet', function (req, res, next) {
   const run = req.query.run || req.params.run;
   const competition = req.query.competition || req.params.competition;
   const field = req.query.field || req.params.field;
