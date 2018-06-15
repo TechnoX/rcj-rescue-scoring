@@ -879,7 +879,15 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
         run.scoreSheet.evacuationLevelImage = sheetData.evacuation.img;
 
         run.time.minutes = sheetData.time.indexes[0];
+        if (run.time.minutes > 8) {
+          run.time.minutes = 8;
+          run.scoreSheet.specialAttention = true;
+        }
         run.time.seconds = sheetData.time.indexes[1] * 10 + sheetData.time.indexes[2];
+        if (run.time.seconds > 59) {
+          run.time.seconds = 59;
+          run.scoreSheet.specialAttention = true;
+        }
         run.scoreSheet.timeImage = sheetData.time.img;
 
         // First step: extract the indexes in run.tiles which are marked as checkpoints in sheetData.tiles.tilesData,
@@ -961,13 +969,9 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
         run.scoreSheet.evacuationBonusImage = sheetData.exitBonus.img;
         run.scoreSheet.rescuedVictimsImage = sheetData.victimOrder.img;
 
-        if (sheetData.hasComment.indexes[0] === 0) { // Yes
-          run.comment = "Comments on sheet"
-        }
-
-        if (sheetData.acceptResult.indexes[0] === 1) { // No
-          run.acceptResult = false;
-        }
+        run.comment = sheetData.hasComment.indexes[0] === 0 ? "Comments on sheet" : "";
+        run.acceptResult = sheetData.acceptResult.indexes[0] === 1; // 0: No, 1: Yes
+        run.scoreSheet.specialAttention |= sheetData.enterManually.indexes[0] === 1;
 
         run.scoreSheet.tileDataImage = sheetData.tiles.img;
         run.showedUp = run.tiles[0].scoredItems[0].scored;

@@ -721,6 +721,7 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
         const sheetData = scoreSheetProcessMaze.processScoreSheet(run.scoreSheet.positionData, req.file.path);
 
         run.scoreSheet.fullSheet = sheetData.rawSheet;
+        run.scoreSheet.specialAttention = false;
 
         run.LoPs = sheetData.lops.indexes[0] * 10 + sheetData.lops.indexes[1];
         run.scoreSheet.LoPImage = sheetData.lops.img;
@@ -728,10 +729,12 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
         run.time.minutes = sheetData.time.indexes[0];
         if (run.time.minutes > 8) {
           run.time.minutes = 8;
+          run.scoreSheet.specialAttention = true;
         }
         run.time.seconds = sheetData.time.indexes[1] * 10 + sheetData.time.indexes[2];
-        if (run.time.seconds >= 60) {
-            run.time.seconds = 59;
+        if (run.time.seconds > 59) {
+          run.time.seconds = 59;
+          run.scoreSheet.specialAttention = true;
         }
         run.scoreSheet.timeImage = sheetData.time.img;
 
@@ -801,6 +804,7 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
 
         run.comment = sheetData.hasComment.indexes[0] === 0 ? "Comments on sheet" : "";
         run.acceptResult = sheetData.acceptResult.indexes[0] === 1; // 0: No, 1: Yes
+        run.scoreSheet.specialAttention |= sheetData.enterManually.indexes[0] === 1;
 
         run.started = true;
         run.status = 4;
