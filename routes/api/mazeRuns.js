@@ -726,6 +726,9 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
         run.scoreSheet.LoPImage = sheetData.lops.img;
 
         run.time.minutes = sheetData.time.indexes[0];
+        if (run.time.minutes > 8) {
+          run.time.minutes = 8;
+        }
         run.time.seconds = sheetData.time.indexes[1] * 10 + sheetData.time.indexes[2];
         if (run.time.seconds >= 60) {
             run.time.seconds = 59;
@@ -796,13 +799,8 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
         }
         run.scoreSheet.tileDataImage = sheetData.tiles.img;
 
-        if (sheetData.hasComment.indexes[0] === 0) { // Yes
-          run.comment = "Comments on sheet"
-        }
-
-        if (sheetData.acceptResult.indexes[0] === 1) { // No
-          run.acceptResult = false;
-        }
+        run.comment = sheetData.hasComment.indexes[0] === 0 ? "Comments on sheet" : "";
+        run.acceptResult = sheetData.acceptResult.indexes[0] === 1; // 0: No, 1: Yes
 
         run.started = true;
         run.status = 4;
