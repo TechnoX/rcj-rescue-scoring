@@ -291,7 +291,7 @@ function drawRun(doc, config, scoringRun) {
 
   savePos(pdf.drawPositionMarkers(doc, config), "posMarkers");
   //Draw competition name & logo
-  pdf.drawText(doc,50,20,scoringRun.competition.name + "  Score Sheet",20,"black");
+  pdf.drawText(doc,50,20,scoringRun.competition.name + "  Scoresheet",20,"black");
   pdf.drawImage(doc,430,5,"public/images/competition_logo.jpg",130,100,"right");
   pdf.drawText(doc,100,770,"This score sheet will automatically be recognized. Please handle it carefully and do not fold it.",10,"red");
 
