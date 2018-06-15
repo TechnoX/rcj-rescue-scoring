@@ -158,6 +158,7 @@ block content
               span(ng-if="run.status==3") {{"admin.mazeRun.st3" | translate}}
               span(ng-if="run.status==4") {{"admin.mazeRun.st4" | translate}}
               span(ng-if="run.status==5") {{"admin.mazeRun.st5" | translate}}
+              span(ng-if="run.status==6") {{"admin.mazeRun.st6" | translate}}
             td(ng-style="{'background-color':statusColor(run.status)}")
               button(uib-popover="{{run.comment}}" popover-trigger="'outsideClick'" type="button" class="btn btn-default" ng-disabled="run.comment==''") {{"common.comment" | translate}}
             
