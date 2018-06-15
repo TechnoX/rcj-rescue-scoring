@@ -146,13 +146,13 @@ block content
           tr(ng-repeat='run in runs | filter:list_filter | orderBy:"[startTime,round.name,field.name,team.name]"' runs-read-finished='')
             td
                 input(type='checkbox' ng-model='run.checked' style="display:initial;")
-            td(ng-bind='run.startTime | date:"dd EEE HH:mm"' ng-style="{'background-color':run.status==6?'#bdafdb':''}" )
-            td(ng-bind='run.round.name' ng-style="{'background-color':run.status==6?'#bdafdb':''}" )
-            td(ng-bind='run.team.name' ng-style="{'background-color':run.status==6?'#bdafdb':''}")
-            td(ng-bind='run.field.name' ng-style="{'background-color':run.status==6?'#bdafdb':''}")
-            td(ng-bind='run.score' ng-style="{'background-color':run.status==6?'#bdafdb':''}")
-            td(ng-bind="run.time.minutes*60*1000+run.time.seconds*1000 | date:'mm:ss'" ng-style="{'background-color':run.status==6?'#bdafdb':''}")
-            td(ng-style="{'background-color':run.status==4?'#ffadad':''}")
+            td(ng-bind='run.startTime | date:"dd EEE HH:mm"' ng-style="{'background-color':statusColor(run.status)}" )
+            td(ng-bind='run.round.name' ng-style="{'background-color':statusColor(run.status)}" )
+            td(ng-bind='run.team.name' ng-style="{'background-color':statusColor(run.status)}")
+            td(ng-bind='run.field.name' ng-style="{'background-color':statusColor(run.status)}")
+            td(ng-bind='run.score' ng-style="{'background-color':statusColor(run.status)}")
+            td(ng-bind="run.time.minutes*60*1000+run.time.seconds*1000 | date:'mm:ss'" ng-style="{'background-color':statusColor(run.status)}")
+            td(ng-style="{'background-color':statusColor(run.status)}")
               span(ng-if="run.status==-1") Not yet set check points
               span(ng-if="run.status==0") {{"admin.lineRun.st0" | translate}}
               span(ng-if="run.status==1") {{"admin.lineRun.st1" | translate}}
@@ -161,7 +161,7 @@ block content
               span(ng-if="run.status==4") {{"admin.lineRun.st4" | translate}}
               span(ng-if="run.status==5") {{"admin.lineRun.st5" | translate}}
               span(ng-if="run.status==6") {{"admin.lineRun.st6" | translate}}
-            td(ng-style="{'background-color':run.status==6?'#bdafdb':''}")
+            td(ng-style="{'background-color':statusColor(run.status)}")
               button(uib-popover="{{run.comment}}" popover-trigger="'outsideClick'"  type="button" class="btn btn-default" ng-disabled="run.comment==''") {{"common.comment" | translate}}
             //td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
               button(ng-click="go('/line/view/' + run._id)" class='btn btn-info') {{"common.view" | translate}}
@@ -171,7 +171,7 @@ block content
               button(ng-click="go_judge(run._id)" class='btn btn-danger') {{"common.judge" | translate}}
             //td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
               button(ng-click="go_approval(run._id)" class='btn btn-secondary') {{"common.approval" | translate}}
-            td(ng-style="{'background-color':run.status==6?'#bdafdb':''}")
+            td(ng-style="{'background-color':statusColor(run.status)}")
               //a(href="" ng-click='removeRun(run._id)') {{"common.delete" | translate}}
               .dropdown
                   button#dropdownMenu.btn.btn-secondary.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') {{"common.action" | translate}}

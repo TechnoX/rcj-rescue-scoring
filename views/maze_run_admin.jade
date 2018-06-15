@@ -145,20 +145,20 @@ block content
           tr(ng-repeat='run in runs | filter:list_filter | orderBy:"[startTime,round.name,field.name,team.name]"' runs-read-finished='')
             td
                 input(type='checkbox' ng-model='run.checked' style="display:initial;")
-            td(ng-bind='run.startTime | date:"dd EEE HH:mm"' ng-style="{'background-color':run.status==5?'#bdafdb':''}" )
-            td(ng-bind='run.round.name' ng-style="{'background-color':run.status==5?'#bdafdb':''}" )
-            td(ng-bind='run.team.name' ng-style="{'background-color':run.status==5?'#bdafdb':''}")
-            td(ng-bind='run.field.name' ng-style="{'background-color':run.status==5?'#bdafdb':''}")
-            td(ng-bind='run.score' ng-style="{'background-color':run.status==5?'#bdafdb':''}")
-            td(ng-bind="run.time.minutes*60*1000+run.time.seconds*1000 | date:'mm:ss'" ng-style="{'background-color':run.status==5?'#bdafdb':''}")
-            td(ng-style="{'background-color':run.status==4?'#ffadad':''}")
+            td(ng-bind='run.startTime | date:"dd EEE HH:mm"' ng-style="{'background-color':statusColor(run.status)}" )
+            td(ng-bind='run.round.name' ng-style="{'background-color':statusColor(run.status)}" )
+            td(ng-bind='run.team.name' ng-style="{'background-color':statusColor(run.status)}")
+            td(ng-bind='run.field.name' ng-style="{'background-color':statusColor(run.status)}")
+            td(ng-bind='run.score' ng-style="{'background-color':statusColor(run.status)}")
+            td(ng-bind="run.time.minutes*60*1000+run.time.seconds*1000 | date:'mm:ss'" ng-style="{'background-color':statusColor(run.status)}")
+            td(ng-style="{'background-color':statusColor(run.status)}")
               span(ng-if="run.status==0") {{"admin.mazeRun.st0" | translate}}
               span(ng-if="run.status==1") {{"admin.mazeRun.st1" | translate}}
               span(ng-if="run.status==2") {{"admin.mazeRun.st2" | translate}}
               span(ng-if="run.status==3") {{"admin.mazeRun.st3" | translate}}
               span(ng-if="run.status==4") {{"admin.mazeRun.st4" | translate}}
               span(ng-if="run.status==5") {{"admin.mazeRun.st5" | translate}}
-            td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
+            td(ng-style="{'background-color':statusColor(run.status)}")
               button(uib-popover="{{run.comment}}" popover-trigger="'outsideClick'" type="button" class="btn btn-default" ng-disabled="run.comment==''") {{"common.comment" | translate}}
             
             td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")

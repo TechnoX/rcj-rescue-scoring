@@ -286,6 +286,19 @@ var app = angular.module("RunAdmin", ['ngTouch','ngAnimate', 'ui.bootstrap', 'ui
             })
         }
 
+        $scope.statusColor = function(status){
+          switch(status){
+            case 4:
+              return "#ffadad";
+            case 5:
+              return "#f7ff94";
+            case 6:
+              return "#91ffb8";
+            default:
+              return "";
+          }
+        }
+
         $scope.uploadSheets = function(files){
             console.log("Files", files);
             for (let i = 0; i < files.length; i++) {
