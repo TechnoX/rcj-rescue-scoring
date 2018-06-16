@@ -155,8 +155,8 @@ function drawFields(doc, pos_x, pos_y, config, map) {
         function addVictim(victimDir, dir) {
           switch (victimDir) {
             case "Heated":
-              pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "V", "victims." + dir, "#eb9000", i);
-              pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "VK", "rescueKits." + dir, "#eb9000", i);
+              pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "W", "victims." + dir, "#eb9000", i);
+              pdf.tileAddCheckbox(doc, posData.children[posData.children.length - 1], config, "WK", "rescueKits." + dir, "#eb9000", i);
               break;
 
             case "H":
