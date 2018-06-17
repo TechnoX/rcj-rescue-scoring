@@ -130,6 +130,7 @@
                                 </button>
                             </span>
                                 </div>
+                            <img ng-src="/api/runs/maze/scoresheetimg/{{runId}}/lop" style="width: 100%"  ng-if="fromApproval">
 
                             </p>
                         </div>
@@ -145,6 +146,7 @@
                                 </div>
 
                             </div>
+                            <img ng-src="/api/runs/maze/scoresheetimg/{{runId}}/exitBonus" style="width: 100%"  ng-if="fromApproval">
                         </div>
                     </div>
                 </div>
@@ -304,6 +306,7 @@
                         </tr>
                     </table>
                 </div>
+                <img ng-src="/api/runs/maze/scoresheetimg/{{runId}}/tiles"  ng-if="fromApproval">
             </div>
         </div>
 
@@ -332,10 +335,12 @@
                                 <input type="tel" class="form-control" placeholder="" aria-label="sec" aria-describedby="sizing-addon1" min="0" max="60" ng-model="seconds" ng-disabled="startedTime">
                                 <span class="input-group-addon" id="sizing-addon1">{{'common.sec' | translate}}</span>
                             </div>
+                            <img ng-src="/api/runs/maze/scoresheetimg/{{runId}}/time" style="width: 100%; max-width: 250px" ng-if="fromApproval">
                         </div>
                         <div class="col-sm-5">
                             <div style="text-align:right;">
-                                <button class="btn btn-danger" type="button" ng-click="confirm()" ng-disabled="startedTime"><i class="fas fa-arrow-right fa-2x" aria-hidden="true"> {{'maze.judge.toSign'| translate}}</i></button>
+                                <button class="btn btn-danger" type="button" ng-click="confirm()" ng-disabled="startedTime" ng-hide="fromApproval"><i class="fas fa-arrow-right fa-2x" aria-hidden="true"> {{'maze.judge.toSign'| translate}}</i></button>
+                                <button class="btn btn-danger" type="button" ng-click="backApproval()" ng-disabled="startedTime" ng-show="fromApproval && !networkError"><i class="fas fa-arrow-right fa-2x" aria-hidden="true"> Go back to Approval</i></button>
                             </div>
                         </div>
                     </div>

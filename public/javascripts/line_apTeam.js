@@ -58,8 +58,7 @@ app.controller("LineTimetableController", ['$scope', '$http', '$translate', func
 
     $scope.update_list = function () {
         $http.get("/api/competitions/" + competitionId +
-            "/line/runs?timetable=true" +
-            $scope.show_ended).then(function (response) {
+            "/line/runs?timetable=true&populate=true").then(function (response) {
             var runs = response.data
             $scope.runs = runs
             //console.log($scope.runs)
@@ -69,7 +68,9 @@ app.controller("LineTimetableController", ['$scope', '$http', '$translate', func
             $scope.rounds = []
             for (let run of $scope.runs) {
                 console.log(run);
-                if (run.field.league == $scope.team.league) {
+                //console.log(run.field.league);
+                //console.log($scope.team.league);
+                //if (run.field.league == $scope.team.league) {
                     if (!array_exist($scope.fields, run.field.name)) $scope.fields.push(run.field);
                     if (!array_exist($scope.rounds, run.round.name)) $scope.rounds.push(run.round);
                     var round_i = table_exist_round($scope.table, run.round.name);
@@ -92,8 +93,10 @@ app.controller("LineTimetableController", ['$scope', '$http', '$translate', func
                     $scope.table[round_i].data[time_i].run.push(run);
                     if(run.group) $scope.table[round_i].count++;
                     //$scope.table[run.round.name][run.startTime][run.field.name] = run;
-                }
+                //}
             }
+
+            console.log($scope.table);
             //ObjArraySort($scope.table,'startTime','asc')
 
             //console.log($scope.table);

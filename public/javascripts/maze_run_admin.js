@@ -272,18 +272,48 @@ var app = angular.module("RunAdmin", ['ngTouch','ngAnimate', 'ui.bootstrap', 'ui
         }
 
         $scope.go_approval = function (runid) {
+          if(runid){
             swal({
-                title: "Go approval page?",
-                text: "Are you sure you want to go approval page?",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonText: "GO!",
-                confirmButtonColor: "#ec6c62"
+              title: "Go approval page?",
+              text: "Are you sure you want to go approval page?",
+              type: "warning",
+              showCancelButton: true,
+              confirmButtonText: "GO!",
+              confirmButtonColor: "#ec6c62"
             }).then((result) => {
-                if (result.value) {
-                    $scope.go('/maze/approval/' + runid + '/');
-                }
+              if (result.value) {
+                $scope.go('/maze/approval/' + runid + '/');
+              }
             })
+          }else{
+            $http.get("/api/runs/maze/nextApproval/" + $scope.competitionId).then(function (response) {
+              console.log(response);
+              $scope.go("/maze/approval/"+response.data);
+            }, function () {
+              swal({
+                text: "There are no runs that requires approval anymore.",
+                type: 'info',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+              }).then(() => {
+              })
+            });
+          }
+
+        }
+
+        $scope.statusColor = function(status){
+          switch(status){
+            case 4:
+              return "#ffadad";
+            case 5:
+              return "#f7ff94";
+            case 6:
+              return "#91ffb8";
+            default:
+              return "";
+          }
         }
 
         $scope.uploadSheets = function(files){

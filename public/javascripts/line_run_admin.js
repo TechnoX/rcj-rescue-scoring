@@ -323,6 +323,20 @@ var app = angular.module(
             console.log("Error: " + response.statusText);
           });
         }
+
+        $scope.statusColor = function(status){
+          switch(status){
+            case 4:
+              return "#ffadad";
+            case 5:
+              return "#f7ff94";
+            case 6:
+              return "#91ffb8";
+            default:
+              return "";
+          }
+        }
+
         
         $scope.set_kiosk = function (runid){
             $http.get("/api/kiosk/1/line_checkpoint/"+runid).then(function (response) {
