@@ -81,7 +81,7 @@ function getLineRuns(req, res) {
   if (req.query['minimum']) {
     query.select("competition round team field status started startTime sign")
   } else {
-    query.select("competition round team field map score time status started LoPs comment startTime sign rescueOrder")
+    query.select("competition round team field map score time status started LoPs comment startTime sign rescueOrder group")
   }
   
   
@@ -789,7 +789,8 @@ adminRouter.post('/', function (req, res) {
     team       : run.team,
     field      : run.field,
     map        : run.map,
-    startTime  : run.startTime
+    startTime  : run.startTime,
+    group : run.group
   }).save(function (err, data) {
     if (err) {
       logger.error(err)
@@ -1000,6 +1001,69 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
 
  // scoreSheetLineProcess.processScoreSheet(posDatas[0], 'helper/scoresheet_n.png')
 });
+
+adminRouter.get('/apteam/:cid/:teamid/:group', function (req, res, next) {
+  const cid = req.params.cid
+  const team = req.params.teamid
+  const group = req.params.group
+  if (!ObjectId.isValid(cid)) {
+    return next()
+  }
+  if (!ObjectId.isValid(team)) {
+    return next()
+  }
+
+  if (!auth.authCompetition(req.user, cid, ACCESSLEVELS.ADMIN)) {
+    return res.status(401).send({
+      msg: "You have no authority to access this api!!"
+    })
+  }
+
+
+
+  lineRun.find({
+    'competition': cid,
+    'group': group
+  })
+    .exec(function (err, dbRun) {
+      if (err) {
+        logger.error(err)
+        res.status(400).send({
+          msg: "Could not get run",
+          err: err.message
+        })
+      } else if (dbRun) {
+        var resp = [];
+        for (let run of dbRun) {
+          run.team = team;
+          run.group = null;
+          run.save(function (err) {
+            if (err) {
+              logger.error(err)
+              return res.status(400).send({
+                err: err.message,
+                msg: "Could not save run"
+              })
+            } else {
+            }
+          })
+          let col = {
+            time: run.startTime,
+            field: run.field
+          };
+          resp.push(col);
+        }
+        //res.send(dbRun);
+        //logger.debug(dbRun);
+
+
+        return res.status(200).send({
+          msg: "Saved change",
+          data: resp
+        })
+      }
+    })
+})
 
 publicRouter.all('*', function (req, res, next) {
   next()
