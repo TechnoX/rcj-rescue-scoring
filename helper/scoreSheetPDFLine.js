@@ -34,7 +34,7 @@ const globalConfig = {
   data: {
     marginLeft: 300, // Distance from config.margin.left to text
     metadata: {
-      sizeQR: 57,
+      sizeQR: 80,
       text: {
         fontSize: 11
       }
