@@ -146,7 +146,7 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
 
         $http.post("/api/maps/line", map).then(function (response) {
             alert("Created map!");
-            console.log(response.data);
+            //console.log(response.data);
             window.location.replace("/admin/" + $scope.se_competition + "/line/editor/" + response.data.id)
         }, function (response) {
             console.log(response);
@@ -268,6 +268,9 @@ app.controller('LineEditorController', ['$scope', '$uibModal', '$log', '$http', 
                 $scope.length = data.length;
                 $scope.name = data.name;
                 $scope.finished = data.finished;
+
+                $scope.liveV = data.victims.live;
+                $scope.deadV = data.victims.dead;
                 /*for (let i = 0; i < data.tiles.length; i++) {
                     $scope.tiles[data.tiles[i].x + ',' +
                         data.tiles[i].y + ',' +

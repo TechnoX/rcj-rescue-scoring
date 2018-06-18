@@ -78,7 +78,9 @@ adminRouter.post('/', function (req, res) {
         rot      : tile.rot,
         items    : {
           obstacles : tile.items.obstacles,
-          speedbumps: tile.items.speedbumps
+          speedbumps: tile.items.speedbumps,
+          noCheckPoint: tile.item.noCheckPoint,
+          rampPoints: tile.item.rampPoints
         },
         levelUp  : tile.levelUp,
         levelDown: tile.levelDown
