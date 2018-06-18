@@ -242,7 +242,7 @@ module.exports.processPosMarkers = function (sheetMat, posMarkersPosData) {
       posMarkersPosData.w + posMarkersPosData.children[0].x,
       posMarkersPosData.h + posMarkersPosData.children[0].y
     )
-  );
+  );//.adaptiveThreshold(255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, 11, 2);
 
   return {
     normalizedMat: normalizedMat,//.adaptiveThreshold(255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, 11, 15),
@@ -255,10 +255,13 @@ module.exports.processPosMarkers = function (sheetMat, posMarkersPosData) {
 
 module.exports.processFieldData = function (sheetMat, posdata) {
   let tiles = posdata.children.slice(0);
-
+  let maxVal = 0;
   for (let i = 0; i < tiles.length; i++) {
     for (let j = 0; j < tiles[i].children.length; j++) {
       tiles[i].children[j].cbVal = this.processPosdataCheckbox(sheetMat, tiles[i].children[j]);
+      if (tiles[i].children[j].cbVal > maxVal) {
+        maxVal = tiles[i].children[j].cbVal;
+      }
     }
   }
 
@@ -268,7 +271,7 @@ module.exports.processFieldData = function (sheetMat, posdata) {
     for (let j = 0; j < tiles[i].children.length; j++) {
       procTiles[i].push([]);
       procTiles[i][j].meta = tiles[i].children[j].meta;
-      procTiles[i][j].checked = tiles[i].children[j].cbVal > 100;
+      procTiles[i][j].checked = tiles[i].children[j].cbVal > maxVal / 2;
     }
   }
 
