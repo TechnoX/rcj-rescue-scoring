@@ -437,7 +437,7 @@ var app = angular.module(
         }
 
         $scope.go_scoreSheetInTimeRange = function () {
-          window.open("/api/runs/line/scoresheet?competition=" + $scope.competitionId + "&startTime=" + $scope.scoreSheetStartDateTime.getTime(), "_blank")
+          window.open("/api/runs/line/scoresheet?competition=" + $scope.competitionId + "&startTime=" + $scope.scoreSheetStartDateTime.getTime()+ "&endTime=" + $scope.scoreSheetEndDateTime.getTime(), "_blank")
         }
 
 }])
