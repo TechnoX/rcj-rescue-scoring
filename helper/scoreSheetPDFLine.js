@@ -79,7 +79,7 @@ function calculateWorstCaseCheckpointAmount(map) {
     return 0;
   });
 
-  console.log(numList);
+  //console.log(numList);
 
   //console.log(sortedTiles);
   let checkpointAmount = 1; // Start counts as checkpoint
