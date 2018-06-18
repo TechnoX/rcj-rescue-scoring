@@ -853,7 +853,7 @@ const tileTypes = [
   {
     "image"        : "tile-72.png",
     "gaps"         : 0,
-    "intersections": 0,
+    "intersections": 2,
     "paths"        : {
       "bottom": "right",
       "right" : "bottom"
@@ -863,7 +863,7 @@ const tileTypes = [
   {
     "image"        : "tile-73.png",
     "gaps"         : 0,
-    "intersections": 0,
+    "intersections": 2,
     "paths"        : {
       "bottom": "right",
       "right" : "bottom"
@@ -873,12 +873,22 @@ const tileTypes = [
   {
     "image"        : "tile-74.png",
     "gaps"         : 0,
-    "intersections": 0,
+    "intersections": 2,
     "paths"        : {
       "bottom": "top",
       "top" : "bottom"
     },
     "_id"          : "58cfd6549792e9313b1610db"
+  },
+  {
+    "image"        : "tile-75.png",
+    "gaps"         : 0,
+    "intersections": 0,
+    "paths"        : {
+      "bottom": "top",
+      "top" : "bottom"
+    },
+    "_id"          : "58cfd6549792e9313b1610dc"
   }
 ]
 

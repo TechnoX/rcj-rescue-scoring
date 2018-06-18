@@ -397,7 +397,7 @@ var app = angular.module("RunAdmin", ['ngTouch','ngAnimate', 'ui.bootstrap', 'ui
         }
 
         $scope.go_scoreSheetInTimeRange = function () {
-            window.open("/api/runs/maze/scoresheet?competition=" + $scope.competitionId + "&startTime=" + $scope.scoreSheetStartDateTime.getTime(), "_blank")
+            window.open("/api/runs/maze/scoresheet?competition=" + $scope.competitionId + "&startTime=" + $scope.scoreSheetStartDateTime.getTime() + "&endTime=" + $scope.scoreSheetEndDateTime.getTime(), "_blank")
         }
 
 }])
