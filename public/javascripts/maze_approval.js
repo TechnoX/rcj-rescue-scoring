@@ -593,6 +593,23 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
       console.log("Error: " + response.statusText);
     });
   }
+
+  $scope.pass = function () {
+      $http.get("/api/runs/maze/nextApproval/" + $scope.competition_id).then(function (response) {
+        console.log(response);
+        $scope.go("/maze/approval/"+response.data+"?return="+$scope.getParam('return'));
+      }, function (response) {
+        swal({
+          text: "There are no runs that requires approval anymore.",
+          type: 'info',
+          showCancelButton: false,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'OK'
+        }).then(() => {
+          $scope.go($scope.getParam('return'));
+        })
+      });
+  }
     
     $scope.tile_size = function () {
         try {
