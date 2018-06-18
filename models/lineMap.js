@@ -853,7 +853,7 @@ const tileTypes = [
   {
     "image"        : "tile-72.png",
     "gaps"         : 0,
-    "intersections": 0,
+    "intersections": 2,
     "paths"        : {
       "bottom": "right",
       "right" : "bottom"
@@ -863,7 +863,7 @@ const tileTypes = [
   {
     "image"        : "tile-73.png",
     "gaps"         : 0,
-    "intersections": 0,
+    "intersections": 2,
     "paths"        : {
       "bottom": "right",
       "right" : "bottom"
@@ -873,7 +873,7 @@ const tileTypes = [
   {
     "image"        : "tile-74.png",
     "gaps"         : 0,
-    "intersections": 0,
+    "intersections": 2,
     "paths"        : {
       "bottom": "top",
       "top" : "bottom"
