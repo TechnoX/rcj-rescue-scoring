@@ -59,15 +59,37 @@ const globalConfig = {
  * @returns {number}
  */
 function calculateWorstCaseCheckpointAmount(map) {
-  let sortedTiles = map.tiles.slice(0).sort((t1, t2) => t2.index.length - t1.index.length);
-  let checkpointAmount = 1; // Start counts as checkpoint
-  let usedCheckpointMarkers = 0;
-  for (let i = 0; i < sortedTiles.length && usedCheckpointMarkers < map.numberOfDropTiles; i++) {
-    if (sortedTiles[i].items.obstacles === 0 && sortedTiles[i].items.speedbumps === 0 && sortedTiles[i].items.rampPoints === false) {
-      checkpointAmount += sortedTiles[i].index.length;
-      usedCheckpointMarkers ++;
+  //console.log(map);
+
+  let numList = [];
+  let tmp = 0;
+  for(let i = 0;i<map.tiles.length;i++){
+    if (map.tiles[i].items.obstacles === 0 && map.tiles[i].items.speedbumps === 0 && map.tiles[i].items.rampPoints === false && map.tiles[i].tileType.gaps === 0 && map.tiles[i].tileType.intersections === 0 && map.tiles[i].items.noCheckPoint === false) {
+      tmp = 0;
+      for (let j = 0; j < map.tiles[i].index.length; j++) {
+        if (map.tiles[i].index[j] < map.indexCount - 2) tmp++;
+      }
+      numList.push(tmp);
     }
   }
+
+  numList.sort(function(a,b){
+    if( a > b ) return -1;
+    if( a < b ) return 1;
+    return 0;
+  });
+
+  console.log(numList);
+
+  //console.log(sortedTiles);
+  let checkpointAmount = 1; // Start counts as checkpoint
+  let usedCheckpointMarkers = 0;
+
+  for(let i=0;i<numList.length && usedCheckpointMarkers < map.numberOfDropTiles;i++){
+    usedCheckpointMarkers ++;
+    checkpointAmount += numList[i];
+  }
+  //console.log(checkpointAmount);
   return checkpointAmount;
 }
 
@@ -291,9 +313,10 @@ function drawRun(doc, config, scoringRun) {
 
   savePos(pdf.drawPositionMarkers(doc, config), "posMarkers");
   //Draw competition name & logo
-  pdf.drawText(doc,50,20,scoringRun.competition.name + "  Scoresheet",20,"black");
+  pdf.drawText(doc,50,23,scoringRun.competition.name + "  Scoresheet",20,"black");
   pdf.drawImage(doc,430,5,"public/images/competition_logo.jpg",130,100,"right");
   pdf.drawText(doc,50,50,"Number of checkpoint markers: " + scoringRun.map.numberOfDropTiles,10,"black");
+  pdf.drawText(doc,50,65,"Number of victims  L:" + scoringRun.map.victims.live + "  D:" + scoringRun.map.victims.dead,10,"black");
   pdf.drawText(doc,100,770,"This score sheet will automatically be recognized. Please handle it carefully and do not fold it.",10,"red");
 
   let pf = drawFields(doc, pos_x, pos_y, config, scoringRun.map, stiles);
