@@ -229,6 +229,23 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
       });
     }
 
+  $scope.pass = function () {
+    $http.get("/api/runs/line/nextApproval/" + $scope.competition_id).then(function (response) {
+      console.log(response);
+      $scope.go("/line/approval/"+response.data+"?return="+$scope.getParam('return'));
+    }, function (response) {
+      swal({
+        text: "There are no runs that requires approval anymore.",
+        type: 'info',
+        showCancelButton: false,
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'OK'
+      }).then(() => {
+        $scope.go($scope.getParam('return'));
+      })
+    });
+  }
+
     $scope.send_public = function () {
         swal({
             title: "Approval?",
