@@ -1051,8 +1051,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             run.started = $scope.started;
             run.rescueOrder = $scope.victim_list;
             run.tiles = $scope.stiles;
-            $scope.minutes = Math.floor($scope.time / 60000)
-            $scope.seconds = Math.floor(($scope.time % 60000) / 1000)
+            //$scope.minutes = Math.floor($scope.time / 60000)
+            //$scope.seconds = Math.floor(($scope.time % 60000) / 1000)
             run.retired = $scope.retired;
             run.time = {
                 minutes: $scope.minutes,

@@ -837,7 +837,7 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
 
 privateRouter.get('/scoresheetimg/:run/:img', function (req, res, next) {
   function checkAndSend(image) {
-    if (!image && !image.contentType) {
+    if (!image || !image.contentType) {
       res.status(404).send({
         msg: "image has not been registered yet",
       });
