@@ -960,10 +960,10 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
           let rescuedLiveVictims = 0;
           for (let i = 0; i < sheetData.victimOrder.indexes.length; i++) {
             let victimType = "D";
-            if (sheetData.victimOrder.indexes[i] === 1) { // A
+            if (sheetData.victimOrder.indexes[i] === 2) { // A
               victimType = "L";
               rescuedLiveVictims ++;
-            } else if (sheetData.victimOrder.indexes[i] === 2) { // N
+            } else if (sheetData.victimOrder.indexes[i] === 0) { // N
               break;
             }
             run.rescueOrder.push({type: victimType, effective: victimType === "L" || rescuedLiveVictims === run.map.victims.live});

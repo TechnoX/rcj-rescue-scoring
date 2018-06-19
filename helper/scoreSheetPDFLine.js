@@ -236,7 +236,7 @@ function drawFields(doc, pos_x, pos_y, config, map, stiles) {
 }
 
 function drawVictimInputField(doc, config, pos_x, pos_y, amount) {
-  const columnText = ["D", "A", "N"];
+  const columnText = ["N", "D", "A"];
   const rowText = [];
   for (let i = 0; i < amount; i++) {
     rowText.push("" + (i + 1));
