@@ -865,6 +865,7 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
           err: err.message
         })
       } else {
+        if(!run) return;
         const sheetData = scoreSheetLineProcess.processScoreSheet(run.scoreSheet.positionData, req.file.path);
 
         run.scoreSheet.fullSheet = sheetData.rawSheet;
