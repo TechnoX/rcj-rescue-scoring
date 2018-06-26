@@ -154,7 +154,7 @@ app.controller("MazeScoreController", function ($scope, $http) {
 
         runs.sort(sortRuns)
 
-        for (let i = 0; i < Math.min(8, runs.length); i++) {
+        for (let i = 0; i < Math.min(9, runs.length); i++) {
             sum.score += runs[i].score
             sum.time.minutes += runs[i].time.minutes
             sum.time.seconds += runs[i].time.seconds
