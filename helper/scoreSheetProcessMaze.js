@@ -10,7 +10,13 @@ module.exports.processScoreSheet = function (posDataRaw, scoreSheetFileName) {
     proc.scalePosData(posData[i].posData, 2);
   }
 
-  const processedPosMarkers = proc.processPosMarkers(cv.imread(scoreSheetFileName).bgrToGray(), proc.findPosdataByDescr(posData, 'posMarkers'));
+
+  const mat = cv.imread(scoreSheetFileName).bgrToGray();
+  mat.drawRectangle(new cv.Rect(900, 220, 100, 100), new cv.Vec3(255, 255, 255), 200, 4, 0);
+
+  const processedPosMarkers = proc.processPosMarkers(mat, proc.findPosdataByDescr(posData, 'posMarkers'));
+
+  //const processedPosMarkers = proc.processPosMarkers(cv.imread(scoreSheetFileName).bgrToGray(), proc.findPosdataByDescr(posData, 'posMarkers'));
   const normalizedSheet = processedPosMarkers.normalizedMat;
 
   let sheetData = {};

@@ -271,7 +271,7 @@ module.exports.processFieldData = function (sheetMat, posdata) {
     for (let j = 0; j < tiles[i].children.length; j++) {
       procTiles[i].push([]);
       procTiles[i][j].meta = tiles[i].children[j].meta;
-      procTiles[i][j].checked = tiles[i].children[j].cbVal > maxVal / 2;
+      procTiles[i][j].checked = tiles[i].children[j].cbVal > maxVal / 4;
     }
   }
 
