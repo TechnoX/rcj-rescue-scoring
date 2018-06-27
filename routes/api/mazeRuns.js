@@ -150,6 +150,63 @@ function getMazeRuns(req, res) {
 }
 module.exports.getMazeRuns = getMazeRuns
 
+adminRouter.get('/recalculate', function (req, res, next) {
+  const competition = req.query.competition || req.params.competition
+
+  var query
+  if (competition != null && competition.constructor === String) {
+
+  }else{
+    return res.status(400).send({
+      msg: "competition=?"
+    })
+  }
+
+
+  mazeRun.find({
+    competition: competition,
+    status: {
+      $gte: 6
+    }
+  })
+    .populate("map")
+    .exec(function (err, dbRuns) {
+    if (err) {
+      logger.error(err)
+      res.status(400).send({
+        msg: "Could not get runs",
+        err: err.message
+      })
+    } else if (dbRuns) {
+      for (let i = 0; i < dbRuns.length; i++) {
+        let retScoreCals = scoreCalculator.calculateMazeScore(dbRuns[i]).split(",")
+
+        mazeRun.findById(dbRuns[i]._id)
+          .exec(function (err, dbRun) {
+            dbRun.score = retScoreCals[0]
+            dbRun.foundVictims = retScoreCals[1]
+            dbRun.distKits = retScoreCals[2]
+
+            dbRun.save(function (err) {
+              if (err) {
+                logger.error(err)
+              } else {
+                logger.info(retScoreCals[0]);
+              }
+            })
+          })
+      }
+      return res.status(200).send({
+        msg: "Updated scores"
+      })
+      /*res.status(200).send({
+        msg: dbRuns
+        //err: err.message
+      })*/
+
+    }
+  })
+})
 
 publicRouter.get('/latest', getLatestMazeRun)
 
@@ -249,6 +306,7 @@ adminRouter.get('/nextApproval/:competitionid', function (req, res, next) {
     }
   })
 })
+
 
 
 publicRouter.get('/find/:competitionid/:field/:status', function (req, res, next) {
@@ -1136,6 +1194,8 @@ adminRouter.post('/', function (req, res) {
         }
     })
 })
+
+
 
 publicRouter.all('*', function (req, res, next) {
     next()
