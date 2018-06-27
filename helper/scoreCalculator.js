@@ -127,9 +127,11 @@ module.exports.calculateMazeScore = function (run) {
   for (let i = 0; i < run.tiles.length; i++) {
     const tile = run.tiles[i]
     const coord = tile.x + ',' + tile.y + ',' + tile.z
-    
-    if (mapTiles[coord].tile.reachable) {
-      
+
+    //if(tile.x == 9 && tile.y == 13) console.log(mapTiles[coord]);
+
+    if (mapTiles[coord].tile.reachable || 1) {
+
       if (tile.scoredItems.speedbump && mapTiles[coord].tile.speedbump) {
         score += 5
       }
