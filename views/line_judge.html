@@ -354,6 +354,7 @@
                                 <input type="tel" class="form-control" placeholder="" aria-label="sec" aria-describedby="sizing-addon1" min="0" max="60" ng-model="seconds" ng-disabled="startedTime">
                                 <span class="input-group-addon" id="sizing-addon1">{{'common.sec' | translate}}</span>
                             </div>
+                            <img ng-src="/api/runs/line/scoresheetimg/{{runId}}/time" style="width: 100%; max-width: 250px" ng-if="fromApproval">
                         </div>
                         <div class="col-sm-5">
                             <div style="text-align:right;">
