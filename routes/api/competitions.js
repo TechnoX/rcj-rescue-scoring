@@ -129,7 +129,7 @@ publicRouter.get('/:competition/:league/teams', function (req, res, next) {
 
     competitiondb.team.find({
         competition: id,
-        league: league
+        league: new RegExp(".*" + league + ".*" , "i")
     }).lean().exec(function (err, data) {
         if (err) {
             logger.error(err)
@@ -219,7 +219,7 @@ privateRouter.get('/:competition/:league/maps', function (req, res, next) {
     }
 
     return next()
-})
+});
 
 
 privateRouter.get('/:competition/line/maps', function (req, res, next) {
@@ -307,7 +307,7 @@ publicRouter.get('/:competition/:league/fields', function (req, res, next) {
 
     competitiondb.field.find({
         competition: id,
-        league: league
+        league: new RegExp(".*" + league + ".*" , "i")
     }).lean().exec(function (err, data) {
         if (err) {
             logger.error(err)
@@ -403,7 +403,7 @@ publicRouter.get('/:competition/:league/rounds', function (req, res, next) {
 
     competitiondb.round.find({
         competition: id,
-        league: league
+        league: new RegExp(".*" + league + ".*" , "i")
     }).lean().exec(function (err, data) {
         if (err) {
             logger.error(err)
