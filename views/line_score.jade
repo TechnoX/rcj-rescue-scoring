@@ -31,7 +31,7 @@ block content
   br
   br
   .row#rank
-    //.col-lg-6
+    .col-lg-6
       h3 日本リーグ - 順位
       table.custom(style="overflow: scroll;")
         thead
@@ -51,8 +51,8 @@ block content
             td.text-center(ng-if="run.retired" ng-style="run.isplaying && {'background-color': '#ffffa8'}") R
             td.text-center(ng-bind='run.rescuedVictims' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
             td.text-center(ng-bind='run.LoPsNum' ng-style="run.isplaying && {'background-color': '#ffffa8'}")
-    .col-lg-12
-      h3 Line - Top ranking
+    .col-lg-6
+      h3 ワールドリーグ - 順位
       table.custom(style="overflow: scroll;")
         thead
           tr
@@ -74,7 +74,7 @@ block content
   .row
     hr
   .row#allRuns
-    //.col-lg-6
+    .col-lg-6
       h3 日本リーグ - 全競技
       label {{'line.score.sort' | translate}}
         input(type="checkbox" style='display:inline;' ng-model="sortOrderNL" ng-true-value="'[startTime,round.name,field.name,team.name]'" ng-false-value="'-score'")
@@ -98,8 +98,8 @@ block content
             td.text-center(ng-if="run.retired"  ng-style="run.isplaying && {'background-color': '#ffffa8'}") R
             td.text-center(ng-bind='run.rescueOrder.length'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
             td.text-center(ng-bind='run.LoPsNum'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
-    .col-lg-12
-      h3 Line - All runs
+    .col-lg-6
+      h3 ワールドリーグ - 全競技
       label {{'line.score.sort' | translate}}
         input(type="checkbox" style='display:inline;' ng-model="sortOrderWL" ng-true-value="'[startTime,round.name,field.name,team.name]'" ng-false-value="'-score'")
       table.custom(style="overflow: scroll;")
@@ -121,6 +121,4 @@ block content
             td.text-center(ng-if="!run.retired"  ng-style="run.isplaying && {'background-color': '#ffffa8'}") {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
             td.text-center(ng-if="run.retired"  ng-style="run.isplaying && {'background-color': '#ffffa8'}") R
             td.text-center(ng-bind='run.rescueOrder.length'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
-            td.text-center(ng-bind='run.LoPsNum'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")        
-   
-   
+            td.text-center(ng-bind='run.LoPsNum'  ng-style="run.isplaying && {'background-color': '#ffffa8'}")
