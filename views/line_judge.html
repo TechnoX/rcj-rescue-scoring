@@ -110,7 +110,7 @@
                 <div class="alert alert-info" role="alert" ng-show="numberOfDropTiles - placedDropTiles == 0 && !startedScoring && !fromSign">
                     {{'line.judge.ready' | translate}}<br><strong style="font-size:20px;">{{'line.judge.push_start' | translate}}</strong>
                 </div>
-                <!--<div class="card" ng-if="league != 'LineNL'" ng-show="!startedScoring || fromSign">-->
+                <div class="card" ng-if="league != 'LineNL'" ng-show="!startedScoring || fromSign">
                     <h4 class="card-header"><i class="fas fa-ambulance" aria-hidden="true"></i> {{'line.judge.select_elevel' | translate}}</h4>
                     <div class="card-body">
                         <img ng-src="/api/runs/line/scoresheetimg/{{runId}}/evacuationLevel" ng-if="fromApproval"><br>
@@ -130,7 +130,7 @@
                             </div>
                         </div>
                     </div>
-                <!--</div>-->
+                </div>
                 <br>
 
 
@@ -243,8 +243,8 @@
                                 <button class="btn btn-warning" style="margin:0 10px 10px 0;" type="button" ng-click="victim_tmp_clear()"><i class="far fa-trash-alt" aria-hidden="true">&nbsp; Clear</i></button>
                                 <button class="btn btn-success" style="margin:0 10px 10px 0;" type="button" ng-click="victimRegist()"><i class="fas fa-arrow-down" aria-hidden="true">&nbsp; Register</i></button>
                             </div>
-                            
-                            
+
+
                             <hr>
                             <h6>Rescued Victims</h6>
                             <span style="font-size:9px;">To delete a rescued victim, double click or swipe left (Mobile Device)</span>
@@ -264,9 +264,9 @@
                             </table>
                             <img ng-src="/api/runs/line/scoresheetimg/{{runId}}/victims" ng-if="fromApproval">
                             <hr>
-                        
+
                         </div>
-                        
+
                         <div class="card-body">
                             <p class="card-text">{{'line.judge.exit' | translate}}<span class="badge badge-info">20　points</span></p>
                             <div class="col-md-12" style="position: relative;" ng-click="changeExitBonus()">
