@@ -27,7 +27,7 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
     $http.get("/api/competitions/" + competitionId).then(function (response) {
         $scope.competition = response.data
     })
-    
+
     function updateTime(){
         $scope.time--;
         if($scope.time <= 0){
@@ -43,7 +43,7 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
         $http.get("/api/competitions/" + competitionId +
             "/line/runs?populate=true").then(function (response) {
             var runs = response.data
-            
+
             for(let run of runs){
                 try{
                     var teamname = run.team.name.split(' ');
@@ -58,13 +58,14 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
 
                 }
             }
-            
-            
+
+
 
             //console.log(runs)
 
-            //$scope.nipponRuns = []
-            //var nipponTeamRuns = {}
+            $scope.nipponRuns = []
+            var nipponTeamRuns = {}
+
             $scope.worldRuns = []
             var worldTeamRuns = {}
 
@@ -83,7 +84,7 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
                 if (run.status >= 2 || run.score != 0 || run.time.minutes != 0 ||
                     run.time.seconds != 0) {
                     //console.log(run)
-                    /*if (run.team.league == "LineNL") {
+                    if (run.team.league == "LineNL") {
 
 
                         if (nipponTeamRuns[run.team._id] === undefined) {
@@ -110,7 +111,7 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
                         }
                         $scope.nipponRuns.push(run)
 
-                    } else if (run.team.league == "LineWL") {*/
+                    } else if (run.team.league == "LineWL") {
                         if (worldTeamRuns[run.team._id] === undefined) {
                             worldTeamRuns[run.team._id] = {
                                 team: {
@@ -134,13 +135,13 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
                             run.isplaying = true
                         }
                         $scope.worldRuns.push(run)
-                    //}
+                    }
                 }
             }
             //$scope.nipponRuns.sort(sortRuns)
             //$scope.worldRuns.sort(sortRuns)
 
-            /*$scope.nipponRunsTop = []
+            $scope.nipponRunsTop = []
             for (var i in nipponTeamRuns) {
                 var teamRun = nipponTeamRuns[i]
                 $scope.nipponRunsTop.push({
@@ -153,7 +154,7 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
                     isplaying: teamRun.isplaying
                 })
             }
-            $scope.nipponRunsTop.sort(sortRuns)*/
+            $scope.nipponRunsTop.sort(sortRuns)
 
             $scope.worldRunsTop = []
             for (var i in worldTeamRuns) {

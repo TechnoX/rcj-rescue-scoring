@@ -5,7 +5,7 @@ const ObjectId = Schema.Types.ObjectId
 
 const logger = require('../config/logger').mainLogger
 
-const LINE_LEAGUES = ["Line"]
+const LINE_LEAGUES = ["LineWL","LineNL"]
 const MAZE_LEAGUES = ["Maze"]
 
 const LEAGUES = [].concat(LINE_LEAGUES, MAZE_LEAGUES)
@@ -32,7 +32,7 @@ const competitionSchema = new Schema({
 })
 
 const signageSchema = new Schema({
-  name       : {type: String, required: true}, 
+  name       : {type: String, required: true},
   content :[{
       duration: {type: Number, required: true},
       type: {type: String, required: true},
