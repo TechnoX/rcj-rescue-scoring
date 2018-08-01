@@ -123,8 +123,10 @@ publicRouter.get('/:competition/:league/teams', function (req, res, next) {
         return next()
     }
 
-    if (LEAGUES.indexOf(league) == -1) {
-        return next()
+    if (LEAGUES.filter(function (elm){
+      return elm.indexOf(league) != -1;
+    }).length == 0){
+      return next()
     }
 
     competitiondb.team.find({
@@ -210,12 +212,17 @@ privateRouter.get('/:competition/:league/maps', function (req, res, next) {
         return next()
     }
 
-    if (LINE_LEAGUES.indexOf(league) != -1) {
-        return lineMapsApi.getLineMaps(req, res, next)
+
+    if (LINE_LEAGUES.filter(function (elm){
+      return elm.indexOf(league) != -1;
+    }).length != 0){
+      return lineMapsApi.getLineMaps(req, res, next)
     }
 
-    if (MAZE_LEAGUES.indexOf(league) != -1) {
-        return mazeMapsApi.getMazeMaps(req, res, next)
+    if (MAZE_LEAGUES.filter(function (elm){
+      return elm.indexOf(league) != -1;
+    }).length != 0){
+      return mazeMapsApi.getMazeMaps(req, res, next)
     }
 
     return next()
@@ -301,8 +308,10 @@ publicRouter.get('/:competition/:league/fields', function (req, res, next) {
         return next()
     }
 
-    if (LEAGUES.indexOf(league) == -1) {
-        return next()
+    if (LEAGUES.filter(function (elm){
+      return elm.indexOf(league) != -1;
+    }).length == 0){
+      return next()
     }
 
     competitiondb.field.find({
@@ -397,8 +406,10 @@ publicRouter.get('/:competition/:league/rounds', function (req, res, next) {
         return next()
     }
 
-    if (LEAGUES.indexOf(league) == -1) {
-        return next()
+    if (LEAGUES.filter(function (elm){
+      return elm.indexOf(league) != -1;
+    }).length == 0){
+      return next()
     }
 
     competitiondb.round.find({
