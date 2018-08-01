@@ -115,12 +115,12 @@ superRouter.post('/', function (req, res) {
 
 
 adminRouter.put('/:userid/:competitionid/:aLevel', function (req, res, next) {
-    
-    
+
+
     const userid = req.params.userid
     const competitionid = req.params.competitionid
     const aLevel = req.params.aLevel
-    
+
     if(!auth.authCompetition(req.user, competitionid, ACCESSLEVELS.ADMIN)){
         res.status(401).send({
                         msg: "You have no authority to access this api"

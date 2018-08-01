@@ -54,7 +54,7 @@ publicRouter.get('/', getLineRuns)
 
 function getLineRuns(req, res) {
   const competition = req.query.competition || req.params.competition
-  
+
   var query
   if (competition != null && competition.constructor === String) {
     if (req.query['ended'] == 'false') {
@@ -67,7 +67,7 @@ function getLineRuns(req, res) {
         competition: competition
       })
     }
-    
+
   } else if (Array.isArray(competition)) {
     query = lineRun.find({
       competition: {
@@ -77,14 +77,14 @@ function getLineRuns(req, res) {
   } else {
     query = lineRun.find({})
   }
-  
+
   if (req.query['minimum']) {
     query.select("competition round team field status started startTime sign")
   } else {
     query.select("competition round team field map score time status started LoPs comment startTime sign rescueOrder group")
   }
-  
-  
+
+
   if (req.query['populate'] !== undefined && req.query['populate']) {
     query.populate([
       {
@@ -97,7 +97,7 @@ function getLineRuns(req, res) {
       },
       {
         path  : "team",
-        select: "name"
+        select: "name league"
       },
       {
         path  : "field",
@@ -109,7 +109,7 @@ function getLineRuns(req, res) {
       }
     ])
   }
-  
+
   query.lean().exec(function (err, dbRuns) {
     if (err) {
       logger.error(err)
@@ -117,7 +117,7 @@ function getLineRuns(req, res) {
         msg: "Could not get runs"
       })
     } else if (dbRuns) {
-      
+
       // Hide map and field from public
       for (let i = 0; i < dbRuns.length; i++) {
         if (!auth.authViewRun(req.user, dbRuns[i], ACCESSLEVELS.NONE + 1)) {
@@ -139,7 +139,7 @@ function getLatestLineRun(req, res) {
   const competition = req.query.competition || req.params.competition
   const field = req.query.field || req.params.field
   const fields = req.query.fields
-  
+
   var selection = {
     competition: competition,
     field      : field
@@ -150,15 +150,15 @@ function getLatestLineRun(req, res) {
   if (selection.field == undefined) {
     delete selection.field
   }
-  
+
   if (fields != null) {
     selection.field = {
       $in: fields
     }
   }
-  
+
   var query = lineRun.findOne(selection).sort("-updatedAt")
-  
+
   if (req.query['populate'] !== undefined && req.query['populate']) {
     query.populate(["round", "team", "field", "competition", {
       path    : 'tiles',
@@ -167,7 +167,7 @@ function getLatestLineRun(req, res) {
       }
     }])
   }
-  
+
   query.lean().exec(function (err, dbRun) {
     if (err) {
       logger.error(err)
@@ -307,13 +307,13 @@ publicRouter.get('/find/:competitionid/:field/:status', function (req, res, next
  */
 publicRouter.get('/:runid', function (req, res, next) {
   const id = req.params.runid
-  
+
   if (!ObjectId.isValid(id)) {
     return next()
   }
-  
+
   const query = lineRun.findById(id, "-__v")
-  
+
   if (req.query['populate'] !== undefined && req.query['populate']) {
     query.populate(["round", "team", "field", "competition", {
       path    : 'tiles',
@@ -322,7 +322,7 @@ publicRouter.get('/:runid', function (req, res, next) {
       }
     }])
   }
-  
+
   query.lean().exec(function (err, dbRun) {
     if (err) {
       logger.error(err)
@@ -350,7 +350,7 @@ publicRouter.get('/:runid', function (req, res, next) {
  * @apiVersion 1.0.0
  *
  * @apiParam {String} runid The run id
- 
+
  * @apiParam {Object[]}     [tiles]
  * @apiParam {Boolean}      [tiles.isDropTile]
  * @apiParam {Object}       [tiles.scoredItems]
@@ -380,9 +380,9 @@ privateRouter.put('/:runid', function (req, res, next) {
   if (!ObjectId.isValid(id)) {
     return next()
   }
-  
+
   const run = req.body
-  
+
   // Exclude fields that are not allowed to be publicly changed
   delete run._id
   delete run.__v
@@ -392,9 +392,9 @@ privateRouter.put('/:runid', function (req, res, next) {
   delete run.team
   delete run.field
   delete run.score
-  
+
   //logger.debug(run)
-  
+
   lineRun.findById(id)
   //.select("-_id -__v -competition -round -team -field -score")
     .populate({
@@ -420,15 +420,15 @@ privateRouter.put('/:runid', function (req, res, next) {
             }
           })
         }
-        
+
         if (run.LoPs != null && run.LoPs.length != dbRun.LoPs.length) {
           dbRun.LoPs.length = run.LoPs.length
         }
-          
+
         if(run.rescueOrder != null){
             dbRun.rescueOrder = run.rescueOrder;
         }
-        
+
         // Recursively updates properties in "dbObj" from "obj"
         const copyProperties = function (obj, dbObj) {
           for (let prop in obj) {
@@ -439,7 +439,7 @@ privateRouter.put('/:runid', function (req, res, next) {
                    dbObj.get(prop) !== undefined)))) { // Mongoose objects don't have hasOwnProperty
               if (typeof obj[prop] == 'object' && dbObj[prop] != null) { // Catches object and array
                 copyProperties(obj[prop], dbObj[prop])
-                
+
                 if (dbObj.markModified !== undefined) {
                   dbObj.markModified(prop)
                 }
@@ -452,9 +452,9 @@ privateRouter.put('/:runid', function (req, res, next) {
             }
           }
         }
-        
+
         err = copyProperties(run, dbRun)
-        
+
         if (err) {
           logger.error(err)
           return res.status(400).send({
@@ -462,16 +462,16 @@ privateRouter.put('/:runid', function (req, res, next) {
             msg: "Could not save run"
           })
         }
-        
+
         dbRun.score = scoreCalculator.calculateLineScore(dbRun)
-        
+
         if (dbRun.score > 0 || dbRun.time.minutes != 0 ||
             dbRun.time.seconds != 0 || dbRun.status >= 2) {
           dbRun.started = true
         } else {
           dbRun.started = false
         }
-        
+
         dbRun.save(function (err) {
           if (err) {
             logger.error(err)
@@ -782,7 +782,7 @@ adminRouter.delete('/:runids', function (req, res) {
  */
 adminRouter.post('/', function (req, res) {
   const run = req.body
-  
+
   new lineRun({
     competition: run.competition,
     round      : run.round,
