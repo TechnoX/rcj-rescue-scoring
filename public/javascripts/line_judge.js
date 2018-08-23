@@ -121,7 +121,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $http.put("/api/runs/line/" + runId, Object.assign(data, {
             time: {
                 minutes: Math.floor($scope.time / 60000),
-                seconds: (Math.floor($scope.time % 60000)) / 1000
+                seconds: Math.floor(($scope.time % 60000) / 1000)
             }
         }), http_config).then(function (response) {
             console.log(response);
