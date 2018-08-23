@@ -3,9 +3,9 @@ var app = angular.module('ddApp', ['ngTouch','ngAnimate', 'ui.bootstrap', 'pasca
 
 // function referenced by the drop target
 app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http','$translate', '$cookies',function ($scope, $uibModal, $log, $timeout, $http, $translate, $cookies) {
-    
+
     var txt_timeup,txt_timeup_mes;
-    
+
     $translate('maze.judge.js.timeup.title').then(function (val) {
         txt_timeup = val;
     }, function (translationId) {
@@ -25,7 +25,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.runId = runId;
     var date = new Date();
     var prevTime = 0;
-    
+
     $scope.checkTeam = $scope.checkRound = $scope.checkMember = $scope.checkMachine = false;
     $scope.toggleCheckTeam = function(){
         $scope.checkTeam = !$scope.checkTeam;
@@ -49,7 +49,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
 
     $scope.lopProcessing = false;
-    
+
     //$cookies.remove('sRotate')
     if($cookies.get('sRotate')){
         $scope.sRotate = Number($cookies.get('sRotate'));
@@ -104,7 +104,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 response.data.tiles[i].y + ',' +
                 response.data.tiles[i].z] = response.data.tiles[i];
         }
-        
+
 
         $scope.loadMap(response.data.map);
 
@@ -128,7 +128,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $http.put("/api/runs/maze/map/" + runId, {
             map: $scope.dice[n]
         }).then(function (response) {
-            
+
             $scope.loadMap(response.data.map._id);
 
         }, function (response) {
@@ -138,7 +138,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             }
         });
     }
-    
+
     $scope.loadMap = function(mapId){
         // Get the map
         $http.get("/api/maps/maze/" + mapId +
@@ -157,11 +157,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                         console.log("Error: " + response.statusText);
                     });
                 }
-                
+
             }else{
                 $scope.dice = response.data.dice;
             }
-            
+
             for (let i = 0; i < response.data.cells.length; i++) {
                 $scope.cells[response.data.cells[i].x + ',' +
                     response.data.cells[i].y + ',' +
@@ -241,19 +241,19 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             console.log("Error: " + response.statusText);
         });
     }
-    
+
     $scope.changeFloor = function (z){
         playSound(sClick);
         $scope.z = z;
     }
-    
+
     $scope.tileRot = function (r){
         playSound(sClick);
         $scope.sRotate += r;
         if($scope.sRotate >= 360)$scope.sRotate -= 360;
         else if($scope.sRotate < 0) $scope.sRotate+= 360;
         $timeout($scope.tile_size, 0);
-        
+
         $cookies.put('sRotate', $scope.sRotate, {
           path: '/'
         });
@@ -704,7 +704,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
           console.log("Error: " + response.statusText);
         });
       };
-    
+
     $scope.getParam = function (key) {
         var str = location.search.split("?");
         if (str.length < 2) {
@@ -725,11 +725,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         playSound(sClick);
         window.location = path
     }
-    
+
     $scope.tile_size = function () {
         try {
             var b = $('.tilearea');
-            
+
             if($scope.sRotate%180 == 0){
                 var tilesize_w = (b.width()-2*(width+1)) / (width+1 + (width+1)/12);
                 console.log(tilesize_w);
@@ -751,8 +751,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $('.tile').css('width', tilesize);
             $('.tile-font').css('font-size', tilesize - 10);
             $('.cell').css('padding', tilesize/12);
-            
-            
+
+
             if($scope.sRotate%180 == 0){
                 $('#wrapTile').css('width', (tilesize+10)*width+11);
             }else{
@@ -804,13 +804,13 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, cell, t
             $scope.tile.scoredItems.rescueKits[direction] = 0;
         }
     }
-    
+
     $scope.lightStatus = function(light, kit){
         if(light) return true;
         if(kit > 0) return true;
         return false;
     }
-    
+
     $scope.kitStatus = function(light, kit, type){
         switch(type){
                 case 'Heated':
@@ -828,7 +828,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, cell, t
         }
         return false;
     }
-    
+
     $scope.modalRotate = function(dir){
         var ro;
         switch(dir){
@@ -878,10 +878,10 @@ document.addEventListener('touchend', event => {
     lastTouch = now;
 }, true);
 
-window.AudioContext = window.AudioContext || window.webkitAudioContext;  
+window.AudioContext = window.AudioContext || window.webkitAudioContext;
 var context = new AudioContext();
 
-var getAudioBuffer = function(url, fn) {  
+var getAudioBuffer = function(url, fn) {
   var req = new XMLHttpRequest();
   req.responseType = 'arraybuffer';
 
@@ -899,7 +899,7 @@ var getAudioBuffer = function(url, fn) {
   req.send('');
 };
 
-var playSound = function(buffer) {  
+var playSound = function(buffer) {
   var source = context.createBufferSource();
   source.buffer = buffer;
   source.connect(context.destination);
@@ -907,7 +907,7 @@ var playSound = function(buffer) {
 };
 
 var sClick,sInfo,sError,sTimeup;
-window.onload = function() {  
+window.onload = function() {
   getAudioBuffer('/sounds/click.mp3', function(buffer) {
       sClick = buffer;
   });
@@ -921,4 +921,3 @@ window.onload = function() {
       sTimeup = buffer;
   });
 };
-
