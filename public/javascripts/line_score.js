@@ -80,6 +80,8 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
                 }
 
                 run.score = parseInt(run.score)
+                run.time.minutes = parseInt(run.time.minutes)
+                run.time.seconds = parseInt(run.time.seconds)
 
                 if (run.status >= 2 || run.score != 0 || run.time.minutes != 0 ||
                     run.time.seconds != 0) {
