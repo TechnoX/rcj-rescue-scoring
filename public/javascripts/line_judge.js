@@ -94,7 +94,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     const http_config = {
         timeout: 1000
     };
-    
+
     var tileReset = true;
 
     function upload_run(data) {
@@ -190,7 +190,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.seconds = response.data.time.seconds;
             $scope.time = ($scope.minutes * 60 + $scope.seconds) * 1000;
             prevTime = $scope.time;
-            
+
             var started = response.data.started;
 
             $scope.victim_list = response.data.rescueOrder;
@@ -220,11 +220,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.startTile = response.data.startTile;
                 $scope.numberOfDropTiles = response.data.numberOfDropTiles;
                 $scope.mtiles = {};
-                
+
                 // Get max victim count
                 $scope.maxLiveVictims = response.data.victims.live;
                 $scope.maxDeadVictims = response.data.victims.dead;
-                
+
                 $scope.mapIndexCount = response.data.indexCount;
 
                 var flag = false;
@@ -236,11 +236,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     scoredItems:[],
                     isDropTile: false
                 }
-                
+
                 console.log(started);
-                
+
                 if(!started && tileReset){
-                    
+
                     $scope.stiles = [];
                     tileReset = false;
                 }
@@ -264,7 +264,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                                 };
                                 $scope.stiles[t.index[j]].scoredItems.push(addSItem);
                             }
-                            
+
                             for(let k=0;k<t.items.speedbumps;k++){
                                 let addSItem = {
                                     item: "speedbump",
@@ -272,8 +272,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                                 };
                                 $scope.stiles[t.index[j]].scoredItems.push(addSItem);
                             }
-                            
-                            
+
+
                             for(let k=0;k<t.tileType.gaps;k++){
                                 let addSItem = {
                                     item: "gap",
@@ -281,7 +281,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                                 };
                                 $scope.stiles[t.index[j]].scoredItems.push(addSItem);
                             }
-                            
+
                             for(let k=0;k<t.tileType.intersections;k++){
                                 let addSItem = {
                                     item: "intersection",
@@ -289,7 +289,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                                 };
                                 $scope.stiles[t.index[j]].scoredItems.push(addSItem);
                             }
-                            
+
                             if(t.items.rampPoints){
                                 let addSItem = {
                                     item: "ramp",
@@ -297,14 +297,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                                 };
                                 $scope.stiles[t.index[j]].scoredItems.push(addSItem);
                             }
-                            
+
                             if(t.items.noCheckPoint){
                                 noCheck[t.index[j]]= true;
                             }
                         }
-                        
+
                     }
-                    
+
                     for(let i=0; i < $scope.stiles.length-2;i++){
                         if($scope.stiles[i].scoredItems.length == 0 && !noCheck[i]){
                             let addSItem = {
@@ -315,9 +315,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                         }
                     }
                 }
-                
+
                 //console.log($scope.stiles);
-                
+
                 if (flag) {
                     $scope.sync++;
                     $http.put("/api/runs/line/" + runId, {
@@ -341,7 +341,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     $scope.mtiles[response.data.tiles[i].x + ',' +
                         response.data.tiles[i].y + ',' +
                         response.data.tiles[i].z] = response.data.tiles[i];
-                    
+
                     if ($scope.stiles[response.data.tiles[i].index[0]] &&
                         $scope.stiles[response.data.tiles[i].index[0]].isDropTile) {
                         $scope.placedDropTiles++;
@@ -700,7 +700,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             mtile.items.speedbumps > 0 ||
             mtile.tileType.gaps > 0 ||
             mtile.tileType.intersections > 0 || mtile.items.rampPoints || mtile.items.noCheckPoint) * mtile.index.length;
-        
+
 
         // If the run is not started, we can place drop pucks on this tile
         if (!$scope.startedScoring) {
@@ -737,9 +737,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                             marker[mtile.index[i]] = true;
                             placed = true;
                         }
-                        httpdata.tiles[mtile.index[i]] = stile[i];   
+                        httpdata.tiles[mtile.index[i]] = stile[i];
                     }
-                    
+
                 }
 
                 if (placed) {
@@ -758,7 +758,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             mtile.items.speedbumps > 0 ||
             mtile.tileType.gaps > 0 ||
             mtile.tileType.intersections > 0 || mtile.items.rampPoints) * mtile.index.length;
-            
+
             // Add the number of possible passes for drop tiles
             if (isDropTile) {
                 for(let i=0;i<stile.length;i++){
@@ -774,8 +774,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.changeShowedUp();
                 return;
             }
-            
-            
+
+
             if (total == 0) {
                 return;
             } else if (total > 1) {
@@ -788,7 +788,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     stile[0].scoredItems[0].scored = !stile[0].scoredItems[0].scored;
                     httpdata.tiles[mtile.index[0]] = stile[0];
                     $scope.stiles[mtile.index[0]] = stile[0];
-                    
+
                     upload_run(httpdata);
                 }else{
                     var selectableHtml = "";
@@ -799,7 +799,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     for(let i=0; i<stile[0].scoredItems.length;i++){
                         if(stile[0].scoredItems[i].item != "checkpoint" || stile[0].isDropTile){
                             selectableHtml += '<input type="checkbox" id="element'+ i +'" ' + itemPreCheck(stile[0].scoredItems[i]) + '><label class="checkbox" for="element'+ i +'" onclick="playSound(sClick)"> '+  stile[0].scoredItems[i].item +'</label><br>'
-                        } 
+                        }
                     }
                     async function getFormValues () {
                         const {value: formValues} = await swal({
@@ -875,9 +875,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     }
 
                     getFormValues();
-                    
+
                 }
-                
+
 
             }
         }
@@ -1279,17 +1279,17 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, $timeou
         //console.log($scope.next);
 
     }
-    
+
     $scope.dirStatus = function (tile) {
         if(tile.scoredItems.length == 0) return;
 
         // Number of successfully passed times
         var successfully = 0;
         // Number of times it is possible to pass this tile
-        var possible = 0 
+        var possible = 0
         for(let i=0;i<tile.scoredItems.length;i++){
             if(tile.scoredItems[i].item == "checkpoint" && !tile.isDropTile){
-                
+
             }else{
                 possible++;
             }
@@ -1314,7 +1314,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, $timeou
     $scope.toggle_scored = function (num) {
         playSound(sClick);
         try {
-            var possible = 0 
+            var possible = 0
             for(let i=0;i<$scope.stiles[num].scoredItems.length;i++){
                 if($scope.stiles[num].scoredItems[i].item == "checkpoint" && !$scope.stiles[num].isDropTile){
 
@@ -1335,7 +1335,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, $timeou
                     if( $scope.stiles[num].scoredItems[i].item != "checkpoint" ||  $scope.stiles[num].isDropTile){
                         selectableHtml += '<input type="checkbox" id="element'+ i +'" ' + itemPreCheck($scope.stiles[num].scoredItems[i]) + '><label class="checkbox" for="element'+ i +'" onclick="playSound(sClick)"> '+ $scope.stiles[num].scoredItems[i].item +'</label><br>'
                     }
-                    
+
                 }
                 async function getFormValues () {
                     const {value: formValues} = await swal({
@@ -1402,7 +1402,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, $timeou
                     if (formValues) {
                       for(let i=0;i<formValues.length;i++){
                           $scope.stiles[num].scoredItems[i].scored = formValues[i];
-                      }  
+                      }
                       $scope.$apply();
                       $timeout($uibModalInstance.close, 300);
                     }
@@ -1411,7 +1411,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, $timeou
                 getFormValues();
             }
             //$scope.stiles[num].scored = !$scope.stiles[num].scored;
-            
+
         } catch (e) {
 
         }
@@ -1583,7 +1583,7 @@ app.directive('tile', function () {
                 var successfully = 0;
                 // Number of times it is possible to pass this tile
                 var possible = 0;
-                
+
                 for(let i=0;i<tile.index.length;i++){
                     for(let j=0;j<$scope.$parent.stiles[tile.index[i]].scoredItems.length;j++){
                         if($scope.$parent.stiles[tile.index[i]].scoredItems[j].item == "checkpoint" && !$scope.$parent.stiles[tile.index[i]].isDropTile){
