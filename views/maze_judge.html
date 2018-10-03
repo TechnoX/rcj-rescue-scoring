@@ -1,7 +1,8 @@
 <nav class="navbar" style="background-color: #e74c3c; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%">
     <!-- Navbar content -->
     <div class="col-md-6 col-sm4 col-12">
-        <li class="navbar-brand" href="#"><i class="fas fa-spinner fa-spin fa-fw"></i> {{team.name}}</li>
+        <li class="navbar-brand" href="#" ng-show="!networkError"><i class="fas fa-sync" ng-class="{'fa-spin' : sync > 0}"></i> {{team.name}}</li>
+        <li class="navbar-brand" href="#" ng-show="networkError"><i class="fas fa-exclamation-triangle" style="color: #f1c40f;"></i> Network ERROR {{team.name}}</li>
     </div>
     <div class="col-md-3 col-sm4 col-7">
         <i class="fas fa-calculator fa-2x" aria-hidden="true"></i>
@@ -51,7 +52,7 @@
                             {{field}}
                         </td>
                     </tr>
-                    
+
                     <tr>
                         <th>
                             {{'common.league' | translate}}
@@ -89,6 +90,17 @@
         <button class="btn btn-success" type="button" ng-click="infochecked()" ng-disabled="!(checkTeam && checkRound && checkMember && checkMachine)"><i class="fas fa-check-circle fa-2x" aria-hidden="true"> {{'maze.judge.confirm' | translate}}</i></button>
     </div>
     <div ng-show="checked">
+      <div class="alert alert-warning" role="alert" ng-show="networkError">
+        <h4 class="alert-heading">{{'maze.judge.networkError' | translate}}</h4>
+        <div class="row">
+            <div class="col-md-10">
+                <p>{{'maze.judge.networkErrorDescription' | translate}}</p>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-warning" type="button" ng-click="saveEverything()">{{'maze.judge.reSend' | translate}}</button>
+            </div>
+        </div>
+      </div>
         <div class="row">
             <div class="col-md-4 col-lg-3" style="margin-bottom:30px;">
                 <button class="btn btn-success" style="margin:0 10px 10px 0;" type="button" ng-click="toggleTime()"><i class="fas fa-stopwatch" aria-hidden="true"> {{ startedTime ? 'maze.judge.tim_stop' : 'maze.judge.tim_start' |translate }}</i></button>
@@ -121,8 +133,7 @@
                                 </button>
                             </span>
                                     <div style="background-color: #F2F2F2; width:100px; text-align: center;">
-                                        <img src="/images/loader2.gif" alt="" ng-show="lopProcessing" style="height:100%; width:auto;">
-                                        <span class="count" ng-show="!lopProcessing">{{LoPs}}</span>
+                                        <span class="count">{{LoPs}}</span>
                                     </div>
                                     <span class="input-group-btn">
                                 <button type="button" class="btn btn-success" ng-click="increment()">
@@ -140,9 +151,8 @@
                                 <strong>{{'maze.judge.return' | translate}}</strong><br>
                                 <img src="/images/maze_bonus.png" class="img-thumbnail" width=100px height=100px ng-style="{'background-color': exitBonus?'#2ecc71':'#D91E18'}">
                                 <div style="position:absolute; top:30px; left:25px;">
-                                    <img src="/images/loader2.gif" class="" ng-show="exitBonusP" style="" width=7 0px height=70px>
-                                    <i class="fas fa-check fa-fw fa-5x" ng-show="exitBonus && !exitBonusP" style="color:#27ae60; opacity:0.9;"></i>
-                                    <i class="fas fa-times fa-fw fa-5x" ng-show="!exitBonus && !exitBonusP" style="padding-top:4px; color:#e74c3c; opacity:0.9;"></i>
+                                    <i class="fas fa-check fa-fw fa-5x" ng-show="exitBonus" style="color:#27ae60; opacity:0.9;"></i>
+                                    <i class="fas fa-times fa-fw fa-5x" ng-show="!exitBonus" style="padding-top:4px; color:#e74c3c; opacity:0.9;"></i>
                                 </div>
 
                             </div>
@@ -195,7 +205,6 @@
                                     <i class="fas fa-check fa-fw tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'done'" style="padding-top:4px; color:#27ae60; opacity:0.9;"></i>
                                     <i class="fas fa-play fa-fw fa-rotate-270 tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'halfdone'" style="padding-top:4px; color:#f4d03f; opacity:0.9;"></i>
                                     <i class="fas fa-times fa-fw tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'undone'" style="padding-top:6px; color:#e74c3c; opacity:0.9;"></i>
-                                    <img src="/images/loader2.gif" class="tile-image" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'processing'">
                                 </div>
                             </td>
                         </tr>
@@ -230,12 +239,11 @@
                                     <i class="fas fa-check fa-fw tile-image tile-font" ng-show="tileStatus(r,(2*length - c),z,$odd && $parent.$odd) == 'done'" style="padding-top:4px; color:#27ae60; opacity:0.9;"></i>
                                     <i class="fas fa-play fa-fw fa-rotate-270 tile-image tile-font" ng-show="tileStatus(r,(2*length - c),z,$odd && $parent.$odd) == 'halfdone'" style="padding-top:4px; color:#f4d03f; opacity:0.9;"></i>
                                     <i class="fas fa-times fa-fw tile-image tile-font" ng-show="tileStatus(r,(2*length - c),z,$odd && $parent.$odd) == 'undone'" style="padding-top:6px; color:#e74c3c; opacity:0.9;"></i>
-                                    <img src="/images/loader2.gif" class="tile-image" ng-show="tileStatus(r,(2*length - c),z,$odd && $parent.$odd) == 'processing'">
                                 </div>
                             </td>
                         </tr>
                     </table>
-                    
+
                     <table class="map" ng-if="sRotate == 180">
                         <tr ng-repeat="r in range(2*length + 1)">
                             <td class="cell" ng-repeat="c in range(2*width + 1)" ng-class="{'tile': $odd && $parent.$odd, 'wall': cells[2*width - c+','+(2*length - r)+','+z].isWall, 'checkpoint': cells[2*width - c+','+(2*length - r)+','+z].tile.checkpoint, 'black': cells[2*width - c+','+(2*length - r)+','+z].tile.black, 'linear': cells[2*width - c+','+(2*length - r)+','+z].isLinear}" ng-click="cellClick(2*width - c, 2*length - r, z, $odd != $parent.$odd, $odd && $parent.$odd)">
@@ -265,12 +273,11 @@
                                     <i class="fas fa-check fa-fw tile-image tile-font" ng-show="tileStatus(2*width - c,2*length - r,z,$odd && $parent.$odd) == 'done'" style="padding-top:4px; color:#27ae60; opacity:0.9;"></i>
                                     <i class="fas fa-play fa-fw fa-rotate-270 tile-image tile-font" ng-show="tileStatus(2*width - c,2*length - r,z,$odd && $parent.$odd) == 'halfdone'" style="padding-top:4px; color:#f4d03f; opacity:0.9;"></i>
                                     <i class="fas fa-times fa-fw tile-image tile-font" ng-show="tileStatus(2*width - c,2*length - r,z,$odd && $parent.$odd) == 'undone'" style="padding-top:6px; color:#e74c3c; opacity:0.9;"></i>
-                                    <img src="/images/loader2.gif" class="tile-image" ng-show="tileStatus(2*width - c,2*length - r,z,$odd && $parent.$odd) == 'processing'">
                                 </div>
                             </td>
                         </tr>
                     </table>
-                    
+
                     <table class="map" ng-if="sRotate == 270">
                         <tr ng-repeat="r in range(2*width + 1)">
                             <td class="cell" ng-repeat="c in range(2*length + 1)" ng-class="{'tile': $odd && $parent.$odd, 'wall': cells[2*width - r+','+c+','+z].isWall, 'checkpoint': cells[2*width - r+','+c+','+z].tile.checkpoint, 'black': cells[2*width - r+','+c+','+z].tile.black, 'linear': cells[2*width - r+','+c+','+z].isLinear}" ng-click="cellClick(2*width - r, c, z, $odd != $parent.$odd, $odd && $parent.$odd)">
@@ -300,7 +307,6 @@
                                     <i class="fas fa-check fa-fw tile-image tile-font" ng-show="tileStatus(2*width - r,c,z,$odd && $parent.$odd) == 'done'" style="padding-top:4px; color:#27ae60; opacity:0.9;"></i>
                                     <i class="fas fa-play fa-fw fa-rotate-270 tile-image tile-font" ng-show="tileStatus(2*width - r,c,z,$odd && $parent.$odd) == 'halfdone'" style="padding-top:4px; color:#f4d03f; opacity:0.9;"></i>
                                     <i class="fas fa-times fa-fw tile-image tile-font" ng-show="tileStatus(2*width - r,c,z,$odd && $parent.$odd) == 'undone'" style="padding-top:6px; color:#e74c3c; opacity:0.9;"></i>
-                                    <img src="/images/loader2.gif" class="tile-image" ng-show="tileStatus(2*width - r,c,z,$odd && $parent.$odd) == 'processing'">
                                 </div>
                             </td>
                         </tr>
@@ -338,16 +344,17 @@
                             <img ng-src="/api/runs/maze/scoresheetimg/{{runId}}/time" style="width: 100%; max-width: 250px" ng-if="fromApproval">
                         </div>
                         <div class="col-sm-5">
-                            <div style="text-align:right;">
-                                <button class="btn btn-danger" type="button" ng-click="confirm()" ng-disabled="startedTime" ng-hide="fromApproval"><i class="fas fa-arrow-right fa-2x" aria-hidden="true"> {{'maze.judge.toSign'| translate}}</i></button>
-                                <button class="btn btn-danger" type="button" ng-click="backApproval()" ng-disabled="startedTime" ng-show="fromApproval && !networkError"><i class="fas fa-arrow-right fa-2x" aria-hidden="true"> Go back to Approval</i></button>
-                            </div>
+                          <div style="text-align:right;">
+                              <button class="btn btn-danger" type="button" ng-click="confirm()" ng-disabled="startedTime" ng-hide="networkError || fromApproval"><i class="fas fa-arrow-right fa-2x" aria-hidden="true"> {{'line.judge.toSign'| translate}}</i></button>
+                              <button class="btn btn-danger" type="button" ng-click="backApproval()" ng-disabled="startedTime" ng-show="fromApproval && !networkError"><i class="fas fa-arrow-right fa-2x" aria-hidden="true"> Go back to Approval</i></button>
+                              <button class="btn btn-danger" type="button" ng-click="handover()" ng-disabled="startedTime" ng-show="networkError">{{'maze.judge.handover' | translate}}</button>
+                          </div>
                         </div>
                     </div>
                 </div>
                 <br>
                 <br>
-                
+
             </div>
         </div>
     </div>
