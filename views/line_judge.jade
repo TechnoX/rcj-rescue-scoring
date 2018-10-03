@@ -6,7 +6,7 @@ html(ng-app="ddApp")
 
     include ./includes/common_component.jade
 
-    script(src="/javascripts/line_judge.js")
+    script(src="/javascripts/line_judge.#{rule}.js")
     script(src="/javascripts/score_calc.js")
     script(src="/javascripts/deflate.js")
     script(src="/javascripts/jquery.qrcode.min.js")
@@ -77,7 +77,7 @@ html(ng-app="ddApp")
                   | {{league}}
               tr
                 th
-                  | Rule
+                  | {{'common.rule' | translate}}
                 td
                   | #{rule}
         br
