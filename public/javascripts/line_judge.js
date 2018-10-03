@@ -977,7 +977,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.sync++;
         $http.put("/api/runs/line/" + runId, run, http_config).then(function (response) {
             $scope.score = response.data.score;
-            $scope.sync--;
             $scope.networkError = false;
             $scope.sync = 0;
         }, function (response) {
