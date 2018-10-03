@@ -20,7 +20,7 @@ function line_calc_score(run) {
         //console.log(mapTiles);
         for (let i = 0; i < run.tiles.length; i++) {
             let tile = run.tiles[i]
-            
+
             for (let j=0; j<tile.scoredItems.length;j++){
                 switch (tile.scoredItems[j].item){
                     case "checkpoint":
@@ -43,7 +43,7 @@ function line_calc_score(run) {
                         score += 5 * tile.scoredItems[j].scored;
                         break;
                 }
-                
+
             }
 
             if (tile.isDropTile) {
@@ -112,10 +112,8 @@ function maze_calc_score(run) {
     var victims = 0
     var rescueKits = 0
 
-    for (let i = 0; i < run.tiles.length; i++) {
-        const tile = run.tiles[i]
-        const coord = tile.x + ',' + tile.y + ',' + tile.z
-
+    for (let coord of Object.keys(run.tiles)) {
+        let tile = run.tiles[coord];
         if (mapTiles[coord].tile.reachable) {
 
             if (tile.scoredItems.speedbump && mapTiles[coord].tile.speedbump) {
@@ -188,5 +186,5 @@ function maze_calc_score(run) {
         score += victims * 10
     }
 
-    return score + "," + victims + "," + Math.min(rescueKits, 12)
+    return score
 }
