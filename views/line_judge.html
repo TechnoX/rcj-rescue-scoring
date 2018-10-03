@@ -92,13 +92,13 @@
     </div>
     <div ng-show="checked">
         <div class="alert alert-warning" role="alert" ng-show="networkError">
-          <h4 class="alert-heading">Network Error</h4>
+          <h4 class="alert-heading">{{'line.judge.networkError' | translate}}</h4>
           <div class="row">
               <div class="col-md-10">
-                  <p>Failed to save the scoring run data on the server. Check the network connection.  The record of scoring run can be continued as it is, but it is not stored in the server.  Please call system administrator.</p>
+                  <p>{{'line.judge.networkErrorDescription' | translate}}</p>
               </div>
               <div class="col-md-2">
-                  <button class="btn btn-warning" type="button" ng-click="saveEverything()">Re send</button>
+                  <button class="btn btn-warning" type="button" ng-click="saveEverything()">{{'line.judge.reSend' | translate}}</button>
               </div>
           </div>
         </div>
@@ -360,7 +360,7 @@
                             <div style="text-align:right;">
                                 <button class="btn btn-danger" type="button" ng-click="confirm()" ng-disabled="startedTime" ng-hide="networkError || fromApproval"><i class="fas fa-arrow-right fa-2x" aria-hidden="true"> {{'line.judge.toSign'| translate}}</i></button>
                                 <button class="btn btn-danger" type="button" ng-click="backApproval()" ng-disabled="startedTime" ng-show="fromApproval && !networkError"><i class="fas fa-arrow-right fa-2x" aria-hidden="true"> Go back to Approval</i></button>
-                                <button class="btn btn-danger" type="button" ng-click="handover()" ng-disabled="startedTime" ng-show="networkError">Hand over to another device</button>
+                                <button class="btn btn-danger" type="button" ng-click="handover()" ng-disabled="startedTime" ng-show="networkError">{{'line.judge.handover' | translate}}</button>
                             </div>
                         </div>
                     </div>

@@ -22,7 +22,7 @@
         "return" : "When login is successful, it returns to the you tried access page."
     },
     "signage": {
-      "create": "Create"  
+      "create": "Create"
     },
     "common": {
         "back": "Back",
@@ -182,6 +182,10 @@
             "toSign": "Go NEXT!",
             "m_score": "@:line.view.m_score",
             "m_score_d": "@:line.view.m_score_d",
+            "networkError": "Network Error",
+            "networkErrorDescription": "Failed to save the scoring-run data on the server. Check the network connection.  The record of scoring run can be continued as it is, but it is not stored in the server.  Please call system manager ASAP!",
+            "handover": "Hand over to another device",
+            "reSend": "Re send",
             "js": {
                 "score_element": "Place checkpoint markers on tiles without scoring elements (rule 3.3.5)",
                 "cantvisit": "Cannot place checkpoint markers on tile that robot can't visit.",
@@ -299,6 +303,10 @@
             "m_kit": "@:maze.view.m_kit",
             "pat": "@:admin.mazeMapEditor.pattern",
             "random": "Random drawing",
+            "networkError": "@:line.judge.networkError",
+            "networkErrorDescription": "@:line.judge.networkErrorDescription",
+            "handover": "@:line.judge.handover",
+            "reSend": "@:line.judge.reSend",
             "js": {
                 "timeup": {
                     "title": "@:line.judge.js.timeup.title",
