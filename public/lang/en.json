@@ -69,7 +69,8 @@
         "tile": "tiles",
         "times": "times",
         "total": "total",
-        "stotal": "Sub Total"
+        "stotal": "Sub Total",
+        "rule": "Rule"
     },
     "accessDenied":{
         "title" : "Access denied",
@@ -185,7 +186,7 @@
             "networkError": "Network Error",
             "networkErrorDescription": "Failed to save the scoring-run data on the server. Check the network connection.  The record of scoring run can be continued as it is, but it is not stored in the server.  Please call system manager ASAP!",
             "handover": "Hand over to another device",
-            "reSend": "Re send",
+            "reSend": "@:line.judge.reSend",
             "js": {
                 "score_element": "Place checkpoint markers on tiles without scoring elements (rule 3.3.5)",
                 "cantvisit": "Cannot place checkpoint markers on tile that robot can't visit.",

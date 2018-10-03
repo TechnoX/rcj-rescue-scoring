@@ -75,7 +75,8 @@
         "tile": "タイル",
         "times": "回",
         "total": "合計",
-        "stotal": "小計"
+        "stotal": "小計",
+        "rule": "ルール"
     },
     "accessDenied":{
         "title" : "アクセス拒絶",
