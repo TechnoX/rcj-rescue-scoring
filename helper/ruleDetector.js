@@ -24,11 +24,12 @@ async function _fromRunId(model,id){
 
 module.exports.getRuleFromLineRunId = async function(id){
   let rule = await _fromRunId(lineRun,id);
-  logger.info(rule);
+  if(!rule) rule = 2018;
   return rule;
 }
 
 module.exports.getRuleFromMazeRunId = async function(id){
   let rule = await _fromRunId(mazeRun,id);
+  if(!rule) rule = 2018;
   return rule;
 }
