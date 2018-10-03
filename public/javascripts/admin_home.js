@@ -3,13 +3,19 @@ var app = angular.module("AdminHome", ['ngTouch','pascalprecht.translate', 'ngCo
 
     updateCompetitionList()
 
+    $http.get("/api/competitions/rules").then(function (response) {
+        $scope.rules = response.data
+        $scope.competitonUseRule = $scope.rules[$scope.rules.length-1];
+    })
+
     $scope.go = function (path) {
         window.location = path
     }
 
     $scope.addCompetition = function () {
         var competition = {
-            name: $scope.competitionName
+            name: $scope.competitionName,
+            rule: $scope.competitonUseRule
         }
 
         $http.post("/api/competitions", competition).then(function (response) {

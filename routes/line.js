@@ -6,13 +6,14 @@ var adminRouter = express.Router()
 const logger = require('../config/logger').mainLogger
 var ObjectId = require('mongoose').Types.ObjectId
 const auth = require('../helper/authLevels')
+const ruleDetector = require('../helper/ruleDetector')
 const ACCESSLEVELS = require('../models/user').ACCESSLEVELS
 
 /* GET home page. */
 
 publicRouter.get('/:competitionid', function (req, res, next) {
   const id = req.params.competitionid
-  
+
   if (!ObjectId.isValid(id)) {
     return next()
   }
@@ -22,18 +23,18 @@ publicRouter.get('/:competitionid', function (req, res, next) {
 
 publicRouter.get('/:competitionid/score', function (req, res, next) {
   const id = req.params.competitionid
-  
+
   if (!ObjectId.isValid(id)) {
     return next()
   }
-  
+
   res.render('line_score', {id: id, user: req.user, get: req.query})
 })
 
 
 publicRouter.get('/view/:runid', function (req, res, next) {
   const id = req.params.runid
-  
+
   if (!ObjectId.isValid(id)) {
     return next()
   }
@@ -68,13 +69,14 @@ privateRouter.get('/checkpoint/:runid', function (req, res, next) {
   res.render('line_checkpoint', {id: id})
 })
 
-privateRouter.get('/judge/:runid', function (req, res, next) {
+privateRouter.get('/judge/:runid', async function (req, res, next) {
   const id = req.params.runid
   if (!ObjectId.isValid(id)) {
     return next()
   }
-  //logger.debug(req)
-  res.render('line_judge', {id: id})
+  
+  let rule = await ruleDetector.getRuleFromLineRunId(id);
+  res.render('line_judge', {id: id, rule: rule})
 })
 
 privateRouter.get('/sign/:runid', function (req, res) {
@@ -83,11 +85,11 @@ privateRouter.get('/sign/:runid', function (req, res) {
 
 adminRouter.get('/approval/:runid', function (req, res) {
   const id = req.params.runid
-  
+
   if (!ObjectId.isValid(id)) {
     return next()
   }
-  
+
   res.render('line_approval', {id: id})
 })
 

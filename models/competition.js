@@ -8,6 +8,8 @@ const logger = require('../config/logger').mainLogger
 const LINE_LEAGUES = ["LineWL","LineNL"]
 const MAZE_LEAGUES = ["Maze"]
 
+const SUPPORT_RULES = ["2018","2019(Draft)"]
+
 const LEAGUES = [].concat(LINE_LEAGUES, MAZE_LEAGUES)
 
 module.exports.LINE_LEAGUES = LINE_LEAGUES
@@ -28,6 +30,7 @@ module.exports.LEAGUES = LEAGUES
 
 const competitionSchema = new Schema({
   name: {type: String, required: true, unique: true},
+  rule: {type: String, enum: SUPPORT_RULES, required: true},
   message: {type: String}
 })
 

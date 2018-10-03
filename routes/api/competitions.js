@@ -42,6 +42,10 @@ publicRouter.get('/', function (req, res) {
     })
 })
 
+publicRouter.get('/rules', function (req, res) {
+    res.send(competitiondb.competition.schema.path('rule').enumValues)
+})
+
 publicRouter.get('/:competition', function (req, res, next) {
     const id = req.params.competition
 
@@ -433,7 +437,8 @@ adminRouter.post('/', function (req, res) {
     const competition = req.body
 
     new competitiondb.competition({
-        name: competition.name
+        name: competition.name,
+        rule: competition.rule
     }).save(function (err, data) {
         if (err) {
             logger.error(err)
