@@ -25,15 +25,16 @@ const lineRunSchema = new Schema({
   field      : {type: ObjectId, ref: 'Field', required: true, index: true},
   map        : {type: ObjectId, ref: 'LineMap', required: true, index: true},
   group     : {type: Number, min: 0},
-  
+
   judges: [{type: ObjectId, ref: 'User'}],
-  
+
   tiles             : [{
     isDropTile: {type: Boolean, default: false},
     scoredItems: [
         {
             item: {type: String, default: ""},
-            scored: {type: Boolean, default: false}
+            scored: {type: Boolean, default: false},
+            count: {type: Number, default: 1}
         }
     ]
     //scored    : {type: Boolean, default: false}
@@ -92,7 +93,7 @@ const lineRunSchema = new Schema({
 
 lineRunSchema.pre('save', function (next) {
   const self = this
-  
+
   self.populate('map', "name finished", function (err, populatedRun) {
     if (err) {
       return next(err)
@@ -100,7 +101,7 @@ lineRunSchema.pre('save', function (next) {
       err = new Error('Map "' + populatedRun.map.name + '" is not finished!')
       return next(err)
     } else {
-      
+
       if (self.isNew) {
           if(self.team){
             LineRun.findOne({

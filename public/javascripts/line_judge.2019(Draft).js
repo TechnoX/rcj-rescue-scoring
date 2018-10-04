@@ -1,3 +1,7 @@
+/*********************************************************************************/
+// This file is a RoboCup Junior Rescue 2019 rule(Draft) correspondence version. //
+/*********************************************************************************/
+
 // register the directive with your app module
 var app = angular.module('ddApp', ['ngTouch', 'ngAnimate', 'ui.bootstrap', 'pascalprecht.translate', 'ngCookies']);
 var marker = {};
@@ -282,12 +286,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                                 $scope.stiles[t.index[j]].scoredItems.push(addSItem);
                             }
 
-                            for(let k=0;k<t.tileType.intersections;k++){
-                                let addSItem = {
-                                    item: "intersection",
-                                    scored: false
-                                };
-                                $scope.stiles[t.index[j]].scoredItems.push(addSItem);
+                            if(t.tileType.intersections > 0){
+                              let addSItem = {
+                                  item: "intersection",
+                                  scored: false,
+                                  count: t.tileType.intersections
+                              };
+                              $scope.stiles[t.index[j]].scoredItems.push(addSItem);
                             }
 
                             if(t.items.rampPoints){

@@ -397,12 +397,12 @@ privateRouter.put('/:runid', function (req, res, next) {
 
   lineRun.findById(id)
   //.select("-_id -__v -competition -round -team -field -score")
-    .populate({
+    .populate([{
       path    : 'map',
       populate: {
         path: 'tiles.tileType'
       }
-    })
+    },"competition"])
     .exec(function (err, dbRun) {
       if (err) {
         logger.error(err)
@@ -852,12 +852,12 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
       })
     }
 
-    lineRun.findById(ObjectId(sheetRunID)).populate({
+    lineRun.findById(ObjectId(sheetRunID)).populate([{
       path    : 'map',
       populate: {
         path: 'tiles.tileType'
       }
-    }).exec(function(err, run) {
+    },"competition"]).exec(function(err, run) {
       if (err) {
         logger.error(err)
         res.status(400).send({
