@@ -19,12 +19,12 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.stiles = [];
     // Map (images etc.) for the tiles
     $scope.mtiles = [];
-    
+
     $scope.victim_list = [];
     $scope.LoPs = [];
 
 
-    
+
     setInterval(function () {
         $scope.get_field();
     }, 10000);
@@ -48,7 +48,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.updateRun(pRunId,pName,pStatus);
       })
   }
-  
+
   $scope.get_field = function () {
       var pRunId,pName,pStatus;
       $http.get("/api/runs/line/find/" + competitionId + "/" +
@@ -68,11 +68,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         }
         if(pRunId == -1 && pName=='No Team') $scope.get_field_signing();
         else $scope.updateRun(pRunId,pName,pStatus);
-        
+
       })
   }
-  
-    
+
+
   $scope.updateRun = function (pRunId,pName,pStatus){
       $scope.runId = pRunId;
       $scope.team = pName;
@@ -99,7 +99,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
       $scope.dRunId = $scope.runId;
       $scope.exist = true;
   }
-  
+
   socket = io(window.location.origin, {
       transports: ['websocket']
     });
@@ -129,9 +129,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 console.log("Updated view from socket.io");
             });
     }
-    
+
   }
-    
+
 
     function loadNewRun() {
         $http.get("/api/runs/line/" + $scope.runId +
@@ -170,9 +170,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     f = true;
                 }
             }
-            
+
             $scope.victim_list = response.data.rescueOrder;
-            
+
 
             // Get the map
             $http.get("/api/maps/line/" + response.data.map +
@@ -210,7 +210,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             console.log("Error: " + response.statusText);
         });
     }
-    
+
     $scope.count_victim_list = function(type){
         let count = 0
         for(victiml of $scope.victim_list){
@@ -243,7 +243,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         socket.emit('unsubscribe', 'runs/' + runId);
         window.location = path
     }
-    
+
     $scope.showElements = function (x, y, z) {
         var mtile = $scope.mtiles[x + ',' + y + ',' + z];
         var isDropTile = false;
@@ -268,7 +268,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             mtile.tileType.gaps > 0 ||
             mtile.tileType.intersections > 0) * mtile.index.length;
         // Add the number of possible passes for drop tiles
-        
+
          if (isDropTile) {
                 for(let i=0;i<stile.length;i++){
                     if(stileIndex[i] < $scope.mapIndexCount-2){
@@ -308,9 +308,9 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     }
 
                     getFormValues();
-                    
+
                 }
-                
+
 
             }
         }
@@ -348,16 +348,16 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             console.log("Closed modal");
         });
     }
-    
+
     $scope.navColor = function (stat){
         if(stat == 2) return '#e74c3c';
         if(stat == 3) return '#e67e22';
         return '#7f8c8d';
     }
-    
+
     $scope.get_field();
 
-    
+
 
 
 }]).directive("tileLoadFinished", function ($timeout) {
@@ -478,7 +478,7 @@ app.directive('tile', function () {
                 var successfully = 0;
                 // Number of times it is possible to pass this tile
                 var possible = 0;
-                
+
                 for(let i=0;i<tile.index.length;i++){
                     possible += $scope.$parent.stiles[tile.index[i]].scoredItems.length;
                 }
@@ -537,7 +537,7 @@ app.directive('tile', function () {
     };
 });
 
-    
+
 app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, stiles, nineTile,startTile) {
     $scope.mtile = mtile;
     $scope.stiles = stiles;
@@ -551,7 +551,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, 
             //console.log("TOP");
                     $scope.next.top = mtile.index[i];
             }
-            
+
         if (mtile.x + 1 == Number(sp[0]) && mtile.y == Number(sp[1])) {
             //console.log("RIGHT");
 
@@ -559,7 +559,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, 
         }
         if (mtile.x == Number(sp[0]) && mtile.y + 1 == Number(sp[1])) {
             //console.log("BOTTOM");
-           
+
                     $scope.next.bottom = mtile.index[i];
         }
         if (mtile.x - 1 == Number(sp[0]) && mtile.y == Number(sp[1])) {
@@ -568,7 +568,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, 
         }
 
     }
-    
+
     $scope.dirStatus = function (tile) {
         if(tile.scoredItems.length == 0) return;
 
@@ -592,7 +592,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, 
         else
             return "";
     }
-    
+
     $scope.toggle_view = function (num) {
         try {
             if($scope.stiles[num].scoredItems.length == 1){
@@ -613,7 +613,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, 
                         ,
                       focusConfirm: false,
                       preConfirm: () => {
-                        
+
                       }
                     })
                 }
@@ -621,7 +621,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, 
                 getFormValues();
             }
             //$scope.stiles[num].scored = !$scope.stiles[num].scored;
-            
+
         } catch (e) {
 
         }
@@ -631,7 +631,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, 
     $scope.tilerotate = function (tilerot) {
         return tilerot;
     }
-    
+
      $scope.isDropTile = function (tile) {
         if (!tile || tile.index.length == 0)
             return;
@@ -646,7 +646,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, mtile, 
             tile.y == startTile.y &&
             tile.z == startTile.z;
     }
-    
+
     $scope.rotateRamp = function (direction) {
         var ro;
         switch (direction) {
