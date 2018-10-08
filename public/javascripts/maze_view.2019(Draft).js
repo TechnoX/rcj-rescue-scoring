@@ -9,15 +9,16 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.countWords = ["Bottom", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Ninth"];
 
 
+    $scope.MisIdent = 0;
     $scope.cells = {};
     $scope.tiles = {};
-    
+
      //$cookies.remove('sRotate')
     if($cookies.get('sRotate')){
         $scope.sRotate = Number($cookies.get('sRotate'));
     }
     else $scope.sRotate = 0;
-    
+
     if (typeof runId !== 'undefined') {
         loadNewRun();
     }
@@ -35,6 +36,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.LoPs = data.LoPs;
                 $scope.foundVictims = data.foundVictims;
                 $scope.distKits = data.distKits;
+                $scope.MisIdent = data.misidentification;
 
                 // Verified time by timekeeper
                 $scope.minutes = data.time.minutes;
@@ -49,7 +51,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.$apply();
                 console.log("Updated view from socket.io");
             });
-            
+
             socket.emit('subscribe', 'runs/map/' + runId);
             socket.on('mapChange', function (data) {
                 $scope.getMap(data.newMap._id);
@@ -74,11 +76,12 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.LoPs = response.data.LoPs;
             $scope.foundVictims = response.data.foundVictims;
             $scope.distKits = response.data.distKits;
+            $scope.MisIdent = response.data.misidentification;
 
             // Verified time by timekeeper
             $scope.minutes = response.data.time.minutes;
             $scope.seconds = response.data.time.seconds;
-            
+
             try{
 
                 $scope.cap_sig = response.data.sign.captain;
@@ -95,8 +98,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     response.data.tiles[i].z] = response.data.tiles[i];
             }
             // Get the map
-            
-            
+
+
 
         }, function (response) {
             console.log("Error: " + response.statusText);
@@ -105,13 +108,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             }
         });
     }
-    
+
     $scope.getMap = function(mapId){
         $http.get("/api/maps/maze/" + mapId +
                 "?populate=true").then(function (response) {
                 $scope.startTile = response.data.startTile;
                 $scope.height = response.data.height;
-                
+
                 $scope.width = response.data.width;
                 $scope.length = response.data.length;
                 for (let i = 0; i < response.data.cells.length; i++) {
@@ -130,11 +133,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 console.log("Error: " + response.statusText);
             });
     }
-    
+
     $scope.reliability = function(){
         return Math.max(($scope.foundVictims + $scope.distKits - $scope.LoPs)*10,0);
     }
-    
+
     $scope.reliabilityLoPs = function(){
         return Math.min(($scope.foundVictims + $scope.distKits)*10, $scope.LoPs*10);
     }
@@ -146,18 +149,18 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         }
         return arr;
     }
-    
+
     $scope.changeFloor = function (z){
         $scope.z = z;
         $timeout($scope.tile_size, 100);
     }
-    
+
     $scope.tileRot = function (r){
         $scope.sRotate += r;
         if($scope.sRotate >= 360)$scope.sRotate -= 360;
         else if($scope.sRotate < 0) $scope.sRotate+= 360;
         $timeout($scope.tile_size, 0);
-        
+
         $cookies.put('sRotate', $scope.sRotate, {
           path: '/'
         });
@@ -354,13 +357,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         else
             return "";
     }
-    
+
     $scope.tilePoint = function (x, y, z, isTile) {
         // If this is a non-existent tile
         var cell = $scope.cells[x + ',' + y + ',' + z];
         var victimPoint = cell.isLinear ? 10:25;
         //console.log(victimPoint);
-        
+
         if (!cell)
             return;
         if (!isTile)
@@ -526,7 +529,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         }
 
     }
-    
+
     $scope.getParam = function (key) {
         var str = location.search.split("?");
         if (str.length < 2) {
@@ -570,11 +573,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             console.log("Closed modal");
         });
     };
-    
+
     $scope.tile_size = function () {
         try {
             var b = $('.tilearea');
-            
+
             if($scope.sRotate%180 == 0){
                 var tilesize_w = (b.width()-2*(width+1)) / (width+1 + (width+1)/12);
                 console.log(tilesize_w);
@@ -599,7 +602,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $('.tile-point').css('line-height', tilesize + "px");
             $('.cell').css('padding', tilesize/12);
             if (b.height() == 0) $timeout($scope.tile_size, 500);
-            
+
             if($scope.sRotate%180 == 0){
                 $('#wrapTile').css('width', (tilesize+10)*width+11);
             }else{
@@ -635,13 +638,13 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, cell, t
         (cell.tile.victims.right != "None") ||
         (cell.tile.victims.bottom != "None") ||
         (cell.tile.victims.left != "None");
-    
+
      $scope.lightStatus = function(light, kit){
         if(light) return true;
         if(kit > 0) return true;
         return false;
     }
-    
+
     $scope.kitStatus = function(light, kit, type){
         switch(type){
                 case 'Heated':
@@ -659,7 +662,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, cell, t
         }
         return false;
     }
-    
+
     $scope.modalRotate = function(dir){
         var ro;
         switch(dir){
@@ -689,7 +692,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, cell, t
                 return 'left';
         }
     }
-    
+
     $scope.ok = function () {
         $uibModalInstance.close();
     };
