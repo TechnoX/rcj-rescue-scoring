@@ -40,15 +40,17 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.countWords = ["Bottom", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Ninth"];
     $scope.z = 0;
 
+    $scope.MisIdent = 0;
+
     $scope.cells = {};
     $scope.tiles = {};
-    
+
     //$cookies.remove('sRotate')
     if($cookies.get('sRotate')){
         $scope.sRotate = Number($cookies.get('sRotate'));
     }
     else $scope.sRotate = 0;
-    
+
     if (typeof runId !== 'undefined') {
         $scope.runId = runId;
         loadNewRun();
@@ -68,6 +70,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 $scope.LoPs = data.LoPs;
                 $scope.foundVictims = data.foundVictims;
                 $scope.distKits = data.distKits;
+                $scope.MisIdent = data.misidentification;
 
                 // Verified time by timekeeper
                 $scope.minutes = data.time.minutes;
@@ -101,6 +104,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.LoPs = response.data.LoPs;
             $scope.foundVictims = response.data.foundVictims;
             $scope.distKits = response.data.distKits;
+            $scope.MisIdent = response.data.misidentification;
 
             // Verified time by timekeeper
             $scope.minutes = response.data.time.minutes;
@@ -125,7 +129,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                 console.log(response.data);
                 $scope.startTile = response.data.startTile;
                 $scope.height = response.data.height;
-               
+
                 $scope.width = response.data.width;
                 $scope.length = response.data.length;
 
@@ -149,28 +153,28 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             }
         });
     }
-    
+
     $scope.reliability = function(){
         return Math.max(($scope.foundVictims + $scope.distKits - $scope.LoPs)*10,0);
     }
-    
+
     $scope.reliabilityLoPs = function(){
         return Math.min(($scope.foundVictims + $scope.distKits)*10, $scope.LoPs*10);
     }
-    
+
     $scope.changeFloor = function (z){
         playSound(sClick);
         $scope.z = z;
         $timeout($scope.tile_size, 100);
     }
-    
+
     $scope.tileRot = function (r){
         playSound(sClick);
         $scope.sRotate += r;
         if($scope.sRotate >= 360)$scope.sRotate -= 360;
         else if($scope.sRotate < 0) $scope.sRotate+= 360;
         $timeout($scope.tile_size, 0);
-        
+
         $cookies.put('sRotate', $scope.sRotate, {
           path: '/'
         });
@@ -376,13 +380,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         else
             return "";
     }
-    
+
     $scope.tilePoint = function (x, y, z, isTile) {
         // If this is a non-existent tile
         var cell = $scope.cells[x + ',' + y + ',' + z];
         var victimPoint = cell.isLinear ? 10:25;
         console.log(victimPoint);
-        
+
         if (!cell)
             return;
         if (!isTile)
@@ -571,7 +575,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             console.log("Closed modal");
         });
     };
-    
+
     $scope.getParam = function (key) {
         var str = location.search.split("?");
         if (str.length < 2) {
@@ -671,11 +675,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
 
     }
-    
+
     $scope.tile_size = function () {
         try {
             var b = $('.tilearea');
-            
+
             if($scope.sRotate%180 == 0){
                 var tilesize_w = (b.width()-2*(width+1)) / (width+1 + (width+1)/12);
                 console.log(tilesize_w);
@@ -700,7 +704,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $('.tile-point').css('font-size', tilesize/2 + "px");
             $('.tile-point').css('line-height', tilesize + "px");
             if (b.height() == 0) $timeout($scope.tile_size, 500);
-            
+
             if($scope.sRotate%180 == 0){
                 $('#wrapTile').css('width', (tilesize+10)*width+11);
             }else{
@@ -736,13 +740,13 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, cell, t
         (cell.tile.victims.right != "None") ||
         (cell.tile.victims.bottom != "None") ||
         (cell.tile.victims.left != "None");
-    
+
     $scope.lightStatus = function(light, kit){
         if(light) return true;
         if(kit > 0) return true;
         return false;
     }
-    
+
     $scope.kitStatus = function(light, kit, type){
         switch(type){
                 case 'Heated':
@@ -760,7 +764,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, cell, t
         }
         return false;
     }
-    
+
     $scope.modalRotate = function(dir){
         var ro;
         switch(dir){
@@ -815,10 +819,10 @@ document.addEventListener('touchend', event => {
     lastTouch = now;
 }, true);
 
-window.AudioContext = window.AudioContext || window.webkitAudioContext;  
+window.AudioContext = window.AudioContext || window.webkitAudioContext;
 var context = new AudioContext();
 
-var getAudioBuffer = function(url, fn) {  
+var getAudioBuffer = function(url, fn) {
   var req = new XMLHttpRequest();
   req.responseType = 'arraybuffer';
 
@@ -836,7 +840,7 @@ var getAudioBuffer = function(url, fn) {
   req.send('');
 };
 
-var playSound = function(buffer) {  
+var playSound = function(buffer) {
   var source = context.createBufferSource();
   source.buffer = buffer;
   source.connect(context.destination);
@@ -844,7 +848,7 @@ var playSound = function(buffer) {
 };
 
 var sClick,sInfo,sError;
-window.onload = function() {  
+window.onload = function() {
   getAudioBuffer('/sounds/click.mp3', function(buffer) {
       sClick = buffer;
   });
