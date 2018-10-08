@@ -169,7 +169,7 @@ adminRouter.get('/recalculate', function (req, res, next) {
       $gte: 6
     }
   })
-    .populate("map")
+    .populate(["map","competition"])
     .exec(function (err, dbRuns) {
     if (err) {
       logger.error(err)
@@ -421,7 +421,7 @@ publicRouter.get('/:runid', function (req, res, next) {
  * @apiVersion 1.0.0
  *
  * @apiParam {String} runid The run id
- 
+
  * @apiParam {Object[]}     [tiles]
  * @apiParam {Boolean}      [tiles.isDropTile]
  * @apiParam {Object}       [tiles.scoredItems]
@@ -469,7 +469,7 @@ privateRouter.put('/:runid', function (req, res, next) {
 
     mazeRun.findById(id)
         //.select("-_id -__v -competition -round -team -field -score")
-        .populate("map")
+        .populate(["map","competition"])
         .exec(function (err, dbRun) {
             if (err) {
                 logger.error(err)
@@ -549,9 +549,9 @@ privateRouter.put('/:runid', function (req, res, next) {
                 }
 
                 delete run.tiles
-                
+
                 if(run.status != dbRun.status) statusUpdate = true;
-                
+
                 err = copyProperties(run, dbRun)
                 if (err) {
                     logger.error(err)
@@ -561,7 +561,7 @@ privateRouter.put('/:runid', function (req, res, next) {
                     })
                 }
                 var retScoreCals = scoreCalculator.calculateMazeScore(dbRun).split(",")
-                
+
                 dbRun.score = retScoreCals[0]
                 dbRun.foundVictims = retScoreCals[1]
                 dbRun.distKits = retScoreCals[2]
@@ -655,7 +655,7 @@ adminRouter.get('/scoresheet', function (req, res, next) {
   query.populate([
     {
       path  : "competition",
-      select: "name"
+      select: "name rule"
     },
     {
       path  : "round",
@@ -763,12 +763,12 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
       })
     }
 
-    mazeRun.findById(ObjectId(sheetRunID)).populate({
+    mazeRun.findById(ObjectId(sheetRunID)).populate([{
       path    : 'map',
       populate: {
         path: 'tiles.tileType'
       }
-    }).exec(function(err, run) {
+    },"competition"]).exec(function(err, run) {
       if (err) {
         logger.error(err)
         res.status(400).send({
@@ -776,13 +776,18 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
           //err: err.message
         })
       } else {
-        const sheetData = scoreSheetProcessMaze.processScoreSheet(run.scoreSheet.positionData, req.file.path);
+        const sheetData = scoreSheetProcessMaze.processScoreSheet(run.competition.rule ,run.scoreSheet.positionData, req.file.path);
 
         run.scoreSheet.fullSheet = sheetData.rawSheet;
         run.scoreSheet.specialAttention = false;
 
         run.LoPs = sheetData.lops.indexes[0] * 10 + sheetData.lops.indexes[1];
         run.scoreSheet.LoPImage = sheetData.lops.img;
+
+        if(sheetData.misidentification){  //for 2019 rule
+          run.misidentification = sheetData.misidentification.indexes[0] * 10 + sheetData.misidentification.indexes[1];
+          run.scoreSheet.misidentificationImage = sheetData.misidentification.img;
+        }
 
         run.time.minutes = sheetData.time.indexes[0];
         if (run.time.minutes > 8) {
@@ -937,6 +942,10 @@ privateRouter.get('/scoresheetimg/:run/:img', function (req, res, next) {
           checkAndSend(run.scoreSheet.exitBonusImage);
           break;
 
+        case "misidentification":
+          checkAndSend(run.scoreSheet.misidentificationImage);
+          break;
+
         case "time":
           checkAndSend(run.scoreSheet.timeImage);
           break;
@@ -1004,7 +1013,7 @@ adminRouter.get('/apteam/:cid/:teamid/:group', function (req, res, next) {
                 //res.send(dbRun);
                 //logger.debug(dbRun);
 
-               
+
                         return res.status(200).send({
                             msg: "Saved change",
                             data: resp

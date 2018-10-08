@@ -562,7 +562,7 @@ adminRouter.get('/scoresheet', function (req, res, next) {
   query.populate([
     {
       path  : "competition",
-      select: "name"
+      select: "name rule"
     },
     {
       path  : "round",
@@ -866,7 +866,7 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
         })
       } else {
         if(!run) return;
-        const sheetData = scoreSheetLineProcess.processScoreSheet(run.scoreSheet.positionData, req.file.path);
+        const sheetData = scoreSheetLineProcess.processScoreSheet(run.competition.rule,run.scoreSheet.positionData, req.file.path);
 
         run.scoreSheet.fullSheet = sheetData.rawSheet;
 
