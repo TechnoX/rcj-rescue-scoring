@@ -5,6 +5,7 @@ var privateRouter = express.Router()
 var adminRouter = express.Router()
 var ObjectId = require('mongoose').Types.ObjectId
 const auth = require('../helper/authLevels')
+const ruleDetector = require('../helper/ruleDetector')
 const ACCESSLEVELS = require('../models/user').ACCESSLEVELS
 
 /* GET home page. */
@@ -33,15 +34,16 @@ publicRouter.get('/:competitionid/score', function (req, res, next) {
 })
 
 
-publicRouter.get('/view/:runid', function (req, res, next) {
+publicRouter.get('/view/:runid', async function (req, res, next) {
     const id = req.params.runid
 
     if (!ObjectId.isValid(id)) {
         return next()
     }
-
+    let rule = await ruleDetector.getRuleFromMazeRunId(id);
     res.render('maze_view', {
-        id: id
+        id: id,
+        rule: rule
     })
 })
 
@@ -64,33 +66,43 @@ publicRouter.get('/view/field/:competitionid/:fieldid', function (req, res) {
     })
 })
 
-privateRouter.get('/judge/:runid', function (req, res, next) {
+privateRouter.get('/judge/:runid', async function (req, res, next) {
     const id = req.params.runid
 
     if (!ObjectId.isValid(id)) {
         return next()
     }
+    let rule = await ruleDetector.getRuleFromMazeRunId(id);
     res.render('maze_judge', {
         id: id,
-        user: req.user
+        user: req.user,
+        rule: rule
     })
 })
 
-privateRouter.get('/sign/:runid', function (req, res) {
+privateRouter.get('/sign/:runid', async function (req, res) {
+    const id = req.params.runid
+
+    if (!ObjectId.isValid(id)) {
+        return next()
+    }
+    let rule = await ruleDetector.getRuleFromMazeRunId(id);
     res.render('maze_sign', {
-        id: req.params.runid
+        id: id,
+        rule: rule
     })
 })
 
-adminRouter.get('/approval/:roundid', function (req, res) {
+adminRouter.get('/approval/:roundid', async function (req, res) {
     const id = req.params.roundid
 
     if (!ObjectId.isValid(id)) {
         return next()
     }
-
+    let rule = await ruleDetector.getRuleFromMazeRunId(id);
     res.render('maze_approval', {
-        id: id
+        id: id,
+        rule: rule
     })
 })
 

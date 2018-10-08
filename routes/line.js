@@ -32,13 +32,14 @@ publicRouter.get('/:competitionid/score', function (req, res, next) {
 })
 
 
-publicRouter.get('/view/:runid', function (req, res, next) {
+publicRouter.get('/view/:runid', async function (req, res, next) {
   const id = req.params.runid
 
   if (!ObjectId.isValid(id)) {
     return next()
   }
-  res.render('line_view', {id: id})
+  let rule = await ruleDetector.getRuleFromLineRunId(id);
+  res.render('line_view', {id: id, rule: rule})
 })
 
 
@@ -74,23 +75,29 @@ privateRouter.get('/judge/:runid', async function (req, res, next) {
   if (!ObjectId.isValid(id)) {
     return next()
   }
-  
+
   let rule = await ruleDetector.getRuleFromLineRunId(id);
   res.render('line_judge', {id: id, rule: rule})
 })
 
-privateRouter.get('/sign/:runid', function (req, res) {
-  res.render('line_sign', {id: req.params.runid})
-})
-
-adminRouter.get('/approval/:runid', function (req, res) {
+privateRouter.get('/sign/:runid', async function (req, res) {
   const id = req.params.runid
-
   if (!ObjectId.isValid(id)) {
     return next()
   }
 
-  res.render('line_approval', {id: id})
+  let rule = await ruleDetector.getRuleFromLineRunId(id);
+  res.render('line_sign', {id: id, rule: rule})
+})
+
+adminRouter.get('/approval/:runid', async function (req, res) {
+  const id = req.params.runid
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  let rule = await ruleDetector.getRuleFromLineRunId(id);
+  res.render('line_approval', {id: id, rule: rule})
 })
 
 publicRouter.all('*', function (req, res, next) {
