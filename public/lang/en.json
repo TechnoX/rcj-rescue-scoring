@@ -277,7 +277,8 @@
             "m_rampb": "Ramp bottom",
             "m_rampt": "Ramp top",
             "m_flash": "Flash within 15cm from victim:",
-            "m_kit": "Delivered rescue kits:"
+            "m_kit": "Delivered rescue kits:",
+            "misidentification": "Misidentification"
         },
         "judge": {
             "before": "@:line.judge.before",
@@ -308,6 +309,7 @@
             "networkErrorDescription": "@:line.judge.networkErrorDescription",
             "handover": "@:line.judge.handover",
             "reSend": "@:line.judge.reSend",
+            "misidentification": "@:maze.view.misidentification",
             "js": {
                 "timeup": {
                     "title": "@:line.judge.js.timeup.title",
@@ -335,7 +337,8 @@
             "rescue": "Successful victim identification",
             "kits": "Successful rescue deployment",
             "calc": "Score calculation",
-            "item": "Item points"
+            "item": "Item points",
+            "misidentification": "@:maze.view.misidentification"
         }
     },
     "admin": {

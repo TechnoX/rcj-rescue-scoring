@@ -280,7 +280,8 @@
             "m_rampb": "坂（下）",
             "m_rampt": "坂（上）",
             "m_flash": "被災者から15cm以内でランプを点滅",
-            "m_kit": "レスキューキットを配布"
+            "m_kit": "レスキューキットを配布",
+            "misidentification": "誤発見"
         },
         "judge": {
             "before": "@:line.judge.before",
@@ -311,6 +312,7 @@
             "networkErrorDescription": "@:line.judge.networkErrorDescription",
             "handover": "@:line.judge.handover",
             "reSend": "@:line.judge.reSend",
+            "misidentification": "@:maze.view.misidentification",
             "js": {
                 "timeup": {
                     "title": "@:line.judge.js.timeup.title",
@@ -338,7 +340,8 @@
             "rescue": "救助数",
             "kits": "配置成功数",
             "calc": "得点計算",
-            "item": "項目得点"
+            "item": "項目得点",
+            "misidentification": "@:maze.view.misidentification"
         }
     },
     "admin": {
@@ -408,7 +411,8 @@
             "st2": "2.タイマースタート",
             "st3": "3.記録確認中",
             "st4": "4.競技終了済み",
-            "st5": "5.記録承認済み",
+            "st5": "5.承認作業中",
+            "st6": "5.承認済み",
             "selectAll": "全選択",
             "delS": "選択した競技を削除"
         },
@@ -520,6 +524,7 @@
             "st3": "@:admin.lineRun.st3",
             "st4": "@:admin.lineRun.st4",
             "st5": "@:admin.lineRun.st5",
+            "st6": "@:admin.lineRun.st6",
             "selectAll": "@:admin.lineRun.selectAll",
             "delS": "@:admin.lineRun.delS"
         },
