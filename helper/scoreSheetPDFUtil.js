@@ -1,6 +1,7 @@
 const qr = require('qr-image');
 const defs = require('./scoreSheetUtil');
 
+
 /**
  * Draws a checkbox with text
  * @param doc The document to draw the checkbox in
@@ -221,7 +222,7 @@ module.exports.drawTimeInputField = function (doc, config, pos_x, pos_y) {
 module.exports.drawYesNoField = function (doc, config, pos_x, pos_y, text) {
   const columnText = ["Y", "N"];
   const rowText = [""];
-  return this.drawNumberInputField(doc, config, pos_x, pos_y, text + " (Yes/No):", columnText, rowText)
+  return this.drawNumberInputField(doc, config, pos_x, pos_y, text + " (Y/N):", columnText, rowText)
 };
 
 module.exports.drawVictimInputField = function (doc, config, pos_x, pos_y, amount, text) {

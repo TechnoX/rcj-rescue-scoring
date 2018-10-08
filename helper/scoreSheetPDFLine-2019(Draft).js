@@ -7,15 +7,16 @@ const logger = require('../config/logger').mainLogger;
  * Defines some important numbers for the placement of different objects in the scoresheet.
  */
 const globalConfig = {
-  positionMarkersSize: 20, // Must be the largest object
+  paperSize: {x:595.28 ,y:841.89},
+  positionMarkersSize: 25, // Must be the largest object
   positionMarkers: [
-    {x: 10, y: 20}, // upper left
-    {x: 10, y: 760}, // lower left
-    {x: 580, y: 760}, // lower right
-    {x: 580, y: 20}, // upper right
+    {x: 10, y: 10}, // upper left
+    {x: 10, y: 810}, // lower left
+    {x: 560, y: 810}, // lower right
+    {x: 560, y: 10}, // upper right
   ],
   margin: {
-    left: 30,
+    left: 35,
     top: 100
   },
   checkboxSize: 7,
@@ -314,11 +315,11 @@ function drawRun(doc, config, scoringRun) {
   savePos(pdf.drawPositionMarkers(doc, config), "posMarkers");
   //Draw competition name & logo
   pdf.drawText(doc,50,23,scoringRun.competition.name + "  Scoresheet",20,"black");
-  pdf.drawImage(doc,430,5,"public/images/2019logo.png",130,60,"right");
+  pdf.drawImage(doc,420,5,"public/images/2019logo.png",130,60,"right");
   pdf.drawText(doc,50,50,"Applied rule: " + scoringRun.competition.rule,10,"black");
   pdf.drawText(doc,50,65,"Number of checkpoint markers: " + scoringRun.map.numberOfDropTiles,10,"black");
   pdf.drawText(doc,50,80,"Number of victims  L:" + scoringRun.map.victims.live + "  D:" + scoringRun.map.victims.dead,10,"black");
-  pdf.drawText(doc,100,770,"This score sheet will automatically be recognized. Please handle it carefully and do not fold it.",10,"red");
+  pdf.drawText(doc,90,820,"This score sheet will automatically be recognized. Please handle it carefully and do not fold it.",10,"red");
 
   let pf = drawFields(doc, pos_x, pos_y, config, scoringRun.map, stiles);
   savePos(pf, "field");
@@ -356,7 +357,7 @@ function drawRun(doc, config, scoringRun) {
   pos_x = pos_x_origin;
   nextItemBelow(pdf.drawTextInputField(doc, config, pos_x, pos_y, "Team:", config.signature.width, config.signature.height), "signTeam");
   nextItemBelow(pdf.drawTextInputField(doc, config, pos_x, pos_y, "Referee:", config.signature.width, config.signature.height), "signRef");
-  nextItemRight(pdf.drawYesNoField(doc, config, pos_x, pos_y, "Comments?"), "comment", 80);
+  nextItemRight(pdf.drawYesNoField(doc, config, pos_x, pos_y, "Comments?"), "comment", 60);
   nextItemBelow(pdf.drawYesNoField(doc, config, pos_x, pos_y, "Enter manually"), "enterManually");
   pos_x = pos_x_origin;
 
@@ -364,7 +365,7 @@ function drawRun(doc, config, scoringRun) {
 }
 
 function drawLOPInputField(doc, config, pos_x, pos_y, text) {
-  const columnText = ["N", "0", "1", "2", "3", "4", "5", "6", "7", "8+"];
+  const columnText = ["N", "0", "1", "2", "3", "4", "5", "6+"];
   const rowText = [""];
   return pdf.drawNumberInputField(doc, config, pos_x, pos_y, text, columnText, rowText)
 }
@@ -379,7 +380,10 @@ module.exports.generateScoreSheet = function (res, rounds) {
 
   let posDatas = [];
   for (let i = 0; i < rounds.length; i++) {
-    doc.addPage({margin: 10});
+    doc.addPage({
+      margin: 10,
+      size: [globalConfig.paperSize.x,globalConfig.paperSize.y]
+    });
     posDatas.push(drawRun(doc, globalConfig, rounds[i]))
   }
 

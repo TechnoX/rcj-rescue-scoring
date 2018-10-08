@@ -7,15 +7,16 @@ const logger = require('../config/logger').mainLogger;
  * Defines some important numbers for the placement of different objects in the scoresheet.
  */
 const globalConfig = {
-  positionMarkersSize: 30, // Must be the largest object
+  paperSize: {x:595.28 ,y:841.89},
+  positionMarkersSize: 25, // Must be the largest object
   positionMarkers: [
-    {x: 10, y: 20}, // upper left
-    {x: 10, y: 760}, // lower left
-    {x: 580, y: 760}, // lower right
-    {x: 580, y: 20}, // upper right
+    {x: 10, y: 10}, // upper left
+    {x: 10, y: 810}, // lower left
+    {x: 560, y: 810}, // lower right
+    {x: 560, y: 10}, // upper right
   ],
   margin: {
-    left: 30,
+    left: 35,
     top: 100
   },
   checkboxSize: 7,
@@ -211,7 +212,7 @@ function drawRun(doc, config, scoringRun) {
   pdf.drawText(doc,50,20,scoringRun.competition.name + "  Scoresheet",20,"black");
   pdf.drawText(doc,50,50,"Applied rule: 2018",10,"black");
   pdf.drawImage(doc,430,5,"public/images/competition_logo.jpg",130,100,"right");
-  pdf.drawText(doc,100,770,"This score sheet will automatically be recognized. Please handle it carefully and do not fold it.",10,"red");
+  pdf.drawText(doc,90,820,"This score sheet will automatically be recognized. Please handle it carefully and do not fold it.",10,"red");
 
   let pf = drawFields(doc, pos_x, pos_y, config, scoringRun.map);
   savePos(pf, "field");
@@ -230,13 +231,18 @@ function drawRun(doc, config, scoringRun) {
 }
 
 module.exports.generateScoreSheet = function (res, rounds) {
-  let doc = new PDFDocument({autoFirstPage: false});
+  let doc = new PDFDocument({
+    autoFirstPage: false
+  });
 
   doc.pipe(res);
 
   let posDatas = [];
   for (let i = 0; i < rounds.length; i++) {
-    doc.addPage({margin: 10});
+    doc.addPage({
+      margin: 10,
+      size: [globalConfig.paperSize.x,globalConfig.paperSize.y]
+    });
     posDatas.push(drawRun(doc, globalConfig, rounds[i]))
   }
 
