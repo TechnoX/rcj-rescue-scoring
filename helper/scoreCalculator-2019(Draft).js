@@ -202,5 +202,7 @@ module.exports.calculateMazeScore = function (run) {
     score += victims * 10
   }
 
+  score -= Math.min(run.misidentification*5,score)
+
   return score+","+victims+","+Math.min(rescueKits, 12)
 }

@@ -1,41 +1,14 @@
-const cv = require('opencv4nodejs');
-const proc = require('./scoreSheetProcessUtil');
+"use strict"
+const logger = require('../config/logger').mainLogger
+const rule2018 = require('./scoreSheetProcessLine-2018')
+const rule2019Draft = require('./scoreSheetProcessLine-2019(Draft)')
 
-module.exports.processScoreSheet = function (posDataRaw, scoreSheetFileName) {
-  const posData = JSON.parse(JSON.stringify(posDataRaw)); // Deep copy
-  for (let i = 0; i < posData.length; i++) {
-    // The input posData has a small resolution of less than 10px per checkbox, while the
-    // input image has a much higher resolution that would be good to use. So we scale the
-    // posData elements.
-    proc.scalePosData(posData[i].posData, 2);
+module.exports.processScoreSheet = function(rule, posDataRaw, scoreSheetFileName){
+  switch(rule){
+    case '2019(Draft)':
+      return rule2019Draft.processScoreSheet(posDataRaw, scoreSheetFileName);
+    case '2018':
+    default:
+      return rule2018.processScoreSheet(posDataRaw, scoreSheetFileName);
   }
-
-  const mat = cv.imread(scoreSheetFileName).bgrToGray();
-  mat.drawRectangle(new cv.Rect(700, 200, 100, 100), new cv.Vec3(255, 255, 255), 200, 4, 0);
-
-  const processedPosMarkers = proc.processPosMarkers(mat, proc.findPosdataByDescr(posData, 'posMarkers'));
-  const normalizedSheet = processedPosMarkers.normalizedMat;
-
-  let sheetData = {};
-  sheetData.rawSheet = processedPosMarkers.img;
-  sheetData.qr = proc.processPosdataQR(normalizedSheet, proc.findPosdataByDescr(posData, 'meta'));
-  sheetData.enterManually = proc.processPosdataMatrixText(normalizedSheet, proc.findPosdataByDescr(posData, 'enterManually'));
-  sheetData.evacuation = proc.processPosdataMatrixText(normalizedSheet, proc.findPosdataByDescr(posData, 'evacuation'));
-  sheetData.checkpoints = [];
-  for (let i = 0, posDataCB; (posDataCB = proc.findPosdataByDescr(posData, 'cb' + i)) !== null; i++) {
-    if (posDataCB === null) {
-      break;
-    }
-    sheetData.checkpoints.push(proc.processPosdataMatrixText(normalizedSheet, posDataCB))
-  }
-  sheetData.victimOrder = proc.processPosdataMatrixText(normalizedSheet, proc.findPosdataByDescr(posData, 'victims'));
-  sheetData.time = proc.processPosdataMatrixText(normalizedSheet, proc.findPosdataByDescr(posData, 'time'));
-  sheetData.signTeam = proc.processPosdataText(normalizedSheet, proc.findPosdataByDescr(posData, 'signTeam'));
-  sheetData.signRef = proc.processPosdataText(normalizedSheet, proc.findPosdataByDescr(posData, 'signRef'));
-  sheetData.exitBonus = proc.processPosdataMatrixText(normalizedSheet, proc.findPosdataByDescr(posData, 'exitBonus'));
-  sheetData.hasComment = proc.processPosdataMatrixText(normalizedSheet, proc.findPosdataByDescr(posData, 'comment'));
-  sheetData.acceptResult = proc.processPosdataMatrixText(normalizedSheet, proc.findPosdataByDescr(posData, 'acceptResult'));
-  sheetData.tiles = proc.processFieldData(normalizedSheet, proc.findPosdataByDescr(posData, 'field'));
-
-  return sheetData;
-};
+}

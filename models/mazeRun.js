@@ -32,7 +32,7 @@ const mazeRunSchema = new Schema({
   field      : {type: ObjectId, ref: 'Field', required: true, index: true},
   map        : {type: ObjectId, ref: 'MazeMap', required: true, index: true},
   group      : {type: Number, min: 0},
-  
+
   tiles    : [{
     x          : {type: Number, integer: true, required: true},
     y          : {type: Number, integer: true, required: true},
@@ -57,6 +57,7 @@ const mazeRunSchema = new Schema({
     }
   }],
   LoPs     : {type: Number, min: 0, default: 0},
+  misidentification: {type: Number, min:0, default:0},
   foundVictims: {type: Number, min:0, default: 0},
   distKits: {type: Number, min:0, default: 0},
   exitBonus: {type: Boolean, default: false},
@@ -80,6 +81,7 @@ const mazeRunSchema = new Schema({
     specialAttention : {type: Boolean, default: true}, // If the referee was not sure if he made a mistake, the "enter manually" flag is marked. During approval pecial attention should be taken.
 
     LoPImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
+    misidentificationImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
     tileDataImage: { data: Buffer, contentType: String }, // Image representing the up to two arena levels
     exitBonusImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
     timeImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
@@ -91,7 +93,7 @@ const mazeRunSchema = new Schema({
 
 mazeRunSchema.pre('save', function (next) {
   const self = this
-  
+
   self.populate('map', "name finished", function (err, populatedRun) {
     if (err) {
       return next(err)
@@ -99,7 +101,7 @@ mazeRunSchema.pre('save', function (next) {
       err = new Error('Map "' + populatedRun.map.name + '" is not finished!')
       return next(err)
     } else {
-      
+
       if (self.isNew) {
         if (self.team){
             MazeRun.findOne({
