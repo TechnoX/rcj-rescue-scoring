@@ -186,5 +186,7 @@ function maze_calc_score(run) {
         score += victims * 10
     }
 
+    score -= Math.min(run.misidentification*5,score)
+
     return score
 }
