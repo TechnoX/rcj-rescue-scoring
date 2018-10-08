@@ -152,7 +152,8 @@
             "cref_sign": "副審サイン",
             "checkpoint": "チェックポイント",
             "m_score": "得点した方向",
-            "m_score_d": "ロボットが得点した方向（進んだ方向）のタイルをタップしてください．"
+            "m_score_d": "ロボットが得点した方向（進んだ方向）のタイルをタップしてください．",
+            "rescuedVictims": "救助済みの被災者"
         },
         "judge": {
             "before": "次の画面に進む前に，以下の情報を『主審と一緒に』もう一度確認してください．",
@@ -191,6 +192,8 @@
             "networkErrorDescription": "競技データをサーバに保存できませんでした．ネットワーク接続を確認してください．競技記録はこのまま続行できますが，サーバには保存されません．システム管理者を呼んでください！",
             "handover": "他のデバイスにハンドオーバ",
             "reSend": "再送信",
+            "rescuedVictims": "@:line.view.rescuedVictims",
+            "rescuedVictimsMes" : "救助済みの被災者を削除するには，ダブルクリック（PC）か左にスワイプ（モバイル）します．",
             "js": {
                 "score_element": "チェックポイントマーカーは，得点項目のあるタイルには設置できません． (ルール 3.3.5)",
                 "cantvisit": "ロボットの通ることのできないタイルをチェックポイントに指定することはできません．",
@@ -233,7 +236,9 @@
             "checkPointScore": "チェックポイント得点",
             "exitBonus": "脱出ボーナス",
             "calc": "得点計算",
-            "item": "項目得点"
+            "item": "項目得点",
+            "rescuedVictims": "@:line.view.rescuedVictims",
+            "rescuedVictimsMes" : "@:line.judge.rescuedVictimsMes"
 
         }
     },

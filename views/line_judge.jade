@@ -211,8 +211,8 @@ html(ng-app="ddApp")
                     button.btn.btn-success(style='margin:0 10px 10px 0;', type='button', ng-click='victimRegist()')
                       i.fas.fa-arrow-down(aria-hidden='true')   Register
                   hr
-                  h6 Rescued Victims
-                  span(style='font-size:9px;') To delete a rescued victim, double click or swipe left (Mobile Device)
+                  h6 {{'line.judge.rescuedVictims' | translate}}
+                  span(style='font-size:9px;') {{'line.judge.rescuedVictimsMes' | translate}}
                   table(border='1', style='width:100%; text-align: center; margin-top: 10px;', ng-repeat='j in range(6)', ng-if='victim_list.length > j*5 || j == 0')
                     tbody
                       tr

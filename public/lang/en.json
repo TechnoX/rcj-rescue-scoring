@@ -147,7 +147,8 @@
             "cref_sign": "Co-Referee Sign",
             "checkpoint": "Checkpoint",
             "m_score": "Direction scored",
-            "m_score_d": "Please tap the tile of the direction the team scored."
+            "m_score_d": "Please tap the tile of the direction the team scored.",
+            "rescuedVictims": "Rescued Victims"
         },
         "judge": {
             "before": "Before the start of the run record, please confirm that the following information is correct.",
@@ -186,7 +187,9 @@
             "networkError": "Network Error",
             "networkErrorDescription": "Failed to save the scoring-run data on the server. Check the network connection.  The record of scoring run can be continued as it is, but it is not stored in the server.  Please call system manager ASAP!",
             "handover": "Hand over to another device",
-            "reSend": "@:line.judge.reSend",
+            "reSend": "ReSend",
+            "rescuedVictims": "@:line.view.rescuedVictims",
+            "rescuedVictimsMes" : "To delete a rescued victim, double click or swipe left (Mobile Device)"
             "js": {
                 "score_element": "Place checkpoint markers on tiles without scoring elements (rule 3.3.5)",
                 "cantvisit": "Cannot place checkpoint markers on tile that robot can't visit.",
@@ -230,7 +233,9 @@
             "checkPointScore": "Check Point Score",
             "exitBonus": "Exit Bonus",
             "calc": "Score calculation",
-            "item": "Item points"
+            "item": "Item points",
+            "rescuedVictims": "@:line.view.rescuedVictims",
+            "rescuedVictimsMes" : "@:line.judge.rescuedVictimsMes"
 
         }
     },
