@@ -8,7 +8,7 @@ COPY ./docker/nginx.conf /etc/nginx/nginx.conf
 RUN set -x && \
     yum update -y && \
     yum install -y nginx mongodb-org && \
-    yum install gcc-c++ make cmake git python -y && \
+    yum install gcc-c++ make cmake git python wget -y && \
     curl -sL https://rpm.nodesource.com/setup_10.x | bash - && \
     yum install nodejs -y
 
