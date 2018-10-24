@@ -12,11 +12,16 @@ RUN set -x && \
     curl -sL https://rpm.nodesource.com/setup_10.x | bash - && \
     yum install nodejs -y
 
-RUN mkdir -p /opt
-RUN git clone https://github.com/rrrobo/rcj-rescue-scoring-japan /opt/rcj-scoring-system
+RUN mkdir -p /opt/rcj-scoring-system
 WORKDIR /opt/rcj-scoring-system
+RUN wget https://raw.githubusercontent.com/rrrobo/rcj-rescue-scoring-japan/master/package.json
 RUN npm install
 RUN npm install bower -g
+
+RUN git clone https://github.com/rrrobo/rcj-rescue-scoring-japan /opt/rcj-scoring-system-tmp
+RUN mv /opt/rcj-scoring-system-tmp/* /opt/rcj-scoring-system-tmp/.[^\.]* ./
+RUN rm -R /opt/rcj-scoring-system-tmp
+RUN ls -a
 RUN bower install --allow-root
 RUN mkdir logs
 
@@ -24,6 +29,9 @@ WORKDIR /
 RUN mkdir /data/db -p
 COPY ./docker/start.sh /start.sh
 RUN chmod +x start.sh
+
+RUN yum remove -y cmake wget
+
 ENTRYPOINT ["/start.sh"]
 
 EXPOSE 80
