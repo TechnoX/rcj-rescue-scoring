@@ -50,6 +50,7 @@
   ],
   "private": true,
   "resolutions": {
-    "popper.js": "^1.10.8"
+    "popper.js": "^1.10.8",
+    "angular": "1.7.5"
   }
 }
