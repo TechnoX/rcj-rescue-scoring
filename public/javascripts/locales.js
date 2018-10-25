@@ -9,7 +9,7 @@ app.controller("LangController", ['$scope', '$http', '$translate', function ($sc
         setTimeout(
             function () {
                 location.href = document.referrer;
-            }, 500);
+            }, 1000);
 
     };
 
