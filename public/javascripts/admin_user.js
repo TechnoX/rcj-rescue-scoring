@@ -21,7 +21,7 @@ var app = angular.module("AdminUser", ['ngTouch','pascalprecht.translate', 'ngCo
     }
 
     $scope.removeUser = function (user) {
-        'ngTouch',({
+        swal({
             title: "Remove user?",
             text: "Are you sure you want to remove the user: " +
                 user.username + '?',
