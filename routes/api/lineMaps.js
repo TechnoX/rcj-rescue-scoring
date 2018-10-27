@@ -79,8 +79,8 @@ adminRouter.post('/', function (req, res) {
         items    : {
           obstacles : tile.items.obstacles,
           speedbumps: tile.items.speedbumps,
-          noCheckPoint: tile.items.noCheckPoint,
-          rampPoints: tile.items.rampPoints
+          noCheckPoint: undefied2false(tile.items.noCheckPoint),
+          rampPoints: undefied2false(tile.items.rampPoints)
         },
         levelUp  : tile.levelUp,
         levelDown: tile.levelDown
@@ -510,6 +510,11 @@ publicRouter.all('*', function (req, res, next) {
 privateRouter.all('*', function (req, res, next) {
   next()
 })
+
+function undefied2false(data){
+    if(data) return true;
+    else return false;
+}
 
 module.exports.public = publicRouter
 module.exports.private = privateRouter
