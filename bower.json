@@ -1,6 +1,6 @@
 {
   "name": "rcjscoring",
-  "version": "0.0.0",
+  "version": "19.1.0",
   "homepage": "https://gitlab.ida.liu.se/sebgu182",
   "authors": [
     "Sebastian Gustavsson <segu182@student.liu.se>"
@@ -13,12 +13,12 @@
   ],
   "dependencies": {
     "jquery": "^3.3.1",
-    "socket.io": "^2.0.4",
-    "socket.io-client": "^2.0.4",
-    "async": "^2.6.0",
+    "socket.io": "^2.1.1",
+    "socket.io-client": "^2.1.1",
+    "async": "^2.6.1",
     "alertifyjs": "~1.0.3",
     "datatables": "~1.10.9",
-    "angular": "1.7.0",
+    "angular": "1.7.5",
     "angular-datatables": "^5.0.0",
     "jSignature": "^2.1.2",
     "angular-animate": "^1.7.0",
@@ -26,20 +26,20 @@
     "tether": "^1.4.0",
     "dateformat": "^0.4.1",
     "angular-bootstrap-datetimepicker": "^1.1.4",
-    "angular-translate": "^2.17.0",
-    "angular-translate-storage-cookie": "^2.17.0",
-    "angular-translate-storage-local": "^2.17.0",
-    "angular-translate-loader-static-files": "^2.17.0",
-    "angular-translate-handler-log": "^2.17.0",
-    "angular-cookies": "^1.7.0",
+    "angular-translate": "^2.18.1",
+    "angular-translate-storage-cookie": "^2.18.1",
+    "angular-translate-storage-local": "^2.18.1",
+    "angular-translate-loader-static-files": "^2.18.1",
+    "angular-translate-handler-log": "^2.18.1",
+    "angular-cookies": "^1.7.5",
     "bootstrap": "v4.0.0-beta",
     "angular-bootstrap": "git://github.com/rrrobo/ab-for-rcj.git",
     "bootstrap-fileinput": "^4.4.7",
-    "pdfjs": "https://github.com/mozilla/pdf.js/releases/download/v1.10.88/pdfjs-1.10.88-dist.zip",
+    "pdfjs": "git://github.com/mozilla/pdf.js.git",
     "ng-file-upload": "^12.2.13",
-    "sweetalert2": "^7.18.0",
+    "sweetalert2": "^7.28.11",
     "lightbox2": "^2.10.0",
-    "fontawesome": "https://use.fontawesome.com/releases/v5.0.13/fontawesome-free-5.0.13.zip",
+    "fontawesome": "https://use.fontawesome.com/releases/v5.5.0/fontawesome-free-5.5.0-web.zip",
     "cheet.js": "^0.3.3",
     "angular-touch": "1.7.0"
   },
@@ -51,6 +51,7 @@
   "private": true,
   "resolutions": {
     "popper.js": "^1.10.8",
-    "angular": "1.7.5"
+    "angular": "1.7.5",
+    "angular-translate-storage-cookie" : "^2.18.1"
   }
 }
