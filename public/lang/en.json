@@ -189,7 +189,7 @@
             "handover": "Hand over to another device",
             "reSend": "ReSend",
             "rescuedVictims": "@:line.view.rescuedVictims",
-            "rescuedVictimsMes" : "To delete a rescued victim, double click or swipe left (Mobile Device)"
+            "rescuedVictimsMes" : "To delete a rescued victim, double click or swipe left (Mobile Device)",
             "js": {
                 "score_element": "Place checkpoint markers on tiles without scoring elements (rule 3.3.5)",
                 "cantvisit": "Cannot place checkpoint markers on tile that robot can't visit.",
