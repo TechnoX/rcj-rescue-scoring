@@ -79,9 +79,9 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
-/** Setting up the correct view engine - we are using jade */
+/** Setting up the correct view engine - we are using pug */
 app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'jade')
+app.set('view engine', 'pug')
 
 
 /*
@@ -233,7 +233,7 @@ app.use(function (err, req, res, next) {
             // in production :(
             else {
                 res.status(err.status || 500)
-                res.render('error.jade', {
+                res.render('error', {
                     message: err.message,
                     error: {}
                 })
