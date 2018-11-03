@@ -49,22 +49,28 @@ const lineMapSchema = new Schema({
         integer : true,
         required: true,
         default : 0,
-        min     : 0
+        min     : 0,
+        set: v => v === '' ? 0 : v
       },
       speedbumps: {
         type    : Number,
         integer : true,
         required: true,
         default : 0,
-        min     : 0
+        min     : 0,
+        set: v => v === '' ? 0 : v
       },
       rampPoints: {
         type: Boolean,
-        default: false
+        default: false,
+        required: true,
+        set: v => v === '' ? false : v
       },
       noCheckPoint: {
         type: Boolean,
-        default: false
+        default: false,
+        required: true,
+        set: v => v === '' ? false : v
       }
     },
     index    : {type: [Number], min: 0},
@@ -78,21 +84,23 @@ const lineMapSchema = new Schema({
     z: {type: Number, integer: true, required: true, min: 0}
   },
   numberOfDropTiles: {type: Number, required: true, min: 0},
-  finished         : {type: Boolean, default: false},
+  finished         : {type: Boolean, default: false, set: v => v === '' ? false : v},
   victims: {
       live:{
           type: Number,
           integer: true,
           min: 0,
           max: 100,
-          default: 0
+          default: 0,
+          set: v => v === '' ? 0 : v
       },
       dead:{
           type: Number,
           integer: true,
           min: 0,
           max: 100,
-          default: 0
+          default: 0,
+          set: v => v === '' ? 0 : v
       }
   }
 })
