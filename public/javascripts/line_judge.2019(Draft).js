@@ -762,7 +762,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             var total = (mtile.items.obstacles > 0 ||
             mtile.items.speedbumps > 0 ||
             mtile.tileType.gaps > 0 ||
-            mtile.tileType.intersections > 0 || mtile.items.rampPoints) * mtile.index.length;
+            mtile.tileType.intersections > 0 || undefined2false(mtile.items.rampPoints)) * mtile.index.length;
 
             // Add the number of possible passes for drop tiles
             if (isDropTile) {
@@ -1139,6 +1139,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         return tile.x == $scope.startTile.x &&
             tile.y == $scope.startTile.y &&
             tile.z == $scope.startTile.z;
+    }
+    
+    function undefined2false(tmp){
+        if(tmp) return true;
+        return false;
     }
 
     $scope.tile_size = function () {
