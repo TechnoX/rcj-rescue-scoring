@@ -18,6 +18,7 @@ function authViewRun(user, run, level) {
     if(run.sign.captain != ""){
         return 2
     }
+    if(run.status == 6) return 2
     return 0
   }
   
@@ -37,6 +38,7 @@ function authViewRun(user, run, level) {
   if(run.sign.captain != ""){
         return 2
   }
+  if(run.status == 6) return 2
   return 0
 }
 module.exports.authViewRun = authViewRun
