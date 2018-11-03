@@ -5,11 +5,11 @@ app.controller("LangController", ['$scope', '$http', '$translate', function ($sc
         window.location = path
     }
     $scope.changeLanguage = function (langKey) {
-        $translate.use(langKey);
-        setTimeout(
-            function () {
+        $translate.use(langKey).then(
+            function(){
                 location.href = document.referrer;
-            }, 1000);
+            }
+        );
 
     };
 
