@@ -492,7 +492,9 @@ app.directive('lvlDropTarget', ['$rootScope', 'uuid', function ($rootScope, uuid
                         }).tileType,
                         items: {
                             obstacles: 0,
-                            speedbumps: 0
+                            speedbumps: 0,
+                            noCheckPoint: false,
+                            rampPoints: false
                         }
                     };
                     // We dragged an non-existing tile
