@@ -4,8 +4,8 @@ html(ng-app="ddApp")
     script.
       var runId = "#{id}"
 
-    include ./includes/common_component.jade
-    script(src="/javascripts/maze_sign.#{rule}.js")
+    include ./includes/common_component
+    script(src="/javascripts/maze_sign."+rule+".js")
     script(src="/javascripts/translate_config.js")
     link(href="/stylesheets/fredrik.css" rel="stylesheet")
 

@@ -1,21 +1,29 @@
 html(ng-app="ddApp")
   head
-    title Rescue Line View
+    title Rescue Line Sign
     script.
       var runId = "#{id}"
 
-    include ./includes/common_component.jade
-    script(src="/javascripts/line_view.#{rule}.js")
+    include ./includes/common_component
+    script(src="/javascripts/line_sign."+rule+".js")
     script(src="/javascripts/translate_config.js")
     link(href="/stylesheets/fredrik.css" rel="stylesheet")
     meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0")
 
   body(ng-controller="ddController")
-    nav.navbar(style='background-color: #3498db; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%')
+
+    script(src='/components/jSignature/libs/jSignature.min.js')
+    script.
+      $(document).ready(function() {
+      $("#cap_sig").jSignature()
+      $("#ref_sig").jSignature()
+      $("#refas_sig").jSignature()
+      })
+    nav.navbar(style='background-color: #e67e22; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%')
       // Navbar content
       .col-md-6.col-sm4.col-12
         li.navbar-brand(href='#')
-          i.fas.fa-spinner.fa-spin.fa-fw
+          i.fa.fa-spinner.fa-spin.fa-fw
           |  {{team}}
       .col-md-3.col-sm4.col-7
         i.fas.fa-calculator.fa-2x(aria-hidden='true')
@@ -26,47 +34,8 @@ html(ng-app="ddApp")
     .container.nav-cont
       .row
         .col-md12
-          button.btn.btn-secondary(style='margin:0 10px 10px 0;', type='button', ng-click="getParam('return')? go(getParam('return')):go('/line/' + competition_id)")
-            i.fa.fa-undo(aria-hidden='true')  {{'common.back' | translate}}
-      .row
-        .col-md-12
-          #lops.card
-            h3.card-header
-              i.fa.fa-info-circle(aria-hidden='true')
-              |  {{'line.view.info' | translate}}
-            table.table(style='margin-bottom:0;')
-              tbody
-                tr
-                  th
-                    | {{'common.competition' | translate}}
-                  td
-                    | {{competition}}
-                tr
-                  th
-                    | {{'common.round' | translate}}
-                  td
-                    | {{round}}
-                tr
-                  th
-                    | {{'common.field' | translate}}
-                  td
-                    | {{field}}
-                tr
-                  th
-                    | {{'common.team' | translate}}
-                  td
-                    | {{team}}
-                tr
-                  th
-                    | {{'common.league' | translate}}
-                  td
-                    | {{league}}
-                tr
-                  th
-                    | {{'common.rule' | translate}}
-                  td
-                    | #{rule}
-      br
+          button.btn.btn-secondary(style='margin:0 10px 10px 0;', type='button', ng-click="go('/line/judge/' + runId + '?return=' + getParam('return'))")
+            i.far.fa-edit(aria-hidden='true')  {{'line.sign.to_judge' | translate}}
       .row
         .col-md-5.col-lg-4(style='margin-bottom:70px;')
           #card_area.scrool(style='overflow: scroll;')
@@ -78,12 +47,12 @@ html(ng-app="ddApp")
                 div(ng-repeat='dropTile in range(actualUsedDropTiles+1) track by $index')
                   .card-text(style='display:flex;')
                     div(style='width:40%;font-size:10px;', align='center')
-                      | {{$index==0?'line.view.start':'line.view.checkpoint'|translate}}
+                      | {{$index==0?'line.sign.start':'line.sign.checkpoint'|translate}}
                       b(style='font-size:15px;color:#FF8300;') {{$index==0?'':$index}}
                       br
                       i.fas.fa-forward.fa-rotate-90(aria-hidden='true')
                       br
-                      |  {{!$last?'line.view.checkpoint':'line.view.Lexit' | translate}}
+                      |  {{!$last?'line.sign.checkpoint':'line.sign.Lexit' | translate}}
                       b(style='font-size:15px;color:#FF8300;') {{!$last?$index+1:''}}
                     div(style='width:60%;position: relative;')
                       .input-group(style='width:100%; height:35px;position:absolute;top: 0;bottom: 0;margin: auto;')
@@ -101,7 +70,32 @@ html(ng-app="ddApp")
                 |  {{'line.judge.rescue' | translate}}　
                 span.badge.badge-danger {{evacuationLevel-1?'line.judge.high':'line.judge.low' | translate}}
               .card-body
-                h6 {{'line.view.rescuedVictims' | translate}}
+                //
+                  <div style="display:flex;" class="card-text">
+                  <div style="width:40%;font-size:20px;" align="center">
+                  {{'common.lops' | translate}}
+                  </div>
+                  <div style="width:60%;position: relative;">
+                  <div class="input-group" style="width:100%; height:35px;position:absolute;top: 0;bottom: 0;margin: auto;">
+                  <span class="input-group-btn">
+                  <button type="button" class="btn btn-danger" disabled>
+                  <i class="fas fa-minus" aria-hidden="true"></i>
+                  </button>
+                  </span>
+                  <div style="background-color: #F2F2F2; width:100px; text-align: center;">
+                  <img src="/images/loader2.gif" alt="" ng-show="processing[actualUsedDropTiles] == true" style="height:100%; width:auto;">
+                  <span class="count" ng-show="processing[actualUsedDropTiles] != true">{{LoPs[actualUsedDropTiles]?LoPs[actualUsedDropTiles]:0}}</span>
+                  </div>
+                  <span class="input-group-btn">
+                  <button type="button" class="btn btn-success" disabled>
+                  <i class="fas fa-plus" aria-hidden="true"></i>
+                  </button>
+                  </span>
+                  </div>
+                  </div>
+                  </div>
+                  <hr>
+                h6 {{'line.sign.rescuedVictims' | translate}}
                 table(border='1', style='width:100%; text-align: center; margin-top: 10px;', ng-repeat='j in range(6)', ng-if='victim_list.length > j*5 || j == 0')
                   tbody
                     tr
@@ -117,14 +111,14 @@ html(ng-app="ddApp")
                 hr
               .card-body
                 p.card-text
-                  | {{'line.view.exit' | translate}}
+                  | {{'line.judge.exit' | translate}}
                   span.badge.badge-info 20　points
                 .col-md-12(style='position: relative;')
                   img.img-thumbnail(src='/images/line_bonus.png', width='186.3px', height='118px', ng-style="{'background-color': exitBonus?'#2ecc71':'#D91E18'}")
                   div(style='position:absolute; top:25px; left:65px;')
                     i.fas.fa-check.fa-fw.fa-5x(ng-show='exitBonus', style='color:#27ae60; opacity:0.9;')
                     i.fas.fa-times.fa-fw.fa-5x(ng-show='!exitBonus', style='padding-top:4px; color:#e74c3c; opacity:0.9;')
-        .col-md-7.col-lg-8.tilearea
+        .col-md-7.col-lg-8.tilearea(style='margin-top:-45px;')
           div(style='text-align:left;float:left;')
             .btn-group
               span.input-group-addon
@@ -176,7 +170,7 @@ html(ng-app="ddApp")
               h3 {{'line.sign.checkpoint'|translate}} {{'common.stotal' | translate}}
             h1 {{checkTotal()}} {{'common.point' | translate}}
       h2
-        | {{'line.sign.rescue' | translate}} 【{{evacuationLevel-1?'line.sign.high':'line.sign.low' | translate}}】 / {{'line.sign.exitBonus' | translate}}
+        | {{'line.sign.rescue' | translate}} 【{{evacuationLevel-1?'line.judge.high':'line.judge.low' | translate}}】 / {{'line.sign.exitBonus' | translate}}
       .alert.alert-info(style='margin-bottom:50px;text-align:center;', role='alert')
         .row
           .col-md-5
@@ -270,7 +264,7 @@ html(ng-app="ddApp")
           .col-md-3
             p(style='height:30px;')
             h1 {{score}} {{'common.point' | translate}}
-      .alert.alert-success(style='margin:30 0 0 0;', role='alert')
+      .alert.alert-success(role='alert')
         .row
           .col-md-6
             .d-none.d-sm-block
@@ -284,33 +278,34 @@ html(ng-app="ddApp")
             .d-sm-none
               i.fas.fa-stopwatch.fa-2x(aria-hidden='true')
                 | : {{minutes}} {{'common.min' | translate}} {{seconds}} {{'common.sec' | translate}}
-      .row(style='margin:30 0 30 0;')
+      br
+      br
+      .row
         .col-md-12
           #sign.card
             h3.card-header
               i.fas.fa-comment(aria-hidden='true')
-              |  {{'line.view.comment' | translate}}
+              | {{'line.sign.comment' | translate}}
             .card-body
               p.card-text.text-info
-                | {{'line.view.comment_e' | translate}}
+                | {{'line.sign.comment_e' | translate}}
               .form-group
-                textarea.form-control(ng-model='comment', rows='3', disabled='')
+                textarea.form-control(ng-model='comment', rows='3')
             h3.card-header
               i.fas.fa-pencil-alt(aria-hidden='true')
-              |  {{'line.view.sign' | translate}}
+              |  {{'line.sign.sign' | translate}}
             .card-body
-              p.card-text.text-warning(translate='line.view.sign_e')
-              .sign-box.sign-box-cap
-                p.sign-box-title.sign-box-title-cap(translate='line.view.cap_sign')
-                img(ng-src='{{cap_sig}}', style='max-width: 100%;height: auto;')
-              hr
-              .sign-box.sign-box-ref
-                p.sign-box-title.sign-box-title-ref(translate='line.view.ref_sign')
-                img(ng-src='{{ref_sig}}', style='max-width: 100%;height: auto;')
-              hr
-              .sign-box.sign-box-ref
-                p.sign-box-title.sign-box-title-ref(translate='line.view.cref_sign')
-                img(ng-src='{{refas_sig}}', style='max-width: 100%;height: auto;')
-
-
-    include ./includes/footer.jade
+              strong
+              p.card-text.text-warning(translate='line.sign.sign_e')
+                strong
+              h2(translate='line.sign.cap_sign')
+              #cap_sig.confirmation
+              br
+              h2(translate='line.sign.ref_sign')
+              #ref_sig.confirmation
+              br
+              h2(translate='line.sign.cref_sign')
+              #refas_sig.confirmation
+      .row(style='margin:100 0 100 0;')
+        button.btn.btn-danger.btn-lg.btn-block(type='button', style='padding:30 0 30 0', ng-click='send_sign()')
+          i.fas.fa-paper-plane.fa-2x(aria-hidden='true')  {{'line.sign.submit' | translate}}

@@ -1,17 +1,17 @@
 html(ng-app="ddApp")
   head
-    title Rescue Line Approval
+    title Rescue Line View
     script.
       var runId = "#{id}"
 
-    include ./includes/common_component.jade
-    script(src="/javascripts/line_approval.#{rule}.js")
+    include ./includes/common_component
+    script(src="/javascripts/line_view."+rule+".js")
     script(src="/javascripts/translate_config.js")
     link(href="/stylesheets/fredrik.css" rel="stylesheet")
     meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0")
 
   body(ng-controller="ddController")
-    nav.navbar(style='background-color: #8e44ad; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%')
+    nav.navbar(style='background-color: #3498db; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%')
       // Navbar content
       .col-md-6.col-sm4.col-12
         li.navbar-brand(href='#')
@@ -67,16 +67,63 @@ html(ng-app="ddApp")
                   td
                     | #{rule}
       br
-      .row(style='margin-bottom: 10px;')
-        .col-6
-          button.btn.btn-danger(style='margin:0 10px 10px 0;', type='button', ng-click="go('/line/judge/' + runId + '?return=' + getParam('return'))")
-            i.far.fa-edit(aria-hidden='true')  {{'line.sign.to_judge' | translate}}
-        .col-6(style='text-align: right;')
-          a.btn.btn-info(ng-href='/api/runs/line/scoresheetimg/{{runId}}/sheet', target='_blank')
-            i.far.fa-file-alt(aria-hidden='true')  Show full size score sheet
       .row
         .col-md-5.col-lg-4(style='margin-bottom:70px;')
-          img(ng-src='/api/runs/line/scoresheetimg/{{runId}}/tiles', style='width: 100%')
+          #card_area.scrool(style='overflow: scroll;')
+            #lops.card
+              h3.card-header
+                i.fas.fa-step-forward(aria-hidden='true')
+                |  {{'common.lops' | translate}}
+              .card-body
+                div(ng-repeat='dropTile in range(actualUsedDropTiles+1) track by $index')
+                  .card-text(style='display:flex;')
+                    div(style='width:40%;font-size:10px;', align='center')
+                      | {{$index==0?'line.view.start':'line.view.checkpoint'|translate}}
+                      b(style='font-size:15px;color:#FF8300;') {{$index==0?'':$index}}
+                      br
+                      i.fas.fa-forward.fa-rotate-90(aria-hidden='true')
+                      br
+                      |  {{!$last?'line.view.checkpoint':'line.view.Lexit' | translate}}
+                      b(style='font-size:15px;color:#FF8300;') {{!$last?$index+1:''}}
+                    div(style='width:60%;position: relative;')
+                      .input-group(style='width:100%; height:35px;position:absolute;top: 0;bottom: 0;margin: auto;')
+                        span.input-group-btn
+                          button.btn.btn-danger(type='button', disabled='')
+                            i.fas.fa-minus(aria-hidden='true')
+                        div(style='background-color: #F2F2F2; width:100px; text-align: center;')
+                          span.count {{LoPs[$index]?LoPs[$index]:0}}
+                        span.input-group-btn
+                          button.btn.btn-success(type='button', disabled='')
+                            i.fas.fa-plus(aria-hidden='true')
+                  hr(ng-show='!$last')
+              h3.card-header
+                i.fas.fa-ambulance(aria-hidden='true')
+                |  {{'line.judge.rescue' | translate}}　
+                span.badge.badge-danger {{evacuationLevel-1?'line.judge.high':'line.judge.low' | translate}}
+              .card-body
+                h6 {{'line.view.rescuedVictims' | translate}}
+                table(border='1', style='width:100%; text-align: center; margin-top: 10px;', ng-repeat='j in range(6)', ng-if='victim_list.length > j*5 || j == 0')
+                  tbody
+                    tr
+                      th(style='text-align:center;', ng-repeat='i in range(5)') {{j*5 + i+1}}
+                    tr
+                      td(ng-repeat='i in range(5)', ng-style="{'background-color': victim_list[j*5 + i].effective?'#FFD9B7':'#ccc'}")
+                        img(src='/images/liveVictim.png', width='30px', ng-if="victim_list[j*5 + i].type == 'L'")
+                        img(src='/images/deadVictim.png', width='30px', ng-if="victim_list[j*5 + i].type == 'D'")
+                        span(style='width:30px;', ng-hide='victim_list[j*5 + i]') ---
+                        br
+                        span(ng-show='victim_list[j*5 + i]')
+                          | {{calc_victim_points(victim_list[j*5 + i].type,victim_list[j*5 + i].effective)}} P
+                hr
+              .card-body
+                p.card-text
+                  | {{'line.view.exit' | translate}}
+                  span.badge.badge-info 20　points
+                .col-md-12(style='position: relative;')
+                  img.img-thumbnail(src='/images/line_bonus.png', width='186.3px', height='118px', ng-style="{'background-color': exitBonus?'#2ecc71':'#D91E18'}")
+                  div(style='position:absolute; top:25px; left:65px;')
+                    i.fas.fa-check.fa-fw.fa-5x(ng-show='exitBonus', style='color:#27ae60; opacity:0.9;')
+                    i.fas.fa-times.fa-fw.fa-5x(ng-show='!exitBonus', style='padding-top:4px; color:#e74c3c; opacity:0.9;')
         .col-md-7.col-lg-8.tilearea
           div(style='text-align:left;float:left;')
             .btn-group
@@ -107,13 +154,6 @@ html(ng-app="ddApp")
           br
           h2(style='text-align:center;')
             | {{'common.stotal' | translate}} : {{score - checkTotal() - ( victimPoints() + (20 * exitBonus))}} {{'common.point' |translate}}
-      .row(style='margin-bottom: 10px;')
-        .col-6
-          button.btn.btn-danger(style='margin:0 10px 10px 0;', type='button', ng-click="go('/line/judge/' + runId + '?return=' + getParam('return'))")
-            i.far.fa-edit(aria-hidden='true')  {{'line.sign.to_judge' | translate}}
-        .col-6(style='text-align: right;')
-          a.btn.btn-info(ng-href='/api/runs/line/scoresheetimg/{{runId}}/sheet', target='_blank')
-            i.far.fa-file-alt(aria-hidden='true')  Show full size score sheet
       h2 {{'line.sign.checkPointScore' | translate}}
       .row(　style='margin-bottom:50px;text-align:center;display: flex;flex-wrap: wrap;')
         .col-md-3(ng-repeat='cp in checkPointDistance track by $index')
@@ -129,35 +169,18 @@ html(ng-app="ddApp")
                 i.fas.fa-step-forward.fa-2x  {{LoPs[$index-1]}}
                 |  {{'common.times' | translate}}
               i.fas.fa-2x(ng-if='$index==0')
-              img(ng-if='$index!=0', ng-src='/api/runs/line/scoresheetimg/{{runId}}/lop_{{$index-1}}', style='width: 70%; max-width: 150px')
             h1 {{cp.point}} {{'common.point' | translate}}
         .col-md-6
           .alert.alert-warning(style='margin-bottom:30px;text-align:center;', role='alert')
             div(style='min-height:100px')
               h3 {{'line.sign.checkpoint'|translate}} {{'common.stotal' | translate}}
             h1 {{checkTotal()}} {{'common.point' | translate}}
-      .row(style='margin-bottom: 10px;')
-        .col-6
-          button.btn.btn-danger(style='margin:0 10px 10px 0;', type='button', ng-click="go('/line/judge/' + runId + '?return=' + getParam('return'))")
-            i.far.fa-edit(aria-hidden='true')  {{'line.sign.to_judge' | translate}}
-        .col-6(style='text-align: right;')
-          a.btn.btn-info(ng-href='/api/runs/line/scoresheetimg/{{runId}}/sheet', target='_blank')
-            i.far.fa-file-alt(aria-hidden='true')  Show full size score sheet
       h2
         | {{'line.sign.rescue' | translate}} 【{{evacuationLevel-1?'line.sign.high':'line.sign.low' | translate}}】 / {{'line.sign.exitBonus' | translate}}
       .alert.alert-info(style='margin-bottom:50px;text-align:center;', role='alert')
         .row
           .col-md-5
             // <p style="height:30px;">{{'line.judge.rescue' | translate}}【{{evacuationLevel-1?'line.judge.high':'line.judge.low' | translate}}】</p>
-            div(style='font-size: 20px;text-align: left;')
-              | {{evacuationLevel-1?'line.sign.high':'line.sign.low' | translate}}: 
-              img(ng-src='/api/runs/line/scoresheetimg/{{runId}}/evacuationLevel', style='width: 70%; max-width: 150px')
-              br
-              br
-              i.fas.fa-step-forward  {{LoPs[actualUsedDropTiles]}}
-              |  {{'common.times' | translate}}: 
-              img(ng-src='/api/runs/line/scoresheetimg/{{runId}}/lop_{{actualUsedDropTiles}}', style='width: 70%; max-width: 150px')
-              br
             .row
               .col-6
                 span Max : {{maxLiveVictims}}
@@ -193,7 +216,7 @@ html(ng-app="ddApp")
                   span.badge.badge-info(style='margin-top:10px;')
                     span(style='font-size:25px;') {{calc_victim_points("D",true)}}
                     | 　points /victim
-          .col-md-6
+          .col-md-7
             table(border='1', style='width:100%; text-align: center; margin-top: 10px;', ng-repeat='j in range(6)', ng-if='victim_list.length > j*5 || j == 0')
               tbody
                 tr
@@ -206,8 +229,6 @@ html(ng-app="ddApp")
                     br
                     span(ng-show='victim_list[j*5 + i]')
                       | {{calc_victim_points(victim_list[j*5 + i].type,victim_list[j*5 + i].effective)}} P
-          .col-md-1
-            img(ng-src='/api/runs/line/scoresheetimg/{{runId}}/victims', style='width: 100%')
           .col-md-5
           .col-md-1(style='margin-top:20px;')
             p(style='height:30px;')
@@ -217,7 +238,6 @@ html(ng-app="ddApp")
             i.fas.fa-home.fa-2x  {{exitBonus}}
             br
             br
-            img(ng-src='/api/runs/line/scoresheetimg/{{runId}}/evacuationBonus', style='width: 100%')
             h1 {{ 20 * exitBonus}} {{'common.point' | translate}}
           .col-md-1(style='margin-top:20px;')
             p(style='height:30px;')
@@ -250,14 +270,7 @@ html(ng-app="ddApp")
           .col-md-3
             p(style='height:30px;')
             h1 {{score}} {{'common.point' | translate}}
-      .row(style='margin-bottom: 10px;')
-        .col-6
-          button.btn.btn-danger(style='margin:0 10px 10px 0;', type='button', ng-click="go('/line/judge/' + runId + '?return=' + getParam('return'))")
-            i.far.fa-edit(aria-hidden='true')  {{'line.sign.to_judge' | translate}}
-        .col-6(style='text-align: right;')
-          a.btn.btn-info(ng-href='/api/runs/line/scoresheetimg/{{runId}}/sheet', target='_blank')
-            i.far.fa-file-alt(aria-hidden='true')  Show full size score sheet
-      .alert.alert-success(style='margin:30 0 0 0;', role='alert')
+      .alert.alert-success(style='margin:30 0 30 0;', role='alert')
         .row
           .col-md-6
             .d-none.d-sm-block
@@ -271,39 +284,34 @@ html(ng-app="ddApp")
             .d-sm-none
               i.fas.fa-stopwatch.fa-2x(aria-hidden='true')
                 | : {{minutes}} {{'common.min' | translate}} {{seconds}} {{'common.sec' | translate}}
-            img(ng-src='/api/runs/line/scoresheetimg/{{runId}}/time', style='width: 100%; max-width: 250px')
-      .row(style='margin:30 0 30 0;')
-        .col-md-12
-          #sign.card
-            h3.card-header
-              i.fas.fa-comment(aria-hidden='true')
-              |  {{'line.view.comment' | translate}}
-            .card-body
-              p.card-text.text-info
-                | {{'line.view.comment_e' | translate}}
-              .form-group
-                textarea.form-control(ng-model='comment', rows='3', disabled='')
-            h3.card-header
-              i.fas.fa-pencil-alt(aria-hidden='true')
-              |  {{'line.view.sign' | translate}}
-            .card-body
-              p.card-text.text-warning(translate='line.view.sign_e')
-              .sign-box.sign-box-cap
-                p.sign-box-title.sign-box-title-cap(translate='line.view.cap_sign')
-                img(ng-src='{{cap_sig}}', style='max-width: 100%;height: auto;')
-              hr
-              .sign-box.sign-box-ref
-                p.sign-box-title.sign-box-title-ref(translate='line.view.ref_sign')
-                img(ng-src='{{ref_sig}}', style='max-width: 100%;height: auto;')
-              hr
-              .sign-box.sign-box-ref
-                p.sign-box-title.sign-box-title-ref(translate='line.view.cref_sign')
-                img(ng-src='{{refas_sig}}', style='max-width: 100%;height: auto;')
-      .row(style='margin:100 0 100 0;')
-        button.btn.btn-danger.btn-lg.btn-block(type='button', style='padding:30 0 30 0', ng-click='approval()')
-          i.fa.fa-paper-plane(aria-hidden='true')  Approval & Next
-      .row(style='margin:100 0 100 0;')
-        button.btn.btn-danger.btn-lg.btn-block(type='button', style='padding:30 0 30 0', ng-click='pass()')
-          i.fa.fa-paper-plane(aria-hidden='true')  Pass
+      if user
+          .row(style='margin:0 0 30 0;')
+            .col-md-12
+              #sign.card
+                h3.card-header
+                  i.fas.fa-comment(aria-hidden='true')
+                  |  {{'line.view.comment' | translate}}
+                .card-body
+                  p.card-text.text-info
+                    | {{'line.view.comment_e' | translate}}
+                  .form-group
+                    textarea.form-control(ng-model='comment', rows='3', disabled='')
+                h3.card-header
+                  i.fas.fa-pencil-alt(aria-hidden='true')
+                  |  {{'line.view.sign' | translate}}
+                .card-body
+                  p.card-text.text-warning(translate='line.view.sign_e')
+                  .sign-box.sign-box-cap
+                    p.sign-box-title.sign-box-title-cap(translate='line.view.cap_sign')
+                    img(ng-src='{{cap_sig}}', style='max-width: 100%;height: auto;')
+                  hr
+                  .sign-box.sign-box-ref
+                    p.sign-box-title.sign-box-title-ref(translate='line.view.ref_sign')
+                    img(ng-src='{{ref_sig}}', style='max-width: 100%;height: auto;')
+                  hr
+                  .sign-box.sign-box-ref
+                    p.sign-box-title.sign-box-title-ref(translate='line.view.cref_sign')
+                    img(ng-src='{{refas_sig}}', style='max-width: 100%;height: auto;')
 
-    include ./includes/footer.jade
+
+    include ./includes/footer

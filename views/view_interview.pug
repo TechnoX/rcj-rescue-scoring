@@ -65,32 +65,33 @@ block content
                   button(ng-click="go('/maze/view/' + run._id + '?return=/interview/'+competitionId + '/do/'+teamId)" class='btn btn-info' style="width:45%; margin-right:5px;") {{'common.view' | translate}}
       br
       
-      .row(style="margin-bottom:30px;")
-        .col-md-6
-          .card
+      if judge == 1  
+          .row(style="margin-bottom:30px;")
+            .col-md-6
+              .card
+                  h3.card-header
+                    i.far.fa-images(aria-hidden='true') {{'interview.me_pic' | translate}}
+                  .card-body
+                    div
+                        a(style="max-width: 100%;height: auto; margin-bottom:20px;" ng-href="/api/teams/pic/{{competitionId}}/{{teamId}}/member{{picMeTime}}" data-lightbox="image")
+                            img.img-thumbnail(style="max-width: 100%;height: auto;margin-bottom:20px;" ng-src="/api/teams/pic/{{competitionId}}/{{teamId}}/member{{picMeTime}}")
+            .col-md-6
+              .card
+                  h3.card-header
+                    i.far.fa-images(aria-hidden='true') {{'interview.ma_pic' | translate}}
+                  .card-body
+                    div
+                        a(style="max-width: 100%;height: auto; margin-bottom:20px;" ng-href="/api/teams/pic/{{competitionId}}/{{teamId}}/machine{{picMaTime}}" data-lightbox="image")
+                            img.img-thumbnail(style="max-width: 100%;height: auto;margin-bottom:20px;" ng-src="/api/teams/pic/{{competitionId}}/{{teamId}}/machine{{picMaTime}}")
+
+          #picture.card()
               h3.card-header
-                i.far.fa-images(aria-hidden='true') {{'interview.me_pic' | translate}}
+                i.far.fa-images(aria-hidden='true') {{'interview.ad_pic' | translate}}
               .card-body
-                div
-                    a(style="max-width: 100%;height: auto; margin-bottom:20px;" ng-href="/api/teams/pic/{{competitionId}}/{{teamId}}/member{{picMeTime}}" data-lightbox="image")
-                        img.img-thumbnail(style="max-width: 100%;height: auto;margin-bottom:20px;" ng-src="/api/teams/pic/{{competitionId}}/{{teamId}}/member{{picMeTime}}")
-        .col-md-6
-          .card
-              h3.card-header
-                i.far.fa-images(aria-hidden='true') {{'interview.ma_pic' | translate}}
-              .card-body
-                div
-                    a(style="max-width: 100%;height: auto; margin-bottom:20px;" ng-href="/api/teams/pic/{{competitionId}}/{{teamId}}/machine{{picMaTime}}" data-lightbox="image")
-                        img.img-thumbnail(style="max-width: 100%;height: auto;margin-bottom:20px;" ng-src="/api/teams/pic/{{competitionId}}/{{teamId}}/machine{{picMaTime}}")
-                        
-      #picture.card(ng-if="#{judge == 1}")
-          h3.card-header
-            i.far.fa-images(aria-hidden='true') {{'interview.ad_pic' | translate}}
-          .card-body
-            .row
-                .col-md-4(ng-repeat='i in range(picN)')
-                    a(style="max-width: 100%;height: auto; margin-bottom:20px;" ng-href="/api/teams/pic/{{competitionId}}/{{teamId}}/{{i}}" ng-if="showImg[i]" data-lightbox="image")
-                        img.img-thumbnail(style="max-width: 100%;height: auto;margin-bottom:20px;" ng-src="/api/teams/pic/{{competitionId}}/{{teamId}}/{{i}}")
+                .row
+                    .col-md-4(ng-repeat='i in range(picN)')
+                        a(style="max-width: 100%;height: auto; margin-bottom:20px;" ng-href="/api/teams/pic/{{competitionId}}/{{teamId}}/{{i}}" ng-if="showImg[i]" data-lightbox="image")
+                            img.img-thumbnail(style="max-width: 100%;height: auto;margin-bottom:20px;" ng-src="/api/teams/pic/{{competitionId}}/{{teamId}}/{{i}}")
                 
                 
       br
@@ -112,20 +113,21 @@ block content
                 p {{'interview.organization' | translate}}
                 h3 {{doc.dantai}}
           br
-          #member.card(ng-if="#{judge == 1}")
-              h3.card-header
-                i.far.fa-file-alt(aria-hidden='true') {{'interview.member' | translate}}
-              .card-body
-                i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{'interview.nameread' | translate}}
-                p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;") {{doc.member}}
-                //textarea(style="width:100%; background:  #eaf9de;" rows="6" readonly) {{doc.member}}
-                hr
-                i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{'interview.role' | translate}}
-                p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;") {{doc.role}}
-                div(style="padding-left:50px;")
-                    span {{'interview.comment' | translate}}
-                    textarea(style="width:100%;" rows="3" ng-model="doc.roleC" readonly) {{doc.roleC}}
-          br
+          if judge == 1
+              #member.card
+                  h3.card-header
+                    i.far.fa-file-alt(aria-hidden='true') {{'interview.member' | translate}}
+                  .card-body
+                    i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{'interview.nameread' | translate}}
+                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;") {{doc.member}}
+                    //textarea(style="width:100%; background:  #eaf9de;" rows="6" readonly) {{doc.member}}
+                    hr
+                    i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{'interview.role' | translate}}
+                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;") {{doc.role}}
+                    div(style="padding-left:50px;")
+                        span {{'interview.comment' | translate}}
+                        textarea(style="width:100%;" rows="3" ng-model="doc.roleC" readonly) {{doc.roleC}}
+              br
           #member.card
               h3.card-header
                 i.far.fa-file-alt(aria-hidden='true') {{'interview.hard' | translate}}
@@ -246,16 +248,17 @@ block content
 
       br
       br
-      #sign.card
-          h3.card-header
-            i.fa.fa-edit(aria-hidden='true') {{'interview.interviewer_field' | translate}}
-          .card-body
-            p.card-text.text-info {{'interview.field_description' | translate}}
-            .form-group
-              textarea.form-control(ng-model='team.comment', rows='8' readonly)
-            div(ng-if="#{judge == 1}")
-                h2 {{'interview.sign' | translate}}
-                img(ng-src='{{team.interviewer}}', style='max-width: 100%;height: auto;')
+      if judge == 1
+          #sign.card
+              h3.card-header
+                i.fa.fa-edit(aria-hidden='true') {{'interview.interviewer_field' | translate}}
+              .card-body
+                p.card-text.text-info {{'interview.field_description' | translate}}
+                .form-group
+                  textarea.form-control(ng-model='team.comment', rows='8' readonly)
+                div
+                    h2 {{'interview.sign' | translate}}
+                    img(ng-src='{{team.interviewer}}', style='max-width: 100%;height: auto;')
       br
       br
 

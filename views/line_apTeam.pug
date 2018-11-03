@@ -1,6 +1,6 @@
 //- -*- tab-width: 2 -*-
 
-html(ng-app="MazeTimetable")
+html(ng-app="LineTimetable")
   head
     title 競技割り当て
     script.
@@ -30,19 +30,19 @@ html(ng-app="MazeTimetable")
         }
 
 
-    include ./includes/common_component.jade
-    script(src='/javascripts/maze_apTeam.js')
+    include ./includes/common_component
+    script(src='/javascripts/line_apTeam.js')
     script(src="/javascripts/translate_config.js")
     link(href="/stylesheets/fredrik.css" rel="stylesheet")
 
 
     meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0")
 
-  body(ng-controller="MazeTimetableController" style="width: 100%;display: flex;align-items: center;justify-content: center;background-color:#eee;")
+  body(ng-controller="LineTimetableController" style="width: 100%;display: flex;align-items: center;justify-content: center;background-color:#eee;")
     nav.navbar(style='background-color: #460e44; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%')
         .col-6(style="font-size:25px;") {{team.name}}
         .col-6(style="text-align:right;")
-            button(ng-show= "selected" ng-click="decision()" class='btn btn-danger') 競技枠を決定 
+            button(ng-show= "selected" ng-click="decision()" class='btn btn-danger') 競技枠を決定
     .container.nav-cont
         div(style='text-align: center;' ng-if='!checked')
           
