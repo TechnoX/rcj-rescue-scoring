@@ -43,6 +43,7 @@ publicRouter.get('/view/:runid', async function (req, res, next) {
     let rule = await ruleDetector.getRuleFromMazeRunId(id);
     res.render('maze_view', {
         id: id,
+        user: req.user,
         rule: rule
     })
 })

@@ -39,7 +39,7 @@ publicRouter.get('/view/:runid', async function (req, res, next) {
     return next()
   }
   let rule = await ruleDetector.getRuleFromLineRunId(id);
-  res.render('line_view', {id: id, rule: rule})
+  res.render('line_view', {id: id,user: req.user,rule: rule})
 })
 
 
