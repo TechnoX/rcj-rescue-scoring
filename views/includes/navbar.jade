@@ -5,9 +5,9 @@ nav.navbar(style='background-color: #30336b; color: #ecf0f1; position: fixed; to
       li.navbar-brand
         a(href='/home' style="color: #ecf0f1;") RCJ Scoring System
     .col-6(style="text-align:right;")
-      if typeof(user) == "undefined"
-                i.fas.fa-user-circle.fa-2x(aria-hidden='true')
-            else
-                .fa-2x
-                    i.fas.fa-user-circle(aria-hidden='true')
-                    | &nbsp;#{user.username}
+        if typeof(user) == "undefined"
+            i.fas.fa-user-circle.fa-2x(aria-hidden='true')
+        else
+            .fa-2x
+                i.fas.fa-user-circle(aria-hidden='true')
+                | &nbsp;#{user.username}

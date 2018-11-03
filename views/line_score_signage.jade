@@ -75,7 +75,7 @@ block content
                   div(style="text-align:right;font-size:1vw")
                     div(ng-if="top3") あと {{time}}秒で，全体順位を表示します
                     div(ng-if="!top3") あと {{time}}秒で，上位3チームを表示します
-              div(ng-repeat='run in worldRunsTop | limitTo: 3 track by $index' ng-show="top3")
+            div(ng-repeat='run in worldRunsTop | limitTo: 3 track by $index' ng-show="top3")
                 .row(style="height:29vh")
                     .col-9
                        img(ng-src="/images/ranking/{{$index+1}}.png" style="height:29vh;float: left;")
@@ -93,7 +93,7 @@ block content
                           li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;")
                             i.fas.fa-step-forward.fa-fw &nbsp;&nbsp;&nbsp;{{run.LoPsNum}}&nbsp;回
                 hr(color="#636e72" style="margin-top:1vh;margin-bottom:1vh;")
-              table.custom(style="overflow: scroll;font-size:20px;" ng-hide="top3")
+            table.custom(style="overflow: scroll;font-size:20px;" ng-hide="top3")
                 thead
                   tr
                     th.text-center {{'common.rank' | translate}}
