@@ -332,9 +332,9 @@ publicRouter.get('/:runid', function (req, res, next) {
       })
     } else if (dbRun) {
       // Hide map and field from public
-      if (!auth.authViewRun(req.user, dbRun, ACCESSLEVELS.NONE + 1)) {
-        delete dbRun.map
-        delete dbRun.field
+      let authResult = auth.authViewRun(req.user, dbRun, ACCESSLEVELS.NONE + 1);
+      if (authResult == 0) return res.status(403)
+      if (authResult == 2) {
         delete dbRun.comment
         delete dbRun.sign
       }

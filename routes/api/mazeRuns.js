@@ -135,10 +135,7 @@ function getMazeRuns(req, res) {
             for (let i = 0; i < dbRuns.length; i++) {
                 var authResult = auth.authViewRun(req.user, dbRuns[i], ACCESSLEVELS.VIEW)
                 if (authResult == 0) {
-                    delete dbRuns[i].map
-                    delete dbRuns[i].field
-                    delete dbRuns[i].comment
-                    delete dbRuns[i].sign
+                    return res.status(403)
                 } else if (authResult == 2) {
                     delete dbRuns[i].comment
                     delete dbRuns[i].sign
