@@ -336,6 +336,8 @@ app.controller('MazeEditorController', ['$scope', '$uibModal', '$log', '$http','
             alert("You must define a starting tile by clicking a tile");
             return;
         }
+        if($scope.startTile) $scope.cells[$scope.startTile.x + ',' + $scope.startTile.y + ',' + $scope.startTile.z].tile.checkpoint = true;
+        
         console.log($scope.se_competition);
         console.log(competitionId);
 
@@ -372,6 +374,8 @@ app.controller('MazeEditorController', ['$scope', '$uibModal', '$log', '$http','
             alert("You must define a starting tile by clicking a tile");
             return;
         }
+        if($scope.startTile) $scope.cells[$scope.startTile.x + ',' + $scope.startTile.y + ',' + $scope.startTile.z].tile.checkpoint = true;
+        
         var map = {
             competition: $scope.competitionId,
             dice: $scope.dice,
@@ -457,6 +461,9 @@ app.controller('MazeEditorController', ['$scope', '$uibModal', '$log', '$http','
                     $scope.length = data.length;
                     $scope.name = data.name;
                     $scope.finished = data.finished;
+                    
+                    if(data.startTile) $scope.cells[data.startTile.x + ',' + data.startTile.y + ',' + data.startTile.z].tile.checkpoint = true;
+                    
                     $scope.$apply();
                 }
 

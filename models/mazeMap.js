@@ -127,10 +127,10 @@ mazeMapSchema.pre('save', function (next) {
         cell.tile = {}
       }
       
-      if (cell.x == self.startTile.x && cell.y == self.startTile.y &&
+      /*if (cell.x == self.startTile.x && cell.y == self.startTile.y &&
           cell.z == self.startTile.z) {
         cell.tile.checkpoint = true
-      }
+      }*/
       
       if (cell.tile.black) {
         if (cell.tile.checkpoint) {

@@ -110,6 +110,10 @@ html(ng-app="ddApp")
               button.btn.btn-warning(type='button', ng-click='saveEverything()') {{'maze.judge.reSend' | translate}}
         .row
           .col-md-4.col-lg-3(style='margin-bottom:30px;')
+            if rule == '2019(Draft)'
+                button.btn.btn-primary(style='margin:0 10px 10px 0;', type='button', ng-click='toggleScoring()')
+                  i.far.fa-clipboard(aria-hidden='true')
+                    | {{ startedScoring ? ',maze.judge.run_end' : 'maze.judge.run_start' | translate }}
             button.btn.btn-success(style='margin:0 10px 10px 0;', type='button', ng-click='toggleTime()')
               i.fas.fa-stopwatch(aria-hidden='true')  {{ startedTime ? 'maze.judge.tim_stop' : 'maze.judge.tim_start' |translate }}
             button.btn.btn-warning(ng-show='!startedTime && time!=0', style='margin:0 10px 10px 0;', type='button', ng-click='timeReset()')
@@ -117,7 +121,7 @@ html(ng-app="ddApp")
             .alert.alert-info.blink(role='alert', ng-show='!startedTime && minutes < 8')
               | {{'maze.judge.push_timer' | translate}}
             #card_area.scrool(style='overflow: scroll;')
-              .card(ng-show='score == 0 && !diced && (MisIdent == 0 || !MisIdent)')
+              .card(ng-show='(score == 0 && !diced && (MisIdent == 0 || !MisIdent))&&!startedScoring')
                 h4.card-header
                   i.far.fa-map(aria-hidden='true')
                   |  {{'maze.judge.pat' | translate}}
@@ -127,7 +131,7 @@ html(ng-app="ddApp")
                   .row
                     .col-4(style='padding:0 0 0 0;position: relative;', ng-repeat='i in range(6)')
                       img.img-thumbnail(ng-src='/images/dice/{{i+1}}.png', width='100%', ng-style="{'background-color': diceSelect==i?'#2ecc71':'#95a5a6' , 'opacity':diceSelect==i?'1':'0.7' }", ng-click='changeMap(i)')
-              .card(ng-show='diced || score > 0 || MisIdent > 0')
+              .card(ng-show='(diced || score > 0 || MisIdent > 0) || startedScoring')
                 h3.card-header
                   i.fas.fa-step-forward(aria-hidden='true')
                   |  {{'common.lops' | translate}}

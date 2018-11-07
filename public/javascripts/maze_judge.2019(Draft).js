@@ -45,6 +45,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.checkMachine = !$scope.checkMachine;
         playSound(sClick);
     }
+    
     $scope.checks = function(){
         return ($scope.checkTeam & $scope.checkRound & $scope.checkMember & $scope.checkMachine)
     }
@@ -104,6 +105,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.cells = {};
     $scope.tiles = {};
+    
+    $scope.startedScoring = false;
 
     var db_cells;
 
@@ -319,6 +322,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             }
             $timeout(tick, 1000);
         }
+    }
+    
+    $scope.toggleScoring = function(){
+        playSound(sClick);
+        $scope.startedScoring = !$scope.startedScoring;
     }
 
     $scope.toggleTime = function () {

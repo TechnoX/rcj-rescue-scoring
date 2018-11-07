@@ -4,6 +4,7 @@ const express = require('express')
 const router = express.Router()
 const auth = require('../helper/authLevels')
 const ACCESSLEVELS = require('../models/user').ACCESSLEVELS
+const ruleDetector = require('../helper/ruleDetector')
 
 
 /* GET home page. */
@@ -129,25 +130,30 @@ router.get('/:competitionid/maze/maps', function (req, res, next) {
   else res.render('access_denied', {user: req.user})
 })
 
-router.get('/:competitionid/maze/editor', function (req, res, next) {
+router.get('/:competitionid/maze/editor', async function (req, res, next) {
   const id = req.params.competitionid
   
   if (!ObjectId.isValid(id)) {
     return next()
   }
+    
+  let rule = await ruleDetector.getRuleFromCompetitionId(id);
   
-  if(auth.authCompetition(req.user,id,ACCESSLEVELS.ADMIN)) res.render('maze_editor', {compid: id, user: req.user})
+  if(auth.authCompetition(req.user,id,ACCESSLEVELS.ADMIN)) res.render('maze_editor', {compid: id, user: req.user, rule: rule})
   else res.render('access_denied', {user: req.user})
 })
 
-router.get('/:competitionid/maze/editor/:mapid', function (req, res, next) {
+router.get('/:competitionid/maze/editor/:mapid', async function (req, res, next) {
     const id = req.params.mapid
     const cid = req.params.competitionid
 
     if (!ObjectId.isValid(id)) {
         return next()
     }
-    if(auth.authCompetition(req.user,cid,ACCESSLEVELS.ADMIN)) res.render('maze_editor', {compid: cid, mapid: id, user: req.user})
+    
+    let rule = await ruleDetector.getRuleFromCompetitionId(cid);
+    
+    if(auth.authCompetition(req.user,cid,ACCESSLEVELS.ADMIN)) res.render('maze_editor', {compid: cid, mapid: id, user: req.user, rule: rule})
     else res.render('access_denied', {user: req.user})
 
 })
