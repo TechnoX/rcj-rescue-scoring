@@ -113,7 +113,7 @@ html(ng-app="ddApp")
             if rule == '2019(Draft)'
                 button.btn.btn-primary(style='margin:0 10px 10px 0;', type='button', ng-click='toggleScoring()')
                   i.far.fa-clipboard(aria-hidden='true')
-                    | {{ startedScoring ? ',maze.judge.run_end' : 'maze.judge.run_start' | translate }}
+                    | {{ startedScoring ? 'maze.judge.run_end' : 'maze.judge.run_start' | translate }}
             button.btn.btn-success(style='margin:0 10px 10px 0;', type='button', ng-click='toggleTime()')
               i.fas.fa-stopwatch(aria-hidden='true')  {{ startedTime ? 'maze.judge.tim_stop' : 'maze.judge.tim_start' |translate }}
             button.btn.btn-warning(ng-show='!startedTime && time!=0', style='margin:0 10px 10px 0;', type='button', ng-click='timeReset()')
