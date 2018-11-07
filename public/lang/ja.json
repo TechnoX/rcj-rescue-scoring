@@ -294,6 +294,8 @@
             "tap_red": "@:line.judge.tap_red",
             "confirm": "@:line.judge.confirm",
             "push_timer": "@:line.judge.push_timer",
+            "run_start": "@:line.judge.run_start",
+            "run_end": "@:line.judge.run_end",
             "tim_start": "@:line.judge.tim_start",
             "tim_stop": "@:line.judge.tim_stop",
             "tim_reset": "@:line.judge.tim_reset",
