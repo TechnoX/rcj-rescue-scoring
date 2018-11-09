@@ -10,6 +10,9 @@ const mazeFill = require('../helper/mazeFill')
 const logger = require('../config/logger').mainLogger
 
 const VICTIMS = ['H', 'S', 'U', "Heated", "None"]
+
+const MazeRun = require('./mazeRun')
+
 module.exports.VICTIMS = VICTIMS
 
 function isOdd(n) {
@@ -210,7 +213,20 @@ mazeMapSchema.pre('save', function (next) {
       }
     })
   } else {
-    return next()
+    MazeRun.mazeRun.findOne({
+          map    : self._id,
+          started: true
+        }).lean().exec(function (err, dbRun) {
+          if (err) {
+            return next(err)
+          } else if (dbRun) {
+            err = new Error('Map "' + self.name +
+                            '" used in started runs, cannot modify!')
+            return next(err)
+          } else {
+            return next()
+          }
+        })
   }
 })
 
