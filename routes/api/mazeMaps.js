@@ -191,9 +191,12 @@ adminRouter.put('/:map', function (req, res, next) {
   }
   
   const map = req.body
-  for (let i = 0; i < map.dice.length; i++) {
-    map.dice[i] = ObjectId(map.dice[i]);
+  if(map.dice){
+      for (let i = 0; i < map.dice.length; i++) {
+        map.dice[i] = ObjectId(map.dice[i]);
+      }
   }
+  
 
   // Exclude fields that are not allowed to be publicly changed
   delete map._id
