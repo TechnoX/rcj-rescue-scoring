@@ -10,7 +10,7 @@ var env = require('node-env-file');
 env('process.env');
 
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.DB_CONNECT_STR);
+mongoose.connect(process.env.DB_CONNECT_STR, { useNewUrlParser: true });
 var db = mongoose.connection;
 
 db.on('error', function (err) {
