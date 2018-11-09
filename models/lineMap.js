@@ -10,7 +10,7 @@ const logger = require('../config/logger').mainLogger
 
 const pathFinder = require('../helper/pathFinder')
 
-const LineRun = require('./lineRun').lineRun
+const LineRun = require('./lineRun')
 
 /**
  *
@@ -141,7 +141,7 @@ lineMapSchema.pre('save', function (next) {
           }
         })
       } else {
-        LineMap.findOne({
+        LineRun.lineRun.findOne({
           map    : self._id,
           started: true
         }).lean().exec(function (err, dbRun) {
