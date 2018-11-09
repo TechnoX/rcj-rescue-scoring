@@ -141,7 +141,7 @@ lineMapSchema.pre('save', function (next) {
           }
         })
       } else {
-        LineRun.findOne({
+        LineMap.findOne({
           map    : self._id,
           started: true
         }).lean().exec(function (err, dbRun) {
