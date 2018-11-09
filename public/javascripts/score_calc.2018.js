@@ -25,6 +25,7 @@ function line_calc_score(run) {
                 switch (tile.scoredItems[j].item){
                     case "checkpoint":
                         let tileCount = i - lastDropTile;
+                        if(typeof run.LoPs[dropTileCount] === "undefined")run.LoPs.push(0);
                         score += Math.max(tileCount * (5 - 2 * run.LoPs[dropTileCount]), 0) * tile.scoredItems[j].scored;
                         break;
                     case "gap":
@@ -53,6 +54,7 @@ function line_calc_score(run) {
         }
 
         if (run.rescueOrder) {
+            if(typeof run.LoPs[dropTileCount] === "undefined")run.LoPs.push(0);
             if (run.evacuationLevel == 1) {
                 for (let victim of run.rescueOrder) {
                     if (victim.effective) {
