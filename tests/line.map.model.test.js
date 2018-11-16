@@ -8,7 +8,7 @@ const League = require('../models/league.model')
 const Competition = require('../models/competition.model')
 const Map = require('../models/map.model')
 const LineMap = require('../models/line.map.model')
-const TileType = require('../leagues/line/tileType').tileType
+//const TileType = require('../leagues/line/tileType').tileType
 
 describe('line.map.model', function () {
   before(function (done) {

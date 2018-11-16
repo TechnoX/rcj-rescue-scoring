@@ -31,6 +31,7 @@
   },
   "main": "app.js",
   "devDependencies": {
+    "mocha": "^5.2.0",
     "supertest": "^3.3.0"
   },
   "author": "",
