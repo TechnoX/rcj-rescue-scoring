@@ -25,7 +25,7 @@
     "jade": "~1.8.2",
     "jsdoc": "^3.2.2",
     "log4js": "^0.6.24",
-    "mongoose": "^4.0.3",
+    "mongoose": "^4.11.0",
     "mongoose-id-validator": "^0.4.3",
     "mongoose-integer": "^0.1.1",
     "mongoose-timestamp": "^0.4.0",
