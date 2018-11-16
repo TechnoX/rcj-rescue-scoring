@@ -9,13 +9,14 @@ var log4js = require('log4js')
 var env = require('node-env-file')
 
 log4js.configure({
-  appenders: [
-    { type: 'console'},
-    { type: 'file', filename: 'logs/main.log', category: 'main' }
-  ]
+  appenders: {
+    console: {type: 'console'},
+    file   : {type: 'file', filename: 'logs/main.log', category: 'main'}
+  },
+  categories: { default: { appenders: ['console', 'file'], level: 'debug' } }
 })
 
 var mainLogger = log4js.getLogger('main');
-mainLogger.setLevel(process.env.MAIN_LOG_LVL || 'DEBUG');
+//mainLogger.setLevel(process.env.MAIN_LOG_LVL || 'DEBUG');
 
 module.exports.mainLogger = mainLogger;

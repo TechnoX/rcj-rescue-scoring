@@ -13,7 +13,7 @@ var path = require('path')
 var fs = require('fs')
 var favicon = require('serve-favicon')
 var logger = require('./config/logger').mainLogger
-var cookieParser = require('cookie-parser')
+//var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')
 var async = require('async')
 
@@ -31,7 +31,7 @@ mongoose.plugin(idValidator)
 
 // auth
 var pass = require('./config/pass')
-var passport = require('passport')
+//var passport = require('passport')
 const jwt = require('express-jwt')
 // session
 var session = require('express-session')
@@ -93,7 +93,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
   extended: false
 }))
-app.use(cookieParser())
+//app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
 /*
