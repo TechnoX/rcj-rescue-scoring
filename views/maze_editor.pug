@@ -18,11 +18,11 @@ append css
   link(href="/stylesheets/maze_edit.css" rel="stylesheet")
 
 block location
-    a.breadcrumb-item(href='/home') Home
-    a.breadcrumb-item(href='/admin') Admin
-    a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition}}
-    a.breadcrumb-item(ng-href='/admin/{{competitionId}}/maze/maps') Maze maps
-    span.breadcrumb-item.active Maze editor
+  a.breadcrumb-item(href='/home') Home
+  a.breadcrumb-item(href='/admin') Admin
+  a.breadcrumb-item(ng-href='/admin/{{competitionId}}') {{competition}}
+  a.breadcrumb-item(ng-href='/admin/{{competitionId}}/maze/maps') Maze maps
+  span.breadcrumb-item.active Maze editor
 
 block content
-    include maze_editor.html
+  include maze_editor.html

@@ -18,44 +18,44 @@ block content
       br
       br
       br
-      
+
       if typeof(user) == "undefined"
         a.btn.btn-warning.btn-lg.btn-block(href='/login')
-            i.fa.fa-sign-in(aria-hidden='true') &nbsp;Login
+          i.fa.fa-sign-in(aria-hidden='true') &nbsp;Login
       else
         a.btn.btn-outline-danger.btn-lg.btn-block(href='/logout')
-            i.fa.fa-sign-out(aria-hidden='true') &nbsp;Logout
+          i.fa.fa-sign-out(aria-hidden='true') &nbsp;Logout
       br
       br
-      
+
       .row
         .col-sm-6
           .card(style='width: 100%;')
-              a(href='/line')
-                img.card-img-top(src='/images/line.png', alt='Card image cap' style="width:100%; height=auto;")
-              .card-block
-                h4.card-title Rescue Line
-                p.card-text
-                  | Put in a description of Rescue Line
-                a.btn.btn-primary.btn-lg.btn-block(href='/line') Go Line
+            a(href='/line')
+              img.card-img-top(src='/images/line.png', alt='Card image cap' style="width:100%; height=auto;")
+            .card-block
+              h4.card-title Rescue Line
+              p.card-text
+                | Put in a description of Rescue Line
+              a.btn.btn-primary.btn-lg.btn-block(href='/line') Go Line
         .col-sm-6
-            .card(style='width: 100%;')
-              a(href='/maze')
-                img.card-img-top(src='/images/maze.png', alt='Card image cap' style="width:100%; height=auto;")
-              .card-block
-                h4.card-title Rescue Maze
-                p.card-text
-                  | Put in a description of Rescue Maze
-                a.btn.btn-primary.btn-lg.btn-block(href='/maze') Go Maze
-      br 
+          .card(style='width: 100%;')
+            a(href='/maze')
+              img.card-img-top(src='/images/maze.png', alt='Card image cap' style="width:100%; height=auto;")
+            .card-block
+              h4.card-title Rescue Maze
+              p.card-text
+                | Put in a description of Rescue Maze
+              a.btn.btn-primary.btn-lg.btn-block(href='/maze') Go Maze
+      br
       br
       br
       if typeof(user) != "undefined"
         if user.admin
-            a.button-s.button-bb(href='/admin') Competition Management
+          a.button-s.button-bb(href='/admin') Competition Management
         else
-            a.button-s.button-bb(href='/' disabled) Competition Management
-            p ※ The you logged in account, [#{user.username}], does not have permission to access Competition Management.
+          a.button-s.button-bb(href='/' disabled) Competition Management
+          p ※ The you logged in account, [#{user.username}], does not have permission to access Competition Management.
       br
       br
       br
