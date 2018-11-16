@@ -4,8 +4,8 @@ doctype html
 - var ngInit = ""
 block vars
 html(style='height:100%; overflow-y:scroll;' ng-app='#{ngAppDef}' ng-init='#{ngInit}')
-    include ./head.jade
-    include ./navbar.jade
+    include ./head
+    include ./navbar
     body(ng-controller='#{ngAppDef}Controller')
         .container(style='padding:0px;min-height: 100%;overflow: hidden;')
             .row
