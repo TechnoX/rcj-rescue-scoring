@@ -5,21 +5,19 @@ head
   block scripts
     script(src='/components/jquery/dist/jquery.min.js')
     script(src='/components/tether/dist/js/tether.min.js')
-    script(src='/components/popper.js/index.js')
+    script(src='/components/popper.js/dist/popper.js')
     script(src='/components/bootstrap/dist/js/bootstrap.js')
     script(src='/components/angular/angular.min.js')
     script(src="/components/angular-animate/angular-animate.js")
-    script(src='/components/alertifyjs/dist/js/ngAlertify.js')
+    script(src='/components/alertifyjs/build/alertify.min.js')
     script(src="/components/sweetalert/dist/sweetalert.min.js")
-    script(src="/components/footerFixed/index.js")
-    script(src="/components/socket.io-client/socket.io.js")
+    script(src="/components/socket.io-client/dist/socket.io.js")
     script(src="/components/angular-bootstrap/ui-bootstrap-tpls.min.js")
 
   block css
     link(rel='stylesheet',href='/components/bootstrap/dist/css/bootstrap.css')
     link(rel='stylesheet',href='/stylesheets/style.css')
-    link(rel="stylesheet" href="/components/sweetalert/dist/sweetalert.css")
-    link(rel="stylesheet" href="/components/font-awesome/css/font-awesome.min.css")
+    link(rel="stylesheet" href="/components/font-awesome/css/font-awesome.css")
 
   meta(name='viewport', content='width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no')
   meta(name="apple-mobile-web-app-capable" content="yes")
@@ -44,7 +42,7 @@ head
     });
 
     let lastTouch = 0;
-    document.addEventListener('touchend', event = > {
+    document.addEventListener('touchend', event => {
       const now = window.performance.now();
     if (now - lastTouch <= 500) {
       event.preventDefault();

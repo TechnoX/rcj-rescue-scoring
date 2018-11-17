@@ -35,7 +35,7 @@ var pass = require('./config/pass')
 const jwt = require('express-jwt')
 // session
 var session = require('express-session')
-var connectMongo = require('connect-mongo')(session)
+//var connectMongo = require('connect-mongo')(session)
 
 var getEndpoints = require("express-list-endpoints")
 
