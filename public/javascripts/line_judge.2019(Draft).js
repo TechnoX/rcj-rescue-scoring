@@ -96,7 +96,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }
 
     const http_config = {
-        timeout: 1000
+        timeout: 10000
     };
 
     var tileReset = true;
