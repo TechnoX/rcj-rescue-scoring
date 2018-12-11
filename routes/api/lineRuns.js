@@ -411,6 +411,11 @@ privateRouter.put('/:runid', function (req, res, next) {
           err: err.message
         })
       } else if (dbRun) {
+          if (!auth.authCompetition(req.user, dbRun.competition._id, ACCESSLEVELS.JUDGE)) {
+                    return res.status(401).send({
+                        msg: "You have no authority to access this api!!"
+                    })
+            }
         if (run.tiles != null && run.tiles.constructor === Object) { // Handle dict as "sparse" array
           const tiles = run.tiles
           run.tiles = []

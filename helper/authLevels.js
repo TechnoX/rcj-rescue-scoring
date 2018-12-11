@@ -69,6 +69,7 @@ function authJudgeRun(user, run, level) {
 module.exports.authJudgeRun = authJudgeRun
 
 function authCompetition(user, competitionId, level) {
+  
   if (user == null) {
     return false
   }
@@ -78,7 +79,7 @@ function authCompetition(user, competitionId, level) {
   }
   if (user.competitions != undefined) {
     for (let i = 0; i < user.competitions.length; i++) {
-      const comp = user.competitions[i]
+      const comp = user.competitions[i];
       if (comp.id.toString() == competitionId && comp.accessLevel >= level) {
         return true
       }
