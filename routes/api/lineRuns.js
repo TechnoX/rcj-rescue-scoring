@@ -60,7 +60,7 @@ function getLineRuns(req, res) {
     if (req.query['ended'] == 'false') {
       query = lineRun.find({
         competition: competition,
-        status     : {$lte: 1}
+        status: {$lte: 1}
       })
     } else {
       query = lineRun.find({
@@ -88,23 +88,23 @@ function getLineRuns(req, res) {
   if (req.query['populate'] !== undefined && req.query['populate']) {
     query.populate([
       {
-        path  : "competition",
+        path: "competition",
         select: "name"
       },
       {
-        path  : "round",
+        path: "round",
         select: "name"
       },
       {
-        path  : "team",
+        path: "team",
         select: "name league"
       },
       {
-        path  : "field",
+        path: "field",
         select: "name"
       },
       {
-        path  : "map",
+        path: "map",
         select: "name"
       }
     ])
@@ -131,6 +131,7 @@ function getLineRuns(req, res) {
     }
   })
 }
+
 module.exports.getLineRuns = getLineRuns
 
 publicRouter.get('/latest', getLatestLineRun)
@@ -142,7 +143,7 @@ function getLatestLineRun(req, res) {
 
   var selection = {
     competition: competition,
-    field      : field
+    field: field
   }
   if (selection.competition == undefined) {
     delete selection.competition
@@ -161,7 +162,7 @@ function getLatestLineRun(req, res) {
 
   if (req.query['populate'] !== undefined && req.query['populate']) {
     query.populate(["round", "team", "field", "competition", {
-      path    : 'tiles',
+      path: 'tiles',
       populate: {
         path: 'tileType'
       }
@@ -186,6 +187,7 @@ function getLatestLineRun(req, res) {
     }
   })
 }
+
 module.exports.getLatestLineRun = getLatestLineRun
 
 adminRouter.get('/nextApproval/:competitionid', function (req, res, next) {
@@ -195,7 +197,7 @@ adminRouter.get('/nextApproval/:competitionid', function (req, res, next) {
   }
   var query = lineRun.findOne({
     competition: id,
-    status     : 4
+    status: 4
   })
   query.exec(function (err, data) {
     if (err) {
@@ -204,35 +206,35 @@ adminRouter.get('/nextApproval/:competitionid', function (req, res, next) {
         msg: "Could not get runs"
       })
     } else {
-        if(data){
-          data.status = 5;
-          data.save(function (err) {
-            if (err) {
-              logger.error(err)
-              return res.status(400).send({
-                err: err.message,
-                msg: "Could not save run"
+      if (data) {
+        data.status = 5;
+        data.save(function (err) {
+          if (err) {
+            logger.error(err)
+            return res.status(400).send({
+              err: err.message,
+              msg: "Could not save run"
+            })
+          } else {
+            if (socketIo !== undefined) {
+              socketIo.sockets.in('runs/line').emit('changed')
+              socketIo.sockets.in('competition/' +
+                data.competition).emit('changed')
+              socketIo.sockets.in('runs/' + data._id).emit('data', data)
+              socketIo.sockets.in('fields/' +
+                data.field).emit('data', {
+                newRun: data._id
               })
-            } else {
-              if (socketIo !== undefined) {
-                socketIo.sockets.in('runs/line').emit('changed')
-                socketIo.sockets.in('competition/' +
-                  data.competition).emit('changed')
-                socketIo.sockets.in('runs/' + data._id).emit('data', data)
-                socketIo.sockets.in('fields/' +
-                  data.field).emit('data', {
-                  newRun: data._id
-                })
-              }
-              return res.status(200).send(data._id);
             }
+            return res.status(200).send(data._id);
+          }
 
-          })
-        }else {
-          return res.status(400).send({
-            msg: "Could not get runs"
-          });
-        }
+        })
+      } else {
+        return res.status(400).send({
+          msg: "Could not get runs"
+        });
+      }
     }
   })
 })
@@ -249,8 +251,8 @@ publicRouter.get('/find/:competitionid/:field/:status', function (req, res, next
   }
   var query = lineRun.find({
     competition: id,
-    field      : field_id,
-    status     : status
+    field: field_id,
+    status: status
   }, "field team competition status")
   query.populate(["team"])
   query.exec(function (err, data) {
@@ -316,7 +318,7 @@ publicRouter.get('/:runid', function (req, res, next) {
 
   if (req.query['populate'] !== undefined && req.query['populate']) {
     query.populate(["round", "team", "field", "competition", {
-      path    : 'tiles',
+      path: 'tiles',
       populate: {
         path: 'tileType'
       }
@@ -398,11 +400,11 @@ privateRouter.put('/:runid', function (req, res, next) {
   lineRun.findById(id)
   //.select("-_id -__v -competition -round -team -field -score")
     .populate([{
-      path    : 'map',
+      path: 'map',
       populate: {
         path: 'tiles.tileType'
       }
-    },"competition"])
+    }, "competition"])
     .exec(function (err, dbRun) {
       if (err) {
         logger.error(err)
@@ -411,11 +413,11 @@ privateRouter.put('/:runid', function (req, res, next) {
           err: err.message
         })
       } else if (dbRun) {
-          if (!auth.authCompetition(req.user, dbRun.competition._id, ACCESSLEVELS.JUDGE)) {
-                    return res.status(401).send({
-                        msg: "You have no authority to access this api!!"
-                    })
-            }
+        if (!auth.authCompetition(req.user, dbRun.competition._id, ACCESSLEVELS.JUDGE)) {
+          return res.status(401).send({
+            msg: "You have no authority to access this api!!"
+          })
+        }
         if (run.tiles != null && run.tiles.constructor === Object) { // Handle dict as "sparse" array
           const tiles = run.tiles
           run.tiles = []
@@ -430,18 +432,18 @@ privateRouter.put('/:runid', function (req, res, next) {
           dbRun.LoPs.length = run.LoPs.length
         }
 
-        if(run.rescueOrder != null){
-            dbRun.rescueOrder = run.rescueOrder;
+        if (run.rescueOrder != null) {
+          dbRun.rescueOrder = run.rescueOrder;
         }
 
         // Recursively updates properties in "dbObj" from "obj"
         const copyProperties = function (obj, dbObj) {
           for (let prop in obj) {
             if (obj.constructor == Array ||
-                (obj.hasOwnProperty(prop) &&
-                 (dbObj.hasOwnProperty(prop) ||
+              (obj.hasOwnProperty(prop) &&
+                (dbObj.hasOwnProperty(prop) ||
                   (dbObj.get !== undefined &&
-                   dbObj.get(prop) !== undefined)))) { // Mongoose objects don't have hasOwnProperty
+                    dbObj.get(prop) !== undefined)))) { // Mongoose objects don't have hasOwnProperty
               if (typeof obj[prop] == 'object' && dbObj[prop] != null) { // Catches object and array
                 copyProperties(obj[prop], dbObj[prop])
 
@@ -471,7 +473,7 @@ privateRouter.put('/:runid', function (req, res, next) {
         dbRun.score = scoreCalculator.calculateLineScore(dbRun)
 
         if (dbRun.score > 0 || dbRun.time.minutes != 0 ||
-            dbRun.time.seconds != 0 || dbRun.status >= 2) {
+          dbRun.time.seconds != 0 || dbRun.status >= 2) {
           dbRun.started = true
         } else {
           dbRun.started = false
@@ -488,15 +490,15 @@ privateRouter.put('/:runid', function (req, res, next) {
             if (socketIo !== undefined) {
               socketIo.sockets.in('runs/line').emit('changed')
               socketIo.sockets.in('competition/' +
-                                  dbRun.competition).emit('changed')
+                dbRun.competition).emit('changed')
               socketIo.sockets.in('runs/' + dbRun._id).emit('data', dbRun)
               socketIo.sockets.in('fields/' +
-                                  dbRun.field).emit('data', {
+                dbRun.field).emit('data', {
                 newRun: dbRun._id
               })
             }
             return res.status(200).send({
-              msg  : "Saved run",
+              msg: "Saved run",
               score: dbRun.score
             })
           }
@@ -566,23 +568,23 @@ adminRouter.get('/scoresheet', function (req, res, next) {
   query.select("competition round team field map startTime")
   query.populate([
     {
-      path  : "competition",
+      path: "competition",
       select: "name rule"
     },
     {
-      path  : "round",
+      path: "round",
       select: "name"
     },
     {
-      path  : "team",
+      path: "team",
       select: "name"
     },
     {
-      path  : "field",
+      path: "field",
       select: "name"
     },
     {
-      path  : "map",
+      path: "map",
       select: "name height width length numberOfDropTiles finished startTile tiles indexCount victims",
       populate: {
         path: "tiles.tileType"
@@ -728,43 +730,43 @@ privateRouter.get('/scoresheetimg/:run/:img', function (req, res, next) {
  * @apiError (400) {String} err The error message
  */
 adminRouter.delete('/:runids', function (req, res) {
-    var ids = req.params.runids.split(",");
-    if (!ObjectId.isValid(ids[0])) {
-        return next()
-    }
-    lineRun.findById(ids[0])
-        .select("competition")
-        .exec(function (err, dbRun) {
-            if (err) {
-                logger.error(err)
-                res.status(400).send({
-                    msg: "Could not get run",
-                    err: err.message
-                })
-            } else if (dbRun) {
-                if(!auth.authCompetition(req.user , dbRun.competition , ACCESSLEVELS.ADMIN)){
-                    return res.status(401).send({
-                        msg: "You have no authority to access this api"
-                    })
-                }
-            }
-            lineRun.remove({
-                '_id': {$in : ids},
-                'competition': dbRun.competition
-            }, function (err) {
-                if (err) {
-                    logger.error(err)
-                    res.status(400).send({
-                        msg: "Could not remove run",
-                        err: err.message
-                    })
-                } else {
-                    res.status(200).send({
-                        msg: "Run has been removed!"
-                    })
-                }
-            })
+  var ids = req.params.runids.split(",");
+  if (!ObjectId.isValid(ids[0])) {
+    return next()
+  }
+  lineRun.findById(ids[0])
+    .select("competition")
+    .exec(function (err, dbRun) {
+      if (err) {
+        logger.error(err)
+        res.status(400).send({
+          msg: "Could not get run",
+          err: err.message
         })
+      } else if (dbRun) {
+        if (!auth.authCompetition(req.user, dbRun.competition, ACCESSLEVELS.ADMIN)) {
+          return res.status(401).send({
+            msg: "You have no authority to access this api"
+          })
+        }
+      }
+      lineRun.remove({
+        '_id': {$in: ids},
+        'competition': dbRun.competition
+      }, function (err) {
+        if (err) {
+          logger.error(err)
+          res.status(400).send({
+            msg: "Could not remove run",
+            err: err.message
+          })
+        } else {
+          res.status(200).send({
+            msg: "Run has been removed!"
+          })
+        }
+      })
+    })
 })
 
 
@@ -790,12 +792,12 @@ adminRouter.post('/', function (req, res) {
 
   new lineRun({
     competition: run.competition,
-    round      : run.round,
-    team       : run.team,
-    field      : run.field,
-    map        : run.map,
-    startTime  : run.startTime,
-    group : run.group
+    round: run.round,
+    team: run.team,
+    field: run.field,
+    map: run.map,
+    startTime: run.startTime,
+    group: run.group
   }).save(function (err, data) {
     if (err) {
       logger.error(err)
@@ -807,7 +809,7 @@ adminRouter.post('/', function (req, res) {
       res.location("/api/runs/" + data._id)
       return res.status(201).send({
         err: "New run has been saved",
-        id : data._id
+        id: data._id
       })
     }
   })
@@ -858,11 +860,11 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
     }
 
     lineRun.findById(ObjectId(sheetRunID)).populate([{
-      path    : 'map',
+      path: 'map',
       populate: {
         path: 'tiles.tileType'
       }
-    },"competition"]).exec(function(err, run) {
+    }, "competition"]).exec(function (err, run) {
       if (err) {
         logger.error(err)
         res.status(400).send({
@@ -870,17 +872,17 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
           err: err.message
         })
       } else {
-        if(!run) return;
-        const sheetData = scoreSheetLineProcess.processScoreSheet(run.competition.rule,run.scoreSheet.positionData, req.file.path);
+        if (!run) return;
+        const sheetData = scoreSheetLineProcess.processScoreSheet(run.competition.rule, run.scoreSheet.positionData, req.file.path);
 
         run.scoreSheet.fullSheet = sheetData.rawSheet;
 
         run.tiles = [];
         while (run.tiles.length < run.map.indexCount) {
-            run.tiles.push({
-                scoredItems:[],
-                isDropTile: false
-            });
+          run.tiles.push({
+            scoredItems: [],
+            isDropTile: false
+          });
         }
         run.evacuationLevel = sheetData.evacuation.indexes[0] + 1;
         run.scoreSheet.evacuationLevelImage = sheetData.evacuation.img;
@@ -904,15 +906,17 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
           if (sheetData.tiles.tilesData[i].length === 1 && sheetData.tiles.tilesData[i][0].meta.id === "checkpoint" && sheetData.tiles.tilesData[i][0].checked) {
             for (let j = 0; j < run.map.tiles[i].index.length; j++) {
               let runTileIndex = run.map.tiles[i].index[j];
-              if(runTileIndex < run.map.indexCount - 2) {
-                  checkpointRunTileIndexes.push(runTileIndex);
-                  run.tiles[runTileIndex].isDropTile = true;
-                  run.tiles[runTileIndex].scoredItems.push({item: "checkpoint", scored: false});
+              if (runTileIndex < run.map.indexCount - 2) {
+                checkpointRunTileIndexes.push(runTileIndex);
+                run.tiles[runTileIndex].isDropTile = true;
+                run.tiles[runTileIndex].scoredItems.push({item: "checkpoint", scored: false});
               }
             }
           }
         }
-        checkpointRunTileIndexes.sort(function(a, b){return a - b});
+        checkpointRunTileIndexes.sort(function (a, b) {
+          return a - b
+        });
 
         // Now copy all the scoring elements and the information if they were scored to
         // run.tiles, except for checkpoints, since the checked means that the checkpoint
@@ -931,7 +935,7 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
         run.LoPs = [];
         let notReached = false; // As soon as one of the checkpoints is marked as not reached all following checkpoints are considered not reached
         // Now check transfer the information if checkpoint was scored from LOP Input field
-        for (let i = 0; i < checkpointRunTileIndexes.length + 1 && i < sheetData.checkpoints.length ; i++) {
+        for (let i = 0; i < checkpointRunTileIndexes.length + 1 && i < sheetData.checkpoints.length; i++) {
           if (sheetData.checkpoints[i].indexes[0] === 0 || notReached) {
             // 0 means "N" = not reached was crossed
 
@@ -939,14 +943,14 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
             notReached = true;
             // is initially set to not scored
           } else {
-            if(checkpointRunTileIndexes[i]){
+            if (checkpointRunTileIndexes[i]) {
               run.LoPs.push(sheetData.checkpoints[i].indexes[0] - 1);
               for (let j = 0; j < run.tiles[checkpointRunTileIndexes[i]].scoredItems.length; j++) {
                 if (run.tiles[checkpointRunTileIndexes[i]].scoredItems[j].item === "checkpoint") {
                   run.tiles[checkpointRunTileIndexes[i]].scoredItems[j].scored = true;
                 }
               }
-            }else{
+            } else {
               run.LoPs.push(sheetData.checkpoints[i].indexes[0] - 1);
             }
 
@@ -954,7 +958,7 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
         }
 
         run.scoreSheet.LoPImages = [];
-        for(let i = 0; i < sheetData.checkpoints.length; i++){
+        for (let i = 0; i < sheetData.checkpoints.length; i++) {
           run.scoreSheet.LoPImages.push(sheetData.checkpoints[i].img);
         }
 
@@ -967,11 +971,14 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
             let victimType = "D";
             if (sheetData.victimOrder.indexes[i] === 2) { // A
               victimType = "L";
-              rescuedLiveVictims ++;
+              rescuedLiveVictims++;
             } else if (sheetData.victimOrder.indexes[i] === 0) { // N
               break;
             }
-            run.rescueOrder.push({type: victimType, effective: victimType === "L" || rescuedLiveVictims === run.map.victims.live});
+            run.rescueOrder.push({
+              type: victimType,
+              effective: victimType === "L" || rescuedLiveVictims === run.map.victims.live
+            });
           }
           run.exitBonus = sheetData.exitBonus.indexes[0] === 0;
         }
@@ -1007,7 +1014,7 @@ adminRouter.post('/scoresheet/:competition', function (req, res) {
     res.end('File is uploaded and processed');
   })
 
- // scoreSheetLineProcess.processScoreSheet(posDatas[0], 'helper/scoresheet_n.png')
+  // scoreSheetLineProcess.processScoreSheet(posDatas[0], 'helper/scoresheet_n.png')
 });
 
 adminRouter.get('/apteam/:cid/:teamid/:group', function (req, res, next) {
@@ -1026,7 +1033,6 @@ adminRouter.get('/apteam/:cid/:teamid/:group', function (req, res, next) {
       msg: "You have no authority to access this api!!"
     })
   }
-
 
 
   lineRun.find({

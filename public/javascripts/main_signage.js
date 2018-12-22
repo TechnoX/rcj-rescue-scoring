@@ -88,12 +88,19 @@ function loadContent(data) {
     contentList = output;
     console.log(contentList);
 }
+var passedsec = 0; // 経過時間
+function iframeEnd(){
+    console.log("iframe end");
+    passedsec = 600;
+    iframeCount = 0;
+    
+}
 
 function onReady() {
     timestamp = (contentJsonUrl.indexOf("?") == -1 ? "?" : "&") + "timestamp=" + (new Date()).getTime();
     $.getJSON(contentJsonUrl + timestamp, null, loadContent);
     var state = 0; // 0: load 1: change content 2: go to state0
-    var passedsec = 0; // 経過時間
+    
     var timestamp; // JSON取得時のキャッシュを防ぐためにURLにtimestampを含ませる
     setInterval(function () {
             passedsec++;
@@ -130,8 +137,17 @@ function onReady() {
                         }, false);
                         duration = 600;
                     } else {
-                        duration = contentList[i]["duration"];
+                        if(contentList[i]["duration"] == -1){
+                            duration = 600;
+                        }
+                        else{
+                            duration = contentList[i]["duration"];
+                        }
                     }
+                    if(dispType == "iframe"){
+                        $(frame[dispType][dispId])[0].contentWindow.angular.element("#app").scope().startSig();
+                    }
+                    
                     prevType = dispType;
                     if (i + 1 == contentList.length) i = 0;
                     else i++;

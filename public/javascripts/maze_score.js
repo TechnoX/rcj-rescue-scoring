@@ -8,8 +8,10 @@ app.controller("MazeScoreController", function ($scope, $http) {
 
     var runListTimer = null;
     var runListChanged = false;
+    $scope.nowR = 4;
     $scope.top3 = true;
-    $scope.time = 26;
+    $scope.time = 10;
+    var inter;
     launchSocketIo()
     updateRunList(function () {
         setTimeout(function () {
@@ -28,14 +30,26 @@ app.controller("MazeScoreController", function ($scope, $http) {
     
     function updateTime(){
         $scope.time--;
-        if($scope.time <= 0){
-            if($scope.top3) $scope.time = 30;
-            else $scope.time = 15;
-            $scope.top3 = !$scope.top3;
+        if($scope.time == 0){
+            if($scope.top3){
+                $scope.top3 = !$scope.top3;
+                $scope.time = 10;
+            }else{
+                if($scope.nowR + 5 < $scope.mazeRunsTop.length){
+                    $scope.nowR += 6;
+                    $scope.time = 10;
+                }else{
+                    window.parent.iframeEnd();
+                    clearInterval(inter);
+                }
+            }
         }
         $scope.$apply();
     }
-    setInterval(updateTime, 1000);
+
+    $scope.startSig = function(){
+        inter = setInterval(updateTime, 100);
+    }
 
     function updateRunList(callback) {
         $http.get("/api/competitions/" + competitionId +

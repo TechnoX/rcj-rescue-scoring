@@ -10,8 +10,10 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
 
     var runListTimer = null;
     var runListChanged = false;
+    $scope.nowR = 4;
     $scope.top3 = true;
-    $scope.time = 26;
+    $scope.time = 10;
+    var inter;
     launchSocketIo()
     updateRunList(function () {
         setTimeout(function () {
@@ -30,14 +32,39 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
 
     function updateTime(){
         $scope.time--;
-        if($scope.time <= 0){
-            if($scope.top3) $scope.time = 30;
-            else $scope.time = 15;
-            $scope.top3 = !$scope.top3;
+        if($scope.time == 0){
+            if($scope.top3){
+                $scope.top3 = !$scope.top3;
+                $scope.time = 10;
+            }else{
+                if(league === "NL"){
+                    if($scope.nowR + 5 < $scope.nipponRunsTop.length){
+                        $scope.nowR += 6;
+                        $scope.time = 10;
+                    }else{
+                        window.parent.iframeEnd();
+                        clearInterval(inter);
+                    }
+                }else{
+                    if($scope.nowR + 5 < $scope.worldRunsTop.length){
+                        $scope.nowR += 6;
+                        $scope.time = 10;
+                    }else{
+                        window.parent.iframeEnd();
+                        clearInterval(inter);
+                    }
+                }
+            }
         }
         $scope.$apply();
     }
-    setInterval(updateTime, 1000);
+    
+    
+    $scope.startSig = function(){
+        inter = setInterval(updateTime, 1000);
+    }
+    
+    
 
     function updateRunList(callback) {
         $http.get("/api/competitions/" + competitionId +
@@ -113,7 +140,7 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
                         }
                         $scope.nipponRuns.push(run)
 
-                    } else if (run.team.league == "LineWL") {
+                    } else if (run.team.league == "Line") {
                         if (worldTeamRuns[run.team._id] === undefined) {
                             worldTeamRuns[run.team._id] = {
                                 team: {
