@@ -47,4 +47,4 @@ block content
                 button(ng-click="go('/interview/'+ competitionId +'/view/' + team._id)" class='btn btn-info' style="margin-right:5px;") {{'common.view' | translate}}
                 if user
                     button(ng-click="go('/interview/'+ competitionId +'/do/' + team._id)" class='btn btn-dark' style="margin-right:5px;" ng-show="#{judge} >= 1") {{'common.interview' | translate}}
-                    button(ng-click="go('/interview/'+ competitionId +'/pub/' + team._id)" class='btn btn-warning' style="margin-right:5px;" ng-show="#{judge} == 2") {{'common.public' | translate}}
+                    //button(ng-click="go('/interview/'+ competitionId +'/pub/' + team._id)" class='btn btn-warning' style="margin-right:5px;" ng-show="#{judge} == 2") {{'common.public' | translate}}

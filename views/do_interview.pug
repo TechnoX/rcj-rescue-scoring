@@ -11,6 +11,7 @@ append scripts
   script(src='/javascripts/do_interview.js')
   //if lt IE 9
     script(type='text/javascript', src='/components/jSignature/libs/flashcanvas.js')
+  script(src='/components/image-compressor/dist/image-compressor.min.js')
   script(src='/components/jSignature/libs/jSignature.min.js')
   script.
       $(document).ready(function() {
@@ -121,138 +122,7 @@ block content
 
       br
       div(ng-show="doc")
-          #teaminfo.card
-              h3.card-header
-                i.far.fa-file-alt(aria-hidden='true') {{'interview.teaminfo' | translate}}
-              .card-body
-                p {{'interview.teamname' | translate}}
-                h3 {{doc.team}}
-                hr
-                p {{'interview.howtoread' | translate}}
-                h3 {{doc.yomi}}
-                hr
-                p {{'interview.organization' | translate}}
-                h3 {{doc.dantai}}
-          br
-          #member.card
-              h3.card-header
-                i.far.fa-file-alt(aria-hidden='true') {{'interview.member' | translate}}
-              .card-body
-                i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{'interview.nameread' | translate}}
-                p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;") {{doc.member}}
-                //textarea(style="width:100%; background:  #eaf9de;" rows="6" readonly) {{doc.member}}
-                hr
-                i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{'interview.role' | translate}}
-                p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;") {{doc.role}}
-                div(style="padding-left:50px;")
-                    span {{'interview.comment' | translate}}
-                    textarea(style="width:100%;" rows="3" ng-model="doc.roleC") {{doc.roleC}}
-          br
-          #member.card
-              h3.card-header
-                i.far.fa-file-alt(aria-hidden='true') {{'interview.hard' | translate}}
-              .card-body
-                i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.hardware.q1.q}}
-                p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.hardware.q1.a}}
-                div(style="padding-left:50px;")
-                    span {{'interview.comment' | translate}}
-                    textarea(style="width:100%;" rows="3" ng-model="doc.hardware.q1.c") {{doc.hardware.q1.c}}
-                hr
-                i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.hardware.q2.q}}
-                p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.hardware.q2.a}}
-                div(style="padding-left:50px;")
-                    span {{'interview.comment' | translate}}
-                    textarea(style="width:100%;" rows="3" ng-model="doc.hardware.q2.c") {{doc.hardware.q2.c}}
-                hr
-                i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.hardware.q3.q}}
-                p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.hardware.q3.a}}
-                div(style="padding-left:50px;")
-                    span {{'interview.comment' | translate}}
-                    textarea(style="width:100%;" rows="3" ng-model="doc.hardware.q3.c") {{doc.hardware.q3.c}}
-                div(ng-show="doc.hardware.q4.q")
-                    hr
-                    i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.hardware.q4.q}}
-                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.hardware.q4.a}}
-                    div(style="padding-left:50px;")
-                        span {{'interview.comment' | translate}}
-                        textarea(style="width:100%;" rows="3" ng-model="doc.hardware.q4.c") {{doc.hardware.q4.c}}
-                div(ng-show="doc.hardware.q5.q")
-                    hr
-                    i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.hardware.q5.q}}
-                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.hardware.q5.a}}
-                    div(style="padding-left:50px;")
-                        span {{'interview.comment' | translate}}
-                        textarea(style="width:100%;" rows="3" ng-model="doc.hardware.q5.c") {{doc.hardware.q5.c}}
-                div(ng-show="doc.hardware.q6.q")
-                    hr
-                    i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.hardware.q6.q}}
-                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.hardware.q6.a}}
-                    div(style="padding-left:50px;")
-                        span {{'interview.comment' | translate}}
-                        textarea(style="width:100%;" rows="3" ng-model="doc.hardware.q6.c") {{doc.hardware.q6.c}}
-                div(ng-show="doc.hardware.q7.q")
-                    hr
-                    i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.hardware.q7.q}}
-                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.hardware.q7.a}}
-                    div(style="padding-left:50px;")
-                        span {{'interview.comment' | translate}}
-                        textarea(style="width:100%;" rows="3" ng-model="doc.hardware.q7.c") {{doc.hardware.q7.c}}
-          br
-          #member.card
-              h3.card-header
-                i.far.fa-file-alt(aria-hidden='true') {{'interview.soft' | translate}}
-              .card-body
-                i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.software.q1.q}}
-                p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.software.q1.a}}
-                div(style="padding-left:50px;")
-                    span {{'interview.comment' | translate}}
-                    textarea(style="width:100%;" rows="3" ng-model="doc.software.q1.c") {{doc.software.q1.c}}
-                hr
-                i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.software.q2.q}}
-                p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.software.q2.a}}
-                div(style="padding-left:50px;")
-                    span {{'interview.comment' | translate}}
-                    textarea(style="width:100%;" rows="3" ng-model="doc.software.q2.c") {{doc.software.q2.c}}
-                hr
-                i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.software.q3.q}}
-                p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.software.q3.a}}
-                div(style="padding-left:50px;")
-                    span {{'interview.comment' | translate}}
-                    textarea(style="width:100%;" rows="3" ng-model="doc.software.q3.c") {{doc.software.q3.c}}
-                div(ng-show="doc.software.q4.q")
-                    hr
-                    i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.software.q4.q}}
-                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.software.q4.a}}
-                    div(style="padding-left:50px;")
-                        span {{'interview.comment' | translate}}
-                        textarea(style="width:100%;" rows="3" ng-model="doc.software.q4.c") {{doc.software.q4.c}}
-                div(ng-show="doc.software.q5.q")
-                    hr
-                    i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.software.q5.q}}
-                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.software.q5.a}}
-                    div(style="padding-left:50px;")
-                        span {{'interview.comment' | translate}}
-                        textarea(style="width:100%;" rows="3" ng-model="doc.software.q5.c") {{doc.software.q5.c}}
-                div(ng-show="doc.software.q6.q")
-                    hr
-                    i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.software.q6.q}}
-                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.software.q6.a}}
-                    div(style="padding-left:50px;")
-                        span {{'interview.comment' | translate}}
-                        textarea(style="width:100%;" rows="3" ng-model="doc.software.q6.c") {{doc.software.q6.c}}
-                div(ng-show="doc.software.q7.q")
-                    hr
-                    i.fas.fa-question(aria-hidden='true' style="font-size:20px;") &nbsp; {{doc.software.q7.q}}
-                    p(style="white-space: pre-wrap; margin-top:10px;margin-left:30px;background:#f5f5f5;")  {{doc.software.q7.a}}
-                    div(style="padding-left:50px;")
-                        span {{'interview.comment' | translate}}
-                        textarea(style="width:100%;" rows="3" ng-model="doc.software.q7.c") {{doc.software.q7.c}}
-          br
-          #ikigomi.card
-              h3.card-header
-                i.far.fa-file-alt(aria-hidden='true') {{'interview.motivation' | translate}}
-              .card-body
-                    p(style="white-space: pre-wrap;margin-left:30px;background:#f5f5f5;")  {{doc.ikigomi}}
+          #document_html
           br
           #attach.card
               h3.card-header
