@@ -48,7 +48,7 @@ app.controller("MazeScoreController", function ($scope, $http) {
     }
 
     $scope.startSig = function(){
-        inter = setInterval(updateTime, 100);
+        inter = setInterval(updateTime, 1000);
     }
 
     function updateRunList(callback) {

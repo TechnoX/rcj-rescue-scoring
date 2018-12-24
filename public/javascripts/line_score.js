@@ -140,7 +140,7 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
                         }
                         $scope.nipponRuns.push(run)
 
-                    } else if (run.team.league == "Line") {
+                    } else if (run.team.league == "LineWL") {
                         if (worldTeamRuns[run.team._id] === undefined) {
                             worldTeamRuns[run.team._id] = {
                                 team: {
