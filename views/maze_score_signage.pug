@@ -50,113 +50,39 @@ block content
                   li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#222f3e")
                     i.fas.fa-child.fa-fw &nbsp;&nbsp;&nbsp;{{run.found}}&nbsp;体
         hr(color="#636e72" style="margin-top:1vh;margin-bottom:1vh;")
-      div(ng-hide="top3")
+      div(ng-hide="top3" ng-repeat='i in [0,1,2]')
         .row(style="height:30vh;border-bottom:solid 1px #000;")
-            .col-6(style="border-right:solid 1px #000;")
+            .col-6(style="border-right:solid 1px #000;" ng-show="mazeRunsTop[nowR+(2*i)-1]")
                 .row.ces(style="margin-left:5px;margin-top:10px;height:30%;margin-bottom:5%;")
-                    .col-2(style="text-align:center;font-size:6vh; border:solid 1px #000;") {{nowR}}
-                    .col-10(style="font-size:6vh;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;") {{mazeRunsTop[nowR-1].team.name}}
+                    .col-2(style="text-align:center;font-size:6vh; border:solid 1px #000;") {{nowR+(2*i)}}
+                    .col-10(style="font-size:6vh;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;") {{mazeRunsTop[nowR+(2*i)-1].team.name}}
                 .row(style="height:65%;")
                     .col-6
                         ul.list-group(style="height:100%;font-size:4vh;")
                             li.list-group-item(style="border:3px solid #636e72;padding:1vh;color:#d35400")
-                                i.fas.fa-calculator.fa-fw &nbsp;&nbsp;&nbsp;{{mazeRunsTop[nowR-1].score}}&nbsp;点
+                                i.fas.fa-calculator.fa-fw &nbsp;&nbsp;&nbsp;{{mazeRunsTop[nowR+(2*i)-1].score}}&nbsp;点
                             li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#0abde3")
-                                i.fas.fa-stopwatch.fa-fw &nbsp;&nbsp;&nbsp;{{("00"+mazeRunsTop[nowR-1].time.minutes).slice(-2)}}:{{("00"+mazeRunsTop[nowR-1].time.seconds).slice(-2)}}
+                                i.fas.fa-stopwatch.fa-fw &nbsp;&nbsp;&nbsp;{{("00"+mazeRunsTop[nowR+(2*i)-1].time.minutes).slice(-2)}}:{{("00"+mazeRunsTop[nowR+(2*i)-1].time.seconds).slice(-2)}}
                     .col-6
                         ul.list-group(style="height:100%;font-size:4vh;")
                             li.list-group-item(style="border:3px solid #636e72;padding:1vh;color:#ee5253")
-                                i.fas.fa-home.fa-fw &nbsp;&nbsp;{{mazeRunsTop[nowR-1].exit}}&nbsp;回
+                                i.fas.fa-home.fa-fw &nbsp;&nbsp;{{mazeRunsTop[nowR+(2*i)-1].exit}}&nbsp;回
                             li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#222f3e")
-                                i.fas.fa-child.fa-fw &nbsp;&nbsp;&nbsp;{{mazeRunsTop[nowR-1].found}}&nbsp;体
-            .col-6(ng-show="mazeRunsTop[nowR]")
+                                i.fas.fa-child.fa-fw &nbsp;&nbsp;&nbsp;{{mazeRunsTop[nowR+(2*i)-1].found}}&nbsp;体
+            .col-6(ng-show="mazeRunsTop[nowR+(2*i)]")
                 .row.ces(style="margin-left:5px;margin-top:10px;height:30%;margin-bottom:5%;")
-                    .col-2(style="text-align:center;font-size:6vh; border:solid 1px #000;") {{nowR+1}}
-                    .col-10(style="font-size:6vh;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;") {{mazeRunsTop[nowR].team.name}}
+                    .col-2(style="text-align:center;font-size:6vh; border:solid 1px #000;") {{nowR+(2*i)+1}}
+                    .col-10(style="font-size:6vh;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;") {{mazeRunsTop[nowR+(2*i)].team.name}}
                 .row(style="height:65%;")
                     .col-6
                         ul.list-group(style="height:100%;font-size:4vh;")
                             li.list-group-item(style="border:3px solid #636e72;padding:1vh;color:#d35400")
-                                i.fas.fa-calculator.fa-fw &nbsp;&nbsp;&nbsp;{{mazeRunsTop[nowR].score}}&nbsp;点
+                                i.fas.fa-calculator.fa-fw &nbsp;&nbsp;&nbsp;{{mazeRunsTop[nowR+(2*i)].score}}&nbsp;点
                             li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#0abde3")
-                                i.fas.fa-stopwatch.fa-fw &nbsp;&nbsp;&nbsp;{{("00"+mazeRunsTop[nowR].time.minutes).slice(-2)}}:{{("00"+mazeRunsTop[nowR].time.seconds).slice(-2)}}
+                                i.fas.fa-stopwatch.fa-fw &nbsp;&nbsp;&nbsp;{{("00"+mazeRunsTop[nowR+(2*i)].time.minutes).slice(-2)}}:{{("00"+mazeRunsTop[nowR+(2*i)].time.seconds).slice(-2)}}
                     .col-6
                         ul.list-group(style="height:100%;font-size:4vh;")
                             li.list-group-item(style="border:3px solid #636e72;padding:1vh;color:#ee5253")
-                                i.fas.fa-home.fa-fw &nbsp;&nbsp;{{mazeRunsTop[nowR].exit}}&nbsp;回
+                                i.fas.fa-home.fa-fw &nbsp;&nbsp;{{mazeRunsTop[nowR+(2*i)].exit}}&nbsp;回
                             li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#222f3e")
-                                i.fas.fa-child.fa-fw &nbsp;&nbsp;&nbsp;{{mazeRunsTop[nowR].found}}&nbsp;体
-
-        .row(style="height:30vh;border-bottom:solid 1px #000;")
-            .col-6(style="border-right:solid 1px #000;" ng-show="mazeRunsTop[nowR+1]")
-                .row.ces(style="margin-left:5px;margin-top:10px;height:30%;margin-bottom:5%;")
-                    .col-2(style="text-align:center;font-size:6vh; border:solid 1px #000;") {{nowR+2}}
-                    .col-10(style="font-size:6vh;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;") {{mazeRunsTop[nowR+1].team.name}}
-                .row(style="height:65%;")
-                    .col-6
-                        ul.list-group(style="height:100%;font-size:4vh;")
-                            li.list-group-item(style="border:3px solid #636e72;padding:1vh;color:#d35400")
-                                i.fas.fa-calculator.fa-fw &nbsp;&nbsp;&nbsp;{{mazeRunsTop[nowR+1].score}}&nbsp;点
-                            li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#0abde3")
-                                i.fas.fa-stopwatch.fa-fw &nbsp;&nbsp;&nbsp;{{("00"+mazeRunsTop[nowR+1].time.minutes).slice(-2)}}:{{("00"+mazeRunsTop[nowR+1].time.seconds).slice(-2)}}
-                    .col-6
-                        ul.list-group(style="height:100%;font-size:4vh;")
-                            li.list-group-item(style="border:3px solid #636e72;padding:1vh;color:#ee5253")
-                                i.fas.fa-home.fa-fw &nbsp;&nbsp;{{mazeRunsTop[nowR+1].exit}}&nbsp;回
-                            li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#222f3e")
-                                i.fas.fa-child.fa-fw &nbsp;&nbsp;&nbsp;{{mazeRunsTop[nowR+1].found}}&nbsp;体
-            .col-6(ng-show="mazeRunsTop[nowR+2]")
-                .row.ces(style="margin-left:5px;margin-top:10px;height:30%;margin-bottom:5%;")
-                    .col-2(style="text-align:center;font-size:6vh; border:solid 1px #000;") {{nowR+3}}
-                    .col-10(style="font-size:6vh;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;") {{mazeRunsTop[nowR+2].team.name}}
-                .row(style="height:65%;")
-                    .col-6
-                        ul.list-group(style="height:100%;font-size:4vh;")
-                            li.list-group-item(style="border:3px solid #636e72;padding:1vh;color:#d35400")
-                                i.fas.fa-calculator.fa-fw &nbsp;&nbsp;&nbsp;{{mazeRunsTop[nowR+2].score}}&nbsp;点
-                            li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#0abde3")
-                                i.fas.fa-stopwatch.fa-fw &nbsp;&nbsp;&nbsp;{{("00"+mazeRunsTop[nowR+2].time.minutes).slice(-2)}}:{{("00"+mazeRunsTop[nowR+2].time.seconds).slice(-2)}}
-                    .col-6
-                        ul.list-group(style="height:100%;font-size:4vh;")
-                            li.list-group-item(style="border:3px solid #636e72;padding:1vh;color:#ee5253")
-                                i.fas.fa-home.fa-fw &nbsp;&nbsp;{{mazeRunsTop[nowR+2].exit}}&nbsp;回
-                            li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#222f3e")
-                                i.fas.fa-child.fa-fw &nbsp;&nbsp;&nbsp;{{mazeRunsTop[nowR+2].found}}&nbsp;体
-
-
-        .row(style="height:30vh;border-bottom:solid 1px #000;")
-            .col-6(style="border-right:solid 1px #000;" ng-show="mazeRunsTop[nowR+3]")
-                .row.ces(style="margin-left:5px;margin-top:10px;height:30%;margin-bottom:5%;")
-                    .col-2(style="text-align:center;font-size:6vh; border:solid 1px #000;") {{nowR+4}}
-                    .col-10(style="font-size:6vh;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;") {{mazeRunsTop[nowR+3].team.name}}
-                .row(style="height:65%;")
-                    .col-6
-                        ul.list-group(style="height:100%;font-size:4vh;")
-                            li.list-group-item(style="border:3px solid #636e72;padding:1vh;color:#d35400")
-                                i.fas.fa-calculator.fa-fw &nbsp;&nbsp;&nbsp;{{mazeRunsTop[nowR+3].score}}&nbsp;点
-                            li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#0abde3")
-                                i.fas.fa-stopwatch.fa-fw &nbsp;&nbsp;&nbsp;{{("00"+mazeRunsTop[nowR+3].time.minutes).slice(-2)}}:{{("00"+mazeRunsTop[nowR+3].time.seconds).slice(-2)}}
-                    .col-6
-                        ul.list-group(style="height:100%;font-size:4vh;")
-                            li.list-group-item(style="border:3px solid #636e72;padding:1vh;color:#ee5253")
-                                i.fas.fa-home.fa-fw &nbsp;&nbsp;{{mazeRunsTop[nowR+3].exit}}&nbsp;回
-                            li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#222f3e")
-                                i.fas.fa-child.fa-fw &nbsp;&nbsp;&nbsp;{{mazeRunsTop[nowR+3].found}}&nbsp;体
-            .col-6(ng-show="mazeRunsTop[nowR+4]")
-                .row.ces(style="margin-left:5px;margin-top:10px;height:30%;margin-bottom:5%;")
-                    .col-2(style="text-align:center;font-size:6vh; border:solid 1px #000;") {{nowR+5}}
-                    .col-10(style="font-size:6vh;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;") {{mazeRunsTop[nowR+4].team.name}}
-                .row(style="height:65%;")
-                    .col-6
-                        ul.list-group(style="height:100%;font-size:4vh;")
-                            li.list-group-item(style="border:3px solid #636e72;padding:1vh;color:#d35400")
-                                i.fas.fa-calculator.fa-fw &nbsp;&nbsp;&nbsp;{{mazeRunsTop[nowR+4].score}}&nbsp;点
-                            li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#0abde3")
-                                i.fas.fa-stopwatch.fa-fw &nbsp;&nbsp;&nbsp;{{("00"+mazeRunsTop[nowR+4].time.minutes).slice(-2)}}:{{("00"+mazeRunsTop[nowR+4].time.seconds).slice(-2)}}
-                    .col-6
-                        ul.list-group(style="height:100%;font-size:4vh;")
-                            li.list-group-item(style="border:3px solid #636e72;padding:1vh;color:#ee5253")
-                                i.fas.fa-home.fa-fw &nbsp;&nbsp;{{mazeRunsTop[nowR+4].exit}}&nbsp;回
-                            li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#222f3e")
-                                i.fas.fa-child.fa-fw &nbsp;&nbsp;&nbsp;{{mazeRunsTop[nowR+4].found}}&nbsp;体
-
+                                i.fas.fa-child.fa-fw &nbsp;&nbsp;&nbsp;{{mazeRunsTop[nowR+(2*i)].found}}&nbsp;体
