@@ -8,7 +8,7 @@ const logger = require('../config/logger').mainLogger
 const LINE_LEAGUES = ["LineWL","LineNL"]
 const MAZE_LEAGUES = ["Maze"]
 
-const SUPPORT_RULES = ["2018","2019(Draft)"]
+const SUPPORT_RULES = ["2018","2019"]
 
 const LEAGUES = [].concat(LINE_LEAGUES, MAZE_LEAGUES)
 

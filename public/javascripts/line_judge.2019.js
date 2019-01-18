@@ -1,5 +1,5 @@
 /*********************************************************************************/
-// This file is a RoboCup Junior Rescue 2019 rule(Draft) correspondence version. //
+// This file is a RoboCup Junior Rescue 2019 rule correspondence version. //
 /*********************************************************************************/
 
 // register the directive with your app module
@@ -1140,7 +1140,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             tile.y == $scope.startTile.y &&
             tile.z == $scope.startTile.z;
     }
-    
+
     function undefined2false(tmp){
         if(tmp) return true;
         return false;

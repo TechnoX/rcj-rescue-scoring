@@ -96,7 +96,7 @@ html(ng-app="ddApp")
                 i.fa.fa-home(aria-hidden='true')
                 |  {{'common.other' | translate}}
               .card-body
-                if rule == '2019(Draft)'
+                if rule == '2019'
                   .col-md-12(style='position: relative;')
                     strong {{'maze.view.misidentification' | translate}}
                     br
@@ -306,7 +306,7 @@ html(ng-app="ddApp")
           .col-md-2
             p(style='text-align:center;height:30px;') {{'maze.sign.return' | translate}}
             h1 {{foundVictims * 10 * exitBonus}} {{'common.point' | translate}}
-          if rule == '2019(Draft)'
+          if rule == '2019'
             .col-md-1
               p(style='height:30px;')
               h1 -
