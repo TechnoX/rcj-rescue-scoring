@@ -317,12 +317,7 @@ publicRouter.get('/:runid', function (req, res, next) {
   const query = lineRun.findById(id, "-__v")
 
   if (req.query['populate'] !== undefined && req.query['populate']) {
-    query.populate(["round", "team", "field", "competition", {
-      path: 'tiles',
-      populate: {
-        path: 'tileType'
-      }
-    }])
+      query.populate(["round", "team", "field", "competition"])
   }
 
   query.lean().exec(function (err, dbRun) {
