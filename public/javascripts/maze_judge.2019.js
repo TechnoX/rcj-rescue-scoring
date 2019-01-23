@@ -45,7 +45,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.checkMachine = !$scope.checkMachine;
         playSound(sClick);
     }
-    
+
     $scope.checks = function(){
         return ($scope.checkTeam & $scope.checkRound & $scope.checkMember & $scope.checkMachine)
     }
@@ -105,7 +105,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.cells = {};
     $scope.tiles = {};
-    
+
     $scope.startedScoring = false;
 
     var db_cells;
@@ -151,7 +151,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             let data = {
                 status: 1
             };
-            upload_run(data);
+            $http.put("/api/runs/maze/" + runId, data, http_config).then(function (response) {
+                //$scope.score = response.data.score;
+            }, function (response) {
+                if (response.status == 401) {
+                    $scope.go('/home/access_denied');
+                }
+            });
         }
 
 
@@ -323,7 +329,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $timeout(tick, 1000);
         }
     }
-    
+
     $scope.toggleScoring = function(){
         playSound(sClick);
         $scope.startedScoring = !$scope.startedScoring;

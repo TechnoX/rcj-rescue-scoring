@@ -170,7 +170,14 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         let data = {
             status: 1
         };
-        upload_run(data);
+        $http.put("/api/runs/line/" + runId, data, http_config).then(function (response) {
+            //$scope.score = response.data.score;
+        }, function (response) {
+            if (response.status == 401) {
+                $scope.go('/home/access_denied');
+            }
+        });
+
     }
 
     function loadNewRun() {
