@@ -790,14 +790,13 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
       $scope.handover = function () {
         var run = {}
+        run.id = runId;
         run.exitBonus = $scope.exitBonus;
         run.LoPs = $scope.LoPs;
         run.misidentification = $scope.MisIdent;
 
         // Scoring elements of the tiles
         run.tiles = $scope.tiles;
-        $scope.minutes = Math.floor($scope.time / 60000)
-        $scope.seconds = Math.floor(($scope.time % 60000) / 1000)
         run.time = {
             minutes: $scope.minutes,
             seconds: $scope.seconds

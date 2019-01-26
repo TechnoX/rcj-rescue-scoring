@@ -1014,6 +1014,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.handover = function () {
         var run = {}
+        run.id = runId;
         run.LoPs = $scope.LoPs;
         run.evacuationLevel = $scope.evacuationLevel;
         run.exitBonus = $scope.exitBonus;
@@ -1022,8 +1023,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         run.started = $scope.started;
         run.rescueOrder = $scope.victim_list;
         run.tiles = $scope.stiles;
-        $scope.minutes = Math.floor($scope.time / 60000)
-        $scope.seconds = Math.floor(($scope.time % 60000) / 1000)
         run.retired = $scope.retired;
         run.time = {
             minutes: $scope.minutes,
