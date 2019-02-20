@@ -378,6 +378,7 @@ privateRouter.put('/:runid', function (req, res, next) {
     return next()
   }
 
+  var statusUpdate = false;
   const run = req.body
 
   // Exclude fields that are not allowed to be publicly changed
@@ -433,6 +434,9 @@ privateRouter.put('/:runid', function (req, res, next) {
           
         if (run.status){
             if(dbRun.status > run.status) delete run.status;
+            else{
+                if(run.status != dbRun.status) statusUpdate = true;
+            }
         }
 
         // Recursively updates properties in "dbObj" from "obj"
@@ -491,10 +495,10 @@ privateRouter.put('/:runid', function (req, res, next) {
               socketIo.sockets.in('competition/' +
                 dbRun.competition).emit('changed')
               socketIo.sockets.in('runs/' + dbRun._id).emit('data', dbRun)
-              socketIo.sockets.in('fields/' +
-                dbRun.field).emit('data', {
-                newRun: dbRun._id
-              })
+              socketIo.sockets.in('fields/' +dbRun.field).emit('data', {newRun: dbRun._id})
+              if(statusUpdate){
+                socketIo.sockets.in('runs/line/' + dbRun.competition + '/status').emit('StatusChanged')
+              }
             }
             return res.status(200).send({
               msg: "Saved run",

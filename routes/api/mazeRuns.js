@@ -591,7 +591,7 @@ privateRouter.put('/:runid', function (req, res, next) {
                             socketIo.sockets.in('runs/maze/' + dbRun.competition).emit('changed')
                             socketIo.sockets.in('runs/' + dbRun._id).emit('data', dbRun)
                             if(statusUpdate){
-                                socketIo.sockets.in('runs/maze/' + dbRun.competition + '/status').emit('Mchanged')
+                                socketIo.sockets.in('runs/maze/' + dbRun.competition + '/status').emit('StatusChanged')
                             }
                         }
                         return res.status(200).send({

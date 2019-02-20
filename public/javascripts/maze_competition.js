@@ -47,7 +47,7 @@ app.controller("MazeCompetitionController", ['$scope', '$http', '$translate', fu
         if (typeof competitionId !== 'undefined') {
             socket.emit('subscribe', 'runs/maze/' + competitionId + '/status');
 
-            socket.on('Mchanged', function () {
+            socket.on('StatusChanged', function () {
                 $scope.update_list();
                 $scope.$apply();
                 //console.log($scope.runs);
