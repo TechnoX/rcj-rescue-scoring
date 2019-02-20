@@ -42,7 +42,9 @@
     "cheet.js": "^0.3.3",
     "angular-touch": "1.7.0",
     "pdfjs": "https://github.com/mozilla/pdf.js/releases/download/v2.0.943/pdfjs-2.0.943-dist.zip",
-    "image-compressor": "https://github.com/xkeshi/image-compressor.git#^1.1.4"
+    "image-compressor": "https://github.com/xkeshi/image-compressor.git#^1.1.4",
+    "qr_reader": "https://github.com/sitepoint-editors/jsqrcode.git",
+    "jquery-qrcode": "https://github.com/jeromeetienne/jquery-qrcode.git"
   },
   "description": "",
   "main": "",
@@ -53,6 +55,7 @@
   "resolutions": {
     "popper.js": "^1.10.8",
     "angular": "1.7.5",
-    "angular-translate-storage-cookie": "^2.18.1"
+    "angular-translate-storage-cookie": "^2.18.1",
+    "jquery": "^3.3.1"
   }
 }

@@ -971,7 +971,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         run.rescueOrder = $scope.victim_list;
         run.showedUp = $scope.showedUp;
         run.started = $scope.started;
-        run.rescueOrder = $scope.victim_list;
         run.tiles = $scope.stiles;
         $scope.minutes = Math.floor($scope.time / 60000)
         $scope.seconds = Math.floor(($scope.time % 60000) / 1000)
@@ -1021,7 +1020,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         run.rescueOrder = $scope.victim_list;
         run.showedUp = $scope.showedUp;
         run.started = $scope.started;
-        run.rescueOrder = $scope.victim_list;
         run.tiles = $scope.stiles;
         run.retired = $scope.retired;
         run.time = {
@@ -1037,7 +1035,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         }).then((result) => {
             stopMakeQR();
         })
-        createMultiQR(run, "qr_code_area", 70);
+        createMultiQR(run, "qr_code_area", 80);
     }
 
     $scope.confirm = function () {
@@ -1053,7 +1051,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             run.rescueOrder = $scope.victim_list;
             run.showedUp = $scope.showedUp;
             run.started = $scope.started;
-            run.rescueOrder = $scope.victim_list;
             run.tiles = $scope.stiles;
             //$scope.minutes = Math.floor($scope.time / 60000)
             //$scope.seconds = Math.floor(($scope.time % 60000) / 1000)
@@ -1090,7 +1087,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
       run.rescueOrder = $scope.victim_list;
       run.showedUp = $scope.showedUp;
       run.started = $scope.started;
-      run.rescueOrder = $scope.victim_list;
       run.tiles = $scope.stiles;
       run.retired = $scope.retired;
       run.time = {

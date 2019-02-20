@@ -13,7 +13,7 @@ function stopMakeQR(){
 }
 
 function createMultiQR(obj, qr_id, length) {
-    console.log(obj);
+  console.log(obj);
   var base64 = obj2base64(obj);
 
   var data_list = [];
@@ -29,11 +29,9 @@ function createMultiQR(obj, qr_id, length) {
     }
     qr_timeout = setTimeout(task, 1000 + Math.random() * 400);
 
-    $('#' + qr_id).empty().qrcode({
-      render: 'image',
-      size: 400,
-      text: idx + "_" + data_list.length + ":" + data_list[idx]
-    });
+    $('#' + qr_id).empty().qrcode(
+      idx + "_" + data_list.length + ":" + data_list[idx]
+    );
 
     ++idx;
     if (idx >= data_list.length) {

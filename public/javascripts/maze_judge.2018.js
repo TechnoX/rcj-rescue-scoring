@@ -775,7 +775,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         }).then((result) => {
             stopMakeQR();
         })
-        createMultiQR(run, "qr_code_area", 70);
+        createMultiQR(run, "qr_code_area", 80);
       }
 
 

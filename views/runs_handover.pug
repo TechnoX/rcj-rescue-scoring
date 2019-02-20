@@ -1,0 +1,90 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'HandOver'
+  - var ngInit = 'qrInit'
+
+append scripts
+  script(src='/components/qr_reader/src/qr_packed.js')
+  script(src="/javascripts/inflate.js")
+  script(src='/javascripts/handover.js')
+  
+block location
+    a.breadcrumb-item(ng-click="go('/home')") Home
+    a.breadcrumb-item(ng-click="go('/admin')") Admin
+    span.breadcrumb-item.active Handover
+
+
+block content
+  style.
+    .statbox {
+        position: relative;
+        margin: 2em 0;
+        padding: 0.5em 1em;
+        border: solid 3px #95ccff;
+        border-radius: 8px;
+        text-align: center;
+    }
+    .statbox .box-title {
+        position: absolute;
+        display: inline-block;
+        top: -13px;
+        left: 10px;
+        padding: 0 9px;
+        line-height: 1;
+        font-size: 19px;
+        background: #FFF;
+        color: #95ccff;
+        font-weight: bold;
+    }
+  .row
+    .col-md-1
+    .col-md-10
+        h1 ハンドオーバー
+        hr
+        p 審判操作を実行中に何らかの要因によってデバイスのネットワーク接続が切れてしまった場合，このページより操作を行うこと，審判操作をこのページに引き継ぐことができます． このページを利用するためには，サーバーに対してSSLを用いて接続する必要があります．
+        p STEP1  審判ページ下部の"他のデバイスにハンドオーバー"というボタンを押してQRコードを表示してください．
+        p STEP2  QRコードを読み取ってください．QRコードは十数個に分割されています．全てのQRコードの読み取りに成功するまで，そのままでお待ちください．
+        p STEP3   表示された内容を確認して"審判画面に進む"or"記録確認画面に進む"ボタンを押してください．
+        .row
+            .col-md-6
+                #video-input
+                  div(style='text-align: center')
+                    button#changeCamera(type='button') 前面／背面 切り替え
+                    
+                    video#video(ng-style="{border: decodeStatus ? '10px solid #2ecc71':'10px solid #e74c3c'}",style='width: 80%; height: auto;', autoplay='', playsinline='')
+                  img#img
+                  div(style='display: none')
+                    canvas#canvas
+                  //div(style='margin-top: 3em')
+                    p(style='font-weight: bold; margin-bottom: 5px') アクティブなカメラ
+                    p#active-camera(style='margin-top: 5px')
+                #photo-input(style='display: none')
+                  div(style='text-align: center')
+                    label.qrbtn(for='input-qr') QRコードを読み取る
+                    input#input-qr(type='file', accept='image/*', capture='environment', tabindex='-1', style='display: none', onchange='openQRCamera(this);')
+            .col-md-6
+                .row(ng-show='dataSended')
+                    .col-md-6
+                        button(ng-click="goJudge()" class='btn btn-danger' style="width:100%; margin-right:5px;") 審判画面へ
+                    .col-md-6
+                        button(ng-click="goSign()" class='btn btn-warning' style="width:100%; margin-left:5px;") 確認画面へ
+                h3(ng-hide='dataSended') QRコードをカメラの枠内に収めてください
+                .row
+                    .col-md-3(ng-repeat="s in Rstatus track by $index")
+                        .statbox
+                            span.box-title {{$index + 1}}/{{Rstatus.length}}
+                            div(ng-show='s.status')
+                                i.fas.fa-check(style='color:#2ecc71; font-size:30px')
+                            div(ng-hide='s.status')
+                                i.fas.fa-times(style='color:#e74c3c; font-size:30px')
+
+      
+        div(style='margin-top: 3em')
+          label(for='qr')
+            | 読み取ったQRコード
+            br
+          input#qr(type='text', value='', style='width:100%')
+          
+

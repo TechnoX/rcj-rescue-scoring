@@ -61,6 +61,10 @@ router.get('/:competitionid/authority', function (req, res, next) {
   else res.render('access_denied', {user: req.user})
 })
 
+router.get('/handover', function (req, res, next) {  
+  
+  res.render('runs_handover', {user: req.user})
+})
 
 router.get('/:competitionid/line/runs', function (req, res, next) {
   const id = req.params.competitionid
