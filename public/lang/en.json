@@ -563,6 +563,9 @@
             "doLevel1": "Set【View】",
             "doLevel5": "Set【Judge】",
             "doLevel10": "Set【Admin】"
+        },
+        "handover": {
+            "title": "Handover"
         }
     }
 }
