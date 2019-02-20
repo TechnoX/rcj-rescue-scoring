@@ -430,6 +430,10 @@ privateRouter.put('/:runid', function (req, res, next) {
         if (run.rescueOrder != null) {
           dbRun.rescueOrder = run.rescueOrder;
         }
+          
+        if (run.status){
+            if(dbRun.status > run.status) delete run.status;
+        }
 
         // Recursively updates properties in "dbObj" from "obj"
         const copyProperties = function (obj, dbObj) {

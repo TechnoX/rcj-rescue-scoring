@@ -546,8 +546,16 @@ privateRouter.put('/:runid', function (req, res, next) {
                 }
 
                 delete run.tiles
-
-                if(run.status != dbRun.status) statusUpdate = true;
+                
+                if (run.status){
+                    if(dbRun.status > run.status) delete run.status;
+                    else{
+                        if(run.status != dbRun.status) statusUpdate = true;
+                    }
+                }
+                
+                
+                
 
                 err = copyProperties(run, dbRun)
                 if (err) {
