@@ -174,5 +174,6 @@ block content
                     button.dropdown-item(type='button' ng-click="go_sign(run._id)") {{"common.sign" | translate}}
                     button.dropdown-item(type='button' ng-click="go_approval(run._id)") {{"common.approval" | translate}}
                     .dropdown-divider
+                    button.dropdown-item(type='button' ng-click='statusReset(run._id)') {{"admin.lineRun.statusReset" | translate}}
                     button.dropdown-item(type='button' ng-click='removeRun(run._id)') {{"common.delete" | translate}}
 

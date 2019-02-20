@@ -421,7 +421,8 @@
             "st5": "5.承認作業中",
             "st6": "6.承認済み",
             "selectAll": "全選択",
-            "delS": "選択した競技を削除"
+            "delS": "選択した競技を削除",
+            "statusReset": "ステータス リセット"
         },
         "lineRunBulk": {
             "title": "Line 競技一括登録",
@@ -533,7 +534,8 @@
             "st5": "@:admin.lineRun.st5",
             "st6": "@:admin.lineRun.st6",
             "selectAll": "@:admin.lineRun.selectAll",
-            "delS": "@:admin.lineRun.delS"
+            "delS": "@:admin.lineRun.delS",
+            "statusReset": "@:admin.lineRun.statusReset"
         },
         "mazeRunBulk": {
             "title": "Maze 競技一括登録",

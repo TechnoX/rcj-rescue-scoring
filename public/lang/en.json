@@ -419,7 +419,8 @@
             "st5": "5.Approval work in progress",
             "st6": "6.Approved",
             "selectAll": "Select all runs",
-            "delS": "Delete selected runs"
+            "delS": "Delete selected runs",
+            "statusReset": "Reset Status"
         },
         "lineRunBulk": {
             "title": "Line Run Bulk Registration",
@@ -531,7 +532,8 @@
             "st5": "@:admin.lineRun.st5",
             "st6": "@:admin.lineRun.st6",
             "selectAll": "@:admin.lineRun.selectAll",
-            "delS": "@:admin.lineRun.delS"
+            "delS": "@:admin.lineRun.delS",
+            "statusReset": "@:admin.lineRun.statusReset"
         },
         "mazeRunBulk": {
             "title": "Maze Run Bulk Registration",

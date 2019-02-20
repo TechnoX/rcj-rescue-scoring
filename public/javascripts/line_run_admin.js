@@ -134,6 +134,36 @@ var app = angular.module(
 
 
         }
+        
+        $scope.statusReset = async function (runIds) {
+            const {
+                value: operation
+            } = await swal({
+                title: "Reset Status?",
+                text: "Are you sure you want to reset status?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, reset it!",
+                confirmButtonColor: "#ec6c62",
+                input: 'text',
+                inputPlaceholder: 'Enter "RESET" here',
+                inputValidator: (value) => {
+                    return value != 'RESET' && 'You need to write "RESET" !'
+                }
+            })
+
+            if (operation) {
+                $http.put("/api/runs/line/" + runIds,{status: 0}).then(function (response) {
+                    console.log(response)
+                    updateRunList()
+                }, function (error) {
+                    console.log(error)
+                })
+            }
+
+
+        }
+        
         var showAllRounds = true
         var showAllFields = true
         var showAllTeams = true
