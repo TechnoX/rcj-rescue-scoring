@@ -434,10 +434,9 @@ privateRouter.put('/:runid', function (req, res, next) {
           
         if (run.status){
             if(dbRun.status > run.status) delete run.status;
-            else{
-                if(run.status != dbRun.status) statusUpdate = true;
-            }
         }
+          
+        let prevStatus = dbRun.status;
 
         // Recursively updates properties in "dbObj" from "obj"
         const copyProperties = function (obj, dbObj) {
@@ -472,6 +471,8 @@ privateRouter.put('/:runid', function (req, res, next) {
             msg: "Could not save run"
           })
         }
+          
+        if(prevStatus != dbRun.status) statusUpdate = 1;
 
         dbRun.score = scoreCalculator.calculateLineScore(dbRun)
 
@@ -492,12 +493,11 @@ privateRouter.put('/:runid', function (req, res, next) {
           } else {
             if (socketIo !== undefined) {
               socketIo.sockets.in('runs/line').emit('changed')
-              socketIo.sockets.in('competition/' +
-                dbRun.competition).emit('changed')
+              socketIo.sockets.in('runs/line/' + dbRun.competition._id).emit('changed')
               socketIo.sockets.in('runs/' + dbRun._id).emit('data', dbRun)
               socketIo.sockets.in('fields/' +dbRun.field).emit('data', {newRun: dbRun._id})
               if(statusUpdate){
-                socketIo.sockets.in('runs/line/' + dbRun.competition + '/status').emit('StatusChanged')
+                socketIo.sockets.in('runs/line/' + dbRun.competition._id + '/status').emit('StatusChanged')
               }
             }
             return res.status(200).send({

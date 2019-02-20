@@ -549,13 +549,9 @@ privateRouter.put('/:runid', function (req, res, next) {
                 
                 if (run.status){
                     if(dbRun.status > run.status) delete run.status;
-                    else{
-                        if(run.status != dbRun.status) statusUpdate = true;
-                    }
                 }
                 
-                
-                
+                let prevStatus = dbRun.status;
 
                 err = copyProperties(run, dbRun)
                 if (err) {
@@ -565,6 +561,9 @@ privateRouter.put('/:runid', function (req, res, next) {
                         msg: "Could not save run"
                     })
                 }
+                
+                if(prevStatus != dbRun.status) statusUpdate = 1;
+                
                 var retScoreCals = scoreCalculator.calculateMazeScore(dbRun).split(",")
 
                 dbRun.score = retScoreCals[0]
@@ -588,10 +587,10 @@ privateRouter.put('/:runid', function (req, res, next) {
                     } else {
                         if (socketIo !== undefined) {
                             delete dbRun.sign;
-                            socketIo.sockets.in('runs/maze/' + dbRun.competition).emit('changed')
+                            socketIo.sockets.in('runs/maze/' + dbRun.competition._id).emit('changed')
                             socketIo.sockets.in('runs/' + dbRun._id).emit('data', dbRun)
                             if(statusUpdate){
-                                socketIo.sockets.in('runs/maze/' + dbRun.competition + '/status').emit('StatusChanged')
+                                socketIo.sockets.in('runs/maze/' + dbRun.competition._id + '/status').emit('StatusChanged')
                             }
                         }
                         return res.status(200).send({
