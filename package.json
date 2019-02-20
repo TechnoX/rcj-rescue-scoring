@@ -1,6 +1,6 @@
 {
   "name": "rcj-scoring",
-  "version": "19.1.0",
+  "version": "19.3.0",
   "private": true,
   "scripts": {
     "start": "node server.js",
@@ -57,5 +57,5 @@
     "pug-cli": "^1.0.0-alpha6"
   },
   "author": "",
-  "license": "ISC"
+  "license": "MIT"
 }
