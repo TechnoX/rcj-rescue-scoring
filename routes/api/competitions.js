@@ -29,6 +29,7 @@ const ACCESSLEVELS = require('../../models/user').ACCESSLEVELS
 
 
 publicRouter.get('/', function (req, res) {
+    console.log(req.user);
     competitiondb.competition.find({}).lean().exec(function (err, data) {
         if (err) {
             logger.error(err)
@@ -37,6 +38,10 @@ publicRouter.get('/', function (req, res) {
                 err: err.message
             })
         } else {
+            for(let i=0;i<data.length;i++){
+                if(req.user) data[i].authLevel = auth.competitionLevel(req.user,data[i]._id);
+                else data[i].authLevel = 0;
+            }
             res.status(200).send(data)
         }
     })

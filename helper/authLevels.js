@@ -88,3 +88,25 @@ function authCompetition(user, competitionId, level) {
   return false
 }
 module.exports.authCompetition = authCompetition
+
+function competitionLevel(user,competitionId){
+    if (user == null) {
+        return ACCESSLEVELS.NONE;
+    }
+    if (competitionId == null){
+        return ACCESSLEVELS.NONE;
+    }
+    if (user.superDuperAdmin) {
+        return ACCESSLEVELS.SUPERADMIN;
+    }
+    if (user.competitions != undefined) {
+        for (let i = 0; i < user.competitions.length; i++) {
+            const comp = user.competitions[i];
+            if (comp.id.toString() == competitionId) {
+                return comp.accessLevel;
+            }
+        }
+    }
+    return ACCESSLEVELS.NONE;  
+}
+module.exports.competitionLevel = competitionLevel
