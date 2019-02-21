@@ -79,6 +79,10 @@ app.controller('HandOverController', ['$scope', '$uibModal', '$log', '$timeout',
         window.location = $scope.signUrl;
     }
     
+    $scope.go = function (path) {
+        window.location = path;
+    }
+    
     function putLine(tmp) {
         var run = {}
         run.LoPs = tmp.LoPs;
