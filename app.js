@@ -142,7 +142,7 @@ app.use('/api/fields', [apiFieldsRoute.public, pass.ensureLoginApi, apiFieldsRou
 app.use('/api/runs/line', [apiLineRunsRoute.public, pass.ensureLoginApi, apiLineRunsRoute.private, pass.ensureAdminApi, apiLineRunsRoute.admin])
 app.use('/api/runs/maze', [apiMazeRunsRoute.public, pass.ensureLoginApi, apiMazeRunsRoute.private, pass.ensureAdminApi, apiMazeRunsRoute.admin])
 app.use('/api/competitions', [apiCompetitionsRoute.public, pass.ensureLoginApi, apiCompetitionsRoute.private, pass.ensureAdminApi, apiCompetitionsRoute.admin])
-app.use('/api/users', [pass.ensureSuperApi , apiUserRoute.super])
+app.use('/api/users', [pass.ensureLoginApi, apiUserRoute.admin, pass.ensureSuperApi , apiUserRoute.super])
 app.use('/api/signage', [pass.ensureLoginApi, apiSignageRoute.private, pass.ensureAdminApi, apiSignageRoute.admin])
 app.use('/api/kiosk', [pass.ensureAdminApi, apiKioskRoute.admin])
 
@@ -162,7 +162,7 @@ app.use('/locales', localesRoute)
 app.use('/line', [lineRoute.public, pass.ensureAuthenticated, lineRoute.private, pass.ensureAdmin, lineRoute.admin])
 app.use('/maze', [mazeRoute.public, pass.ensureAuthenticated, mazeRoute.private, pass.ensureAdmin, mazeRoute.admin])
 app.use('/interview', [interviewRoute.public, pass.ensureAuthenticated, interviewRoute.private, pass.ensureAdmin, interviewRoute.admin])
-app.use('/signage', [signageRoute.public, pass.ensureAuthenticated, signageRoute.private, pass.ensureAdmin, signageRoute.admin, pass.ensureAuthenticated, signageRoute.private])
+app.use('/signage', [signageRoute.public, pass.ensureAuthenticated, signageRoute.private, pass.ensureAdmin, signageRoute.admin])
 app.use('/admin', pass.ensureAdmin, adminRoute)
 
 //========================================================================
@@ -215,7 +215,7 @@ app.use(function (err, req, res, next) {
 
         // since we are running api and static website on same we need to hack the different custom routes
         var stringSplit = req.originalUrl.split("/")
-        res.status(err.status || 500)
+        //res.status(err.status || 500)
         if (stringSplit[1] !== undefined && stringSplit[1] === "api") {
             res.send({
                 error: "Error 404"
