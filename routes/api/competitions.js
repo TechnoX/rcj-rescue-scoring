@@ -29,7 +29,6 @@ const ACCESSLEVELS = require('../../models/user').ACCESSLEVELS
 
 
 publicRouter.get('/', function (req, res) {
-    console.log(req.user);
     competitiondb.competition.find({}).lean().exec(function (err, data) {
         if (err) {
             logger.error(err)
