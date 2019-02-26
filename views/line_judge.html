@@ -69,7 +69,7 @@
                                     <b>{{$index==0?'Start':('Checkpoint ' + ($index))}}</b> to <b>{{!$last?('Checkpoint ' + ($index+1)):'Evacuation zone'}}</b>:<br>
                                     <div class="input-group" style="width:100%; height:35px;">
                                         <span class="input-group-btn">
-                                            <button type="button" class="btn btn-danger"  ng-click="decrement($index,$last)">
+                                            <button type="button" class="btn btn-danger"  ng-click="decrementLoPs($index,$last)">
                                                 <i class="fa fa-minus" aria-hidden="true"></i>
                                             </button>
                                         </span>
@@ -78,7 +78,7 @@
                                           <span class="count" ng-show="processing[$index] != true">{{LoPs[$index]?LoPs[$index]:0}}</span>
                                         </div>
                                         <span class="input-group-btn">
-                                            <button type="button" class="btn btn-success" ng-click="increment($index,$last)">
+                                            <button type="button" class="btn btn-success" ng-click="incrementLoPs($index,$last)">
                                                 <i class="fa fa-plus" aria-hidden="true"></i>
                                             </button>
                                         </span>

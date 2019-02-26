@@ -50,7 +50,7 @@
                         <b>Total number of LoPs:</b><br>
                         <div class="input-group" style="width:100%; height:35px;">
                             <span class="input-group-btn">
-                                <button type="button" class="btn btn-danger"  ng-click="decrement()">
+                                <button type="button" class="btn btn-danger"  ng-click="decrementLoPs()">
                                     <i class="fa fa-minus" aria-hidden="true"></i>
                                 </button>
                             </span>
@@ -59,12 +59,34 @@
                               <span class="count" ng-show="!lopProcessing">{{LoPs}}</span>
                             </div>
                             <span class="input-group-btn">
-                                <button type="button" class="btn btn-success" ng-click="increment()">
+                                <button type="button" class="btn btn-success" ng-click="incrementLoPs()">
                                     <i class="fa fa-plus" aria-hidden="true"></i>
                                 </button>
                             </span>
                         </div>
 
+                      </p>
+                    </div>
+                    <div class="card-block">
+                      <p class="card-text">
+                        <b>Total number of misidentifications:</b><br>
+                      <div class="input-group" style="width:100%; height:35px;">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-danger"  ng-click="decrementMisIds()">
+                                    <i class="fa fa-minus" aria-hidden="true"></i>
+                                </button>
+                            </span>
+                        <div style="background-color: #F2F2F2; width:100px; text-align: center;">
+                          <img src="/images/loader2.gif" alt="" ng-show="misProcessing" style="height:100%; width:auto;">
+                          <span class="count" ng-show="!misProcessing">{{misidentifications}}</span>
+                        </div>
+                        <span class="input-group-btn">
+                                <button type="button" class="btn btn-success" ng-click="incrementMisIds()">
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                </button>
+                            </span>
+                      </div>
+    
                       </p>
                     </div>
                     <h3 class="card-header"><i class="fa fa-home" aria-hidden="true"></i> Other</h3>

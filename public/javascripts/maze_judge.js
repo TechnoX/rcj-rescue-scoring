@@ -8,6 +8,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
   $scope.startedTime = false;
   $scope.time = 0;
   $scope.lopProcessing = false;
+  $scope.misProcessing = false;
   
   $scope.sliderOptions = {
     floor           : 0,
@@ -31,6 +32,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.league = response.data.team.league;
     $scope.competition = response.data.competition;
     $scope.LoPs = response.data.LoPs;
+    $scope.misidentifications = response.data.misidentifications;
     
     // Verified time by timekeeper
     $scope.minutes = response.data.time.minutes;
@@ -101,7 +103,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.checked = true;
     setTimeout("tile_size()", 10);
   }
-  $scope.decrement = function () {
+  $scope.decrementLoPs = function () {
     $scope.lopProcessing = true;
     $scope.LoPs--;
     if ($scope.LoPs < 0)
@@ -118,7 +120,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     });
     
   }
-  $scope.increment = function () {
+  $scope.incrementLoPs = function () {
     $scope.lopProcessing = true;
     $scope.LoPs++;
     
@@ -128,6 +130,38 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
       console.log(response);
       $scope.score = response.data.score;
       $scope.lopProcessing = false;
+    }, function (response) {
+      console.log("Error: " + response.statusText);
+    });
+  }
+  
+  $scope.decrementMisIds = function () {
+    $scope.misProcessing = true;
+    $scope.misidentifications--;
+    if ($scope.misidentifications < 0)
+      $scope.misidentifications = 0;
+    
+    $http.put("/api/runs/maze/" + runId, {
+      misidentifications: $scope.misidentifications
+    }).then(function (response) {
+      console.log(response);
+      $scope.score = response.data.score;
+      $scope.misProcessing = false;
+    }, function (response) {
+      console.log("Error: " + response.statusText);
+    });
+    
+  }
+  $scope.incrementMisIds = function () {
+    $scope.misProcessing = true;
+    $scope.misidentifications++;
+    
+    $http.put("/api/runs/maze/" + runId, {
+      misidentifications: $scope.misidentifications
+    }).then(function (response) {
+      console.log(response);
+      $scope.score = response.data.score;
+      $scope.misProcessing = false;
     }, function (response) {
       console.log("Error: " + response.statusText);
     });
@@ -485,6 +519,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     var run = {}
     run.exitBonus = $scope.exitBonus;
     run.LoPs = $scope.LoPs;
+    run.misidentifications = $scope.misidentifications
     
     // Scoring elements of the tiles
     run.tiles = $scope.tiles;
@@ -507,6 +542,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     var run = {}
     run.exitBonus = $scope.exitBonus;
     run.LoPs = $scope.LoPs;
+    run.misidentifications = $scope.misidentifications;
     
     // Scoring elements of the tiles
     run.tiles = $scope.tiles;
