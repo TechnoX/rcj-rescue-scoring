@@ -16,6 +16,7 @@ const MAZE_LEAGUES = require("./competition").MAZE_LEAGUES
 function isOdd(n) {
   return n & 1 // Bitcheck LSB
 }
+
 function isEven(n) {
   return !isOdd(n)
 }
@@ -32,7 +33,7 @@ const mazeRunSchema = new Schema({
   field      : {type: ObjectId, ref: 'Field', required: true, index: true},
   map        : {type: ObjectId, ref: 'MazeMap', required: true, index: true},
   
-  tiles    : [{
+  tiles             : [{
     x          : {type: Number, integer: true, required: true},
     y          : {type: Number, integer: true, required: true},
     z          : {type: Number, integer: true, required: true},
@@ -55,22 +56,23 @@ const mazeRunSchema = new Schema({
       }
     }
   }],
-  LoPs     : {type: Number, min: 0, default: 0},
-  exitBonus: {type: Boolean, default: false},
-  score    : {type: Number, min: 0, default: 0},
-  time     : {
+  LoPs              : {type: Number, min: 0, default: 0},
+  misidentifications: {type: Number, min: 0, default: 0},
+  exitBonus         : {type: Boolean, default: false},
+  score             : {type: Number, min: 0, default: 0},
+  time              : {
     minutes: {type: Number, min: 0, max: 8, default: 0},
     seconds: {type: Number, min: 0, max: 59, default: 0}
   },
-  status   : {type: Number, min: 0, default: 0},
-  sign     : {
+  status            : {type: Number, min: 0, default: 0},
+  sign              : {
     captain   : {type: String, default: ""},
     referee   : {type: String, default: ""},
     referee_as: {type: String, default: ""}
   },
-  started  : {type: Boolean, default: false, index: true},
-  comment  : {type: String, default: ""},
-  startTime: {type: Number, default: 0}
+  started           : {type: Boolean, default: false, index: true},
+  comment           : {type: String, default: ""},
+  startTime         : {type: Number, default: 0}
 })
 
 mazeRunSchema.pre('save', function (next) {

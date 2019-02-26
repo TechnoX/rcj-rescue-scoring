@@ -29,6 +29,7 @@ module.exports.calculateLineScore = function (run) {
     if (tile.scored) {
       if (tile.isDropTile) {
         let tileCount = i - lastDropTile
+        // Score per tile is 5, 3, 1, 0. (3.5.3)
         score += Math.max(tileCount * (5 - 2 * run.LoPs[dropTileCount]), 0)
       }
       
@@ -44,6 +45,7 @@ module.exports.calculateLineScore = function (run) {
     }
   }
   
+  // TODO: Fix deadvictims worth less if not all live victims rescued
   if (run.evacuationLevel == 1) {
     score += run.rescuedLiveVictims * Math.max(30 - 5 * run.LoPs[dropTileCount], 0)
     score += run.rescuedDeadVictims * Math.max(15 - 5 * run.LoPs[dropTileCount], 0)
@@ -53,6 +55,7 @@ module.exports.calculateLineScore = function (run) {
     score += run.rescuedDeadVictims * Math.max(20 - 5 * run.LoPs[dropTileCount], 0)
   }
   
+  // Exit bonus (3.5.14)
   if (run.exitBonus) {
     score += 20
   }
@@ -60,8 +63,11 @@ module.exports.calculateLineScore = function (run) {
   // 5 points for placing robot on first droptile (start)
   // Implicit showedUp if anything else is scored
   if (run.showedUp || score > 0) {
+    run.showedUp = true
     score += 5
   }
+  
+  // TODO: Add ramp score (3.5.4)
   
   return score
 }
@@ -91,15 +97,19 @@ module.exports.calculateMazeScore = function (run) {
     
     if (mapTiles[coord].tile.reachable) {
       
+      // Speedbumps (3.5.7)
       if (tile.scoredItems.speedbump && mapTiles[coord].tile.speedbump) {
         score += 5
       }
+      // Checkpoints (3.5.10)
       if (tile.scoredItems.checkpoint && mapTiles[coord].tile.checkpoint) {
         score += 10
       }
+      // Ramp down (3.5.9)
       if (tile.scoredItems.rampBottom && mapTiles[coord].tile.rampBottom) {
         score += 10
       }
+      // Ramp up (3.5.8)
       if (tile.scoredItems.rampTop && mapTiles[coord].tile.rampTop) {
         score += 20
       }
@@ -111,6 +121,8 @@ module.exports.calculateMazeScore = function (run) {
         "Heated": 1
       }
       
+      
+      // Victims (3.5.2)
       if (mapTiles[coord].tile.victims.top != "None") {
         if (tile.scoredItems.rescueKits.top > 0) {
           tile.scoredItems.victims.top = true
@@ -153,13 +165,21 @@ module.exports.calculateMazeScore = function (run) {
       }
     }
   }
+  
+  // Rescue kits (3.5.4)
   score += Math.min(rescueKits, 12) * 10
   
+  // Reliability bonus (3.5.6)
   score += Math.max((victims + Math.min(rescueKits, 12) - run.LoPs) * 10, 0)
   
+  // Exit bonus (3.5.11)
   if (run.exitBonus) {
     score += victims * 10
   }
   
-  return score
+  // Misidentifications (3.5.14)
+  score -= run.misidentifications * 5
+  
+  // Score cannot be negative (3.5.14)
+  return Math.max(score, 0)
 }
