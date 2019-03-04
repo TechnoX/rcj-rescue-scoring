@@ -35,7 +35,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                      data.startTile.y + ',' +
                      data.startTile.z].start = data.showedUp;
         $scope.rescuedLiveVictims = data.rescuedLiveVictims;
-        $scope.rescuedDeadVictims = data.rescuedDeadVictims;
+        $scope.rescuedDeadVictims = data.rescuedDeadVictimsAfter;
         $scope.rescueLevel = data.rescueLevel;
         $scope.escapeEvacuationZone = data.escapeEvacuationZone;
         $scope.score = data.score;
@@ -82,7 +82,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
       $scope.numberOfDropTiles = response.data.numberOfDropTiles;
       ;
       $scope.rescuedLiveVictims = response.data.rescuedLiveVictims;
-      $scope.rescuedDeadVictims = response.data.rescuedDeadVictims;
+      $scope.rescuedDeadVictims = response.data.rescuedDeadVictimsAfter;
       $scope.escapeEvacuationZone = response.data.escapeEvacuationZone;
       $scope.rescueLevel = response.data.rescueLevel;
       

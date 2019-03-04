@@ -27,7 +27,7 @@ const lineRunSchema = new Schema({
   
   judges: [{type: ObjectId, ref: 'User'}],
   
-  tiles             : [{
+  tiles                   : [{
     isDropTile: {type: Boolean, default: false},
     scored    : {type: Boolean, default: false}
     /*scoredItems: {
@@ -38,31 +38,32 @@ const lineRunSchema = new Schema({
      dropTile    : {type: Boolean, default: false}
      }*/
   }],
-  LoPs              : {type: [Number], min: 0},
-  evacuationLevel   : {
+  LoPs                    : {type: [Number], min: 0},
+  evacuationLevel         : {
     type: Number, default: 1, validate: function (l) {
       return l == 1 || l == 2
     }
   },
-  exitBonus         : {type: Boolean, default: false},
-  rescuedLiveVictims: {type: Number, min: 0, default: 0},
-  rescuedDeadVictims: {type: Number, min: 0, default: 0},
-  score             : {type: Number, min: 0, default: 0},
-  showedUp          : {type: Boolean, default: false},
-  time              : {
+  exitBonus               : {type: Boolean, default: false},
+  rescuedLiveVictims      : {type: Number, min: 0, default: 0},
+  rescuedDeadVictimsBefore: {type: Number, min: 0, default: 0},
+  rescuedDeadVictimsAfter : {type: Number, min: 0, default: 0},
+  score                   : {type: Number, min: 0, default: 0},
+  showedUp                : {type: Boolean, default: false},
+  time                    : {
     minutes: {type: Number, min: 0, max: 8, default: 0},
     seconds: {type: Number, min: 0, max: 59, default: 0}
   },
-  status            : {type: Number, min: 0, default: 0},
-  retired           : {type: Boolean, default: false},
-  sign              : {
+  status                  : {type: Number, min: 0, default: 0},
+  retired                 : {type: Boolean, default: false},
+  sign                    : {
     captain   : {type: String, default: ""},
     referee   : {type: String, default: ""},
     referee_as: {type: String, default: ""}
   },
-  started           : {type: Boolean, default: false, index: true},
-  comment           : {type: String, default: ""},
-  startTime         : {type: Number, default: 0}
+  started                 : {type: Boolean, default: false, index: true},
+  comment                 : {type: String, default: ""},
+  startTime               : {type: Number, default: 0}
 })
 
 lineRunSchema.pre('save', function (next) {

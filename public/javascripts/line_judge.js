@@ -35,7 +35,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     $scope.evacuationLevel = response.data.evacuationLevel;
     $scope.exitBonus = response.data.exitBonus;
     $scope.field = response.data.field.name;
-    $scope.rescuedDeadVictims = response.data.rescuedDeadVictims;
+    $scope.rescuedDeadVictimsBefore = response.data.rescuedDeadVictimsBefore;
+    $scope.rescuedDeadVictimsAfter = response.data.rescuedDeadVictimsAfter;
     $scope.rescuedLiveVictims = response.data.rescuedLiveVictims;
     $scope.score = response.data.score;
     $scope.showedUp = response.data.showedUp;
@@ -197,17 +198,31 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
       }, function (response) {
         console.log("Error: " + response.statusText);
       });
-    } else if (type == 'dead') {
-      $scope.rdprocessing = true;
-      $scope.rescuedDeadVictims--;
-      if ($scope.rescuedDeadVictims <= 0)
-        $scope.rescuedDeadVictims = 0;
-      
+    } else if (type == 'deadBefore') {
+      $scope.rdbprocessing = true;
+      $scope.rescuedDeadVictimsBefore--;
+      if ($scope.rescuedDeadVictimsBefore <= 0)
+        $scope.rescuedDeadVictimsBefore = 0;
+  
       $http.put("/api/runs/line/" + runId, {
-        rescuedDeadVictims: $scope.rescuedDeadVictims
+        rescuedDeadVictimsBefore: $scope.rescuedDeadVictimsBefore
       }).then(function (response) {
         $scope.score = response.data.score;
-        $scope.rdprocessing = false;
+        $scope.rdbprocessing = false;
+      }, function (response) {
+        console.log("Error: " + response.statusText);
+      });
+    }else if (type == 'deadAfter') {
+      $scope.rdaprocessing = true;
+      $scope.rescuedDeadVictimsAfter--;
+      if ($scope.rescuedDeadVictimsAfter <= 0)
+        $scope.rescuedDeadVictimsAfter = 0;
+      
+      $http.put("/api/runs/line/" + runId, {
+        rescuedDeadVictimsAfter: $scope.rescuedDeadVictimsAfter
+      }).then(function (response) {
+        $scope.score = response.data.score;
+        $scope.rdaprocessing = false;
       }, function (response) {
         console.log("Error: " + response.statusText);
       });
@@ -226,14 +241,25 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
       }, function (response) {
         console.log("Error: " + response.statusText);
       });
-    } else if (type == 'dead') {
-      $scope.rdprocessing = true;
-      $scope.rescuedDeadVictims++;
+    } else if (type == 'deadBefore') {
+      $scope.rdbprocessing = true;
+      $scope.rescuedDeadVictimsBefore++;
       $http.put("/api/runs/line/" + runId, {
-        rescuedDeadVictims: $scope.rescuedDeadVictims
+        rescuedDeadVictimsBefore: $scope.rescuedDeadVictimsBefore
       }).then(function (response) {
         $scope.score = response.data.score;
-        $scope.rdprocessing = false;
+        $scope.rdbprocessing = false;
+      }, function (response) {
+        console.log("Error: " + response.statusText);
+      });
+    }else if (type == 'deadAfter') {
+      $scope.rdaprocessing = true;
+      $scope.rescuedDeadVictimsAfter++;
+      $http.put("/api/runs/line/" + runId, {
+        rescuedDeadVictimsAfter: $scope.rescuedDeadVictimsAfter
+      }).then(function (response) {
+        $scope.score = response.data.score;
+        $scope.rdaprocessing = false;
       }, function (response) {
         console.log("Error: " + response.statusText);
       });
@@ -465,7 +491,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     run.LoPs = $scope.LoPs;
     run.evacuationLevel = $scope.evacuationLevel;
     run.exitBonus = $scope.exitBonus;
-    run.rescuedDeadVictims = $scope.rescuedDeadVictims;
+    run.rescuedDeadVictimsBefore = $scope.rescuedDeadVictimsBefore;
+    run.rescuedDeadVictimsAfter = $scope.rescuedDeadVictimsAfter;
     run.rescuedLiveVictims = $scope.rescuedLiveVictims;
     run.showedUp = $scope.showedUp;
     run.started = $scope.started;
@@ -505,7 +532,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
       swal("Oops!", "You may have forgot to clear implicit checkpoint", "error");
     } else {
       var run = {}
-      run.rescuedDeadVictims = $scope.rescuedDeadVictims;
+      run.rescuedDeadVictimsBefore = $scope.rescuedDeadVictimsBefore;
+      run.rescuedDeadVictimsAfter = $scope.rescuedDeadVictimsAfter;
       run.rescuedLiveVictims = $scope.rescuedLiveVictims;
       run.tiles = $scope.stiles;
       run.showedUp = $scope.showedUp;

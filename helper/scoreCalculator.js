@@ -48,11 +48,13 @@ module.exports.calculateLineScore = function (run) {
   // TODO: Fix deadvictims worth less if not all live victims rescued
   if (run.evacuationLevel == 1) {
     score += run.rescuedLiveVictims * Math.max(30 - 5 * run.LoPs[dropTileCount], 0)
-    score += run.rescuedDeadVictims * Math.max(15 - 5 * run.LoPs[dropTileCount], 0)
+    score += run.rescuedDeadVictimsAfter * Math.max(20 - 5 * run.LoPs[dropTileCount], 0)
+    score += run.rescuedDeadVictimsBefore * Math.max(5 - 5 * run.LoPs[dropTileCount], 0)
     
   } else if (run.evacuationLevel == 2) {
     score += run.rescuedLiveVictims * Math.max(40 - 5 * run.LoPs[dropTileCount], 0)
-    score += run.rescuedDeadVictims * Math.max(20 - 5 * run.LoPs[dropTileCount], 0)
+    score += run.rescuedDeadVictimsAfter * Math.max(30 - 5 * run.LoPs[dropTileCount], 0)
+    score += run.rescuedDeadVictimsBefore * Math.max(5 - 5 * run.LoPs[dropTileCount], 0)
   }
   
   // Exit bonus (3.5.14)

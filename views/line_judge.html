@@ -92,7 +92,28 @@
                     <div id="resc" class="card">
                         <h3 class="card-header"><i class="fa fa-ambulance" aria-hidden="true"></i> Rescuing victims　<span class="badge badge-danger">{{evacuationLevel-1?"High":"Low"}} evacuation point</span></h3>
                         <div class="card-block">
-                            <p class="card-text">【LIVE Victims】Number：　　 <span class="badge badge-info">{{Math.max(30 + (evacuationLevel-1)*10 - LoPs[LoPs.length-1]*5, 0)}}　points /victim</span></p>
+                            <p class="card-text">【DEAD Victims rescued BEFORE all living 】： <span class="badge badge-info">{{Math.max(5 - LoPs[LoPs.length-1]*5, 0)}} points /victim</span></p>
+        
+                            <div class="input-group" style="width:100%; height:35px;">
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-danger"  ng-click="decVictims('deadBefore')">
+                                        <i class="fa fa-minus" aria-hidden="true"></i>
+                                    </button>
+                                </span>
+                                <div style="background-color: #F2F2F2; width:100px; text-align: center;">
+                                    <img src="/images/loader2.gif" alt="" ng-show="rdbprocessing" style="height:100%; width:auto;">
+                                    <span class="count" ng-show="!rdbprocessing">{{rescuedDeadVictimsBefore}}</span>
+                                </div>
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-success" ng-click="incVictims('deadBefore')">
+                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="card-block">
+                            <p class="card-text">【LIVE Victims rescued】：<span class="badge badge-info">{{Math.max(30 + (evacuationLevel-1)*10 - LoPs[LoPs.length-1]*5, 0)}} points /victim</span></p>
                             <div class="input-group" style="width:100%; height:35px;">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-danger"  ng-click="decVictims('live')">
@@ -112,20 +133,20 @@
                         </div>
                         <hr>
                         <div class="card-block">
-                            <p class="card-text">【DEAD Victims】Number： 　　<span class="badge badge-info">{{Math.max(15 + (evacuationLevel-1)*5 - LoPs[LoPs.length-1]*5, 0)}} points /victim</span></p>
+                            <p class="card-text">【DEAD Victims rescued AFTER all living】： <span class="badge badge-info">{{Math.max(20 + (evacuationLevel-1)*10 - LoPs[LoPs.length-1]*5, 0)}} points /victim</span></p>
 
                             <div class="input-group" style="width:100%; height:35px;">
                                 <span class="input-group-btn">
-                                    <button type="button" class="btn btn-danger"  ng-click="decVictims('dead')">
+                                    <button type="button" class="btn btn-danger"  ng-click="decVictims('deadAfter')">
                                         <i class="fa fa-minus" aria-hidden="true"></i>
                                     </button>
                                 </span>
                                 <div style="background-color: #F2F2F2; width:100px; text-align: center;">
-                                  <img src="/images/loader2.gif" alt="" ng-show="rdprocessing" style="height:100%; width:auto;">
-                                  <span class="count" ng-show="!rdprocessing">{{rescuedDeadVictims}}</span>
+                                  <img src="/images/loader2.gif" alt="" ng-show="rdaprocessing" style="height:100%; width:auto;">
+                                  <span class="count" ng-show="!rdaprocessing">{{rescuedDeadVictimsAfter}}</span>
                                 </div>
                                 <span class="input-group-btn">
-                                    <button type="button" class="btn btn-success" ng-click="incVictims('dead')">
+                                    <button type="button" class="btn btn-success" ng-click="incVictims('deadAfter')">
                                         <i class="fa fa-plus" aria-hidden="true"></i>
                                     </button>
                                 </span>

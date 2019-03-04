@@ -200,7 +200,7 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
       result.time.minutes += (result.time.seconds >= 60 ? 1 : 0);
       result.time.seconds %= 60;
       result.rescued += not_select[i].rescuedLiveVictims +
-                        not_select[i].rescuedDeadVictims;
+                        not_select[i].rescuedDeadVictimsAfter;
       result.lops += not_select[i].LoPsNum;
       if (not_select[i].retired) result.retired = true;
     }
@@ -222,7 +222,7 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
       return {
         score  : runs[0].score,
         time   : runs[0].time,
-        rescued: runs[0].rescuedLiveVictims + runs[0].rescuedDeadVictims,
+        rescued: runs[0].rescuedLiveVictims + runs[0].rescuedDeadVictimsAfter,
         lops   : runs[0].LoPsNum
       }
     }
@@ -245,7 +245,7 @@ angular.module("LineScore", ['datatables', 'ui.bootstrap', 'ngAnimate']).control
       sum.time.seconds += runs[i].time.seconds
       sum.time.minutes += Math.floor(sum.time.seconds / 60)
       sum.time.seconds %= 60
-      sum.rescued += runs[i].rescuedLiveVictims + runs[i].rescuedDeadVictims
+      sum.rescued += runs[i].rescuedLiveVictims + runs[i].rescuedDeadVictimsAfter
       sum.lops += runs[i].LoPsNum
     }
     

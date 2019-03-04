@@ -301,7 +301,7 @@ define({ "api": [
             "group": "Parameter",
             "type": "Number",
             "optional": true,
-            "field": "rescuedDeadVictims",
+            "field": "rescuedDeadVictimsAfter",
             "description": ""
           },
           {

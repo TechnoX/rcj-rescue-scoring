@@ -36,7 +36,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
       socket.on('data', function (data) {
         console.log(data);
         $scope.rescuedLiveVictims = data.rescuedLiveVictims;
-        $scope.rescuedDeadVictims = data.rescuedDeadVictims;
+        $scope.rescuedDeadVictims = data.rescuedDeadVictimsAfter;
         $scope.evacuationLevel = data.evacuationLevel;
         $scope.exitBonus = data.exitBonus;
         $scope.stiles = data.tiles;
@@ -88,7 +88,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
       $scope.evacuationLevel = response.data.evacuationLevel;
       $scope.exitBonus = response.data.exitBonus;
       $scope.field = response.data.field.name;
-      $scope.rescuedDeadVictims = response.data.rescuedDeadVictims;
+      $scope.rescuedDeadVictims = response.data.rescuedDeadVictimsAfter;
       $scope.rescuedLiveVictims = response.data.rescuedLiveVictims;
       $scope.score = response.data.score;
       $scope.showedUp = response.data.showedUp;
