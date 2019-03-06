@@ -36,6 +36,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
       socket.on('data', function (data) {
         console.log(data);
         $scope.rescuedLiveVictims = data.rescuedLiveVictims;
+        $scope.rescuedDeadVictimsBefore = data.rescuedDeadVictimsBefore;
         $scope.rescuedDeadVictimsAfter = data.rescuedDeadVictimsAfter;
         $scope.evacuationLevel = data.evacuationLevel;
         $scope.exitBonus = data.exitBonus;
@@ -79,6 +80,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
       $scope.evacuationLevel = response.data.evacuationLevel;
       $scope.exitBonus = response.data.exitBonus;
       $scope.field = response.data.field.name;
+      $scope.rescuedDeadVictimsBefore = response.data.rescuedDeadVictimsBefore;
       $scope.rescuedDeadVictimsAfter = response.data.rescuedDeadVictimsAfter;
       $scope.rescuedLiveVictims = response.data.rescuedLiveVictims;
       $scope.score = response.data.score;
@@ -180,7 +182,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     var total = (mtile.items.obstacles > 0 ||
                  mtile.items.speedbumps > 0 ||
                  mtile.tileType.gaps > 0 ||
-                 mtile.tileType.intersections > 0) * mtile.index.length;
+                 mtile.tileType.intersections > 0 ||
+                 mtile.items.ramp > 0) * mtile.index.length;
     // Add the number of possible passes for drop tiles
     if (isDropTile) {
       total += mtile.index.length;
@@ -322,6 +325,7 @@ app.directive('tile', function () {
             tile.items.speedbumps == 0 &&
             tile.tileType.gaps == 0 &&
             tile.tileType.intersections == 0 &&
+            tile.items.ramp == 0 &&
             !$scope.$parent.stiles[tile.index[0]].isDropTile && !isStart(tile)
         ) {
           return;
