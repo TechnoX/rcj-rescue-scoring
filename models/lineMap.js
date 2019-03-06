@@ -57,6 +57,10 @@ const lineMapSchema = new Schema({
         required: true,
         default : 0,
         min     : 0
+      },
+      ramp      : {
+        type   : Boolean,
+        default: false
       }
     },
     index    : {type: [Number], min: 0},

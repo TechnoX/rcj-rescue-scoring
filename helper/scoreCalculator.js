@@ -37,6 +37,7 @@ module.exports.calculateLineScore = function (run) {
       score += mapTiles[i].tileType.intersections * 15
       score += mapTiles[i].items.obstacles * 10
       score += mapTiles[i].items.speedbumps * 5
+      score += mapTiles[i].items.ramp * 5
     }
     
     if (tile.isDropTile) {
@@ -45,7 +46,6 @@ module.exports.calculateLineScore = function (run) {
     }
   }
   
-  // TODO: Fix deadvictims worth less if not all live victims rescued
   if (run.evacuationLevel == 1) {
     score += run.rescuedLiveVictims * Math.max(30 - 5 * run.LoPs[dropTileCount], 0)
     score += run.rescuedDeadVictimsAfter * Math.max(20 - 5 * run.LoPs[dropTileCount], 0)
@@ -68,8 +68,6 @@ module.exports.calculateLineScore = function (run) {
     run.showedUp = true
     score += 5
   }
-  
-  // TODO: Add ramp score (3.5.4)
   
   return score
 }

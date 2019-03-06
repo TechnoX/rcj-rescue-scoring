@@ -41,6 +41,10 @@ function traverse(curTile, entryDir, tiles, map, index) {
     return
   }
   
+  if (nextTile.z != curTile.z) {
+    nextTile.items.ramp = true
+  }
+  
   traverse(nextTile, flipDir(exitDir(curTile, entryDir)), tiles, map, index + 1)
 }
 

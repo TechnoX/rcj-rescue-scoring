@@ -361,7 +361,8 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     var total = (mtile.items.obstacles > 0 ||
                  mtile.items.speedbumps > 0 ||
                  mtile.tileType.gaps > 0 ||
-                 mtile.tileType.intersections > 0) * mtile.index.length;
+                 mtile.tileType.intersections > 0 ||
+                 mtile.items.ramp) * mtile.index.length;
     
     // If the run is not started, we can place drop pucks on this tile
     if (!$scope.startedScoring) {
@@ -666,6 +667,7 @@ app.directive('tile', function () {
             tile.items.speedbumps == 0 &&
             tile.tileType.gaps == 0 &&
             tile.tileType.intersections == 0 &&
+            tile.items.ramp == 0 &&
             !$scope.$parent.stiles[tile.index[0]].isDropTile && !isStart(tile)
         ) {
           return;
