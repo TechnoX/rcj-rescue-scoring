@@ -77,7 +77,7 @@ function getLineRuns(req, res) {
   if (req.query['minimum']) {
     query.select("competition round team field status started startTime")
   } else {
-    query.select("competition round team field map score time status started rescuedLiveVictims rescuedDeadVictims LoPs comment startTime")
+    query.select("competition round team field map score time status started rescuedLiveVictims rescuedDeadVictimsBefore rescuedDeadVictimsAfter LoPs comment startTime")
   }
   
   
