@@ -175,6 +175,9 @@ var testUser2 = new User({
   }, {
     id         : "59759831aa67ba5178a2751e",
     accessLevel: ACCESSLEVELS.JUDGE
+  }, {
+    id         : "5c82b3b03e5a916e117eb92f",
+    accessLevel: ACCESSLEVELS.JUDGE
   }]
 });
 
