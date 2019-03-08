@@ -6,7 +6,7 @@
         "maze": "Rescue Maze",
         "login": "Login",
         "logout": "Logout",
-        "about": "The RCJ Scoring System is a system used by referees in RoboCup Junior Rescue League (Line / Maze). If you are a referee, please login first. For other, please select the competition from the below and proceed.",
+        "about": "The RCJ Scoring System was designed for help the referees of RoboCup Junior Rescue Line / Maze.  In this system, it is very easy to do everything related to competition management, from course map creation to score calculation and ranking.  If you are a judge of a competition that adopts this system, please login from the button below. The competition OC knows the ID and password.  If you are a player, you can check the detailed results and ranking of the competition by choosing the competition you participated from the list below.",
         "line_description": "The robot must be durable and intelligent enough to navigate through treacherous terrain with hills, uneven land and rubble without getting stuck. When the robot finally finds the victims, it has to gently and carefully transport the victims to the safe evacuation point where humans can take over the rescue. After the victim rescue, the robot should be able to find its way out of the dangerous area. ",
         "maze_description": "The robot must be durable and intelligent enough to navigate through treacherous terrain with hills, uneven land and rubble without getting stuck. The robot must search for victims, dispense rescue kits, and signal the position of the victims so the humans can take over. ",
         "go_line": "Go Line",
@@ -567,7 +567,17 @@
             "doLevel10": "Set【Admin】"
         },
         "handover": {
-            "title": "Handover"
+            "title": "Handover",
+            "description": "If the device's network connection has expired due to some reason during the scoring run, you can handover the operation of the scoring. In order to use this page, you need to connect to the server using SSL.",
+            "step1": "STEP1  Please press the button \"handover to other device\" at the bottom of the judge page to display the QR code.",
+            "step2": "STEP2  Please read the QR code. The QR code is divided into more than 10 pieces. Please wait as it is until you have successfully read all the QR codes.",
+            "step3": "STEP3   Confirm the displayed content and click \"Go to Judge Screen\" or \"Go to Record Confirmation Screen\" button.",
+            "front_back": "Front/Rear switching",
+            "read": "Read the QR code",
+            "toJudge": "Go to Judge Screen",
+            "toConfirm": "Go to Record Confirmation Screen",
+            "area": "Please put the QR code within the frame",
+            "readed": "Read QR code"
         }
     }
 }
