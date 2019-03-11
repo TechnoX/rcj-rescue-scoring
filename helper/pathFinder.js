@@ -37,8 +37,10 @@ function traverse(curTile, entryDir, tiles, map, index) {
   var nextTile = tiles[nextCoord(curTile, entryDir)]
   
   if (nextTile === undefined) {
-    map.indexCount = index + 1
-    return
+    // Last three tiles need to be counted twice (for exit bonus)
+    curTile.index.push(index + 1)
+    map.indexCount = index + 1 + 3
+    return 2
   }
   
   if (nextTile.z != curTile.z) {
@@ -47,7 +49,16 @@ function traverse(curTile, entryDir, tiles, map, index) {
     nextTile.items.ramp = false
   }
   
-  traverse(nextTile, flipDir(exitDir(curTile, entryDir)), tiles, map, index + 1)
+  let ret = traverse(nextTile, flipDir(exitDir(curTile, entryDir)), tiles, map, index + 1)
+  if (ret > 0) {
+    // Last three tiles need to be counted twice (for exit bonus)
+    curTile.index.push(map.indexCount - ret)
+    if (nextTile.z != curTile.z) {
+      curTile.items.ramp = true
+    }
+    return ret - 1
+  }
+  return 0
 }
 
 function exitDir(curTile, entryDir) {
