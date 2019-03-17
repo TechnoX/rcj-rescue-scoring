@@ -7,6 +7,11 @@ const publicRouter = express.Router()
 const privateRouter = express.Router()
 const adminRouter = express.Router()
 const competitiondb = require('../../models/competition')
+const lineMapDb = require('../../models/lineMap')
+const lineRunDb = require('../../models/lineRun')
+const mazeMapDb = require('../../models/mazeMap')
+const mazeRunDb = require('../../models/mazeRun')
+
 const userdb = require('../../models/user')
 const lineMapsApi = require('./lineMaps')
 const lineRunsApi = require('./lineRuns')
@@ -506,7 +511,6 @@ adminRouter.delete('/:competitionid', function (req, res, next) {
         })
     }
 
-
     competitiondb.competition.remove({
         _id: id
     }, function (err) {
@@ -522,6 +526,64 @@ adminRouter.delete('/:competitionid', function (req, res, next) {
             })
         }
     })
+
+    competitiondb.round.remove({
+        competition: id
+    }, function (err) {
+        if (err) {
+            logger.error(err)
+        }
+    })
+
+    competitiondb.field.remove({
+        competition: id
+    }, function (err) {
+        if (err) {
+            logger.error(err)
+        }
+    })
+
+    competitiondb.team.remove({
+        competition: id
+    }, function (err) {
+        if (err) {
+            logger.error(err)
+        }
+    })
+
+    lineRunDb.lineRun.remove({
+        competition: id
+    }, function (err) {
+        if (err) {
+            logger.error(err)
+        }
+    })
+
+    lineMapDb.lineMap.remove({
+        competition: id
+    }, function (err) {
+        if (err) {
+            logger.error(err)
+        }
+    })
+
+    mazeRunDb.mazeRun.remove({
+        competition: id
+    }, function (err) {
+        if (err) {
+            logger.error(err)
+        }
+    })
+
+    mazeMapDb.mazeMap.remove({
+        competition: id
+    }, function (err) {
+        if (err) {
+            logger.error(err)
+        }
+    })
+
+
 })
 
 publicRouter.all('*', function (req, res, next) {
