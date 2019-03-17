@@ -353,13 +353,12 @@ function getTileSets(req, res, next) {
   
   // Get all
   const query = tileSet.find({})
-  
-  query.select("__id name")
-  
+
   if (req.query['populate'] !== undefined && req.query['populate']) {
-    query.select("tiles")
-    query.populate("tiles", "-_id")
-    query.populate("tiles.tileType", "-gaps -intersections -paths -__v")
+    query.populate([
+      {
+        path: "tiles.tileType"
+      }])
   }
   
   query.lean().exec(function (err, data) {
