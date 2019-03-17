@@ -280,11 +280,11 @@ adminRouter.delete('/:map', function (req, res, next) {
       logger.error(err)
       res.status(400).send({msg: "Could not remove map", err: err.message})
     } else {
-      lineRun.remove({map: id}, function (err) {
+      lineRun.deleteMany({map: id}, function (err) {
         if (err) {
           logger.error(err)
         } else {
-          lineMap.remove({_id: id}, function (err) {
+          lineMap.deleteOne({_id: id}, function (err) {
             if (err) {
               logger.error(err)
               res.status(400).send({
@@ -465,7 +465,7 @@ adminRouter.delete('/tilesets/:tileset', function (req, res, next) {
     return next()
   }
   
-  tileSet.remove({
+  tileSet.deleteOne({
     _id: id
   }, (err) => {
     if (err) {

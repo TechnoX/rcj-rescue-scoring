@@ -155,7 +155,7 @@ adminRouter.delete('/:teamid', function (req, res, next) {
                     })
                 }
             }
-            competitiondb.team.remove({
+            competitiondb.team.deleteMany({
                 '_id': {
                     $in: ids
                 },

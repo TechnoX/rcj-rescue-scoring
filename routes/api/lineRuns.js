@@ -753,7 +753,7 @@ adminRouter.delete('/:runids', function (req, res) {
           })
         }
       }
-      lineRun.remove({
+      lineRun.deleteMany({
         '_id': {$in: ids},
         'competition': dbRun.competition
       }, function (err) {

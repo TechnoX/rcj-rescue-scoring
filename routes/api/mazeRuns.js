@@ -1127,7 +1127,7 @@ adminRouter.delete('/:runids', function (req, res) {
               })
           }
       }
-      mazeRun.remove({
+      mazeRun.deleteMany({
         '_id': {$in : ids},
         'competition': dbRun.competition
       }, function (err) {

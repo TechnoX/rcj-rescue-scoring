@@ -43,7 +43,7 @@ superRouter.delete('/:userid', function (req, res, next) {
         return next()
     }
 
-    userdb.user.remove({
+    userdb.user.deleteOne({
         _id: id
     }, function (err) {
         if (err) {

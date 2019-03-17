@@ -181,7 +181,7 @@ adminRouter.delete('/:id', function (req, res, next) {
     }
 
 
-    signagedb.remove({
+    signagedb.deleteOne({
         _id: id
     }, function (err) {
         if (err) {

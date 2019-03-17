@@ -53,7 +53,7 @@ adminRouter.delete('/:roundid', function (req, res, next) {
     return next()
   }
   
-  competitiondb.round.remove({_id: id}, function (err) {
+  competitiondb.round.deleteOne({_id: id}, function (err) {
     if (err) {
       logger.error(err)
       res.status(400).send({msg: "Could not remove round", err: err.message})

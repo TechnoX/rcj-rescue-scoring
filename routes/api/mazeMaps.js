@@ -305,13 +305,13 @@ adminRouter.delete('/:map', function (req, res, next) {
         err: err.message
       })
     } else {
-      mazeRun.remove({
+      mazeRun.deleteMany({
         map: id
       }, function (err) {
         if (err) {
           logger.error(err)
         } else {
-          mazeMap.remove({
+          mazeMap.deleteOne({
             _id: id
           }, function (err) {
             if (err) {

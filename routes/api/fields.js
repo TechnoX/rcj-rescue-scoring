@@ -56,7 +56,7 @@ adminRouter.delete('/:fieldid', function (req, res, next) {
     return next()
   }
   
-  competitiondb.field.remove({_id: id}, function (err) {
+  competitiondb.field.deleteOne({_id: id}, function (err) {
     if (err) {
       logger.error(err)
       res.status(400).send({msg: "Could not remove field", err: err.message})
