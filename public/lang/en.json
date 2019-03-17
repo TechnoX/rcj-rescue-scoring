@@ -388,7 +388,7 @@
             "maze": "Maze",
             "maps": "Maps(Field layout)",
             "runs": "Runs",
-            "backup": "バックアップ"
+            "backup": "Backup"
         },
         "teams": {
             "title": "Teams",
