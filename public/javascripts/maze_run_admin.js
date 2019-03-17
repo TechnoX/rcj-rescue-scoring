@@ -118,7 +118,7 @@ var app = angular.module("RunAdmin", ['ngTouch','ngAnimate', 'ui.bootstrap', 'ui
                 input: 'text',
                 inputPlaceholder: 'Enter "DELETE" here',
                 inputValidator: (value) => {
-                    return value != 'DELETE' && 'You need to write "DELETE" !'
+                    return value != 'DELETE' && 'You need to type "DELETE" !'
                 }
             })
 

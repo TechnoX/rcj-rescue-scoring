@@ -119,7 +119,7 @@ var app = angular.module(
                 input: 'text',
                 inputPlaceholder: 'Enter "DELETE" here',
                 inputValidator: (value) => {
-                    return value != 'DELETE' && 'You need to write "DELETE" !'
+                    return value != 'DELETE' && 'You need to type "DELETE" !'
                 }
             })
 
