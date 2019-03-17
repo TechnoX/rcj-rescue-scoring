@@ -64,6 +64,8 @@ var apiCompetitionsRoute = require('./routes/api/competitions')
 var apiUserRoute = require('./routes/api/users')
 var apiSignageRoute = require('./routes/api/signage')
 var apiKioskRoute = require('./routes/api/kiosk')
+var apiBackupRoute = require('./routes/api/backup')
+
 
 
 //========================================================================
@@ -145,6 +147,7 @@ app.use('/api/competitions', [apiCompetitionsRoute.public, pass.ensureLoginApi, 
 app.use('/api/users', [pass.ensureLoginApi, apiUserRoute.admin, pass.ensureSuperApi , apiUserRoute.super])
 app.use('/api/signage', [pass.ensureLoginApi, apiSignageRoute.private, pass.ensureAdminApi, apiSignageRoute.admin])
 app.use('/api/kiosk', [pass.ensureAdminApi, apiKioskRoute.admin])
+app.use('/api/backup', [pass.ensureAdminApi, apiBackupRoute.admin])
 
 
 //========================================================================

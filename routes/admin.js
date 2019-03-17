@@ -17,6 +17,10 @@ router.get('/user', function (req, res) {
   else res.render('access_denied', {user: req.user})
 })
 
+router.get('/restore', function (req, res) {
+  res.render('admin_restore', {user: req.user})
+})
+
 router.get('/:competitionid', function (req, res, next) {
   const id = req.params.competitionid
   
@@ -58,6 +62,17 @@ router.get('/:competitionid/authority', function (req, res, next) {
   }
   
   if(auth.authCompetition(req.user,id,ACCESSLEVELS.ADMIN)) res.render('admin_competition_authority', {competition_id: id, user: req.user})
+  else res.render('access_denied', {user: req.user})
+})
+
+router.get('/:competitionid/backup', function (req, res, next) {
+  const id = req.params.competitionid
+
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+
+  if(auth.authCompetition(req.user,id,ACCESSLEVELS.ADMIN)) res.render('admin_competition_backup', {competition_id: id, user: req.user})
   else res.render('access_denied', {user: req.user})
 })
 

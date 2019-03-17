@@ -356,8 +356,8 @@
             "add_c": "Add competition",
             "user": "User management",
             "access_level": "The you logged in account, {{account}}, does not have permission to access User management.",
-            "signage": "Signage setting"
-
+            "signage": "Signage setting",
+            "restore": "Restore the competition"
         },
         "line_tSet": {
             "new_tSet": "New tileset: ",
@@ -580,6 +580,23 @@
             "toConfirm": "Go to Record Confirmation Screen",
             "area": "Please put the QR code within the frame",
             "readed": "Read QR code"
+        },
+        "backup": {
+            "title": "Backup",
+            "description": "Back up this competition to a file. The backup file contains the following information.",
+            "item1": "Competition information",
+            "item2": "Teams",
+            "item3": "Rounds",
+            "item4": "Fields",
+            "item5": "Maps",
+            "item6": "Runs",
+            "notInclude": "Please note that permission settings is not included.",
+            "exe": "Backup!"
+        },
+        "restore": {
+            "title": "Restore the competition",
+            "description": "On this page, you can restore the competition from the file. You need a backup file of the name ending with '.rcjs'. If the version of the system you backed up is different, the process may not complete successfully.",
+            "exe": "Execute"
         }
     }
 }

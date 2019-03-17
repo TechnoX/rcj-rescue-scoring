@@ -1,0 +1,28 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'AdminRestore'
+
+append scripts
+  script.
+    var competitionId = "#{competition_id}"
+  script(src='/javascripts/admin_restore.js')
+
+block location
+    a.breadcrumb-item(ng-click="go('/home')") Home
+    a.breadcrumb-item(ng-click="go('/admin')") Admin
+    span.breadcrumb-item.active Restore
+
+
+block content
+  .row
+    .col-md-1
+    .col-md-10
+      h1 {{"admin.restore.title" | translate}}
+      p {{"admin.restore.description" | translate}}
+      br
+      form(method="post", enctype="multipart/form-data", action="/api/backup/restore")
+        input(type="file", name="rcjs")
+        input(type="submit" class="btn btn-info")
+      br
