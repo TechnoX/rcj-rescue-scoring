@@ -26,26 +26,33 @@ var app = angular.module("AdminHome", ['ngTouch','pascalprecht.translate', 'ngCo
         })
     }
 
-    $scope.removeCompetition = function (competition) {
-        swal({
+    $scope.removeCompetition = async function (competition) {
+        const {
+            value: operation
+        } = await swal({
             title: "Remove competition?",
             text: "Are you sure you want to remove the competition: " +
-                competition.name + '?',
+              competition.name + '?',
             type: "warning",
             showCancelButton: true,
-            confirmButtonText: "Remove it!",
-            confirmButtonColor: "#ec6c62"
-        }).then((result) => {
-            if (result.value) {
+            confirmButtonText: "Yes, delete it!",
+            confirmButtonColor: "#ec6c62",
+            input: 'text',
+            inputPlaceholder: 'Enter "DELETE" here',
+            inputValidator: (value) => {
+                return value != 'DELETE' && 'You need to type "DELETE" !'
+            }
+        })
+
+        if (operation) {
             $http.delete("/api/competitions/" +
-                competition._id).then(function (response) {
+              competition._id).then(function (response) {
                 console.log(response)
                 updateCompetitionList()
             }, function (error) {
                 console.log(error)
             })
-            }
-        })
+        }
     }
 
     function updateCompetitionList() {
