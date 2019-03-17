@@ -511,7 +511,7 @@ adminRouter.delete('/:competitionid', function (req, res, next) {
         })
     }
 
-    competitiondb.competition.remove({
+    competitiondb.competition.deleteMany({
         _id: id
     }, function (err) {
         if (err) {
@@ -527,7 +527,7 @@ adminRouter.delete('/:competitionid', function (req, res, next) {
         }
     })
 
-    competitiondb.round.remove({
+    competitiondb.round.deleteMany({
         competition: id
     }, function (err) {
         if (err) {
@@ -535,7 +535,7 @@ adminRouter.delete('/:competitionid', function (req, res, next) {
         }
     })
 
-    competitiondb.field.remove({
+    competitiondb.field.deleteMany({
         competition: id
     }, function (err) {
         if (err) {
@@ -543,7 +543,7 @@ adminRouter.delete('/:competitionid', function (req, res, next) {
         }
     })
 
-    competitiondb.team.remove({
+    competitiondb.team.deleteMany({
         competition: id
     }, function (err) {
         if (err) {
@@ -551,7 +551,7 @@ adminRouter.delete('/:competitionid', function (req, res, next) {
         }
     })
 
-    lineRunDb.lineRun.remove({
+    lineRunDb.lineRun.deleteMany({
         competition: id
     }, function (err) {
         if (err) {
@@ -559,7 +559,7 @@ adminRouter.delete('/:competitionid', function (req, res, next) {
         }
     })
 
-    lineMapDb.lineMap.remove({
+    lineMapDb.lineMap.deleteMany({
         competition: id
     }, function (err) {
         if (err) {
@@ -567,7 +567,7 @@ adminRouter.delete('/:competitionid', function (req, res, next) {
         }
     })
 
-    mazeRunDb.mazeRun.remove({
+    mazeRunDb.mazeRun.deleteMany({
         competition: id
     }, function (err) {
         if (err) {
@@ -575,7 +575,7 @@ adminRouter.delete('/:competitionid', function (req, res, next) {
         }
     })
 
-    mazeMapDb.mazeMap.remove({
+    mazeMapDb.mazeMap.deleteMany({
         competition: id
     }, function (err) {
         if (err) {
