@@ -383,10 +383,12 @@
             "rounds": "Rounds",
             "fields": "Fields",
             "authority": "Authority",
+            "management": "Management",
             "line": "Line",
             "maze": "Maze",
             "maps": "Maps(Field layout)",
-            "runs": "Runs"
+            "runs": "Runs",
+            "backup": "バックアップ"
         },
         "teams": {
             "title": "Teams",

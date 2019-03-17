@@ -6,12 +6,12 @@ block vars
 
 append scripts
   script(src='/javascripts/home.js')
-  //script.
+  script.
     navigator.serviceWorker.getRegistrations().then(function(registrations) {
     for(let registration of registrations) {
     registration.unregister()
     } })
-  script.
+  //script.
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
         navigator.serviceWorker.register('/sw.js');

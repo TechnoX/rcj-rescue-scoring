@@ -380,15 +380,17 @@
         },
         "competition": {
             "title": "管理画面トップ",
-            "common": "共通設定項目",
+            "common": "共通設定",
             "teams": "チーム管理",
             "rounds": "ラウンド管理",
             "fields": "フィールド管理",
             "authority": "権限設定",
+            "management": "管理設定",
             "line": "Line",
             "maze": "Maze",
             "maps": "マップ（フィールドレイアウト）管理",
-            "runs": "競技管理"
+            "runs": "競技管理",
+            "backup": "バックアップ"
         },
         "teams": {
             "title": "チーム管理",
