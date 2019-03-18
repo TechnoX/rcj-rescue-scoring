@@ -199,6 +199,7 @@ function makeZip(res,folder,compName){
         res.download(base_tmp_path + folder + '.zip', compName+".rcjs", function (err) {
             if (err) {
                 logger.error(err.status)
+                return
             }
             rimraf(base_tmp_path +folder, function (err) {
             });
@@ -213,6 +214,12 @@ function makeZip(res,folder,compName){
 }
 
 
+function decodeImage(source){
+    if(source && source.data){
+        return new Buffer(source.data,'base64');
+    }
+    return null
+}
 
 
 
@@ -240,7 +247,7 @@ adminRouter.post('/restore', function (req, res) {
 
             var updated = 0
             //Competition
-            var competition = require( base_tmp_path + "/uploads/" + folder + "/competition.json" );
+            var competition = JSON.parse(fs.readFileSync( base_tmp_path + "/uploads/" + folder + "/competition.json" , 'utf8'));
             competitiondb.competition.updateOne({'_id': competition[0]._id},competition[0],{upsert: true},function (err) {
                 if (err) {
                     logger.error(err)
@@ -250,7 +257,7 @@ adminRouter.post('/restore', function (req, res) {
             })
 
             //Team
-            var team = require( base_tmp_path + "/uploads/" + folder + "/team.json" );
+            var team = JSON.parse(fs.readFileSync( base_tmp_path + "/uploads/" + folder + "/team.json" , 'utf8'));
             for(let i in team){
                 competitiondb.team.updateOne({'_id': team[i]._id},team[i],{upsert: true},function (err) {
                     if (err) {
@@ -261,7 +268,7 @@ adminRouter.post('/restore', function (req, res) {
             }
 
             //Round
-            var round = require( base_tmp_path + "/uploads/" + folder + "/round.json" );
+            var round = JSON.parse(fs.readFileSync( base_tmp_path + "/uploads/" + folder + "/round.json" , 'utf8'));
             for(let i in round){
                 competitiondb.round.updateOne({'_id': round[i]._id},round[i],{upsert: true},function (err) {
                     if (err) {
@@ -272,7 +279,7 @@ adminRouter.post('/restore', function (req, res) {
             }
 
             //Field
-            var field = require( base_tmp_path + "/uploads/" + folder + "/field.json" );
+            var field = JSON.parse(fs.readFileSync( base_tmp_path + "/uploads/" + folder + "/field.json" , 'utf8'));
             for(let i in field){
                 competitiondb.field.updateOne({'_id': field[i]._id},field[i],{upsert: true},function (err) {
                     if (err) {
@@ -283,7 +290,7 @@ adminRouter.post('/restore', function (req, res) {
             }
 
             //LineMap
-            var lineMap = require( base_tmp_path + "/uploads/" + folder + "/lineMap.json" );
+            var lineMap = JSON.parse(fs.readFileSync( base_tmp_path + "/uploads/" + folder + "/lineMap.json" , 'utf8'));
             for(let i in lineMap){
                 lineMapDb.lineMap.updateOne({'_id': lineMap[i]._id},lineMap[i],{upsert: true},function (err) {
                     if (err) {
@@ -294,8 +301,32 @@ adminRouter.post('/restore', function (req, res) {
             }
 
             //LineRun
-            var lineRun = require( base_tmp_path + "/uploads/" + folder + "/lineRun.json" );
-            for(let i in lineRun){
+            var lineRun = JSON.parse(fs.readFileSync( base_tmp_path + "/uploads/" + folder + "/lineRun.json" , 'utf8'));
+            for(let i in lineRun) {
+                //Decode images
+                if (lineRun[i].scoreSheet) {
+                    for (let j in lineRun[i].scoreSheet.LoPImages) {
+                        if (lineRun[i].scoreSheet.LoPImages[j])
+                            lineRun[i].scoreSheet.LoPImages[j].data = decodeImage(lineRun[i].scoreSheet.LoPImages[j]);
+                    }
+                    if (lineRun[i].scoreSheet.tileDataImage)
+                        lineRun[i].scoreSheet.tileDataImage.data = decodeImage(lineRun[i].scoreSheet.tileDataImage);
+                    if (lineRun[i].scoreSheet.evacuationLevelImage)
+                        lineRun[i].scoreSheet.evacuationLevelImage.data = decodeImage(lineRun[i].scoreSheet.evacuationLevelImage);
+                    if (lineRun[i].scoreSheet.evacuationBonusImage)
+                        lineRun[i].scoreSheet.evacuationBonusImage.data = decodeImage(lineRun[i].scoreSheet.evacuationBonusImage);
+                    if (lineRun[i].scoreSheet.rescuedVictimsImage)
+                        lineRun[i].scoreSheet.rescuedVictimsImage.data = decodeImage(lineRun[i].scoreSheet.rescuedVictimsImage);
+                    if (lineRun[i].scoreSheet.timeImage)
+                        lineRun[i].scoreSheet.timeImage.data = decodeImage(lineRun[i].scoreSheet.timeImage);
+                    if (lineRun[i].scoreSheet.commentFieldImage)
+                        lineRun[i].scoreSheet.commentFieldImage.data = decodeImage(lineRun[i].scoreSheet.commentFieldImage);
+                    if (lineRun[i].scoreSheet.acceptResultImage)
+                        lineRun[i].scoreSheet.acceptResultImage.data = decodeImage(lineRun[i].scoreSheet.acceptResultImage);
+                    if (lineRun[i].scoreSheet.fullSheet)
+                        lineRun[i].scoreSheet.fullSheet.data = decodeImage(lineRun[i].scoreSheet.fullSheet);
+                }
+
                 lineRunDb.lineRun.updateOne({'_id': lineRun[i]._id},lineRun[i],{upsert: true},function (err) {
                     if (err) {
                         logger.error(err)
@@ -305,7 +336,7 @@ adminRouter.post('/restore', function (req, res) {
             }
 
             //MazeMap
-            var mazeMap = require( base_tmp_path + "/uploads/" + folder + "/mazeMap.json" );
+            var mazeMap = JSON.parse(fs.readFileSync( base_tmp_path + "/uploads/" + folder + "/mazeMap.json" , 'utf8'));
             for(let i in mazeMap){
                 mazeMapDb.mazeMap.updateOne({'_id': mazeMap[i]._id},mazeMap[i],{upsert: true},function (err) {
                     if (err) {
@@ -316,8 +347,27 @@ adminRouter.post('/restore', function (req, res) {
             }
 
             //MazeRun
-            var mazeRun = require( base_tmp_path + "/uploads/" + folder + "/mazeRun.json" );
+            var mazeRun = JSON.parse(fs.readFileSync( base_tmp_path + "/uploads/" + folder + "/mazeRun.json" , 'utf8'));
             for(let i in mazeRun){
+                //Decode images
+                if(mazeRun[i].scoreSheet) {
+                    if (mazeRun[i].scoreSheet.LoPImage)
+                        mazeRun[i].scoreSheet.LoPImage.data = decodeImage(mazeRun[i].scoreSheet.LoPImage);
+                    if (mazeRun[i].scoreSheet.misidentificationImage)
+                    mazeRun[i].scoreSheet.misidentificationImage.data = decodeImage(mazeRun[i].scoreSheet.misidentificationImage);
+                    if (mazeRun[i].scoreSheet.tileDataImage)
+                        mazeRun[i].scoreSheet.tileDataImage.data = decodeImage(mazeRun[i].scoreSheet.tileDataImage);
+                    if (mazeRun[i].scoreSheet.exitBonusImage)
+                        mazeRun[i].scoreSheet.exitBonusImage.data = decodeImage(mazeRun[i].scoreSheet.exitBonusImage);
+                    if (mazeRun[i].scoreSheet.timeImage)
+                        mazeRun[i].scoreSheet.timeImage.data = decodeImage(mazeRun[i].scoreSheet.timeImage);
+                    if (mazeRun[i].scoreSheet.commentFieldImage)
+                        mazeRun[i].scoreSheet.commentFieldImage.data = decodeImage(mazeRun[i].scoreSheet.commentFieldImage);
+                    if (mazeRun[i].scoreSheet.acceptResultImage)
+                        mazeRun[i].scoreSheet.acceptResultImage.data = decodeImage(mazeRun[i].scoreSheet.acceptResultImage);
+                    if (mazeRun[i].scoreSheet.fullSheet)
+                        mazeRun[i].scoreSheet.fullSheet.data = decodeImage(mazeRun[i].scoreSheet.fullSheet);
+                }
                 mazeRunDb.mazeRun.updateOne({'_id': mazeRun[i]._id},mazeRun[i],{upsert: true},function (err) {
                     if (err) {
                         logger.error(err)
@@ -337,11 +387,6 @@ adminRouter.post('/restore', function (req, res) {
 
 
     })
-
-    function restoreCompleted(res) {
-
-    }
-
 })
 
 
