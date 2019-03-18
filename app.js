@@ -28,7 +28,7 @@ var passport = require('passport')
 var session = require('express-session')
 var MongoStore = require('connect-mongo')(session)
 
-
+var bodyParser = require('body-parser');
 
 //========================================================================
 //                          Routes require
@@ -84,6 +84,9 @@ app.use(function (req, res, next) {
 /** Setting up the correct view engine - we are using pug */
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'pug')
+
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 
 /*
