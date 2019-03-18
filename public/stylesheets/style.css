@@ -349,12 +349,13 @@ input[type=checkbox] {
     margin: 0 20px 8px 0;
     padding: 12px 12px 12px 42px;
     border-radius: 8px;
-    background-color: #f6f7f8;
+    background-color: rgba(255, 107, 107, 0.32);
     vertical-align: middle;
     cursor: pointer;
 }
 
-.radio:hover,
+
+/*.radio:hover,
 .checkbox:hover {
     background-color: #e2edd7;
 }
@@ -362,7 +363,7 @@ input[type=checkbox] {
 .radio:hover:after,
 .checkbox:hover:after {
     border-color: #53b300;
-}
+}*/
 
 .radio:after,
 .checkbox:after {
@@ -422,6 +423,11 @@ input[type=radio]:checked+.radio:before {
 
 input[type=checkbox]:checked+.checkbox:before {
     opacity: 1;
+    background-color: rgba(29, 209, 161, 0.38);
+}
+
+input[type=checkbox]:checked+.checkbox {
+    background-color: rgba(46, 204, 113, 0.34);
 }
 
 .scrool::-webkit-scrollbar {
