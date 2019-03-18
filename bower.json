@@ -44,7 +44,8 @@
     "pdfjs": "https://github.com/mozilla/pdf.js/releases/download/v2.0.943/pdfjs-2.0.943-dist.zip",
     "image-compressor": "https://github.com/xkeshi/image-compressor.git#^1.1.4",
     "qr_reader": "https://github.com/sitepoint-editors/jsqrcode.git",
-    "jquery-qrcode": "https://github.com/jeromeetienne/jquery-qrcode.git"
+    "jquery-qrcode": "https://github.com/jeromeetienne/jquery-qrcode.git",
+    "angular-color-picker": "angularjs-color-picker#^3.4.8"
   },
   "description": "",
   "main": "",
