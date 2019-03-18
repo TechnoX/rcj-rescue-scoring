@@ -80,7 +80,7 @@ const lineRunSchema = new Schema({
     specialAttention : {type: Boolean, default: true}, // If the referee was not sure if he made a mistake, the "enter manually" flag is marked. During approval pecial attention should be taken.
 
     LoPImages: [{ data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}}],
-    tileDataImage: { data: Buffer, contentType: String }, // Image representing the up to two arena levels
+    tileDataImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}}, // Image representing the up to two arena levels
     evacuationLevelImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
     evacuationBonusImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
     rescuedVictimsImage: { data: {type: Buffer, default: null}, contentType: {type: String, default: "image/jpg"}},
