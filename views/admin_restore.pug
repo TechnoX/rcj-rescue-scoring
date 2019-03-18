@@ -23,6 +23,6 @@ block content
       p {{"admin.restore.description" | translate}}
       br
       form(method="post", enctype="multipart/form-data", action="/api/backup/restore")
-        input(type="file", name="rcjs")
+        input(type="file", name="rcjs", accept=".rcjs", ngf-max-size='500MB', required='', ngf-accept="'.rcjs'", ngf-pattern="'.rcjs'",  ngf-multiple='false')
         input(type="submit" class="btn btn-info")
       br
