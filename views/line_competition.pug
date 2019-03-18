@@ -23,6 +23,9 @@ block content
     .col-md-1
     .col-md-10
       h1 {{'line.competition.title' | translate}} - {{competition.name}}
+      .alert.alert-success(role='alert' ng-if="competition.message")
+        h4.alert-heading {{'common.message' | translate}}
+        p {{competition.message}}
       br
       button(ng-click="go('/line/' + competition._id + '/score')" class='btn btn-outline-info btn-lg btn-block') 
         i.fas.fa-trophy(aria-hidden='true') {{'line.competition.result' | translate}}

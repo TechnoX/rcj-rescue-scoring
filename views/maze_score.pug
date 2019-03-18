@@ -24,6 +24,12 @@ block content
   .col-md12
     button.btn.btn-secondary(style='margin:0 10px 10px 0;', type='button', ng-click="go('/maze/' + competitionId)")
       i.fa.fa-undo(aria-hidden='true') {{'common.back' | translate}}
+  br
+
+  .alert.alert-success(role='alert' ng-if="competition.message")
+    h4.alert-heading {{'common.message' | translate}}
+    p {{competition.message}}
+
   .row
     .col-md-12
       .row#rank

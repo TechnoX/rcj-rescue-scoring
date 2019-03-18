@@ -29,6 +29,9 @@ block content
       .alert.alert-info(role='alert')
           | Information
   br
+  .alert.alert-success(role='alert' ng-if="competition.message")
+    h4.alert-heading {{'common.message' | translate}}
+    p {{competition.message}}
   br
   .row#rank
     .col-lg-6
