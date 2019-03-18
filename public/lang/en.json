@@ -77,6 +77,11 @@
         "description1" : "You do not have permission to access this page. Please login with authorized account.",
         "description2" : "If you suspect this screen is displayed due to any problem, please contact system administrator."
     },
+    "shortURL404":{
+        "title" : "Page Not Found",
+        "description1" : "The page corresponding to the specified short link was not found.",
+        "description2" : "The link's validity period may have passed."
+    },
     "interview":{
         "runs": "All runs",
         "ad_pic": "Additional pictures",
@@ -351,11 +356,11 @@
     "admin": {
         "home": {
             "competitions": "Competitions",
-            "c_item": "Common items",
+            "c_item": "Tool / Settings",
             "line_tSet": "Line tilesets",
             "add_c": "Add competition",
             "user": "User management",
-            "access_level": "The you logged in account, {{account}}, does not have permission to access User management.",
+            "access_level": "The you logged in account, {{account}}, does not have permission to access User management / URL Shortening.",
             "signage": "Signage setting",
             "restore": "Restore the competition"
         },
@@ -597,6 +602,15 @@
             "title": "Restore the competition",
             "description": "On this page, you can restore the competition from the file. You need a backup file of the name ending with '.rcjs'. If the version of the system you backed up is different, the process may not complete successfully.",
             "exe": "Execute"
+        },
+        "shortURL": {
+            "title": "URL Shortening",
+            "description": "In this page, you can set the short URL to various pages.",
+            "name": "Setting name",
+            "short": "Short URL",
+            "original": "Transfer Location",
+            "set": "Set",
+            "unset": "Remove"
         }
     }
 }

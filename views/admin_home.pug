@@ -55,11 +55,15 @@ block content
         .col-md-6
           h1 {{"admin.home.c_item" | translate}}
           button(ng-click="go('/admin/line/tilesets')" class='btn btn-outline-info btn-lg btn-block') {{"admin.home.line_tSet" | translate}}
-          button(ng-click="go('/admin/restore')" class='btn btn-outline-dark btn-lg btn-block') {{"admin.home.restore" | translate}}
-          button(ng-click="go('/signage/setting')" class='btn btn-outline-dark btn-lg btn-block') {{"admin.home.signage" | translate}}
           button(ng-click="go('/admin/handover')" class='btn btn-outline-danger btn-lg btn-block') {{"admin.handover.title" | translate}}
+          button(ng-click="go('/signage/setting')" class='btn btn-outline-dark btn-lg btn-block') {{"admin.home.signage" | translate}}
+          button(ng-click="go('/admin/restore')" class='btn btn-outline-dark btn-lg btn-block') {{"admin.home.restore" | translate}}
+          hr
+
           if user.superDuperAdmin
+            button(ng-click="go('/admin/short')" class='btn btn-outline-dark btn-lg btn-block') {{"admin.shortURL.title" | translate}}
             button(ng-click="go('/admin/user')" class='btn btn-outline-warning btn-lg btn-block') {{"admin.home.user" | translate}}
           else
-            button(ng-click="go('/login')" class='btn btn-outline-secondary btn-lg btn-block' disabled) {{"admin.home.user" | translate}}
+            button(ng-click="go('/login')" class='btn btn-outline-dark btn-lg btn-block' disabled) {{"admin.shortURL.title" | translate}}
+            button(ng-click="go('/login')" class='btn btn-outline-warning btn-lg btn-block' disabled) {{"admin.home.user" | translate}}
             p(translate="admin.home.access_level", translate-values='{account: "'+ user.username + '"}')

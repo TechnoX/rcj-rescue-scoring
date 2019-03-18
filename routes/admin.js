@@ -17,6 +17,11 @@ router.get('/user', function (req, res) {
   else res.render('access_denied', {user: req.user})
 })
 
+router.get('/short', function (req, res) {
+  if(req.user.superDuperAdmin) res.render('admin_short', {user: req.user})
+  else res.render('access_denied', {user: req.user})
+})
+
 router.get('/restore', function (req, res) {
   res.render('admin_restore', {user: req.user})
 })

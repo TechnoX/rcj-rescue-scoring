@@ -46,6 +46,7 @@ var adminRoute = require('./routes/admin')
 var localesRoute = require('./routes/locales')
 var interviewRoute = require('./routes/interview')
 var signageRoute = require('./routes/signage')
+var shortRoute = require('./routes/shortURL')
 
 
 //========================================================================
@@ -65,8 +66,7 @@ var apiUserRoute = require('./routes/api/users')
 var apiSignageRoute = require('./routes/api/signage')
 var apiKioskRoute = require('./routes/api/kiosk')
 var apiBackupRoute = require('./routes/api/backup')
-
-
+var apiShortURL = require('./routes/api/shortURL')
 
 //========================================================================
 //                          Configuration
@@ -148,7 +148,7 @@ app.use('/api/users', [pass.ensureLoginApi, apiUserRoute.admin, pass.ensureSuper
 app.use('/api/signage', [pass.ensureLoginApi, apiSignageRoute.private, pass.ensureAdminApi, apiSignageRoute.admin])
 app.use('/api/kiosk', [pass.ensureAdminApi, apiKioskRoute.admin])
 app.use('/api/backup', [pass.ensureAdminApi, apiBackupRoute.admin])
-
+app.use('/api/short', [pass.ensureSuperApi , apiShortURL.super])
 
 //========================================================================
 //                          Website static pages(ish)
@@ -161,6 +161,7 @@ app.use('/logout', pass.ensureAuthenticated, function (req, res, next) {
 })
 app.use('/home', homeRoute)
 app.use('/locales', localesRoute)
+app.use('/s', shortRoute.public)
 
 app.use('/line', [lineRoute.public, pass.ensureAuthenticated, lineRoute.private, pass.ensureAdmin, lineRoute.admin])
 app.use('/maze', [mazeRoute.public, pass.ensureAuthenticated, mazeRoute.private, pass.ensureAdmin, mazeRoute.admin])
