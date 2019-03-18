@@ -3,8 +3,15 @@
 /*********************************************************************************/
 
 // register the directive with your app module
+
 var app = angular.module('ddApp', ['ngTouch', 'ngAnimate', 'ui.bootstrap', 'pascalprecht.translate', 'ngCookies']);
 var marker = {};
+var txt_multi;
+var txt_gap;
+var txt_obstacle;
+var txt_ramp;
+var txt_intersection;
+var txt_bump;
 
 // function referenced by the drop target
 app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', '$translate', '$cookies', function ($scope, $uibModal, $log, $timeout, $http, $translate, $cookies) {
@@ -53,6 +60,38 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     });
     $translate('line.judge.js.implicit').then(function (val) {
         txt_implicit = val;
+    }, function (translationId) {
+        // = translationId;
+    });
+
+
+    $translate('line.judge.js.multi').then(function (val) {
+        txt_multi = val;
+    }, function (translationId) {
+        // = translationId;
+    });
+    $translate('line.judge.js.gap').then(function (val) {
+        txt_gap = val;
+    }, function (translationId) {
+        // = translationId;
+    });
+    $translate('line.judge.js.obstacle').then(function (val) {
+        txt_obstacle = val;
+    }, function (translationId) {
+        // = translationId;
+    });
+    $translate('line.judge.js.ramp').then(function (val) {
+        txt_ramp = val;
+    }, function (translationId) {
+        // = translationId;
+    });
+    $translate('line.judge.js.intersection').then(function (val) {
+        txt_intersection = val;
+    }, function (translationId) {
+        // = translationId;
+    });
+    $translate('line.judge.js.bump').then(function (val) {
+        txt_bump = val;
     }, function (translationId) {
         // = translationId;
     });
@@ -810,12 +849,30 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
                     }
                     for(let i=0; i<stile[0].scoredItems.length;i++){
                         if(stile[0].scoredItems[i].item != "checkpoint" || stile[0].isDropTile){
-                            selectableHtml += '<input type="checkbox" id="element'+ i +'" ' + itemPreCheck(stile[0].scoredItems[i]) + '><label class="checkbox" for="element'+ i +'" onclick="playSound(sClick)"> '+  stile[0].scoredItems[i].item +'</label><br>'
+                            selectableHtml += '<input type="checkbox" id="element'+ i +'" ' + itemPreCheck(stile[0].scoredItems[i]) + '><label class="checkbox" for="element'+ i +'" onclick="playSound(sClick)"> ';
+                            switch(stile[0].scoredItems[i].item){
+                                case 'gap':
+                                    selectableHtml += txt_gap;
+                                    break;
+                                case 'speedbump':
+                                    selectableHtml += txt_bump;
+                                    break;
+                                case 'intersection':
+                                    selectableHtml += txt_intersection;
+                                    break;
+                                case 'ramp':
+                                    selectableHtml += txt_ramp;
+                                    break;
+                                case 'obstacle':
+                                    selectableHtml += txt_obstacle;
+                                    break;
+                            }
+                            selectableHtml += '</label><br>';
                         }
                     }
                     async function getFormValues () {
                         const {value: formValues} = await swal({
-                          title: 'Multiple elements',
+                          title: txt_multi,
                           html:selectableHtml
                             ,
                           focusConfirm: false,
@@ -1344,13 +1401,31 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, $timeou
                 }
                 for(let i=0; i<$scope.stiles[num].scoredItems.length;i++){
                     if( $scope.stiles[num].scoredItems[i].item != "checkpoint" ||  $scope.stiles[num].isDropTile){
-                        selectableHtml += '<input type="checkbox" id="element'+ i +'" ' + itemPreCheck($scope.stiles[num].scoredItems[i]) + '><label class="checkbox" for="element'+ i +'" onclick="playSound(sClick)"> '+ $scope.stiles[num].scoredItems[i].item +'</label><br>'
+                        selectableHtml += '<input type="checkbox" id="element'+ i +'" ' + itemPreCheck($scope.stiles[num].scoredItems[i]) + '><label class="checkbox" for="element'+ i +'" onclick="playSound(sClick)"> ';
+                        switch($scope.stiles[num].scoredItems[i].item){
+                            case 'gap':
+                                selectableHtml += txt_gap;
+                                break;
+                            case 'speedbump':
+                                selectableHtml += txt_bump;
+                                break;
+                            case 'intersection':
+                                selectableHtml += txt_intersection;
+                                break;
+                            case 'ramp':
+                                selectableHtml += txt_ramp;
+                                break;
+                            case 'obstacle':
+                                selectableHtml += txt_obstacle;
+                                break;
+                        }
+                        selectableHtml += '</label><br>';
                     }
 
                 }
                 async function getFormValues () {
                     const {value: formValues} = await swal({
-                      title: 'Multiple elements',
+                      title: txt_multi,
                       html:selectableHtml
                         ,
                       focusConfirm: false,
