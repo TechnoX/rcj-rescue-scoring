@@ -1,4 +1,4 @@
-var app = angular.module("CompetitionHome", ['ngTouch','pascalprecht.translate', 'ngCookies']);
+var app = angular.module("CompetitionHome", ['ngTouch','pascalprecht.translate', 'ngCookies','ngSanitize']);
 app.controller("CompetitionHomeController", ['$scope', '$http', '$translate', function ($scope, $http, $translate) {
     $scope.secretCommand = false;
     $http.get("/api/competitions/" + competitionId).then(function (response) {

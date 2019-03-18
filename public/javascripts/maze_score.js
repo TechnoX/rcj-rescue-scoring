@@ -1,4 +1,4 @@
-var app = angular.module("MazeScore", ['ngTouch','datatables', 'pascalprecht.translate', 'ngCookies'])
+var app = angular.module("MazeScore", ['ngTouch','datatables', 'pascalprecht.translate', 'ngCookies','ngSanitize'])
 app.controller("MazeScoreController", function ($scope, $http) {
     $scope.competitionId = competitionId
     $scope.sortOrder = '-score'

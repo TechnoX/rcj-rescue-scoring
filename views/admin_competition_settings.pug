@@ -70,7 +70,8 @@ block content
             img.card-img-top(ng-src="{{logo}}", alt='' style="max-height:300px;width:100%;object-fit: contain;")
             .card-body
               h3(style="text-align:center" ng-style="{'color': '#' + cColor}") {{cName}}
-              p(ng-if="description" style="text-align:center" ng-style="{'color': '#' + cColor}") {{description}}
+              br
+              p(ng-if="description" style="text-align:center" ng-style="{'color': '#' + cColor}" ng-bind-html="description")
 
   hr
   .row

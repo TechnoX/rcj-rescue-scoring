@@ -45,7 +45,8 @@
     "image-compressor": "https://github.com/xkeshi/image-compressor.git#^1.1.4",
     "qr_reader": "https://github.com/sitepoint-editors/jsqrcode.git",
     "jquery-qrcode": "https://github.com/jeromeetienne/jquery-qrcode.git",
-    "angular-color-picker": "angularjs-color-picker#^3.4.8"
+    "angular-color-picker": "angularjs-color-picker#^3.4.8",
+    "angular-sanitize": "^1.7.8"
   },
   "description": "",
   "main": "",
@@ -55,7 +56,7 @@
   "private": true,
   "resolutions": {
     "popper.js": "^1.10.8",
-    "angular": "1.7.5",
+    "angular": "^1.7.8",
     "angular-translate-storage-cookie": "^2.18.1",
     "jquery": "^3.3.1"
   }

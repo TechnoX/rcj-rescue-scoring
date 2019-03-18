@@ -1,4 +1,4 @@
-const app = angular.module("AdminSettings", ['ngTouch', 'pascalprecht.translate', 'ngCookies', 'color.picker']).controller("AdminSettingsController", function ($scope, $http) {
+const app = angular.module("AdminSettings", ['ngTouch', 'pascalprecht.translate', 'ngCookies', 'color.picker','ngSanitize']).controller("AdminSettingsController", function ($scope, $http) {
   $scope.competitionId = competitionId
   updateUserList()
   $http.get("/api/competitions/" + competitionId).then(function (response) {

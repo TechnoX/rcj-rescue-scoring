@@ -1,4 +1,4 @@
-var app = angular.module("Home", ['ngTouch','pascalprecht.translate', 'ngCookies']).controller("HomeController", function ($scope, $http) {
+var app = angular.module("Home", ['ngTouch','pascalprecht.translate', 'ngCookies','ngSanitize']).controller("HomeController", function ($scope, $http) {
     
     $scope.go = function (path) {
         window.location = path

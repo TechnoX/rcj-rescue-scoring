@@ -1,6 +1,6 @@
 var socket;
 
-var app = angular.module("LineScore", ['ngTouch','datatables', 'ui.bootstrap', 'ngAnimate', 'pascalprecht.translate', 'ngCookies']);
+var app = angular.module("LineScore", ['ngTouch','datatables', 'ui.bootstrap', 'ngAnimate', 'pascalprecht.translate', 'ngCookies','ngSanitize']);
 app.controller("LineScoreController", function ($scope, $http, $sce) {
     $scope.competitionId = competitionId
     $scope.sortOrder = '-score'

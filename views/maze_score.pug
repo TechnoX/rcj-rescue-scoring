@@ -28,7 +28,7 @@ block content
 
   .alert.alert-success(role='alert' ng-if="competition.message")
     h4.alert-heading {{'common.message' | translate}}
-    p {{competition.message}}
+    p(ng-bind-html="competition.message")
 
   .row
     .col-md-12

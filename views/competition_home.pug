@@ -21,7 +21,7 @@ block content
       h1 {{competition.name}}
       .alert.alert-success(role='alert' ng-if="competition.message")
           h4.alert-heading {{'common.message' | translate}}
-          p {{competition.message}}
+          p(ng-bind-html="competition.message")
       .row
         .col-sm-6
           .card(style='width: 100%;')
