@@ -31,7 +31,11 @@ module.exports.LEAGUES = LEAGUES
 const competitionSchema = new Schema({
   name: {type: String, required: true, unique: true},
   rule: {type: String, enum: SUPPORT_RULES, required: true},
-  message: {type: String}
+  logo: {type: String, default: ""},
+  bkColor: {type: String, default: "#fff"},
+  color: {type: String, default: "#000"},
+  message: {type: String, default: ""},
+  description: {type: String, default: ""}
 })
 
 const signageSchema = new Schema({

@@ -11,7 +11,7 @@
         "maze_description": "壁で囲まれた空間をロボットが自律走行し，熱を発する被災者を発見，レスキューキットを配布する競技．",
         "go_line": "Go Line",
         "go_maze": "Go Maze",
-        "management": "大会管理",
+        "management": "各種設定・大会管理",
         "access_level": "ログイン中のアカウント， {{account}} は，「大会管理」にアクセスする権限がありません."
     },
     "login": {
@@ -76,7 +76,8 @@
         "times": "回",
         "total": "合計",
         "stotal": "小計",
-        "rule": "ルール"
+        "rule": "ルール",
+        "message": "参加した皆さんへのメッセージ"
     },
     "accessDenied":{
         "title" : "アクセス拒絶",
@@ -212,7 +213,13 @@
                 "timeup": {
                     "title": "競技終了！",
                     "content": "８分が経過しました．"
-                }
+                },
+                "multi": "複数の得点項目",
+                "gap": "切れ目",
+                "obstacle": "障害物",
+                "bump": "バンプ",
+                "ramp": "坂",
+                "intersection": "交差点"
             }
         },
         "sign": {
@@ -367,6 +374,18 @@
             "signage": "デジタルサイネージ表示項目設定",
             "restore": "大会のリストア"
         },
+        "settings": {
+            "title": "各種設定",
+            "cname": "大会名",
+            "mes": "メッセージ",
+            "bkColor": "背景色",
+            "color": "文字色",
+            "preview": "プレビュー",
+            "description": "大会の説明",
+            "logo": "大会ロゴ",
+            "set": "設定",
+            "rule": "適用ルール"
+        },
         "line_tSet": {
             "new_tSet": "新しいタイルセット: ",
             "tSet": "タイルセット: ",
@@ -390,7 +409,7 @@
             "teams": "チーム管理",
             "rounds": "ラウンド管理",
             "fields": "フィールド管理",
-            "authority": "権限設定",
+            "settings": "各種設定",
             "management": "管理設定",
             "line": "Line",
             "maze": "Maze",

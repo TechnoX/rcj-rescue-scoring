@@ -11,7 +11,7 @@
         "maze_description": "The robot must be durable and intelligent enough to navigate through treacherous terrain with hills, uneven land and rubble without getting stuck. The robot must search for victims, dispense rescue kits, and signal the position of the victims so the humans can take over. ",
         "go_line": "Go Line",
         "go_maze": "Go Maze",
-        "management": "Competition Management",
+        "management": "Settings / Competition Management",
         "access_level": "The you logged in account, {{account}}, does not have permission to access Competition Management."
     },
     "login": {
@@ -70,7 +70,8 @@
         "times": "times",
         "total": "total",
         "stotal": "Sub Total",
-        "rule": "Rule"
+        "rule": "Rule",
+        "message": "Message for participants"
     },
     "accessDenied":{
         "title" : "Access denied",
@@ -208,8 +209,13 @@
                 "timeup": {
                     "title": "Time Up!",
                     "content": "8 minutes has passed"
-                }
-
+                },
+                "multi": "Multiple Elements",
+                "gap": "Gap",
+                "obstacle": "Obstacle",
+                "bump": "Speed bump",
+                "ramp": "Ramp",
+                "intersection": "Intersection"
             }
         },
         "sign": {
@@ -364,6 +370,18 @@
             "signage": "Signage setting",
             "restore": "Restore the competition"
         },
+        "settings": {
+            "title": "Settings",
+            "cname": "Competition name",
+            "mes": "Message",
+            "bkColor": "Background color",
+            "color": "Font color",
+            "preview": "Preview",
+            "description": "Description of the competition",
+            "logo": "Logo",
+            "set": "Save",
+            "rule": "Rule"
+        },
         "line_tSet": {
             "new_tSet": "New tileset: ",
             "tSet": "Tileset: ",
@@ -387,7 +405,7 @@
             "teams": "Teams",
             "rounds": "Rounds",
             "fields": "Fields",
-            "authority": "Authority",
+            "settings": "Settings",
             "management": "Management",
             "line": "Line",
             "maze": "Maze",

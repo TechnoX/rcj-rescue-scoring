@@ -45,6 +45,11 @@ publicRouter.get('/', function (req, res) {
             for(let i=0;i<data.length;i++){
                 if(req.user) data[i].authLevel = auth.competitionLevel(req.user,data[i]._id);
                 else data[i].authLevel = 0;
+                if(!data[i].color) data[i].color = "000000";
+                if(!data[i].bkColor) data[i].bkColor = "ffffff";
+                if(!data[i].message) data[i].message = "";
+                if(!data[i].description) data[i].description = "";
+                if(!data[i].logo) data[i].logo = "/images/NoImage.png";
             }
             res.status(200).send(data)
         }
@@ -56,7 +61,7 @@ publicRouter.get('/rules', function (req, res) {
 })
 
 publicRouter.get('/:competition', function (req, res, next) {
-    const id = req.params.competition
+    const id = req.params.competition;
 
     if (!ObjectId.isValid(id)) {
         return next()
@@ -64,19 +69,74 @@ publicRouter.get('/:competition', function (req, res, next) {
 
     competitiondb.competition.findById(id).lean().exec(function (err, data) {
         if (err) {
-            logger.error(err)
+            logger.error(err);
             res.status(400).send({
                 msg: "Could not get competition",
                 err: err.message
             })
         } else {
+            if(!data.color) data.color = "000000";
+            if(!data.bkColor) data.bkColor = "ffffff";
+            if(!data.message) data.message = "";
+            if(!data.description) data.description = "";
+            if(!data.logo) data.logo = "/images/NoImage.png";
             res.status(200).send(data)
         }
     })
 })
 
+adminRouter.put('/:competitionid', function (req, res, next) {
+    var id = req.params.competitionid;
+    let data = req.body;
+
+    if (!ObjectId.isValid(id)) {
+        return next()
+    }
+    if (!auth.authCompetition(req.user, id, ACCESSLEVELS.ADMIN)) {
+        return res.status(401).send({
+            msg: "You have no authority to access this api"
+        })
+    }
+
+    competitiondb.competition.findById(id)
+      .exec(function (err, dbCompetition) {
+            if (err) {
+                logger.error(err)
+                res.status(400).send({
+                    msg: "Could not get competition",
+                    err: err.message
+                })
+            } else if (dbCompetition) {
+                dbCompetition.name = data.name;
+                dbCompetition.rule = data.rule;
+                dbCompetition.logo = data.logo;
+                dbCompetition.bkColor = data.bkColor;
+                dbCompetition.color = data.color;
+                dbCompetition.message = data.message;
+                dbCompetition.description = data.description;
+
+                dbCompetition.save(function (err) {
+                    if (err) {
+                        logger.error(err)
+                        return res.status(400).send({
+                            err: err.message,
+                            msg: "Could not save changes"
+                        })
+                    } else {
+                        res.status(200).send({
+                            msg: "Settings has been saved"
+                        })
+                    }
+                })
+
+            }
+        }
+
+      );
+})
+
 publicRouter.get('/:competition/teams', function (req, res, next) {
-    const id = req.params.competition
+    const id = req.params.competition;
 
     if (!ObjectId.isValid(id)) {
         return next()
@@ -451,7 +511,8 @@ adminRouter.post('/', function (req, res) {
     }).save(function (err, data) {
         if (err) {
             logger.error(err)
-            res.status(400).send({
+            res.status(
+              400).send({
                 msg: "Error saving competition",
                 err: err.message
             })
@@ -585,6 +646,10 @@ adminRouter.delete('/:competitionid', function (req, res, next) {
 
 
 })
+
+
+
+
 
 publicRouter.all('*', function (req, res, next) {
     next()

@@ -59,14 +59,14 @@ router.get('/:competitionid/teams/bulk', function (req, res, next) {
   else res.render('access_denied', {user: req.user})
 })
 
-router.get('/:competitionid/authority', function (req, res, next) {
+router.get('/:competitionid/settings', function (req, res, next) {
   const id = req.params.competitionid
   
   if (!ObjectId.isValid(id)) {
     return next()
   }
   
-  if(auth.authCompetition(req.user,id,ACCESSLEVELS.ADMIN)) res.render('admin_competition_authority', {competition_id: id, user: req.user})
+  if(auth.authCompetition(req.user,id,ACCESSLEVELS.ADMIN)) res.render('admin_competition_settings', {competition_id: id, user: req.user})
   else res.render('access_denied', {user: req.user})
 })
 
