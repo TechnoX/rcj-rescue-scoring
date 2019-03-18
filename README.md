@@ -102,25 +102,25 @@ admin | adminpass   |
 
 ## 主な画面
 トップ画面  
-<img src="https://raw.githubusercontent.com/rrrobo/rcj-rescue-scoring-japan/日本国内向け/rcjj-scoring/1.png">
+<img src="https://raw.githubusercontent.com/rrrobo/rcj-rescue-scoring-japan/master/rcjj-scoring/1.png">
 <hr>
 ログイン画面  
-<img src="https://raw.githubusercontent.com/rrrobo/rcj-rescue-scoring-japan/日本国内向け/rcjj-scoring/6.png">
+<img src="https://raw.githubusercontent.com/rrrobo/rcj-rescue-scoring-japan/master/rcjj-scoring/6.png">
 <hr>
 Line 競技一覧  
-<img src="https://raw.githubusercontent.com/rrrobo/rcj-rescue-scoring-japan/日本国内向け/rcjj-scoring/2.png">
+<img src="https://raw.githubusercontent.com/rrrobo/rcj-rescue-scoring-japan/master/rcjj-scoring/2.png">
 <hr>
 Line 審判1  
-<img src="https://raw.githubusercontent.com/rrrobo/rcj-rescue-scoring-japan/日本国内向け/rcjj-scoring/3.png">
+<img src="https://raw.githubusercontent.com/rrrobo/rcj-rescue-scoring-japan/master/rcjj-scoring/3.png">
 <hr>
 Line 審判2  
-<img src="https://raw.githubusercontent.com/rrrobo/rcj-rescue-scoring-japan/日本国内向け/rcjj-scoring/4.png">
+<img src="https://raw.githubusercontent.com/rrrobo/rcj-rescue-scoring-japan/master/rcjj-scoring/4.png">
 <hr>
 Line 確認  
-<img src="https://raw.githubusercontent.com/rrrobo/rcj-rescue-scoring-japan/日本国内向け/rcjj-scoring/5.png">
+<img src="https://raw.githubusercontent.com/rrrobo/rcj-rescue-scoring-japan/master/rcjj-scoring/5.png">
 <hr>
 Maze 審判  
-<img src="https://raw.githubusercontent.com/rrrobo/rcj-rescue-scoring-japan/日本国内向け/rcjj-scoring/7.png">
+<img src="https://raw.githubusercontent.com/rrrobo/rcj-rescue-scoring-japan/master/rcjj-scoring/7.png">
 <hr>
 
 ### 効果音
