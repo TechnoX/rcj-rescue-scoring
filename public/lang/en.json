@@ -128,9 +128,10 @@
             }
         },
         "score": {
-            "rank": "Line - Rank",
-            "all": "Line - All runs",
-            "sort": "Sort by round"
+            "rank": "Rank",
+            "all": "All runs",
+            "sort": "Sort by round",
+            "team": "Sort by team name"
         },
         "view": {
             "info": "Basic Information",
@@ -270,9 +271,10 @@
             }
         },
         "score": {
-            "rank": "Maze - Rank",
-            "all": "Maze - All runs",
+            "rank": "Rank",
+            "all": "All runs",
             "sort": "@:line.score.sort",
+            "team": "@:line.score.team",
             "exit": "Exit",
             "found": "Found"
         },

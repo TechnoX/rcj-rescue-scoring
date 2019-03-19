@@ -29,6 +29,7 @@ const auth = require('../../helper/authLevels')
 const LINE_LEAGUES = competitiondb.LINE_LEAGUES
 const MAZE_LEAGUES = competitiondb.MAZE_LEAGUES
 const LEAGUES = competitiondb.LEAGUES
+const LEAGUES_JSON = competitiondb.LEAGUES_JSON;
 
 const ACCESSLEVELS = require('../../models/user').ACCESSLEVELS
 
@@ -58,6 +59,28 @@ publicRouter.get('/', function (req, res) {
 
 publicRouter.get('/rules', function (req, res) {
     res.send(competitiondb.competition.schema.path('rule').enumValues)
+})
+
+publicRouter.get('/leagues/:league', async function (req, res, next) {
+    var league = req.params.league;
+
+    if (LEAGUES.filter(function (elm){
+        return elm.indexOf(league) != -1;
+    }).length == 0){
+        return next()
+    }
+
+    for(let j in LEAGUES_JSON){
+        if(LEAGUES_JSON[j].id == league){
+            let ret = {
+                id: LEAGUES_JSON[j].id,
+                type: LEAGUES_JSON[j].type,
+                name: LEAGUES_JSON[j].name
+            };
+            res.send(ret);
+            break;
+        }
+    }
 })
 
 publicRouter.get('/:competition', function (req, res, next) {

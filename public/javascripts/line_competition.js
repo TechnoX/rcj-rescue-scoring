@@ -34,6 +34,10 @@ app.controller("LineCompetitionController", ['$scope', '$http', '$translate', fu
     $http.get("/api/competitions/" + competitionId).then(function (response) {
         $scope.competition = response.data
     })
+
+    $http.get("/api/teams/leagues/line/" + competitionId).then(function (response) {
+        $scope.leagues = response.data
+    })
     
     // launch socket.io
     socket = io(window.location.origin, {

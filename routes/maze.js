@@ -7,6 +7,9 @@ var ObjectId = require('mongoose').Types.ObjectId
 const auth = require('../helper/authLevels')
 const ruleDetector = require('../helper/ruleDetector')
 const ACCESSLEVELS = require('../models/user').ACCESSLEVELS
+const competitiondb = require('../models/competition')
+const LEAGUES = competitiondb.LEAGUES
+
 
 /* GET home page. */
 publicRouter.get('/:competitionid', function (req, res, next) {
@@ -19,18 +22,20 @@ publicRouter.get('/:competitionid', function (req, res, next) {
     else res.render('maze_competition', {id: id, user: req.user, judge: 0})
 })
 
-publicRouter.get('/:competitionid/score', function (req, res, next) {
-    const id = req.params.competitionid
+publicRouter.get('/:competitionid/score/:league', function (req, res, next) {
+    const id = req.params.competitionid;
+    const league = req.params.league;
 
     if (!ObjectId.isValid(id)) {
         return next()
     }
+    if (LEAGUES.filter(function (elm){
+        return elm == league;
+    }).length == 0){
+        return next()
+    }
 
-    res.render('maze_score', {
-        id: id,
-        get: req.query,
-        user: req.user
-    })
+    res.render('maze_score', {id: id, user: req.user,league: league, get: req.query})
 })
 
 

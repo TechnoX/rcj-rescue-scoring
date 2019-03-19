@@ -26,6 +26,7 @@ var md5hex = function(src){
   md5hash.update(src, 'utf8');
   return md5hash.digest('hex');
 };
+const LEAGUES_JSON = competitiondb.LEAGUES_JSON;
 
 publicRouter.get('/', function (req, res) {
     query.doFindResultSortQuery(req, res, null, null, competitiondb.team)
@@ -33,6 +34,50 @@ publicRouter.get('/', function (req, res) {
 
 publicRouter.get('/leagues', function (req, res) {
     res.send(competitiondb.team.schema.path('league').enumValues)
+})
+
+publicRouter.get('/leagues/:league/:competitionId', async function (req, res) {
+    var id = req.params.competitionId
+    var league = req.params.league
+
+    if (!ObjectId.isValid(id)) {
+        return next()
+    }
+
+    let result = await competitiondb.team.aggregate([
+        {
+            $match: {
+                competition: {$eq: ObjectId(id)}
+            }
+        },
+        {
+            $group: {
+                _id: "$league"
+            }
+        }
+    ])
+
+    let ret = [];
+    for(let i in result){
+        let name;
+        let type;
+        for(let j in LEAGUES_JSON){
+            if(LEAGUES_JSON[j].id == result[i]._id){
+                type = LEAGUES_JSON[j].type;
+                name = LEAGUES_JSON[j].name;
+                break;
+            }
+        }
+        if(type == league) {
+            let tmp = {
+                'id': result[i]._id,
+                'name': name,
+                'type': type
+            }
+            ret.push(tmp);
+        }
+    }
+    res.send(ret);
 })
 
 publicRouter.get('/:teamid', function (req, res, next) {

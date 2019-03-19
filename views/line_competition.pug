@@ -27,9 +27,11 @@ block content
         h4.alert-heading {{'common.message' | translate}}
         p(ng-bind-html="competition.message")
       br
-      button(ng-click="go('/line/' + competition._id + '/score')" class='btn btn-outline-info btn-lg btn-block') 
-        i.fas.fa-trophy(aria-hidden='true') {{'line.competition.result' | translate}}
-      br
+      .row
+        div(ng-repeat="league in leagues" class="col-md-{{12/leagues.length}}")
+          button(ng-click="go('/line/' + competition._id + '/score/' + league.id)" class='btn btn-outline-danger btn-lg btn-block')
+            i.fas.fa-trophy(aria-hidden='true') &nbsp;[{{league.name}}]&nbsp;{{'line.competition.result' | translate}}
+      hr
       button(ng-click="go('/interview/' + competition._id + '?return=/line/'+competitionId)" class='btn btn-outline-success btn-lg btn-block') 
         i.fas.fa-microphone(aria-hidden='true') {{'common.interview' | translate}}
       br

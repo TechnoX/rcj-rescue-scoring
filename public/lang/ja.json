@@ -134,9 +134,10 @@
             }
         },
         "score": {
-            "rank": "Line - 順位",
-            "all": "Line - All 全競技",
-            "sort": "ラウンドでソート"
+            "rank": "順位",
+            "all": "全競技",
+            "sort": "ラウンドでソート",
+            "team": "チーム名でソート"
         },
         "view": {
             "info": "基本情報",
@@ -274,9 +275,10 @@
             }
         },
         "score": {
-            "rank": "Maze - 順位",
-            "all": "Maze - 全競技",
+            "rank": "順位",
+            "all": "全競技",
             "sort": "@:line.score.sort",
+            "team": "@:line.score.team",
             "exit": "脱出",
             "found": "発見"
         },

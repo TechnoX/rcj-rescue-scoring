@@ -4,17 +4,30 @@ const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
 
 const logger = require('../config/logger').mainLogger
+const env = require('node-env-file')
+env('process.env')
 
-const LINE_LEAGUES = ["LineWL","LineNL"]
-const MAZE_LEAGUES = ["Maze"]
+const LEAGUES_JSON = require('../leagues')
 
-const SUPPORT_RULES = ["2018","2019"]
+var LINE_LEAGUES = [];
+var MAZE_LEAGUES = [];
+for(let i in LEAGUES_JSON){
+  if(LEAGUES_JSON[i].type == "line") LINE_LEAGUES.push(LEAGUES_JSON[i].id);
+  if(LEAGUES_JSON[i].type == "maze") MAZE_LEAGUES.push(LEAGUES_JSON[i].id);
+}
 
-const LEAGUES = [].concat(LINE_LEAGUES, MAZE_LEAGUES)
 
-module.exports.LINE_LEAGUES = LINE_LEAGUES
-module.exports.MAZE_LEAGUES = MAZE_LEAGUES
-module.exports.LEAGUES = LEAGUES
+logger.debug("Available line leagues : " + LINE_LEAGUES);
+logger.debug("Available maze leagues : " + MAZE_LEAGUES);
+
+const SUPPORT_RULES = ["2018","2019"];
+
+const LEAGUES = [].concat(LINE_LEAGUES, MAZE_LEAGUES);
+
+module.exports.LINE_LEAGUES = LINE_LEAGUES;
+module.exports.MAZE_LEAGUES = MAZE_LEAGUES;
+module.exports.LEAGUES = LEAGUES;
+module.exports.LEAGUES_JSON = LEAGUES_JSON;
 
 
 /**

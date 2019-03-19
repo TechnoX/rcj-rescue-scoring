@@ -27,6 +27,9 @@ app.controller("MazeScoreController", function ($scope, $http) {
     $http.get("/api/competitions/" + competitionId).then(function (response) {
         $scope.competition = response.data
     })
+    $http.get("/api/competitions/leagues/" + league).then(function (response) {
+        $scope.league = response.data
+    })
     
     function updateTime(){
         $scope.time--;
@@ -80,26 +83,28 @@ app.controller("MazeScoreController", function ($scope, $http) {
 
                 if (run.status >= 2 || run.score != 0 || run.time.minutes != 0 ||
                     run.time.seconds != 0) {
-                    $scope.mazeRuns.push(run)
-                    if (mazeTeamRuns[run.team._id] === undefined) {
-                        mazeTeamRuns[run.team._id] = {
-                            team: {
-                                name: run.team.name,
-                                code: run.teamCode,
-                                name_only: run.teamName
-                            },
-                            runs: [run]
+                    if (run.team.league == league) {
+                        $scope.mazeRuns.push(run)
+                        if (mazeTeamRuns[run.team._id] === undefined) {
+                            mazeTeamRuns[run.team._id] = {
+                                team: {
+                                    name: run.team.name,
+                                    code: run.teamCode,
+                                    name_only: run.teamName
+                                },
+                                runs: [run]
+                            }
+                        } else {
+                            mazeTeamRuns[run.team._id].runs.push(run)
                         }
-                    } else {
-                        mazeTeamRuns[run.team._id].runs.push(run)
+                        var sum = sumBest(mazeTeamRuns[run.team._id].runs)
+                        //console.log(sum)
+                        mazeTeamRuns[run.team._id].sumScore = sum.score
+                        mazeTeamRuns[run.team._id].sumTime = sum.time
+                        mazeTeamRuns[run.team._id].sumExit = sum.exit
+                        mazeTeamRuns[run.team._id].sumLoPs = sum.lops
+                        mazeTeamRuns[run.team._id].sumFound = sum.found
                     }
-                    var sum = sumBest(mazeTeamRuns[run.team._id].runs)
-                    //console.log(sum)
-                    mazeTeamRuns[run.team._id].sumScore = sum.score
-                    mazeTeamRuns[run.team._id].sumTime = sum.time
-                    mazeTeamRuns[run.team._id].sumExit = sum.exit
-                    mazeTeamRuns[run.team._id].sumLoPs = sum.lops
-                    mazeTeamRuns[run.team._id].sumFound = sum.found
                 }
             }
             //$scope.mazeRuns.sort(sortRuns)

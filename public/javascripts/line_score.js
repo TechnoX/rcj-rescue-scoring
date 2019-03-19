@@ -22,12 +22,16 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
                 50);
         }, 200)
     })
-    if (get['autoscroll'] != undefined) {
+    /*if (get['autoscroll'] != undefined) {
         scrollpage()
-    }
+    }*/
 
     $http.get("/api/competitions/" + competitionId).then(function (response) {
         $scope.competition = response.data
+    })
+
+    $http.get("/api/competitions/leagues/" + league).then(function (response) {
+        $scope.league = response.data
     })
 
     function updateTime(){
@@ -90,11 +94,9 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
 
             //console.log(runs)
 
-            $scope.nipponRuns = []
-            var nipponTeamRuns = {}
+            $scope.Runs = []
+            var TeamRuns = {}
 
-            $scope.worldRuns = []
-            var worldTeamRuns = {}
 
             for (var i in runs) {
                 var run = runs[i]
@@ -113,11 +115,9 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
                 if (run.status >= 2 || run.score != 0 || run.time.minutes != 0 ||
                     run.time.seconds != 0) {
                     //console.log(run)
-                    if (run.team.league == "LineNL") {
-
-
-                        if (nipponTeamRuns[run.team._id] === undefined) {
-                            nipponTeamRuns[run.team._id] = {
+                    if (run.team.league == league) {
+                        if (TeamRuns[run.team._id] === undefined) {
+                            TeamRuns[run.team._id] = {
                                 team: {
                                     name: run.team.name,
                                     code: run.teamCode,
@@ -126,54 +126,29 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
                                 runs: [run]
                             }
                         } else {
-                            nipponTeamRuns[run.team._id].runs.push(run)
+                            TeamRuns[run.team._id].runs.push(run)
                         }
-                        var sum = sumBest(nipponTeamRuns[run.team._id].runs)
-                        nipponTeamRuns[run.team._id].sumScore = sum.score
-                        nipponTeamRuns[run.team._id].sumTime = sum.time
-                        nipponTeamRuns[run.team._id].sumRescue = sum.rescued
-                        nipponTeamRuns[run.team._id].sumLoPs = sum.lops
-                        nipponTeamRuns[run.team._id].retired = sum.retired
+                        var sum = sumBest(TeamRuns[run.team._id].runs)
+                        TeamRuns[run.team._id].sumScore = sum.score
+                        TeamRuns[run.team._id].sumTime = sum.time
+                        TeamRuns[run.team._id].sumRescue = sum.rescued
+                        TeamRuns[run.team._id].sumLoPs = sum.lops
+                        TeamRuns[run.team._id].retired = sum.retired
                         if (run.status == 2 || run.status == 3) {
-                            nipponTeamRuns[run.team._id].isplaying = true
+                            TeamRuns[run.team._id].isplaying = true
                             run.isplaying = true
                         }
-                        $scope.nipponRuns.push(run)
+                        $scope.Runs.push(run)
 
-                    } else if (run.team.league == "LineWL") {
-                        if (worldTeamRuns[run.team._id] === undefined) {
-                            worldTeamRuns[run.team._id] = {
-                                team: {
-                                    name: run.team.name,
-                                    code: run.teamCode,
-                                    name_only: run.teamName
-                                },
-                                runs: [run]
-                            }
-                        } else {
-                            worldTeamRuns[run.team._id].runs.push(run)
-                        }
-                        var sum = sumBest(worldTeamRuns[run.team._id].runs)
-                        worldTeamRuns[run.team._id].sumScore = sum.score
-                        worldTeamRuns[run.team._id].sumTime = sum.time
-                        worldTeamRuns[run.team._id].sumRescue = sum.rescued
-                        worldTeamRuns[run.team._id].sumLoPs = sum.lops
-                        worldTeamRuns[run.team._id].retired = sum.retired
-                        if (run.status == 2 || run.status == 3) {
-                            worldTeamRuns[run.team._id].isplaying = true
-                            run.isplaying = true
-                        }
-                        $scope.worldRuns.push(run)
                     }
                 }
             }
-            //$scope.nipponRuns.sort(sortRuns)
-            //$scope.worldRuns.sort(sortRuns)
+            //$scope.Runs.sort(sortRuns)
 
-            $scope.nipponRunsTop = []
-            for (var i in nipponTeamRuns) {
-                var teamRun = nipponTeamRuns[i]
-                $scope.nipponRunsTop.push({
+            $scope.RunsTop = []
+            for (var i in TeamRuns) {
+                var teamRun = TeamRuns[i]
+                $scope.RunsTop.push({
                     team: teamRun.team,
                     score: teamRun.sumScore,
                     time: teamRun.sumTime,
@@ -183,22 +158,7 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
                     isplaying: teamRun.isplaying
                 })
             }
-            $scope.nipponRunsTop.sort(sortRuns)
-
-            $scope.worldRunsTop = []
-            for (var i in worldTeamRuns) {
-                var teamRun = worldTeamRuns[i]
-                $scope.worldRunsTop.push({
-                    team: teamRun.team,
-                    score: teamRun.sumScore,
-                    time: teamRun.sumTime,
-                    rescuedVictims: teamRun.sumRescue,
-                    LoPsNum: teamRun.sumLoPs,
-                    retired: teamRun.retired,
-                    isplaying: teamRun.isplaying
-                })
-            }
-            $scope.worldRunsTop.sort(sortRuns)
+            $scope.RunsTop.sort(sortRuns)
 
             if (callback != null && callback.constructor == Function) {
                 callback()
