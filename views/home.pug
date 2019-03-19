@@ -13,14 +13,14 @@ append scripts
     } })
   script.
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
+      self.addEventListener('load', function() {
         navigator.serviceWorker.register('/sw.js');
       });
-      window.addEventListener('install', (event) => {
-          event.waitUntil(self.skipWaiting());
-        });
-      window.addEventListener('activate', (event) => {
-          event.waitUntil(self.clients.claim());
+      self.addEventListener('install', function (event) {
+        event.waitUntil(self.skipWaiting());
+      });
+      self.addEventListener('activate', function (event) {
+        event.waitUntil(self.clients.claim());
       });
     }
 
