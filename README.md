@@ -73,6 +73,7 @@ Update (2018/10/24) 国際向けの更新は止まっています．日本国内
 #### 主な必要なソフト
 * [Node.js](https://nodejs.org/en/)
 * [mongodb](https://www.mongodb.com)
+まず，この２つをインストールする．
 
 ### bowerのインストール
 `sudo npm install -g bower`
@@ -81,6 +82,7 @@ Update (2018/10/24) 国際向けの更新は止まっています．日本国内
 ディレクトリ内で...
 `npm install`
 `bower install`
+`npm run build`
 
 ### ログ用ディレクトリの作成
 `mkdir logs`
@@ -101,7 +103,7 @@ admin | adminpass   |
 アクセスを希望される場合は，各ブロックのレスキュー技術委員にご相談ください．
 
 ## 主な画面
-トップ画面  
+トップ画面(2019)
 <img src="https://raw.githubusercontent.com/rrrobo/rcj-rescue-scoring-japan/master/rcjj-scoring/1.png">
 <hr>
 ログイン画面  
