@@ -21,61 +21,63 @@ publicRouter.get('/', function (req, res) {
 
 publicRouter.get('/:roundid', function (req, res, next) {
   var id = req.params.roundid
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
+  
   query.doIdQuery(req, res, id, "", competitiondb.team)
 })
 
 publicRouter.get('/:roundid/runs', function (req, res, next) {
   var id = req.params.roundid
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
+  
   competitiondb.run.find({round: id}, function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not get runs"})
+      res.status(400).send({msg: "Could not get runs", err: err.message})
     } else {
       res.status(200).send(data)
     }
   })
 })
 
-adminRouter.get('/:roundid/delete', function (req, res, next) {
+adminRouter.delete('/:roundid', function (req, res, next) {
   var id = req.params.roundid
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
-  competitiondb.round.remove({_id : id}, function (err) {
+  
+  competitiondb.round.deleteOne({_id: id}, function (err) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not remove round"})
+      res.status(400).send({msg: "Could not remove round", err: err.message})
     } else {
       res.status(200).send({msg: "Round has been removed!"})
     }
   })
 })
 
-adminRouter.post('/createround', function (req, res) {
+adminRouter.post('/', function (req, res) {
   var round = req.body
-
+  
   var newRound = new competitiondb.round({
-    name : round.name,
-    competition : round.competition
+    name       : round.name,
+    competition: round.competition,
+    league     : round.league
   })
-
+  
   newRound.save(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Error saving round"})
+      res.status(400).send({msg: "Error saving round", err: err.message})
     } else {
+      res.location("/api/rounds/" + data._id)
       res.status(201).send({msg: "New round has been saved", id: data._id})
     }
   })

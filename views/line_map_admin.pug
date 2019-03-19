@@ -1,0 +1,36 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'MapAdmin'
+
+append scripts
+  script.
+    var competitionId = "#{id}"
+  script(src='/javascripts/line_map_admin.js')
+
+block location
+    a.breadcrumb-item(ng-click="go('/home')") Home
+    a.breadcrumb-item(ng-click="go('/admin')") Admin
+    a.breadcrumb-item(ng-click="go('/admin/'+competitionId)") {{competition.name}}
+    span.breadcrumb-item.active Line maps
+
+block content
+  .row
+    .col-md-2
+    .col-md-8
+      h1 {{competition.name}} - {{"admin.lineMapAdmin.title" | translate}}
+      button(onclick="location.href='/admin/'+competitionId+'/line/editor'" class='btn btn-primary') {{"admin.lineMapAdmin.create" | translate}}
+      br
+      br
+      table.custom
+        thead
+            tr
+              th {{"common.name" | translate}}
+              th {{"common.operation" | translate}}
+        tbody
+            tr(ng-repeat='map in maps')
+              td
+                a(ng-bind='map.name' ng-href="/admin/{{competitionId}}/line/editor/{{map._id}}")
+              td
+                a(href="" ng-click='removeMap(map)') {{"common.delete" | translate}}

@@ -1,0 +1,69 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'AdminHome'
+
+append scripts
+  script.
+    var competitionId = "#{id}"
+  script(src='/javascripts/admin_home.js')
+
+block location
+    a.breadcrumb-item(ng-click="go('/home')") Home
+    span.breadcrumb-item.active Admin
+
+
+block content
+  .row
+    .col-md-1
+    .col-md-10
+      .row
+        .col-md-6
+          h1 {{"admin.home.competitions" | translate}}
+          table.custom
+            thead
+                tr
+                  th {{"common.name" | translate}}
+                  th {{'common.rule' | translate}}
+                  th {{"common.operation" | translate}}
+            tbody
+                tr
+                  td
+                    input(ng-model='competitionName')
+                  td
+                    select(ng-model='competitonUseRule' ng-options='rule for rule in rules')
+                  td
+                    button(ng-click='addCompetition()') {{"admin.home.add_c" | translate}}
+          br
+          br
+          table.custom
+            thead
+                tr
+                  th {{"common.name" | translate}}
+                  th {{'common.rule' | translate}}
+                  th {{"common.operation" | translate}}
+            tbody
+                tr(ng-repeat='competition in competitions')
+                  td
+                    a(ng-if='competition.authLevel >= 10' ng-bind='competition.name' ng-href="/admin/{{competition._id}}")
+                    span(ng-if='competition.authLevel < 10' ng-bind='competition.name')
+                  td(ng-bind='competition.rule')
+                  td
+                    a(ng-if='competition.authLevel >= 10' href="" ng-click='removeCompetition(competition)') {{"common.delete" | translate}}
+
+        .col-md-6
+          h1 {{"admin.home.c_item" | translate}}
+          button(ng-click="go('/admin/line/tilesets')" class='btn btn-outline-info btn-lg btn-block') {{"admin.home.line_tSet" | translate}}
+          button(ng-click="go('/admin/handover')" class='btn btn-outline-danger btn-lg btn-block') {{"admin.handover.title" | translate}}
+          button(ng-click="go('/signage/setting')" class='btn btn-outline-dark btn-lg btn-block') {{"admin.home.signage" | translate}}
+          button(ng-click="go('/admin/restore')" class='btn btn-outline-dark btn-lg btn-block') {{"admin.home.restore" | translate}}
+          hr
+
+          if user.superDuperAdmin
+            button(ng-click="go('/admin/short')" class='btn btn-outline-dark btn-lg btn-block') {{"admin.shortURL.title" | translate}}
+            button(ng-click="go('/admin/user')" class='btn btn-outline-warning btn-lg btn-block') {{"admin.home.user" | translate}}
+          else
+            button(ng-click="go('/login')" class='btn btn-outline-dark btn-lg btn-block' disabled) {{"admin.shortURL.title" | translate}}
+            button(ng-click="go('/login')" class='btn btn-outline-warning btn-lg btn-block' disabled) {{"admin.home.user" | translate}}
+            p(translate="admin.home.access_level", translate-values='{account: "'+ user.username + '"}')

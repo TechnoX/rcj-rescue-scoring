@@ -32,17 +32,29 @@
  * @param {Token} token The generated token, null if error
  */
 
-var env = require('node-env-file');
-env('process.env');
+var env = require('node-env-file')
+env('process.env')
 
-var mongoose = require('mongoose');
-var crypto = require('../helper/crypto');
+const logger = require('../config/logger').mainLogger
+var mongoose = require('mongoose')
+var crypto = require('../helper/crypto')
 // validator for email and so on
-var validator = require('validator');
+var validator = require('validator')
 
-var timestamps = require('mongoose-timestamp');
+var timestamps = require('mongoose-timestamp')
 
-var Schema = mongoose.Schema;
+var Schema = mongoose.Schema
+var ObjectId = Schema.Types.ObjectId
+
+const ACCESSLEVELS = {
+  SUPERADMIN: 15,
+  ADMIN     : 10,
+  JUDGE     : 5,
+  VIEW      : 1,
+  NONE      : 0
+}
+module.exports.ACCESSLEVELS = ACCESSLEVELS
+
 
 /**
  *
@@ -54,10 +66,30 @@ var Schema = mongoose.Schema;
  * @param {Boolean} admin - If the user is admin or not
  */
 var userSchema = new Schema({
-  username: {type: String, required: true, unique: true},
-  password: {type: String, required: true, select: false},
-  salt: {type: String, select: false},
-  admin: {type: Boolean, required: true}
+  username       : {type: String, required: true, unique: true},
+  password       : {type: String, required: true, select: false},
+  salt           : {type: String, select: false},
+  admin          : {type: Boolean, default: false}, // deprecated
+  superDuperAdmin: {type: Boolean, default: false},
+  competitions   : [{
+    id         : {
+      type    : ObjectId,
+      ref     : 'Competition',
+      required: true
+    },
+    accessLevel: {
+      type   : Number,
+      default: ACCESSLEVELS.NONE,
+      min    : ACCESSLEVELS.NONE,
+      max    : ACCESSLEVELS.SUPERADMIN,
+      /*validate: {
+       validator: function (l) {
+       return ACCESSLEVELS.indexOf(l) != -1
+       }
+       }*/
+    }
+  }]
+  
 });
 
 /**
@@ -68,17 +100,16 @@ var userSchema = new Schema({
  *
  */
 userSchema.pre('save', function (next) {
-  if (!this.isNew) {
-    return next()
-  }
-  else {
+  if (this.isNew || this.isModified("password")) {
     var user = this;
     crypto.generateHashWithSalt(user.password, function (err, hashedString, saltUsed) {
       user.salt = saltUsed;
       user.password = hashedString;
-
+      
       return next();
     })
+  } else {
+    return next()
   }
 });
 
@@ -93,17 +124,17 @@ userSchema.pre('save', function (next) {
  */
 userSchema.methods.updatePassword = function (password, cb) {
   var user = this;
-
+  
   crypto.generateHashWithSalt(password, function (err, hashedString, saltUsed) {
     console.log(err);
     if (err) {
       return cb(err);
     }
-
+    
     user.salt = saltUsed;
     user.password = hashedString;
     user.save();
-
+    
     return cb(null);
   })
 }
@@ -123,38 +154,44 @@ userSchema.methods.comparePassword = function (candidatePassword, cb) {
 }
 
 userSchema.plugin(timestamps);
-var User = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
 
 /** Mongoose model {@link http://mongoosejs.com/docs/models.html} */
 module.exports.user = User;
 
-User.remove({}, function (err) {
+//User.remove({}, function (err) {
 
-  var testUser = new User({
-    username: "admin",
-    password: "adminpass",
-    admin   : true
-  });
-  var testUser2 = new User({
-    username: "judge",
-    password: "judgepass",
-    admin   : false
-  });
+var DefaultUser = new User({
+  username       : process.env.dUsername,
+  password       :  process.env.dPassword,
+  admin          :  process.env.dAdmin,
+  superDuperAdmin:  process.env.dSDAdmin
+});
 
-  testUser.save(function (err, data) {
-    if (err) {
-      //  console.log(err);
+User.findOne({username: DefaultUser.username}, function (err, dbUser) {
+  if (dbUser) {
+    if (DefaultUser.password != null) {
+      dbUser.password = DefaultUser.password
     }
-    else {
-      console.log("saved admin user for the first time, this will only get saved if it is a new installation");
-    }
-  });
-  testUser2.save(function (err, data) {
-    if (err) {
-      //  console.log(err);
-    }
-    else {
-      console.log("saved judge user for the first time, this will only get saved if it is a new installation");
-    }
-  });
+    dbUser.admin = DefaultUser.admin
+    dbUser.superDuperAdmin = DefaultUser.superDuperAdmin
+    dbUser.competitions = DefaultUser.competitions
+    
+    //logger.debug(dbUser)
+    
+    dbUser.save(function (err) {
+      if (err) {
+        logger.error(err)
+      }
+    })
+  } else {
+    DefaultUser.save(function (err) {
+      if (err) {
+        logger.error(err)
+      }
+      else {
+        console.log("saved admin user for the first time, this will only get saved if it is a new installation");
+      }
+    });
+  }
 })

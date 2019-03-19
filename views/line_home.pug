@@ -1,0 +1,21 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'LineHome'
+
+append scripts
+  script.
+    var competitionId = "#{id}"
+  script(src='/javascripts/line_home.js')
+
+block location
+    a.breadcrumb-item(href='/home') Home
+    span.breadcrumb-item.active Line
+
+block content
+  .row
+    .col-md-1
+    .col-md-10
+      h1 Line - Competitions
+      a.button-s.button-bb(ng-href='/line/{{competition._id}}' ng-repeat='competition in competitions') {{competition.name}}

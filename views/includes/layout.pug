@@ -1,0 +1,18 @@
+//- -*- tab-width: 2 -*-
+doctype html
+- var ngAppDef = ""
+- var ngInit = ""
+block vars
+html(style='height:100%; overflow-y:scroll;' ng-app=ngAppDef ng-init=ngInit)
+    include ./head
+    body(ng-controller=ngAppDef+'Controller')
+        include ./navbar
+        .container-fluid(style='overflow: hidden;min-height: calc(100vh - 79px);')
+            .row
+                .col-md-1
+                .col-md-10
+                    nav.breadcrumb
+                        block location
+            br
+            block content
+        include ./footer

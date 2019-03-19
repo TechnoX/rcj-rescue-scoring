@@ -1,0 +1,187 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'RunAdmin'
+
+append scripts
+  script.
+    var competitionId = "#{id}"
+  script(src = '/components/angular-bootstrap-datetimepicker/src/js/datetimepicker.js')
+  script(src = '/components/angular-bootstrap-datetimepicker/src/js/datetimepicker.templates.js')
+  script(src='/javascripts/line_run_admin.js')
+  script(src='/components/ng-file-upload/ng-file-upload-all.min.js')
+
+append css
+  link(rel='stylesheet' href='/components/angular-bootstrap-datetimepicker/src/css/datetimepicker.css')
+
+  style(type='text/css').
+    .uib-time input {
+      padding-left: 0;
+      padding-right: 0;
+      width: 2.5em;
+      margin-right: 0;
+    }
+
+    .uib-timepicker .btn {
+      padding-left: 6px;
+      padding-right: 6px;
+    }
+
+block location
+  a.breadcrumb-item(ng-click="go('/home')") Home
+  a.breadcrumb-item(ng-click="go('/admin')") Admin
+  a.breadcrumb-item(ng-click="go('/admin/'+competitionId)") {{competition.name}}
+  span.breadcrumb-item.active Line runs
+
+block content
+  .row
+    .col-md-1
+    .col-md-10
+      h1 {{competition.name}} - {{"admin.lineRun.title" | translate}}
+      table(class="custom")
+        thead
+          tr
+            th {{"common.round" | translate}}
+            th {{"common.team" | translate}}
+            th {{"common.map" | translate}}
+            th {{"common.field" | translate}}
+            th {{"common.starttime" | translate}}
+            th {{"common.operation" | translate}}
+        tbody
+          tr
+            td
+              select(ng-model='run.round' ng-options='round as round.name for round in rounds')
+            td
+              select(ng-model='run.team' ng-options='team as team.name for team in teams')
+            td
+              select(ng-model='run.map' ng-options='map as map.name for map in maps')
+            td
+              select(ng-model='run.field' ng-options='field as field.name for field in fields')
+            td
+              p.input-group
+                span.input-group-btn
+                  button.btn.btn-info(type="button" ng-click="openStartDate()")
+                    i.fa.fa-calendar(aria-hidden='true')
+                input.form-control(type="text" uib-datepicker-popup ng-model="startDate" ng-change="updateStartTime()" is-open="startDatePopup.opened" datepicker-options="startDateOptions" close-text="Close")
+              div(uib-timepicker ng-model="startTime" ng-change="updateStartTime()" hour-step="1" minute-step="5" show-meridian="false" show-spinners='true' style="border-bottom:0px;border-left:0px;")
+            td
+              button(ng-click='addRun()') {{"admin.lineRun.add" | translate}}
+      a(ng-href='/admin/{{competitionId}}/line/runs/bulk') {{"admin.lineRun.bulk" | translate}}
+
+      .refine
+        .card.border-dark.mb-3(style='width:100%;')
+          .card-header.bg-transparent.border-dark.fa-2x
+            i.fas.fa-search(aria-hidden='true') {{'line.competition.refine.filter' | translate}}
+          .card-body.text-dark
+            h6.card-title {{'line.competition.refine.round' | translate}}
+            span(ng-repeat='(key, value) in Rrounds track by key')
+              input(type='checkbox' ng-model='Rrounds[key]' id="checkR_{{key}}")
+              label.checkbox(for="checkR_{{key}}") {{key}}
+            hr
+            h6.card-title {{'line.competition.refine.field' | translate}}
+            span(ng-repeat='(key, value) in Rfields track by key')
+              input(type='checkbox' ng-model='Rfields[key]' id="checkF_{{key}}")
+              label.checkbox(for="checkF_{{key}}") {{key}}
+            hr
+            h6.card-title {{'line.competition.refine.team' | translate}}
+            .input-group
+              span#basic-addon1.input-group-addon
+                i.fas.fa-users(aria-hidden='true')
+              input.form-control(type='text', placeholder='Team name', aria-label='Username', aria-describedby='basic-addon1' ng-model='teamName')
+              
+      .row
+        .col-md-10
+          h3 Scoresheets
+      .row
+        .col-md-2
+          div
+            p.input-group
+              span.input-group-btn
+                button.btn.btn-info(type="button" ng-click="openScoreSheetStartDate()")
+                  i.fa.fa-calendar(aria-hidden='true')
+              input.form-control(type="text" uib-datepicker-popup ng-model="scoreSheetStartDateTime" is-open="scoreSheetStartDatePopup.opened" datepicker-options="startDateOptions" close-text="Close")
+            div(uib-timepicker ng-model="scoreSheetStartDateTime" hour-step="1" minute-step="5" show-meridian="false" show-spinners='true' style="border-bottom:0px;border-left:0px;")
+        .col-md-2
+          div
+            p.input-group
+              span.input-group-btn
+                button.btn.btn-info(type="button" ng-click="openScoreSheetEndDate()")
+                  i.fa.fa-calendar(aria-hidden='true')
+              input.form-control(type="text" uib-datepicker-popup ng-model="scoreSheetEndDateTime" is-open="scoreSheetEndDatePopup.opened" datepicker-options="startDateOptions" close-text="Close")
+            div(uib-timepicker ng-model="scoreSheetEndDateTime" hour-step="1" minute-step="5" show-meridian="false" show-spinners='true' style="border-bottom:0px;border-left:0px;")
+        .col-md-3
+          button(ng-click="go_scoreSheetInTimeRange()" class='btn btn-primary' target="_blank" style="margin: 5px 5px 5px 5px;") {{"common.generateSheet" | translate}}
+        .col-md-3
+          form(style="")
+          input(type='file', ngf-select='', ng-model='files', ngf-max-size='5MB', required='', ngf-accept="'image/*'", ngf-pattern="'image/*'",  ngf-multiple='true' capture="environment")
+          button.btn.btn-info(ng-click='uploadSheets(files)' style="margin: 5px 5px 5px 5px; text-align:right;") Upload scoring sheets
+          button.btn.btn-warning(ng-click='files = null', ng-show='files' style="margin: 5px 5px 5px 5px; text-align:right;") Cancel
+
+      div
+        button(ng-click="selectAll()" class='btn btn-primary' style="margin: 5px 5px 5px 5px;") {{"admin.lineRun.selectAll" | translate}}
+        button(ng-click="removeSelectedRun()" class='btn btn-danger' style="margin: 5px 5px 5px 5px;") {{"admin.lineRun.delS" | translate}}
+        button(ng-click="go('/signage/'+ competitionId +'/run')" class='btn btn-success' style="margin: 5px 5px 5px 5px; text-align:right;") {{"admin.lineRun.monitor" | translate}}
+        //button(ng-click="reset_kiosk()" class='btn btn-secondary' style="margin: 5px 5px 5px 5px; text-align:right;") Reset Kiosk
+        button(ng-click="go_approval()" class='btn btn-secondary' style="margin: 5px 5px 5px 5px; text-align:right;") Approval
+
+      center
+        .loader
+          img(src="/images/loader2.gif")
+          p Now Loading...
+      table(class="custom" style="margin-bottom:100px;")
+        thead
+          tr
+            th
+            th {{"common.starttime" | translate}}
+            th {{"common.round" | translate}}
+            th {{"common.team" | translate}}
+            th {{"common.field" | translate}}
+            th {{"common.score" | translate}}
+            th {{"common.time" | translate}}
+            th {{"admin.lineRun.status" | translate}}
+            th {{"common.comment" | translate}}
+            th {{"common.operation" | translate}}
+        tbody
+          tr(ng-repeat='run in runs | filter:list_filter | orderBy:"[startTime,round.name,field.name,team.name]"' runs-read-finished='')
+            td
+                input(type='checkbox' ng-model='run.checked' style="display:initial;")
+            td(ng-bind='run.startTime | date:"dd EEE HH:mm"' ng-style="{'background-color':statusColor(run.status)}" )
+            td(ng-bind='run.round.name' ng-style="{'background-color':statusColor(run.status)}" )
+            td(ng-bind='run.team.name' ng-style="{'background-color':statusColor(run.status)}")
+            td(ng-bind='run.field.name' ng-style="{'background-color':statusColor(run.status)}")
+            td(ng-bind='run.score' ng-style="{'background-color':statusColor(run.status)}")
+            td(ng-bind="run.time.minutes*60*1000+run.time.seconds*1000 | date:'mm:ss'" ng-style="{'background-color':statusColor(run.status)}")
+            td(ng-style="{'background-color':statusColor(run.status)}")
+              span(ng-if="run.status==-1") Not yet set check points
+              span(ng-if="run.status==0") {{"admin.lineRun.st0" | translate}}
+              span(ng-if="run.status==1") {{"admin.lineRun.st1" | translate}}
+              span(ng-if="run.status==2") {{"admin.lineRun.st2" | translate}}
+              span(ng-if="run.status==3") {{"admin.lineRun.st3" | translate}}
+              span(ng-if="run.status==4") {{"admin.lineRun.st4" | translate}}
+              span(ng-if="run.status==5") {{"admin.lineRun.st5" | translate}}
+              span(ng-if="run.status==6") {{"admin.lineRun.st6" | translate}}
+            td(ng-style="{'background-color':statusColor(run.status)}")
+              button(uib-popover="{{run.comment}}" popover-trigger="'outsideClick'"  type="button" class="btn btn-default" ng-disabled="run.comment==''") {{"common.comment" | translate}}
+            //td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
+              button(ng-click="go('/line/view/' + run._id)" class='btn btn-info') {{"common.view" | translate}}
+            //td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
+              button(ng-click="go_sign(run._id)" class='btn btn-warning') {{"common.sign" | translate}}
+            //td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
+              button(ng-click="go_judge(run._id)" class='btn btn-danger') {{"common.judge" | translate}}
+            //td(ng-style="{'background-color':run.status==5?'#bdafdb':''}")
+              button(ng-click="go_approval(run._id)" class='btn btn-secondary') {{"common.approval" | translate}}
+            td(ng-style="{'background-color':statusColor(run.status)}")
+              //a(href="" ng-click='removeRun(run._id)') {{"common.delete" | translate}}
+              .dropdown
+                  button#dropdownMenu.btn.btn-secondary.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') {{"common.action" | translate}}
+                  .dropdown-menu(aria-labelledby='dropdownMenu')
+                    //button.dropdown-item(type='button' ng-click="set_kiosk(run._id)") Kioskにチェクポイント設定画面を表示
+                    button.dropdown-item(type='button' ng-click="go_scoreSheet(run._id)") {{"common.generateSheet" | translate}}
+                    button.dropdown-item(type='button' ng-click="go('/line/view/' + run._id)") {{"common.view" | translate}}
+                    button.dropdown-item(type='button' ng-click="go_judge(run._id)") {{"common.judge" | translate}}
+                    button.dropdown-item(type='button' ng-click="go_sign(run._id)") {{"common.sign" | translate}}
+                    button.dropdown-item(type='button' ng-click="go_approval(run._id)") {{"common.approval" | translate}}
+                    .dropdown-divider
+                    button.dropdown-item(type='button' ng-click='statusReset(run._id)') {{"admin.lineRun.statusReset" | translate}}
+                    button.dropdown-item(type='button' ng-click='removeRun(run._id)') {{"common.delete" | translate}}

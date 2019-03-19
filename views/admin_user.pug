@@ -1,0 +1,65 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'AdminUser'
+
+append scripts
+  script.
+    var competitionId = "#{id}"
+  script(src='/javascripts/admin_user.js')
+
+block location
+    a.breadcrumb-item(ng-click="go('/home')") Home
+    a.breadcrumb-item(ng-click="go('/admin')") Admin
+    span.breadcrumb-item.active Users
+
+
+block content
+  .row
+    .col-md-1
+    .col-md-10
+      h1 {{"admin.users.title" | translate}}
+      table.custom
+        thead
+            tr
+                th {{"common.name" | translate}}
+                th {{"admin.users.password" | translate}}
+                th {{"admin.users.authoritySuper" | translate}}
+                th {{"admin.users.authorityAdmin" | translate}}
+                th {{"common.operation" | translate}}
+        tbody
+            tr
+                td
+                    input(ng-model='userName' style="width:100%;")
+                td
+                    input(ng-model='userPass' style="width:100%;")
+                td
+                    input(type='checkbox' ng-model='userAuthSuper' id="checkSuper")
+                    label.checkbox(for="checkSuper") {{"admin.users.authorization" | translate}}
+                td
+                    input(type='checkbox' ng-model='userAuthAdmin' id="checkAdmin")
+                    label.checkbox(for="checkAdmin") {{"admin.users.authorization" | translate}}
+                td
+                    button(ng-click='addUser()' style="width:100%;") {{"admin.users.add" | translate}}
+      br
+      br
+      table.custom
+        thead
+            tr
+              th {{"admin.users.name" | translate}}
+              th {{"admin.users.super" | translate}}
+              th {{"admin.users.admin" | translate}}
+              th {{"common.operation" | translate}}
+        tbody
+            tr(ng-repeat='user in users')
+              td(ng-bind='user.username')
+              td
+                i(class="fa fa-check" aria-hidden="true" style="color:#2ecc71;" ng-if="user.superDuperAdmin")
+                i(class="fa fa-times" aria-hidden="true" style="color:#e74c3c;" ng-if="!user.superDuperAdmin")
+              td
+                i(class="fa fa-check" aria-hidden="true" style="color:#2ecc71;" ng-if="user.admin")
+                i(class="fa fa-times" aria-hidden="true" style="color:#e74c3c;" ng-if="!user.admin")
+              td
+                a(href="" ng-click='removeUser(user)') {{"common.delete" | translate}}
+      

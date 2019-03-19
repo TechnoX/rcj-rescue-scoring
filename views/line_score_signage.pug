@@ -1,0 +1,155 @@
+//- -*- tab-width: 2 -*-
+extends includes/signage_layout
+
+block vars
+  - var ngAppDef = 'LineScore'
+
+append scripts
+  script.
+    var competitionId = "#{id}"
+    var get = !{JSON.stringify(get)}
+    var league = "#{league}"
+  script(src = '/components/datatables/media/js/jquery.dataTables.min.js')
+  script(src = '/components/angular-datatables/demo/src/archives/dist/angular-datatables.min.js')
+  script(src = '/javascripts/line_score.js')
+
+
+block content
+  style.
+      .ces{
+        display: flex;
+        justify-content: center; /*左右中央揃え*/
+        align-items: center;
+      }
+  .row#rank
+    .col-lg-12
+        if league === 'NL'
+          .row(style="height:8vh")
+            .col-2
+              | Last Update: 
+              | {{updateTime}}
+            .col-5
+              div(style="text-align:center")
+                img(src="/images/ranking/NL-ranking.png" style="height:5vh;")
+            .col-5
+              div(style="text-align:right;font-size:1vw") あと {{time}}秒で，次の情報を表示します
+          div(ng-repeat='run in nipponRunsTop | limitTo: 3 track by $index' ng-show="top3")
+            .row(style="height:29vh")
+                .col-9
+                   img(ng-src="/images/ranking/{{$index+1}}.png" style="height:29vh;float: left;")
+                   div(style="margin-left:35vh;")
+                       div(style="position:relative; top:3vh; font-size: 6vh;") {{run.team.code}}
+                       div(style="position:relative; top:5vh; font-size:10vh; overflow: hidden;text-overflow: ellipsis;white-space: nowrap;") {{run.team.name_only}}
+                .col-3
+                    ul.list-group(style="height:100%;font-size:4vh;")
+                      li.list-group-item(style="border:3px solid #636e72;padding:1vh;color:#d35400")
+                        i.fas.fa-calculator.fa-fw &nbsp;&nbsp;&nbsp;{{run.score}}&nbsp;点
+                      li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#0abde3")
+                        i.fas.fa-stopwatch.fa-fw &nbsp;&nbsp;&nbsp;{{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+                      li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#ee5253")
+                        i.fas.fa-ambulance.fa-fw &nbsp;&nbsp;{{run.rescuedVictims}}&nbsp;体
+                      li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#222f3e")
+                        i.fas.fa-step-forward.fa-fw &nbsp;&nbsp;&nbsp;{{run.LoPsNum}}&nbsp;回
+            hr(color="#636e72" style="margin-top:1vh;margin-bottom:1vh;")
+          div(ng-hide="top3" ng-repeat='i in [0,1,2]')
+                .row(style="height:30vh;border-bottom:solid 1px #000;")
+                    .col-6(style="border-right:solid 1px #000;" ng-show="nipponRunsTop[nowR+(2*i)-1]")
+                        .row.ces(style="margin-left:5px;margin-top:10px;height:30%;margin-bottom:5%;")
+                            .col-2(style="text-align:center;font-size:6vh; border:solid 1px #000;") {{nowR+(2*i)}}
+                            .col-10(style="font-size:6vh;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;") {{nipponRunsTop[nowR+(2*i)-1].team.name}}
+                        .row(style="height:65%;")
+                            .col-6
+                                ul.list-group(style="height:100%;font-size:4vh;")
+                                    li.list-group-item(style="border:3px solid #636e72;padding:1vh;color:#d35400")
+                                        i.fas.fa-calculator.fa-fw &nbsp;&nbsp;&nbsp;{{nipponRunsTop[nowR+(2*i)-1].score}}&nbsp;点
+                                    li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#0abde3")
+                                        i.fas.fa-stopwatch.fa-fw &nbsp;&nbsp;&nbsp;{{("00"+nipponRunsTop[nowR+(2*i)-1].time.minutes).slice(-2)}}:{{("00"+nipponRunsTop[nowR+(2*i)-1].time.seconds).slice(-2)}}
+                            .col-6
+                                ul.list-group(style="height:100%;font-size:4vh;")
+                                    li.list-group-item(style="border:3px solid #636e72;padding:1vh;color:#ee5253")
+                                        i.fas.fa-ambulance.fa-fw &nbsp;&nbsp;{{nipponRunsTop[nowR+(2*i)-1].rescuedVictims}}&nbsp;体
+                                    li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#222f3e")
+                                        i.fas.fa-step-forward.fa-fw &nbsp;&nbsp;&nbsp;{{nipponRunsTop[nowR+(2*i)-1].LoPsNum}}&nbsp;回
+                    .col-6(ng-show="nipponRunsTop[nowR+(2*i)]")
+                        .row.ces(style="margin-left:5px;margin-top:10px;height:30%;margin-bottom:5%;")
+                            .col-2(style="text-align:center;font-size:6vh; border:solid 1px #000;") {{nowR+(2*i)+1}}
+                            .col-10(style="font-size:6vh;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;") {{nipponRunsTop[nowR+(2*i)].team.name}}
+                        .row(style="height:65%;")
+                            .col-6
+                                ul.list-group(style="height:100%;font-size:4vh;")
+                                    li.list-group-item(style="border:3px solid #636e72;padding:1vh;color:#d35400")
+                                        i.fas.fa-calculator.fa-fw &nbsp;&nbsp;&nbsp;{{nipponRunsTop[nowR+(2*i)].score}}&nbsp;点
+                                    li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#0abde3")
+                                        i.fas.fa-stopwatch.fa-fw &nbsp;&nbsp;&nbsp;{{("00"+nipponRunsTop[nowR+(2*i)].time.minutes).slice(-2)}}:{{("00"+nipponRunsTop[nowR+(2*i)].time.seconds).slice(-2)}}
+                            .col-6
+                                ul.list-group(style="height:100%;font-size:4vh;")
+                                    li.list-group-item(style="border:3px solid #636e72;padding:1vh;color:#ee5253")
+                                        i.fas.fa-ambulance.fa-fw &nbsp;&nbsp;{{nipponRunsTop[nowR+(2*i)].rescuedVictims}}&nbsp;体
+                                    li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#222f3e")
+                                        i.fas.fa-step-forward.fa-fw &nbsp;&nbsp;&nbsp;{{nipponRunsTop[nowR+(2*i)].LoPsNum}}&nbsp;回
+                    
+          
+        else if league === 'WL' || league === 'Line'
+            .row(style="height:8vh")
+                .col-2
+                  | Last Update: 
+                  | {{updateTime}}
+                .col-5
+                  div(style="text-align:center")
+                    img(src="/images/ranking/WL-ranking.png" style="height:8vh;")
+                .col-5
+                  div(style="text-align:right;font-size:1vw") あと {{time}}秒で，次の情報を表示します
+            div(ng-repeat='run in worldRunsTop | limitTo: 3 track by $index' ng-show="top3")
+                .row(style="height:29vh")
+                    .col-9
+                       img(ng-src="/images/ranking/{{$index+1}}.png" style="height:29vh;float: left;")
+                       div(style="margin-left:35vh;")
+                           div(style="position:relative; top:3vh; font-size: 6vh;") {{run.team.code}}
+                       div(style="position:relative; top:5vh; font-size:10vh; overflow: hidden;text-overflow: ellipsis;white-space: nowrap;") {{run.team.name_only}}
+                    .col-3
+                        ul.list-group(style="height:100%;font-size:4vh;")
+                          li.list-group-item(style="border:3px solid #636e72;padding:1vh;color:#d35400")
+                            i.fas.fa-calculator.fa-fw &nbsp;&nbsp;&nbsp;{{run.score}}&nbsp;点
+                          li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#0abde3")
+                            i.fas.fa-stopwatch.fa-fw &nbsp;&nbsp;&nbsp;{{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+                          li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#ee5253")
+                            i.fas.fa-ambulance.fa-fw &nbsp;&nbsp;{{run.rescuedVictims}}&nbsp;体
+                          li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#222f3e")
+                            i.fas.fa-step-forward.fa-fw &nbsp;&nbsp;&nbsp;{{run.LoPsNum}}&nbsp;回
+                hr(color="#636e72" style="margin-top:1vh;margin-bottom:1vh;")
+            div(ng-hide="top3" ng-repeat='i in [0,1,2]')
+                .row(style="height:30vh;border-bottom:solid 1px #000;")
+                    .col-6(style="border-right:solid 1px #000;" ng-show="worldRunsTop[nowR+(2*i)-1]")
+                        .row.ces(style="margin-left:5px;margin-top:10px;height:30%;margin-bottom:5%;")
+                            .col-2(style="text-align:center;font-size:6vh; border:solid 1px #000;") {{nowR+(2*i)}}
+                            .col-10(style="font-size:6vh;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;") {{worldRunsTop[nowR+(2*i)-1].team.name}}
+                        .row(style="height:65%;")
+                            .col-6
+                                ul.list-group(style="height:100%;font-size:4vh;")
+                                    li.list-group-item(style="border:3px solid #636e72;padding:1vh;color:#d35400")
+                                        i.fas.fa-calculator.fa-fw &nbsp;&nbsp;&nbsp;{{worldRunsTop[nowR+(2*i)-1].score}}&nbsp;点
+                                    li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#0abde3")
+                                        i.fas.fa-stopwatch.fa-fw &nbsp;&nbsp;&nbsp;{{("00"+worldRunsTop[nowR+(2*i)-1].time.minutes).slice(-2)}}:{{("00"+worldRunsTop[nowR+(2*i)-1].time.seconds).slice(-2)}}
+                            .col-6
+                                ul.list-group(style="height:100%;font-size:4vh;")
+                                    li.list-group-item(style="border:3px solid #636e72;padding:1vh;color:#ee5253")
+                                        i.fas.fa-ambulance.fa-fw &nbsp;&nbsp;{{worldRunsTop[nowR+(2*i)-1].rescuedVictims}}&nbsp;体
+                                    li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#222f3e")
+                                        i.fas.fa-step-forward.fa-fw &nbsp;&nbsp;&nbsp;{{worldRunsTop[nowR+(2*i)-1].LoPsNum}}&nbsp;回
+                    .col-6(ng-show="worldRunsTop[nowR+(2*i)]")
+                        .row.ces(style="margin-left:5px;margin-top:10px;height:30%;margin-bottom:5%;")
+                            .col-2(style="text-align:center;font-size:6vh; border:solid 1px #000;") {{nowR+(2*i)+1}}
+                            .col-10(style="font-size:6vh;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;") {{worldRunsTop[nowR+(2*i)].team.name}}
+                        .row(style="height:65%;")
+                            .col-6
+                                ul.list-group(style="height:100%;font-size:4vh;")
+                                    li.list-group-item(style="border:3px solid #636e72;padding:1vh;color:#d35400")
+                                        i.fas.fa-calculator.fa-fw &nbsp;&nbsp;&nbsp;{{worldRunsTop[nowR+(2*i)].score}}&nbsp;点
+                                    li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#0abde3")
+                                        i.fas.fa-stopwatch.fa-fw &nbsp;&nbsp;&nbsp;{{("00"+worldRunsTop[nowR+(2*i)].time.minutes).slice(-2)}}:{{("00"+worldRunsTop[nowR+(2*i)].time.seconds).slice(-2)}}
+                            .col-6
+                                ul.list-group(style="height:100%;font-size:4vh;")
+                                    li.list-group-item(style="border:3px solid #636e72;padding:1vh;color:#ee5253")
+                                        i.fas.fa-ambulance.fa-fw &nbsp;&nbsp;{{worldRunsTop[nowR+(2*i)].rescuedVictims}}&nbsp;体
+                                    li.list-group-item(style="border:3px solid #636e72;padding:1vh;border-top:0px;color:#222f3e")
+                                        i.fas.fa-step-forward.fa-fw &nbsp;&nbsp;&nbsp;{{worldRunsTop[nowR+(2*i)].LoPsNum}}&nbsp;回

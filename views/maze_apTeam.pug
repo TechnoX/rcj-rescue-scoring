@@ -1,0 +1,189 @@
+//- -*- tab-width: 2 -*-
+
+html(ng-app="MazeTimetable")
+  head
+    title 競技割り当て
+    script.
+      var competitionId = "#{id}"
+      var teamId = "#{tid}"
+      
+    style.
+        table.time{
+          border-collapse:collapse;
+          margin:0 auto;
+          width: 100%;
+          text-align:center;
+        }
+        .time td,th{
+          padding:10px;
+          text-align:center!important;
+        }
+        .time th{
+          color:#fff;
+          background:#17184b;
+        }
+        .time tr:nth-child(odd){
+          background:#bbc8e6;
+        }
+        .time td{
+          border-bottom:3px solid #1e50a2;
+        }
+
+
+    include ./includes/common_component
+    script(src='/javascripts/maze_apTeam.js')
+    script(src="/javascripts/translate_config.js")
+    link(href="/stylesheets/fredrik.css" rel="stylesheet")
+
+
+    meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0")
+
+  body(ng-controller="MazeTimetableController" style="width: 100%;display: flex;align-items: center;justify-content: center;background-color:#eee;")
+    nav.navbar(style='background-color: #460e44; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%')
+        .col-6(style="font-size:25px;") {{team.name}}
+        .col-6(style="text-align:right;")
+            button(ng-show= "selected" ng-click="decision()" class='btn btn-danger') 競技枠を決定 
+    .container.nav-cont
+        div(style='text-align: center;' ng-if='!checked')
+          
+          br
+          .card
+            h3.card-header
+              i.fas.fa-info-circle(aria-hidden='true')
+              |  {{'line.judge.info' | translate}}
+            table.table(style='margin-bottom:0;')
+              tbody
+                tr(ng-style="{backgroundColor: checkTeam? '#e1f7d5' : '#ffbdbd'}", ng-click='toggleCheckTeam()')
+                  th(style='width:200px;')
+                    | {{'common.team' | translate}}
+                  td
+                    h1
+                      b {{team.name}}
+                tr
+                  th
+                    | {{'common.competition' | translate}}
+                  td
+                    | {{competition.name}}
+                tr
+                  th
+                    | {{'common.league' | translate}}
+                  td
+                    | {{team.league}}
+          br
+          br
+          .row(style='margin-bottom:30px')
+            .col-md-6
+              .card
+                h3.card-header
+                  i.far.fa-images(aria-hidden='true') {{'interview.me_pic' | translate}}
+                .card-body(ng-style="{backgroundColor: checkMember? '#e1f7d5' : '#ffbdbd'}", ng-click='toggleCheckMember()')
+                  img.img-thumbnail(style='max-width: 100%;height: auto;margin-bottom:20px', ng-src='/api/teams/pic/{{competition._id}}/{{team._id}}/member')
+            .col-md-6
+              .card
+                h3.card-header
+                  i.far.fa-images(aria-hidden='true') {{'interview.ma_pic' | translate}}
+                .card-body(ng-style="{backgroundColor: checkMachine? '#e1f7d5' : '#ffbdbd'}", ng-click='toggleCheckMachine()')
+                  div
+                    img.img-thumbnail(style='max-width: 100%;height: auto;margin-bottom:20px', ng-src='/api/teams/pic/{{competition._id}}/{{team._id}}/machine')
+          p(ng-show='!(checkTeam && checkMember && checkMachine)') {{'line.judge.tap_red' | translate}}
+          button.btn.btn-success(type='button', ng-click='infochecked()', ng-disabled='!(checkTeam  && checkMember && checkMachine)')
+            i.fas.fa-check-circle.fa-2x(aria-hidden='true')  {{'line.judge.confirm' | translate}}
+        div(ng-if='checked')
+            h1 競技枠選択
+            p リーグ：{{team.league}}
+            br
+            div(ng-repeat="round in table")
+             div(ng-if="round.count")
+              h1 ラウンド名：{{round.round}}
+              table(class="time" style="margin-bottom:50px;")
+                thead
+                  tr
+                    th(style="width:200px;") {{'common.starttime' | translate}}
+                    th(ng-repeat="field in fields | orderBy: 'name' track by $index" ng-bind='field.name' style="font-size:50px;")
+                tbody
+                  tr(ng-repeat='colum in round.data')
+                    td(ng-bind='colum.time | date:"HH:mm"' style="font-size:35px;")
+                    td(ng-repeat="field in fields | orderBy: 'name' track by $index")
+                        div(ng-repeat="run in colum.run")
+                            div(ng-if="run.field.name == field.name")
+                                    span 枠番号  ：{{run.group}}
+                                    button(ng-if="run.group && run.group != selected" ng-click="select(run.group)" class='btn btn-warning' style="width:100%; margin-right:5px; height:50px;") 選択
+                                    button(ng-if="run.group && run.group == selected" class='btn btn-danger' style="width:100%; margin-right:5px; height:50px;" disable) 選択済み
+                                    span(ng-if="!run.group")
+                                        b 選択不可
+                            
+                                    
+
+
+//block content
+  .row
+    .col-md-1
+    .col-md-10
+      h1 {{'line.competition.title' | translate}} - {{competition.name}}
+      br
+      button(ng-click="go('/line/' + competition._id + '/score')" class='btn btn-outline-info btn-lg btn-block') 
+        i.fas.fa-trophy(aria-hidden='true') {{'line.competition.result' | translate}}
+      br
+      button(ng-click="go('/interview/' + competition._id + '?return=/line/'+competitionId)" class='btn btn-outline-success btn-lg btn-block') 
+        i.fas.fa-microphone(aria-hidden='true') {{'common.interview' | translate}}
+      br
+      .refine
+        .card.border-dark.mb-3(style='width:100%;')
+          .card-header.bg-transparent.border-dark.fa-2x
+            i.fas.fa-search(aria-hidden='true') {{'line.competition.refine.filter' | translate}}
+          .card-body.text-dark
+            h6.card-title {{'line.competition.refine.round' | translate}}
+            span(ng-repeat='(key, value) in rounds track by key')
+              input(type='checkbox' ng-model='rounds[key]' id="checkR_{{key}}")
+              label.checkbox(for="checkR_{{key}}") {{key}}
+            hr
+            h6.card-title {{'line.competition.refine.field' | translate}}
+            span(ng-repeat='(key, value) in fields track by key')
+              input(type='checkbox' ng-model='fields[key]' id="checkF_{{key}}")
+              label.checkbox(for="checkF_{{key}}") {{key}}
+            hr
+            h6.card-title {{'line.competition.refine.team' | translate}}
+            .input-group
+              span#basic-addon1.input-group-addon
+                i.fas.fa-users(aria-hidden='true')
+              input.form-control(type='text', placeholder='Team name', aria-label='Username', aria-describedby='basic-addon1' ng-model='teamName')
+
+
+            
+
+        h4
+            
+        
+      hr
+      input#showEnd(type='checkbox' ng-model='show_ended' ng-change='update_list()')
+      label.checkbox(for='showEnd') {{'line.competition.endedrun' | translate}}
+      br
+      center
+        .loader(ng-show="runs==null")
+          img(src="/images/loader2.gif")
+          p {{'common.loading' | translate}}
+
+
+      #compe
+          table(class="custom")
+            thead
+              tr
+                th {{'common.team' | translate}}
+                th {{'common.starttime' | translate}}
+                th {{'common.round' | translate}}
+                th {{'common.field' | translate}}
+                th
+            tbody
+              tr(ng-repeat='run in runs | filter:list_filter | orderBy:"[startTime,round.name,field.name,team.name]" ')
+                td(ng-bind='run.team.name' ng-class="{'end' : run.status>=3,'delay' : run.startTime<curTime}")
+                td(ng-bind='run.startTime | date:"dd EEE HH:mm"' data-content="{{'common.starttime' | translate}}")
+                td(ng-bind='run.round.name' data-content="{{'common.round' | translate}}")
+                td(ng-bind='run.field.name' data-content="{{'common.field' | translate}}")
+                td
+                  button(ng-if= "run.field != null" ng-click="go('/line/view/' + run._id)" class='btn btn-info' style="width:45%; margin-right:5px;") {{'common.view' | translate}}
+                  button(ng-if= "run.field == null" ng-click="go('/home/access_denied')" class='btn btn-info' style="width:45%; margin-right:5px;") {{'common.view' | translate}}
+                  //button(ng-click="no_judge()" class='btn btn-danger' ng-if="run.status>=3"  style="width:45%;") {{'common.judge' | translate}}
+                  button(ng-click="go_judge('/line/judge/' + run._id , run.team.name)" class='btn btn-danger' ng-if="run.status<3 && isJudge == 1"  style="width:45%;") {{'common.judge' | translate}}
+      br
+      br
+      br

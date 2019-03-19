@@ -1,0 +1,21 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+
+block location
+  a.breadcrumb-item(ng-click="go('/home')") Home
+  span.breadcrumb-item.active= error.status
+
+block content
+  .row
+    .col-md-1
+    .col-md-10
+      i.fa.fa-ban.fa-5x(aria-hidden="true" style="color:#e74c3c;") &nbsp;Error :(
+      br
+      br
+      h1= error.status
+      h2= message
+      br
+      br
+
+      

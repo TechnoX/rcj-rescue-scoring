@@ -1,85 +1,26 @@
-var logger = require('../config/logger').mainLogger
+"use strict"
+const logger = require('../config/logger').mainLogger
+const rule2018 = require('./scoreCalculator-2018')
+const rule2019 = require('./scoreCalculator-2019')
 
-module.exports.calculateScore = function (run) {
-  var score = 0
-
-  if (run.showedUp !== undefined && run.showedUp) {
-    score += 3
+module.exports.calculateLineScore = function (run) {
+  let rule = run.competition.rule;
+  switch(rule){
+    case '2019':
+      return rule2019.calculateLineScore(run);
+    case '2018':
+    default:
+      return rule2018.calculateLineScore(run);
   }
+}
 
-  var dropTileIndexes = []
-
-  for (var i in run.tiles) {
-    var tile = run.tiles[i]
-
-    if (tile.scoredItems.dropTiles !== undefined) {
-      if (tile.scoredItems.dropTiles.length > 0) {
-        dropTileIndexes = dropTileIndexes.concat(tile.index)
-      }
-    }
+module.exports.calculateMazeScore = function (run) {
+  let rule = run.competition.rule;
+  switch(rule){
+    case '2019':
+      return rule2019.calculateMazeScore(run);
+    case '2018':
+    default:
+      return rule2018.calculateMazeScore(run);
   }
-
-  dropTileIndexes.sort(function (a, b) {
-    return a - b
-  })
-
-  for (var i in run.tiles) {
-    var tile = run.tiles[i]
-
-    if (tile.scoredItems.obstacles !== undefined) {
-      for (var j in tile.scoredItems.obstacles) {
-        if (tile.scoredItems.obstacles[j]) {
-          score += 10
-        }
-      }
-    }
-    if (tile.scoredItems.speedbumps !== undefined) {
-      for (var j in tile.scoredItems.speedbumps) {
-        if (tile.scoredItems.speedbumps[j]) {
-          score += 5
-        }
-      }
-    }
-    if (tile.scoredItems.intersections !== undefined) {
-      for (var j in tile.scoredItems.intersections) {
-        if (tile.scoredItems.intersections[j]) {
-          score += 15
-        }
-      }
-    }
-    if (tile.scoredItems.gaps !== undefined) {
-      for (var j in tile.scoredItems.gaps) {
-        if (tile.scoredItems.gaps[j]) {
-          score += 10
-        }
-      }
-    }
-    if (tile.scoredItems.dropTiles !== undefined) {
-      for (var j in tile.scoredItems.dropTiles) {
-        if (tile.scoredItems.dropTiles[j]) {
-          var count
-          var index = dropTileIndexes.indexOf(tile.index[j])
-          while(run.LoPs[index]==null){
-              run.LoPs.push(0)
-          }
-          if (index == 0) {
-            count = tile.index[j]
-          } else {
-            count = tile.index[j] - dropTileIndexes[index - 1]
-          }
-         score += Math.max(count * (3 - run.LoPs[index]), 0)
-        }
-      }
-    }
-  }
-  if(run.rescueLevel !== undefined  && !run.rescueLevel){
-      score += run.rescuedLiveVictims * 30
-      score += run.rescuedDeadVictims * 15
-  }else{
-      score += run.rescuedLiveVictims * 40
-      score += run.rescuedDeadVictims * 20
-  }
-  if(run.escapeEvacuationZone !== undefined && run.escapeEvacuationZone)score += 20;
-  
-  return score
 }

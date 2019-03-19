@@ -1,0 +1,60 @@
+html(ng-app="ddApp")
+  head
+    title Rescue Runs Monitor
+    script.
+      var competitionId = "#{id}"
+      var sigId = "#{sigId}"
+      
+    style.
+        body::-webkit-scrollbar{
+         display:none;
+        }
+
+
+    include ./includes/common_component
+    script(src="/javascripts/runs_monitor.js")
+    script(src="/javascripts/translate_config.js")
+    link(href="/stylesheets/fredrik.css" rel="stylesheet")
+
+
+    meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0")
+
+  body(ng-controller="ddController")
+    iframe(ng-src='{{signageSrc()}}', style='width:100%; height:100%; border:none;', ng-if='flagSignage && showSignage')
+    .row(style='margin: 0 0 0 0;height:100%;', ng-if='num')
+      div(class='col-md-{{12/num}} col-sm-{{12/num}}', style='padding:0 0 0 0;', ng-style="{borderRight: ($index+1) % num ==0 ? '0px':'solid 5px #000' , height: 100/vet + '%'}" , ng-repeat='n in range(num*vet)')
+        iframe(ng-src='{{getIframeSrc(selectfield[n])}}', style='width:100%; height:100%; border:none;', ng-if='selectfield[n]')
+        div(ng-show='!selectfield[n]')
+            label Select field:
+            select(ng-model='selectfield[n]', ng-options='field as field.name for field in fields')
+    br
+    br
+    span Number of display side by side:
+    select(ng-model='num')
+      option(value='1') 1
+      option(value='2') 2
+      option(value='3') 3
+      option(value='4') 4
+    br
+    span Number of display vertical:
+    select(ng-model='vet')
+      option(value='1') 1
+      option(value='2') 2
+    br
+    br
+    hr
+    br
+    label
+      | Display the digital signage when the field is all opened: 
+      input(type='checkbox', ng-model='flagSignage' style="display:inline")
+      br
+      label Signage Group:
+      select(ng-model='sigGroup')
+          option(value='0') ALL
+          option(value='1') 1
+          option(value='2') 2
+          option(value='3') 3
+          option(value='4') 4
+          option(value='5') 5
+
+

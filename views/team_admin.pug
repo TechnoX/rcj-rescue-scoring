@@ -1,0 +1,65 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'TeamAdmin'
+
+append scripts
+  script.
+    var competitionId = "#{id}"
+  script(src='/javascripts/team_admin.js')
+
+block location
+    a.breadcrumb-item(ng-click="go('/home')") Home
+    a.breadcrumb-item(ng-click="go('/admin')") Admin
+    a.breadcrumb-item(ng-click="go('/admin/'+competitionId)") {{competition.name}}
+    span.breadcrumb-item.active Teams
+
+
+block content
+  .row
+    .col-md-1
+    .col-md-10
+      h1 {{competition.name}} - {{"admin.teams.title" | translate}}
+      table.custom
+        thead
+            tr
+                th {{"common.team" | translate}}
+                th {{"common.league" | translate}}
+                th {{"common.operation" | translate}}
+        tbody
+            tr
+                td
+                    input(ng-model='teamName' style="width:100%;")
+                td
+                    select(ng-model='teamLeague' ng-options='league for league in leagues' style="width:100%;")
+                td
+                    button(ng-click='addTeam()' style="width:100%;") {{"admin.teams.add" | translate}}
+      a(ng-href='/admin/{{competitionId}}/teams/bulk') {{"admin.teams.bulk" | translate}}
+      br
+      br
+      div
+          button(ng-click="selectAll()" class='btn btn-primary' style="margin: 5px 5px 5px 5px;") {{"common.selectAll" | translate}}
+          button(ng-click="removeSelectedTeam()" class='btn btn-danger' style="margin: 5px 5px 5px 5px;") {{"common.delS" | translate}}
+          button(ng-click="reset_kiosk()" class='btn btn-secondary' style="margin: 5px 5px 5px 5px; text-align:right;") Reset Kiosk
+      table.custom
+        thead
+            tr
+              th
+              th {{"common.team" | translate}}
+              th {{"common.league" | translate}}
+              th {{"common.operation" | translate}}
+        tbody
+            tr(ng-repeat='team in teams')
+              td
+                input(type='checkbox' ng-model='team.checked' style="display:initial;")
+              td(ng-bind='team.name')
+              td(ng-bind='team.league')
+              td
+                .dropdown
+                  button#dropdownMenu.btn.btn-secondary.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') {{"common.action" | translate}}
+                  .dropdown-menu(aria-labelledby='dropdownMenu')
+                    button.dropdown-item(type='button' ng-click="set_kiosk(team)") Kioskに競技枠設定画面を表示
+                    .dropdown-divider
+                    button.dropdown-item(type='button' ng-click='removeTeam(team._id)') {{"common.delete" | translate}}
+      

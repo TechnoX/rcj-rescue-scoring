@@ -1,0 +1,35 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'AdminBackup'
+
+append scripts
+  script.
+    var competitionId = "#{competition_id}"
+  script(src='/javascripts/admin_competition_backup.js')
+
+block location
+    a.breadcrumb-item(ng-click="go('/home')") Home
+    a.breadcrumb-item(ng-click="go('/admin')") Admin
+    a.breadcrumb-item(ng-click="go('/admin/'+competitionId)") {{competition.name}}
+    span.breadcrumb-item.active Backup
+
+
+block content
+  .row
+    .col-md-1
+    .col-md-10
+      h1 {{"admin.backup.title" | translate}}
+      p {{"admin.backup.description" | translate}}
+      ul
+        li {{"admin.backup.item1" | translate}}
+        li {{"admin.backup.item2" | translate}}
+        li {{"admin.backup.item3" | translate}}
+        li {{"admin.backup.item4" | translate}}
+        li {{"admin.backup.item5" | translate}}
+        li {{"admin.backup.item6" | translate}}
+      p {{"admin.backup.notInclude" | translate}}
+      br
+      button(ng-click='exeBackup()' type="button" class="btn btn-info") {{"admin.backup.exe" | translate}}
+      br

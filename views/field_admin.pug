@@ -1,0 +1,54 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'FieldAdmin'
+
+append scripts
+  script.
+    var competitionId = "#{id}"
+  script(src='/javascripts/field_admin.js')
+
+block location
+    a.breadcrumb-item(ng-click="go('/home')") Home
+    a.breadcrumb-item(ng-click="go('/admin')") Admin
+    a.breadcrumb-item(ng-click="go('/admin/'+competitionId)") {{competition.name}}
+    span.breadcrumb-item.active Fields
+
+block content
+  .row
+    .col-md-1
+    .col-md-10
+      h1 {{competition.name}} - {{"admin.fields.title" | translate}}
+      table.custom
+        thead
+            tr
+                th {{"common.name" | translate}}
+                th {{"common.league" | translate}}
+                th {{"common.operation" | translate}}
+        tbody
+            tr
+                td
+                    input(ng-model='fieldName' style="width:100%;")
+                td
+                    select(ng-model='fieldLeague' ng-options='league for league in leagues' style="width:100%;")
+                td
+                    button(ng-click='addField()' style="width:100%;") {{"admin.fields.add" | translate}}
+      
+      
+      
+      br
+      hr
+      br
+      table.custom
+        thead
+            tr
+              th {{"common.name" | translate}}
+              th {{"common.league" | translate}}
+              th {{"common.operation" | translate}}
+        tbody
+            tr(ng-repeat='field in fields')
+              td(ng-bind='field.name')
+              td(ng-bind='field.league')
+              td
+                a(href="" ng-click='removeField(field)') {{"common.delete" | translate}}

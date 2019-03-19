@@ -9,10 +9,15 @@
 
 var crypto = require('crypto');
 
-var cryptoSettings = {method: 'sha512', maxStrLength: 100, maxLength: 128, saltLength: 16}
+var cryptoSettings = {
+  method      : 'sha512',
+  maxStrLength: 100,
+  maxLength   : 128,
+  saltLength  : 16
+}
 
 var saltIt = function (salt, data) {
-    return salt + data + salt;
+  return salt + data + salt;
 }
 
 
@@ -32,15 +37,18 @@ var saltIt = function (salt, data) {
  * @param {parseValuesCb} cb The callback function
  */
 var generateHashWithSalt = function (stringToHash, cb) {
-    if (stringToHash.length > cryptoSettings.maxStrLength) {
-        return cb({err: "The string you are trying to hash is too large"}, null, null);
-    } else {
-
-        var salt = crypto.randomBytes(cryptoSettings.saltLength);
-        generateHash(saltIt(salt, stringToHash), function (hashedString) {
-            cb(null, hashedString, salt);
-        })
-    }
+  if (stringToHash == null) return;
+  if (stringToHash.length > cryptoSettings.maxStrLength) {
+    return cb({
+      err: "The string you are trying to hash is too large"
+    }, null, null);
+  } else {
+    
+    var salt = crypto.randomBytes(cryptoSettings.saltLength);
+    generateHash(saltIt(salt, stringToHash), function (hashedString) {
+      cb(null, hashedString, salt);
+    })
+  }
 }
 
 /**
@@ -54,9 +62,9 @@ var generateHashWithSalt = function (stringToHash, cb) {
  * @param {generateHashCb} cb The callback function
  */
 var generateHash = function (stringToHash, cb) {
-    var hashMethod = crypto.createHash(cryptoSettings.method);
-    var hash = hashMethod.update(stringToHash);
-    return cb(hash.digest('hex'));
+  var hashMethod = crypto.createHash(cryptoSettings.method);
+  var hash = hashMethod.update(stringToHash);
+  return cb(hash.digest('hex'));
 }
 
 /**
@@ -73,12 +81,12 @@ var generateHash = function (stringToHash, cb) {
  * @param {compareHashCb} cb The callback function
  */
 var compareHash = function (hashedString, compareValue, salt, cb) {
-    generateHash(saltIt(salt, compareValue), function (res) {
-        if (res === hashedString) {
-            return cb(true);
-        }
-        return cb(false);
-    })
+  generateHash(saltIt(salt, compareValue), function (res) {
+    if (res === hashedString) {
+      return cb(true);
+    }
+    return cb(false);
+  })
 }
 
 /**
@@ -92,10 +100,10 @@ var compareHash = function (hashedString, compareValue, salt, cb) {
  * @param {generateUniqueToken} cb The callback function
  */
 var generateUniqueToken = function (cb) {
-    var date = Date.now();
-    generateHashWithSalt(date.toString(), function (err, hashedString, salt) {
-        return cb(hashedString);
-    })
+  var date = Date.now();
+  generateHashWithSalt(date.toString(), function (err, hashedString, salt) {
+    return cb(hashedString);
+  })
 }
 
 module.exports.generateHashWithSalt = generateHashWithSalt;

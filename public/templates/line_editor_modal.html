@@ -1,56 +1,44 @@
 <div class="modal-header">
-  <h3 class="modal-title">Change items</h3>
+    <h3 class="modal-title">{{"admin.lineMapEditor.item" | translate}}</h3>
 </div>
 <div class="modal-body">
-  <ul>
-    <li>
-      <label>Has speedbumps: </label>
-      <a href="#" ng-click="tile.items.speedbumps>0?tile.items.speedbumps=tile.items.speedbumps-1:0">-</a>
-      {{tile.items.speedbumps}}
-      <a href="#" ng-click="tile.items.speedbumps=tile.items.speedbumps+1">+</a>
-      <!--
-      <a href="#" ng-click="tile.items.speedbumps>0?tile.items.speedbumps=tile.items.speedbumps-1:0">-</a>
-      {{tile.items.speedbumps}}
-      <a href="#" ng-click="tile.items.speedbumps=tile.items.speedbumps+1">+</a>-->
-    </li>
-<!--    <li>
-      <label>Gaps:</label>
-      <a href="#" ng-click="tile.items.gaps>0?tile.items.gaps=tile.items.gaps-1:0">-</a>
-      {{tile.items.gaps}}
-      <a href="#" ng-click="tile.items.gaps=tile.items.gaps+1">+</a>
-    </li>-->
-    <li>
-      <label>Obstacles:</label>
-      <a href="#" ng-click="tile.items.obstacles>0?tile.items.obstacles=tile.items.obstacles-1:0">-</a>
-      {{tile.items.obstacles}}
-      <a href="#" ng-click="tile.items.obstacles=tile.items.obstacles+1">+</a>
-    </li>
-<!--    <li>
-      <label>Intersections:</label>
-      <a href="#" ng-click="tile.items.intersections>0?tile.items.intersections=tile.items.intersections-1:0">-</a>
-      {{tile.items.intersections}}
-      <a href="#" ng-click="tile.items.intersections=tile.items.intersections+1">+</a>
-    </li>-->
-  </ul>
+    <ul>
+        <li>
+            <label>{{"admin.lineMapEditor.bump" | translate}}</label>
+            <a href="#" ng-click="tile.items.speedbumps>0?tile.items.speedbumps=tile.items.speedbumps-1:0">-</a> {{tile.items.speedbumps}}
+            <a href="#" ng-click="tile.items.speedbumps=tile.items.speedbumps+1">+</a>
+        </li>
+        <li>
+            <label>{{"admin.lineMapEditor.obstacle" | translate}}</label>
+            <a href="#" ng-click="tile.items.obstacles>0?tile.items.obstacles=tile.items.obstacles-1:0">-</a> {{tile.items.obstacles}}
+            <a href="#" ng-click="tile.items.obstacles=tile.items.obstacles+1">+</a>
+        </li>
+    </ul>
+    
+    <input type="checkbox" ng-model="tile.items.rampPoints" id="isRampPoints"><label class="checkbox" for="isRampPoints"> Ramp points</label>
+    
+    <input type="checkbox" ng-model="tile.items.noCheckPoint" id="noChk"><label class="checkbox" for="noChk"> Disable setting as a checkpoint</label>
+    
+    <input type="checkbox" ng-model="start" ng-disabled="start" id="isStartCheck"><label class="checkbox" for="isStartCheck"> {{"admin.lineMapEditor.start" | translate}}</label>
+    
+    
 
-  <label><input type="checkbox" ng-model="start" ng-disabled="start"> Is start</label>
+    <h5>{{"admin.lineMapEditor.down" | translate}}</h5>
+    <input type="radio" ng-model="tile.levelDown" value="top" id="isDownTop"><label class="radio" for="isDownTop">{{"admin.lineMapEditor.top" | translate}}</label> <br>
+    <input type="radio" ng-model="tile.levelDown" value="bottom" id="isDownBottom"><label class="radio" for="isDownBottom">{{"admin.lineMapEditor.bottom" | translate}}</label> <br>
+    <input type="radio" ng-model="tile.levelDown" value="left" id="isDownLeft"><label class="radio" for="isDownLeft">{{"admin.lineMapEditor.left" | translate}}</label> <br>
+    <input type="radio" ng-model="tile.levelDown" value="right" id="isDownRight"><label class="radio" for="isDownRight">{{"admin.lineMapEditor.right" | translate}}</label> <br>
+    <input type="radio" ng-model="tile.levelDown" ng-click="tile.levelDown = undefined" id="isDownNothing"><label class="radio" for="isDownNothing">{{"admin.lineMapEditor.nothing" | translate}}</label> <br>
 
-  <h5>Direction if ramp down:</h5>
-  <label><input type="radio" ng-model="tile.levelDown" value="top"> Top</label> <br>
-  <label><input type="radio" ng-model="tile.levelDown" value="bottom"> Bottom</label> <br>
-  <label><input type="radio" ng-model="tile.levelDown" value="left"> Left</label> <br>
-  <label><input type="radio" ng-model="tile.levelDown" value="right"> Right</label> <br>
-  <label><input type="radio" ng-model="tile.levelDown" ng-click="tile.levelDown = undefined"> Nothing</label> <br>
-
-  <h5>Direction if ramp up:</h5>
-  <label><input type="radio" ng-model="tile.levelUp" value="top"> Top</label> <br>
-  <label><input type="radio" ng-model="tile.levelUp" value="bottom"> Bottom</label> <br>
-  <label><input type="radio" ng-model="tile.levelUp" value="left"> Left</label> <br>
-  <label><input type="radio" ng-model="tile.levelUp" value="right"> Right</label> <br>
-  <label><input type="radio" ng-model="tile.levelUp" ng-click="tile.levelUp = undefined"> Nothing</label> <br>
+    <h5>{{"admin.lineMapEditor.up" | translate}}</h5>
+    <input type="radio" ng-model="tile.levelUp" value="top" id="isUpTop"><label class="radio" for="isUpTop">{{"admin.lineMapEditor.top" | translate}}</label> <br>
+    <input type="radio" ng-model="tile.levelUp" value="bottom" id="isUpBottom"><label class="radio" for="isUpBottom">{{"admin.lineMapEditor.bottom" | translate}}</label> <br>
+    <input type="radio" ng-model="tile.levelUp" value="left" id="isUpLeft"><label class="radio" for="isUpLeft">{{"admin.lineMapEditor.left" | translate}}</label> <br>
+    <input type="radio" ng-model="tile.levelUp" value="right" id="isUpRight"><label class="radio" for="isUpRight">{{"admin.lineMapEditor.right" | translate}}</label> <br>
+    <input type="radio" ng-model="tile.levelUp" ng-click="tile.levelUp = undefined" id="isUpNothing"><label class="radio" for="isUpNothing">{{"admin.lineMapEditor.nothing" | translate}}</label> <br>
 
 </div>
 <div class="modal-footer">
-  <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
-<!--  <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>-->
+    <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+    <!--  <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>-->
 </div>

@@ -24,61 +24,63 @@ publicRouter.get('/', function (req, res) {
 
 publicRouter.get('/:fieldid', function (req, res, next) {
   var id = req.params.fieldid
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
+  
   query.doIdQuery(req, res, id, "", competitiondb.field)
 })
 
 publicRouter.get('/:fieldid/runs', function (req, res, next) {
   var id = req.params.fieldid
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
+  
   competitiondb.run.find({field: id}, function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not get runs"})
+      res.status(400).send({msg: "Could not get runs", err: err.message})
     } else {
       res.status(200).send(data)
     }
   })
 })
 
-adminRouter.get('/:fieldid/delete', function (req, res, next) {
+adminRouter.delete('/:fieldid', function (req, res, next) {
   var id = req.params.fieldid
-
+  
   if (!ObjectId.isValid(id)) {
     return next()
   }
-
-  competitiondb.field.remove({_id : id}, function (err) {
+  
+  competitiondb.field.deleteOne({_id: id}, function (err) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Could not remove field"})
+      res.status(400).send({msg: "Could not remove field", err: err.message})
     } else {
       res.status(200).send({msg: "Field has been removed!"})
     }
   })
 })
 
-adminRouter.post('/createfield', function (req, res) {
+adminRouter.post('/', function (req, res) {
   var field = req.body
-
+  
   var newField = new competitiondb.field({
-    name : field.name,
-    competition : field.competition
+    name       : field.name,
+    competition: field.competition,
+    league     : field.league
   })
-
+  
   newField.save(function (err, data) {
     if (err) {
       logger.error(err)
-      res.status(400).send({msg: "Error saving field"})
+      res.status(400).send({msg: "Error saving field", err: err.message})
     } else {
+      res.location("/api/fields/" + data._id)
       res.status(201).send({msg: "New field has been saved", id: data._id})
     }
   })

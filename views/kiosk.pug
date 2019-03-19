@@ -1,0 +1,28 @@
+html(ng-app="ddApp")
+  head
+    title Kiosk
+    script.
+      var kioskNumber = "#{num}"
+
+
+    include ./includes/common_component
+    script(src="/javascripts/kiosk.js")
+    script(src="/javascripts/translate_config.js")
+    link(href="/stylesheets/fredrik.css" rel="stylesheet")
+
+
+    meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0")
+
+  body(ng-controller="ddController" style="width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;background-color:#eee;")
+    div(style="position:fixed;left:0;top:0;width:100%;height:100%;overflow: auto;scrool:yes;-webkit-overflow-scrolling:touch;")
+        iframe( ng-src='{{kioskSrc}}', style='width:100%; height:100%;border:none;', ng-if='flag_kiosk')
+    div(style="text-align:center;" ng-if="!flag_kiosk")
+        img(src="/images/logo.png" width='200px')
+        br
+        br
+        h1 オペレーターの操作をお待ちください
+        br
+        br
+        i.fas.fa-spinner.fa-spin.fa-4x
+
+

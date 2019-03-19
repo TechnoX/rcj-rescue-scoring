@@ -1,0 +1,69 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'Home'
+
+append scripts
+  script(src='/javascripts/home.js')
+  //script.
+    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+    for(let registration of registrations) {
+    registration.unregister()
+    } })
+  script.
+    if ('serviceWorker' in navigator) {
+      self.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js');
+      });
+      self.addEventListener('install', function (event) {
+        event.waitUntil(self.skipWaiting());
+      });
+      self.addEventListener('activate', function (event) {
+        event.waitUntil(self.clients.claim());
+      });
+    }
+
+block location
+  span.breadcrumb-item.active Home
+
+block content
+  .row
+    .col-md-1
+    .col-md-10
+      h2
+          img(src="/images/logo.png" width='40px' height='40px')
+          | &nbsp;RCJ Scoring System 2019
+      br
+      h6(ng-cloak) {{'home.about' | translate}}
+      br
+      br
+
+      if typeof(user) == "undefined"
+        button(onclick="location.href='/login'" class='btn btn-warning btn-lg btn-block')
+            i.fas.fa-sign-in-alt(aria-hidden='true' ng-cloak) &nbsp; {{'home.login' | translate}}
+      else
+        button(ng-click="location.href='/logout'" class='btn btn-outline-danger btn-lg btn-block')
+            i.fas.fa-sign-out-alt(aria-hidden='true' ng-cloak) &nbsp; {{'home.logout' | translate}}
+      br
+      br
+      .row.row-height(style="display: flex;justify-content: space-between;")
+        .col-md-4(ng-repeat='competition in competitions' style="margin-bottom:20px;")
+          .card(ng-click="go('/home/' + competition._id)" style="width:100%;height:100%;text-align:center;" ng-style="{'backgroundColor': '#' + competition.bkColor}")
+            img.card-img-top(ng-src="{{competition.logo}}", alt='' style="max-height:300px;width:100%;object-fit: contain;")
+            .card-body
+              h3(style="text-align:center" ng-style="{'color': '#' + competition.color}" ng-cloak) {{competition.name}}
+              br
+              p(ng-if="competition.description" style="text-align:center" ng-style="{'color': '#' + competition.color}" ng-bind-html="competition.description")
+      br
+      br
+      br
+      if typeof(user) != "undefined"
+        if user.admin
+            button(onclick="location.href='/admin'" class='btn btn-outline-success btn-lg btn-block' ng-cloak) {{'home.management' | translate}}
+        else
+            button(onclick="location.href='/'" class='btn btn-outline-success btn-lg btn-block' disabled ng-cloak) {{'home.management' | translate}}
+            p(translate="home.access_level", translate-values='{account: "'+ user.username + '"}')
+      br
+      br
+      br

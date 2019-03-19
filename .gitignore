@@ -1,6 +1,7 @@
 .DS_Store
 
 logs/*
+!.gitkeep
 public/components/*
 node_modules/*
 
@@ -11,7 +12,7 @@ node_modules/*
 lib-cov
 *.seed
 *.log
-*.csv
+#*.csv
 *.dat
 *.out
 *.pid
@@ -47,3 +48,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+public/signage/field.png
+public/signage/intro.mp4
+public/signage/prohibited.mp4

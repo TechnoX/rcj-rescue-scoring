@@ -1,0 +1,76 @@
+<nav class="navbar" style="color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%" ng-style="{backgroundColor: navColor(status)}">
+    <!-- Navbar content -->
+
+      <div class="col-md-6 col-sm4 col-12">
+          <li class="navbar-brand" href="#"><i class="fas fa-spinner fa-spin fa-fw"></i> {{team}}</li>
+      </div>
+      <div class="col-md-3 col-sm4 col-7">
+          <i class="fas fa-calculator fa-2x" aria-hidden="true"></i>
+          <li class="navbar-brand" href="#"> {{score}} points</li>
+      </div>
+      <div class="col-md-3 col-sm4 col-5">
+          <i class="fas fa-stopwatch fa-2x" aria-hidden="true"></i>
+          <li class="navbar-brand" href="#"> {{time*1000 | date:'mm:ss'}}</li>
+      </div>
+
+</nav>
+
+<div class="row nav-cont">
+    <div class="col-md-12  tilearea mx-auto" ng-if= "exist">
+        <div ng-repeat="z in range(height) track by $index" style="float: left; margin-right: 10px">
+                        <h3>{{countWords[$index]}} floor</h3>
+                        <table class="map">
+                            <tr ng-repeat="r in range(2*length + 1)">
+                                <td class="cell" ng-repeat="c in range(2*width + 1)" ng-class="{'tile': $odd && $parent.$odd, 'wall': cells[c+','+r+','+z].isWall, 'checkpoint': cells[c+','+r+','+z].tile.checkpoint, 'black': cells[c+','+r+','+z].tile.black, 'linear': cells[c+','+r+','+z].isLinear}"  ng-click="cellClick(c, r, z, $odd != $parent.$odd, $odd && $parent.$odd)">
+                                    <div class="tile-image-container" ng-show="cells[c+','+r+','+z].isTile">
+                                        <img ng-src="/images/log.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.speedbump">
+                                        <img ng-src="/images/elevator.png" class="tile-image" ng-show="!isUndefined(cells[c+','+r+','+z].tile.changeFloorTo) && cells[c+','+r+','+z].tile.changeFloorTo != z">
+                                        <img ng-src="/images/start.png" class="tile-image" ng-show="startTile.x == c && startTile.y == r && startTile.z == z">
+                                        <img ng-src="/images/ramp_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.rampTop">
+                                        <img ng-src="/images/ramp_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.rampBottom">
+                                        <img ng-src="/images/heated_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'Heated'">
+                                        <img ng-src="/images/heated_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'Heated'">
+                                        <img ng-src="/images/heated_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'Heated'">
+                                        <img ng-src="/images/heated_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'Heated'">
+                                        <img ng-src="/images/h_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'H'">
+                                        <img ng-src="/images/h_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'H'">
+                                        <img ng-src="/images/h_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'H'">
+                                        <img ng-src="/images/h_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'H'">
+                                        <img ng-src="/images/s_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'S'">
+                                        <img ng-src="/images/s_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'S'">
+                                        <img ng-src="/images/s_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'S'">
+                                        <img ng-src="/images/s_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'S'">
+                                        <img ng-src="/images/u_top.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.top == 'U'">
+                                        <img ng-src="/images/u_right.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.right == 'U'">
+                                        <img ng-src="/images/u_bottom.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.bottom == 'U'">
+                                        <img ng-src="/images/u_left.png" class="tile-image" ng-show="cells[c+','+r+','+z].tile.victims.left == 'U'">
+
+                                        <i class="fas fa-check fa-fw tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'done'" style="padding-top:4px; color:#27ae60; opacity:0.9;"></i>
+                                        <i class="fas fa-play fa-fw fa-rotate-270 tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'halfdone'" style="padding-top:4px; color:#f4d03f; opacity:0.9;"></i>
+                                        <i class="fas fa-times fa-fw tile-image tile-font" ng-show="tileStatus(c,r,z,$odd && $parent.$odd) == 'undone'" style="padding-top:6px; color:#e74c3c; opacity:0.9;"></i>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+
+    </div>
+    <div class="col-md-12" ng-show = "!exist">
+        <div class="alert alert-dark" role="alert">
+            <h1>現在，このフィールドでは競技が行われていません</h1>
+        </div>
+    </div>
+</div>
+<br>
+
+<div class="alert alert-info" role="alert" ng-show = "exist">
+    <div class="row">
+        <div class="col-6">
+            <i class="fas fa-step-forward" aria-hidden="true"> : {{LoPs}} times</i>
+        </div>
+        <div class="col-6">
+            <i class="fas fa-home" aria-hidden="true"> : Returned: <b>{{exitBonus}}</b></i>
+        </div>
+    </div>
+</div>

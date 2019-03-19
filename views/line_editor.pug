@@ -1,0 +1,34 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'LineEditor'
+
+append scripts
+  script.
+    var mapId = "#{mapid}"
+    var competitionId = "#{compid}"
+
+  script(src="/javascripts/lvl-uuid.js")
+  script(src="/javascripts/line_editor.js")
+  //script(src="/components/bootstrap-fileinput/js/plugins/piexif.min.js")
+  //script(src="/components/bootstrap-fileinput/js/plugins/sortable.min.js")
+  //script(src="/components/bootstrap-fileinput/js/plugins/purify.min.js")
+  script(src="/components/bootstrap-fileinput/js/fileinput.min.js")
+  script(src="/components/bootstrap-fileinput/themes/fa/theme.min.js")
+  script(src="/components/bootstrap-fileinput/js/locales/ja.js")
+
+append css
+  link(href="/stylesheets/fredrik.css" rel="stylesheet")
+  link(href="/components/bootstrap-fileinput/css/fileinput.min.css" rel="stylesheet")
+  
+
+block location
+    a.breadcrumb-item(ng-click="go('/home')") Home
+    a.breadcrumb-item(ng-click="go('/admin')") Admin
+    a.breadcrumb-item(ng-click="go('/admin/'+competitionId)") {{competition}}
+    a.breadcrumb-item(ng-click="go('/admin/'+competitionId + '/line/maps')") Line maps
+    span.breadcrumb-item.active Line editor
+
+block content
+    include line_editor.html

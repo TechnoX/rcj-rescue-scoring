@@ -1,87 +1,89 @@
-// register the directive with your app module
-var app = angular.module('ddApp', ['ngAnimate', 'ui.bootstrap', 'rzModule']);
-var marker={};
+var app = angular.module('ddApp', ['ngTouch','ngAnimate', 'ui.bootstrap', 'pascalprecht.translate', 'ngCookies']);
 var scp;
+var allFieldOpen = 0;
 
 // function referenced by the drop target
-app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', function($scope, $uibModal, $log, $timeout, $http){
+app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$http', '$cookies', function ($scope, $uibModal, $log, $timeout, $http, $cookies) {
+
+    $scope.sigGroup = '0';
+    $scope.signageSrc = function(){
+        return "/signage/" + sigId + "/" + $scope.sigGroup;
+    }
+    $scope.selectfield = [];
+    if(sigId){
+        $scope.flagSignage = true;
+    }else{
+        $scope.flagSignage = false;
+    }
+    
+    $scope.vet = 1;
+    
     
     $http.get("/api/competitions/" + competitionId +
-            "/fields").then(function (response) {
-    $scope.fields = response.data
-  })
-    scp = $scope;
-     $scope.getIframeSrc = function (runId) { return '/line/view/inline/' + runId; };
-     $scope.field_run = [
-         {'id':-1 , 'name':'Select Field↓' , 'status':0},
-         {'id':-1 , 'name':'Select Field↓' , 'status':0},
-         {'id':-1 , 'name':'Select Field↓' , 'status':0}
-     ];
-    
-     $scope.get_field_signing = function(num){
-        if($scope.selectfield[num] != null){
+        "/Line/fields").then(function (response) {
+        $scope.fields = response.data
         $http.get("/api/competitions/" + competitionId +
-            "/runs/" + $scope.selectfield[num]._id + "/3").then(function (response) {
-        if(response.data.length == 0){
-            $scope.field_run[num].id = -1;
-            $scope.field_run[num].name = "No Team";
-            $scope.field_run[num].status = 0;
+            "/Maze/fields").then(function (response) {
+            $scope.fields = $scope.fields.concat(response.data)
+            console.log($scope.fields);
+        })
+    })
+
+    $scope.getIframeSrc = function (field) {
+        if (field.league === "Maze") return '/maze/view/field/' + competitionId + '/' + field._id;
+        return '/line/view/field/' + competitionId + '/' + field._id;
+    };
+    $scope.range = function (n) {
+        arr = [];
+        for (var i = 0; i < n; i++) {
+            arr.push(i);
         }
-        else if(response.data.length == 1) {
-            $scope.field_run[num].id = response.data[0]._id;
-            $scope.field_run[num].name = response.data[0].team.name;
-            $scope.field_run[num].status = 3;
-        }
-        else{
-            $scope.field_run[num].id = -2;
-            $scope.field_run[num].name = "ERROR";
-            $scope.field_run[num].status = 0;
-        }
-        })}
-     }
-    
-    $scope.get_field = function(num){
-        if($scope.selectfield[num] != null){
-        $http.get("/api/competitions/" + competitionId +
-            "/runs/" + $scope.selectfield[num]._id + "/2").then(function (response) {
-        if(response.data.length == 0) $scope.get_field_signing(num);
-        else if(response.data.length == 1){
-            $scope.field_run[num].id = response.data[0]._id;
-            $scope.field_run[num].name = response.data[0].team.name;
-            $scope.field_run[num].status = 2;
-        }
-        else{
-            $scope.field_run[num].id = -2;
-            $scope.field_run[num].name = "ERROR";
-            $scope.field_run[num].status = 0;
-        }
-        })}
+        return arr;
     }
-    setInterval("scp.get_field(0)",10000);
-    setInterval("scp.get_field(1)",10000);
-    setInterval("scp.get_field(2)",10000);
-                                        
-$scope.go = function(path){
-      window.open(path)
-}
-    
+
+
+
+
+
+    $scope.go = function (path) {
+        window.open(path)
+    }
+
+
+    function getFieldOpen(field, level = 2) {
+        if (field.league === "Maze") {
+            var league = "maze";
+        } else {
+            var league = "line";
+        }
+        $http.get("/api/runs/" + league + "/find/" + competitionId + "/" +
+            field._id + "/" + level).then(function (response) {
+            if (response.data.length != 1) {
+                if (level == 2) {
+                    getFieldOpen(field, 3);
+                } else {
+                    allFieldOpen *= 1;
+                }
+            } else {
+                allFieldOpen *= 0;
+            }
+        })
+    }
+
+    function check_selected_field() {
+        for (let i = 0; i < $scope.num; i++) {
+            if (!$scope.selectfield[i]) return;
+            allFieldOpen = 1;
+            getFieldOpen($scope.selectfield[i]);
+        }
+        setTimeout(changeShowItem, 5000);
+    }
+
+    function changeShowItem() {
+        if (allFieldOpen) $scope.showSignage = true;
+        else $scope.showSignage = false;
+    }
+    setInterval(check_selected_field, 10000);
 
 
 }]);
-
-
-
-
-var currentWidth = -1;
-
-$(window).on('load resize', function(){
-    if (currentWidth == window.innerWidth) {
-        return;
-    }
-    currentWidth = window.innerWidth;
-    var height = $('.navbar').height();
-    $('body').css('padding-top',height+20); 
-    
-    
-    
-    });

@@ -1,86 +1,131 @@
-table{
-  border-collapse: collapse;
+table.map {
+    border-collapse: collapse;
+    width: initial !important;
 }
-td{
-border: 1px solid grey;
+
+table.map th {
+    font-weight: bold;
+    vertical-align: top;
 }
-table tr:nth-child(odd) {
-  height: 5px;
+
+table.map td {
+    vertical-align: top;
+    border: 1px solid #ccc;
+    text-align: left;
 }
+
+table.map tr:nth-child(2n+1) {
+    background: initial;
+}
+
+
+/*table tr:nth-child(odd) {
+    height: 5px;
+}
+
 table tr:nth-child(even) {
-  height: 40px;
-}
-tr td:nth-child(odd) {
-  width: 5px;
-}
-tr td:nth-child(even) {
-  width: 40px;
-}
-.wall{
-  background-color: navy;
-}
-.wall.linear{
-  background-color: black;
-}
-.tile{
-  background-color: LightSeaGreen;
-}
-.tile.linear{
- background-color: lightblue;
-}
-.wallspot:hover{
-  background-color: darkgrey;
+    height: 40px;
 }
 
-.tile.checkpoint{
-  background-color: silver;
-}
-.tile.black{
-  background-color: black;
+
+/*tr td:nth-child(odd) {
+    width: 5px;
+}*/
+
+
+/*tr td:nth-child(even) {
+    width: 40px;
+}*/
+
+.wall {
+    background-color: navy;
+    padding: 5px;
 }
 
-.tile-image-container{
-  position: relative;
-  height: 40px;
-  width: 40px;
+.wall.linear {
+    background-color: black;
 }
-.tile-image{
-  width: 40px;
-  height: 40px;
-  z-index: 1;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  vertical-align: bottom;
+
+.tile {
+    background-color: #b4ffd5;
+    padding: 0px!important;
 }
-.error{
+
+.tile.linear {
+    background-color: #fffdea;
+}
+
+.wallspot:hover {
+    background-color: darkgrey;
+}
+
+.tile.checkpoint {
+    background-image: linear-gradient(to top left, #A5A5A5, #BABAC2, #E8E8E8, #A5A5A5, #BABAC2);
+}
+
+.tile.black {
+    background-color: black;
+}
+
+.tile-image-container {
+    position: relative;
+    height: 40px;
+    width: 40px;
+}
+
+.tile-image {
+    width: 40px;
+    height: 40px;
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    vertical-align: bottom;
+}
+
+.error {
     color: red;
     font-weight: bold;
 }
-rzslider{
+
+.modal-body td,
+.modal-body th {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.modal-body th.col {
+    text-align: right;
+}
+
+rzslider {
     width: 200px;
-/*    width: 80%;*/
+    /*    width: 80%;*/
 }
 
 .vertical-sliders {
     margin: 0;
 }
-.vertical-sliders > div {
+
+.vertical-sliders>div {
     height: 250px;
 }
+
 rzslider.rz-vertical {
     height: 250px;
 }
 
 .confirmation {
-    width: 300px;
+    width: 100%;
     border: 1px dashed black;
 }
-.plusminus{
+
+.plusminus {
     box-sizing: content-box;
     width: 2em;
     padding: 0px 15px;
 }
-.count{
+
+.count {
     font-size: 2em;
 }

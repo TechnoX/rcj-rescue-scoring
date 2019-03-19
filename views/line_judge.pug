@@ -1,0 +1,301 @@
+html(ng-app="ddApp")
+  head
+    title Rescue Line Judge
+    script.
+      var runId = "#{id}"
+
+    include ./includes/common_component
+
+    script(src="/javascripts/line_judge."+rule+".js")
+    script(src="/javascripts/score_calc."+rule+".js")
+    script(src="/javascripts/deflate.js")
+    script(src="/components/jquery-qrcode/jquery.qrcode.min.js")
+    script(src="/javascripts/makeQR.js")
+    script(src="/javascripts/translate_config.js")
+    script(src='/components/lightbox2/dist/js/lightbox.min.js')
+
+    link(rel='stylesheet',href='/components/lightbox2/dist/css/lightbox.min.css')
+    link(href="/stylesheets/fredrik.css" rel="stylesheet")
+    link(href="/components/css-toggle-switch/dist/toggle-switch.css" rel="stylesheet")
+
+    meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0")
+
+  body(ng-controller="ddController")
+    nav.navbar(style='background-color: #e74c3c; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%')
+      // Navbar content
+      .col-md-6.col-sm4.col-12
+        li.navbar-brand(href='#', ng-show='!networkError')
+          i.fas.fa-sync(ng-class="{'fa-spin' : sync > 0}")
+          |  {{team.name}}
+        li.navbar-brand(href='#', ng-show='networkError')
+          i.fas.fa-exclamation-triangle(style='color: #f1c40f;')
+          |  Network ERROR {{team.name}}
+      .col-md-3.col-sm4.col-7
+        i.fas.fa-calculator.fa-2x(aria-hidden='true')
+        li.navbar-brand(href='#')  {{score}} {{'common.point' | translate}}
+      .col-md-3.col-sm4.col-5
+        i.fas.fa-stopwatch.fa-2x(aria-hidden='true')
+        li.navbar-brand(href='#')  {{time | date:'mm:ss'}}
+    .container.nav-cont
+      div(style='text-align: center;', ng-if='!checked')
+        h4
+          i.far.fa-check-circle(aria-hidden='true')
+          | {{'line.judge.before' | translate}}
+        br
+        #lops.card
+          h3.card-header
+            i.fas.fa-info-circle(aria-hidden='true')
+            |  {{'line.judge.info' | translate}}
+          table.table(style='margin-bottom:0;')
+            tbody
+              tr(ng-style="{backgroundColor: checkTeam? '#e1f7d5' : '#ffbdbd'}", ng-click='toggleCheckTeam()')
+                th(style='width:200px;')
+                  | {{'common.team' | translate}}
+                td
+                  h1
+                    b {{team.name}}
+              tr(ng-style="{backgroundColor: checkRound? '#e1f7d5' : '#ffbdbd'}", ng-click='toggleCheckRound()')
+                th
+                  | {{'common.round' | translate}}
+                td
+                  h2
+                    b {{round}}
+              tr
+                th
+                  | {{'common.competition' | translate}}
+                td
+                  | {{competition.name}}
+              tr
+                th
+                  | {{'common.field' | translate}}
+                td
+                  | {{field}}
+              tr
+                th
+                  | {{'common.league' | translate}}
+                td
+                  | {{league}}
+              tr
+                th
+                  | {{'common.rule' | translate}}
+                td
+                  | #{rule}
+        br
+        br
+        .row(style='margin-bottom:30px')
+          .col-md-6
+            .card
+              h3.card-header
+                i.far.fa-images(aria-hidden='true') {{'interview.me_pic' | translate}}
+              .card-body(ng-style="{backgroundColor: checkMember? '#e1f7d5' : '#ffbdbd'}", ng-click='toggleCheckMember()')
+                img.img-thumbnail(style='max-width: 100%;height: auto;margin-bottom:20px', ng-src='/api/teams/pic/{{competition._id}}/{{team._id}}/member')
+          .col-md-6
+            .card
+              h3.card-header
+                i.far.fa-images(aria-hidden='true') {{'interview.ma_pic' | translate}}
+              .card-body(ng-style="{backgroundColor: checkMachine? '#e1f7d5' : '#ffbdbd'}", ng-click='toggleCheckMachine()')
+                div
+                  img.img-thumbnail(style='max-width: 100%;height: auto;margin-bottom:20px', ng-src='/api/teams/pic/{{competition._id}}/{{team._id}}/machine')
+        p(ng-show='!(checkTeam && checkRound && checkMember && checkMachine)') {{'line.judge.tap_red' | translate}}
+        button.btn.btn-success(type='button', ng-click='infochecked()', ng-disabled='!(checkTeam && checkRound && checkMember && checkMachine)')
+          i.fas.fa-check-circle.fa-2x(aria-hidden='true')  {{'line.judge.confirm' | translate}}
+      div(ng-show='checked')
+        .alert.alert-warning(role='alert', ng-show='networkError')
+          h4.alert-heading {{'line.judge.networkError' | translate}}
+          .row
+            .col-md-10
+              p {{'line.judge.networkErrorDescription' | translate}}
+            .col-md-2
+              button.btn.btn-warning(type='button', ng-click='saveEverything()') {{'line.judge.reSend' | translate}}
+        .row
+          .col-md-5.col-lg-4
+            button.btn.btn-primary(style='margin:0 10px 10px 0;', type='button', ng-click='toggleScoring()')
+              i.far.fa-clipboard(aria-hidden='true')
+                | {{ startedScoring ? 'line.judge.run_end' : 'line.judge.run_start' | translate }}
+            button.btn.btn-success(style='margin:0 10px 10px 0;', type='button', ng-click='toggleTime()')
+              i.fas.fa-stopwatch(aria-hidden='true')  {{ startedTime ? 'line.judge.tim_stop' : 'line.judge.tim_start' |translate }}
+            button.btn.btn-warning(ng-show='!startedTime && time!=0', style='margin:0 10px 10px 0;', type='button', ng-click='TimeReset()')
+              i.fas.fa-stopwatch(aria-hidden='true')  {{'line.judge.tim_reset' | translate}}
+            .alert.alert-info(role='alert', ng-show='numberOfDropTiles - placedDropTiles == 0 && !startedScoring && !fromSign')
+              | {{'line.judge.ready' | translate}}
+              br
+              strong(style='font-size:20px;') {{'line.judge.push_start' | translate}}
+            .card(ng-if="league != 'LineNL'", ng-show='!startedScoring || fromSign')
+              h4.card-header
+                i.fas.fa-ambulance(aria-hidden='true')
+                |  {{'line.judge.select_elevel' | translate}}
+              .card-body
+                img(ng-src='/api/runs/line/scoresheetimg/{{runId}}/evacuationLevel', ng-if='fromApproval')
+                br
+                .row
+                  .col-6(style='position: relative;', ng-click='changeLevel(1)')
+                    img.img-thumbnail(src='/images/level1.png', width='100%', ng-style="{'background-color': evacuationLevel==1?'#2ecc71':'#95a5a6' , 'opacity':evacuationLevel==1?'1':'0.4' }")
+                    div(style='position:absolute; top:10px; left:30px;') {{'line.judge.low' | translate}}
+                    div(style='position:absolute; bottom:10px; right:25px;', ng-show='evacuationLevel==1')
+                      i.far.fa-3x.fa-check-circle(aria-hidden='true', style='color:#27ae60;')
+                  .col-6(style='position: relative;', ng-click='changeLevel(2)')
+                    img.img-thumbnail(src='/images/level2.png', width='100%', ng-style="{'background-color': evacuationLevel==2?'#2ecc71':'#95a5a6' , 'opacity':evacuationLevel==2?'1':'0.4' }")
+                    div(style='position:absolute; top:10px; left:30px;') {{'line.judge.high' | translate}}
+                    div(style='position:absolute; bottom:10px; right:25px;', ng-show='evacuationLevel==2')
+                      i.far.fa-3x.fa-check-circle(aria-hidden='true', style='color:#27ae60;')
+            br
+            .alert.alert-warning(role='alert', ng-show='!startedScoring')
+              | {{'line.judge.tap_tile' |translate}}
+              br
+              |  {{'line.judge.remaining' | translate}}
+              strong(style='font-size:30px;') {{numberOfDropTiles - placedDropTiles}}
+            .alert.alert-info.blink(role='alert', ng-show='!startedTime && startedScoring && minutes < 8 && !fromSign')
+              | {{'line.judge.push_timer' | translate}}
+            #card_area.scrool(style='overflow: scroll;', ng-show='startedScoring')
+              #lops.card
+                h3.card-header
+                  i.fas.fa-step-forward(aria-hidden='true')
+                  | {{'common.lops' | translate}}
+                .card-body
+                  div(ng-repeat='dropTile in range(actualUsedDropTiles+1) track by $index', ng-show='startedScoring')
+                    .card-text(style='display:flex;')
+                      div(style='width:40%;font-size:10px;', align='center')
+                        | {{$index==0?'line.judge.start':'line.judge.checkpoint'|translate}}
+                        b(style='font-size:15px;color:#FF8300;') {{$index==0?'':$index}}
+                        br
+                        i.fas.fa-forward.fa-rotate-90(aria-hidden='true')
+                        br
+                        |  {{!$last?'line.judge.checkpoint':'line.judge.Lexit' | translate}}
+                        b(style='font-size:15px;color:#FF8300;') {{!$last?$index+1:''}}
+                      div(style='width:60%;position: relative;')
+                        .input-group(style='width:100%; height:35px;position:absolute;top: 0;bottom: 0;margin: auto;')
+                          span.input-group-btn
+                            button.btn.btn-danger(type='button', ng-click='decrement($index,$last)')
+                              i.fas.fa-minus(aria-hidden='true')
+                          div(style='background-color: #F2F2F2; width:100px; text-align: center;')
+                            span.count {{LoPs[$index]?LoPs[$index]:0}}
+                          span.input-group-btn
+                            button.btn.btn-success(type='button', ng-click='increment($index,$last)')
+                              i.fas.fa-plus(aria-hidden='true')
+                      img(ng-src='/api/runs/line/scoresheetimg/{{runId}}/lop_{{$index}}', ng-if='fromApproval')
+                    hr(ng-show='!$last')
+                h3.card-header
+                  i.fas.fa-ambulance(aria-hidden='true')
+                  |  {{'line.judge.rescue' | translate}}　
+                  span.badge.badge-danger {{evacuationLevel-1?'line.judge.high':'line.judge.low' | translate}}
+                .card-body
+                  .row
+                    .col-6(ng-click="addVictimTmp('L')")
+                      span Max : {{maxLiveVictims}}
+                      br
+                      .victim_btn(style='width:100%;position: relative;', ng-style="{'background-color': count_victim_list('L') + count_victim_tmp('L') >= maxLiveVictims?'#ccc':'#E1FFFE'}")
+                        img.img-thumbnail(src='/images/liveVictim.png', width='60px')
+                        div(style='position:absolute; bottom:15px; right:5px;')
+                          i.fas.fa-plus-square.fa-3x(aria-hidden='true', style='color:#54a0ff;')
+                      br
+                      span.badge.badge-info(style='margin-top:10px;') {{calc_victim_points("L",true)}}　points /victim
+                    .col-6(style='', ng-click="addVictimTmp('D')")
+                      span Max : {{maxDeadVictims}}
+                      br
+                      .victim_btn(style='width:100%;position: relative;', ng-style="{'background-color': count_victim_list('D') + count_victim_tmp('D') >= maxDeadVictims?'#ccc':'#E1FFFE'}")
+                        img.img-thumbnail(src='/images/deadVictim.png', width='60px')
+                        div(style='position:absolute; bottom:15px; right:5px;')
+                          i.fas.fa-plus-square.fa-3x(aria-hidden='true', style='color:#54a0ff;')
+                      br
+                      span.badge.badge-info(style='margin-top:10px;') {{calc_victim_points("D",true)}}　points /victim
+                  table(border='1', style='width:100%; text-align: center; margin-top: 10px;', ng-repeat='j in range(6)', ng-if='victim_tmp.length > j*5')
+                    tbody
+                      tr
+                        td(ng-repeat='i in range(5)', ng-dblclick='delete_victim_tmp(j*5 + i)', ng-swipe-left='delete_victim_tmp(j*5 + i)')
+                          img(src='/images/liveVictim.png', width='30px', ng-if="victim_tmp[j*5 + i] == 'L'")
+                          img(src='/images/deadVictim.png', width='30px', ng-if="victim_tmp[j*5 + i] == 'D'")
+                          span(style='width:30px;', ng-hide='victim_tmp[j*5 + i]') ---
+                  div(style='margin-top:20px;', ng-show='victim_tmp[0]')
+                    button.btn.btn-warning(style='margin:0 10px 10px 0;', type='button', ng-click='victim_tmp_clear()')
+                      i.far.fa-trash-alt(aria-hidden='true')   Clear
+                    button.btn.btn-success(style='margin:0 10px 10px 0;', type='button', ng-click='victimRegist()')
+                      i.fas.fa-arrow-down(aria-hidden='true')   Register
+                  hr
+                  h6 {{'line.judge.rescuedVictims' | translate}}
+                  span(style='font-size:9px;') {{'line.judge.rescuedVictimsMes' | translate}}
+                  table(border='1', style='width:100%; text-align: center; margin-top: 10px;', ng-repeat='j in range(6)', ng-if='victim_list.length > j*5 || j == 0')
+                    tbody
+                      tr
+                        th(style='text-align:center;', ng-repeat='i in range(5)') {{j*5 + i+1}}
+                      tr
+                        td(ng-repeat='i in range(5)', ng-style="{'background-color': victim_list[j*5 + i].effective?'#E1FFFE':'#ccc'}", ng-dblclick='delete_victim(j*5 + i)', ng-swipe-left='delete_victim(j*5 + i)')
+                          img(src='/images/liveVictim.png', width='30px', ng-if="victim_list[j*5 + i].type == 'L'")
+                          img(src='/images/deadVictim.png', width='30px', ng-if="victim_list[j*5 + i].type == 'D'")
+                          span(style='width:30px;', ng-hide='victim_list[j*5 + i]') ---
+                          br
+                          span(ng-show='victim_list[j*5 + i]')
+                            | {{calc_victim_points(victim_list[j*5 + i].type,victim_list[j*5 + i].effective)}} P
+                  img(ng-src='/api/runs/line/scoresheetimg/{{runId}}/victims', ng-if='fromApproval')
+                  hr
+                .card-body
+                  p.card-text
+                    | {{'line.judge.exit' | translate}}
+                    span.badge.badge-info 20　points
+                  .col-md-12(style='position: relative;', ng-click='changeExitBonus()')
+                    img.img-thumbnail(src='/images/line_bonus.png', width='186.3px', height='118px', ng-style="{'background-color': exitBonus?'#2ecc71':'#D91E18'}")
+                    div(style='position:absolute; top:25px; left:65px;')
+                      i.fas.fa-check.fa-fw.fa-5x(ng-show='exitBonus', style='color:#27ae60; opacity:0.9;')
+                      i.fas.fa-times.fa-fw.fa-5x(ng-show='!exitBonus ', style='padding-top:4px; color:#e74c3c; opacity:0.9;')
+                  img(ng-src='/api/runs/line/scoresheetimg/{{runId}}/evacuationBonus', ng-if='fromApproval')
+          .col-md-7.col-lg-8.tilearea
+            div(style='text-align:left;float:left;')
+              .btn-group
+                span.input-group-addon
+                  i.fas.fa-arrows-alt-v(aria-hidden='true')
+                button.btn.btn-outline-dark(type='button', ng-click='changeFloor(zz)', ng-repeat='zz in range(height)', ng-class='{active: zz == z}')  {{zz}} 
+            div(style='text-align:right;float:right;')
+              .btn-group
+                button.btn.btn-outline-dark(type='button', ng-click='tileRot(-90)')
+                  i.fas.fa-undo(aria-hidden='true')
+                button.btn.btn-outline-dark(type='button', ng-click='tileRot(90)')
+                  i.fas.fa-redo(aria-hidden='true')
+            div(style='clear:both;')
+            #wrapTile.mx-auto(style='margin-top:5px;')
+              div(ng-repeat='r in range(length)', ng-if='sRotate==0', style='display: flex;')
+                div(style='text-align:center;')
+                  .slot(ng-repeat='c in range(width)')
+                    tile(tile="mtiles[c+','+r+','+z]", ng-click='doScoring(c,r,z)')
+              div(ng-repeat='r in range(length)', ng-if='sRotate==180', style='display: flex;')
+                .slot(ng-repeat='c in range(width)')
+                  tile(tile="mtiles[width - c -1+','+(length - r -1)+','+z]", ng-click='doScoring(width - c -1,length - r -1,z)')
+              div(ng-repeat='r in range(width)', ng-if='sRotate==270', style='display: flex;')
+                .slot(ng-repeat='c in range(length)')
+                  tile(tile="mtiles[width - r -1+','+c+','+z]", ng-click='doScoring(width-r-1,c,z)')
+              div(ng-repeat='r in range(width)', ng-if='sRotate==90', style='display: flex;')
+                .slot(ng-repeat='c in range(length)')
+                  tile(tile="mtiles[r+','+ (length - c-1) +','+z]", ng-click='doScoring(r,length-c-1,z)')
+            img(ng-src='/api/runs/line/scoresheetimg/{{runId}}/tiles', ng-if='fromApproval')
+        .row(style='margin:50 0 0 0;')
+          .col-sm-12
+            button.btn.btn-primary(style='margin:0 10px 10px 0;', type='button', ng-click='toggleScoring()')
+              i.far.fa-clipboard(aria-hidden='true')
+                | {{ startedScoring ? 'line.judge.run_end' : 'line.judge.run_start' | translate }}
+            button.btn.btn-success(style='margin:0 10px 10px 0;', type='button', ng-click='toggleTime()')
+              i.fas.fa-stopwatch(aria-hidden='true')  {{ startedTime ? 'line.judge.tim_stop' : 'line.judge.tim_start' |translate }}
+          .col-md-12.confirmation
+            div
+              h4 {{'line.judge.adjust'| translate}}
+              br
+              strong(ng-if='!startedTime')
+                | {{'line.judge.confirm_text'| translate}}
+              strong(ng-if='startedTime', style='color:red')
+                | {{'line.judge.disabled_confirm_text'| translate}}
+              .row
+                .col-sm-7(style='margin-bottom:10px;')
+                  .input-group.input-group-lg
+                    input.form-control(type='tel', placeholder='', aria-label='min', aria-describedby='sizing-addon1', min='0', max='8', ng-model='minutes', ng-disabled='startedTime')
+                    span#sizing-addon1.input-group-addon {{'common.min' | translate}}
+                    input.form-control(type='tel', placeholder='', aria-label='sec', aria-describedby='sizing-addon1', min='0', max='60', ng-model='seconds', ng-disabled='startedTime')
+                    span#sizing-addon1.input-group-addon {{'common.sec' | translate}}
+                  img(ng-src='/api/runs/line/scoresheetimg/{{runId}}/time', style='width: 100%; max-width: 250px', ng-if='fromApproval')
+                .col-sm-5
+                  div(style='text-align:right;')
+                    button.btn.btn-danger(type='button', ng-click='confirm()', ng-disabled='startedTime', ng-hide='networkError || fromApproval')
+                      i.fas.fa-arrow-right.fa-2x(aria-hidden='true')  {{'line.judge.toSign'| translate}}
+                    button.btn.btn-danger(type='button', ng-click='backApproval()', ng-disabled='startedTime', ng-show='fromApproval && !networkError')
+                      i.fas.fa-arrow-right.fa-2x(aria-hidden='true')  Go back to Approval
+                    button.btn.btn-danger(type='button', ng-click='handover()', ng-disabled='startedTime', ng-show='networkError') {{'line.judge.handover' | translate}}
+      .row(style='margin:20 0 0 0;')
+        .col-md12
+          button.btn.btn-secondary(style='margin:0 10px 10px 0;', type='button', ng-click="getParam('return')? go(getParam('return')):go('/line/' + competition._id)")
+            i.fas.fa-undo(aria-hidden='true')  {{'common.back' | translate}}

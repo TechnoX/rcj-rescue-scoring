@@ -1,0 +1,317 @@
+html(ng-app="ddApp")
+  head
+    title Rescue Line View
+    script.
+      var runId = "#{id}"
+
+    include ./includes/common_component
+    script(src="/javascripts/line_view."+rule+".js")
+    script(src="/javascripts/translate_config.js")
+    link(href="/stylesheets/fredrik.css" rel="stylesheet")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0")
+
+  body(ng-controller="ddController")
+    nav.navbar(style='background-color: #3498db; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%')
+      // Navbar content
+      .col-md-6.col-sm4.col-12
+        li.navbar-brand(href='#')
+          i.fas.fa-spinner.fa-spin.fa-fw
+          |  {{team}}
+      .col-md-3.col-sm4.col-7
+        i.fas.fa-calculator.fa-2x(aria-hidden='true')
+        li.navbar-brand(href='#')  {{score}} {{'common.point' | translate}}
+      .col-md-3.col-sm4.col-5
+        i.fas.fa-stopwatch.fa-2x(aria-hidden='true')
+        li.navbar-brand(href='#')  {{minutes*60*1000+seconds*1000 | date:'m:ss'}}
+    .container.nav-cont
+      .row
+        .col-md12
+          button.btn.btn-secondary(style='margin:0 10px 10px 0;', type='button', ng-click="getParam('return')? go(getParam('return')):go('/line/' + competition_id)")
+            i.fa.fa-undo(aria-hidden='true')  {{'common.back' | translate}}
+      .row
+        .col-md-12
+          #lops.card
+            h3.card-header
+              i.fa.fa-info-circle(aria-hidden='true')
+              |  {{'line.view.info' | translate}}
+            table.table(style='margin-bottom:0;')
+              tbody
+                tr
+                  th
+                    | {{'common.competition' | translate}}
+                  td
+                    | {{competition}}
+                tr
+                  th
+                    | {{'common.round' | translate}}
+                  td
+                    | {{round}}
+                tr
+                  th
+                    | {{'common.field' | translate}}
+                  td
+                    | {{field}}
+                tr
+                  th
+                    | {{'common.team' | translate}}
+                  td
+                    | {{team}}
+                tr
+                  th
+                    | {{'common.league' | translate}}
+                  td
+                    | {{league}}
+                tr
+                  th
+                    | {{'common.rule' | translate}}
+                  td
+                    | #{rule}
+      br
+      .row
+        .col-md-5.col-lg-4(style='margin-bottom:70px;')
+          #card_area.scrool(style='overflow: scroll;')
+            #lops.card
+              h3.card-header
+                i.fas.fa-step-forward(aria-hidden='true')
+                |  {{'common.lops' | translate}}
+              .card-body
+                div(ng-repeat='dropTile in range(actualUsedDropTiles+1) track by $index')
+                  .card-text(style='display:flex;')
+                    div(style='width:40%;font-size:10px;', align='center')
+                      | {{$index==0?'line.view.start':'line.view.checkpoint'|translate}}
+                      b(style='font-size:15px;color:#FF8300;') {{$index==0?'':$index}}
+                      br
+                      i.fas.fa-forward.fa-rotate-90(aria-hidden='true')
+                      br
+                      |  {{!$last?'line.view.checkpoint':'line.view.Lexit' | translate}}
+                      b(style='font-size:15px;color:#FF8300;') {{!$last?$index+1:''}}
+                    div(style='width:60%;position: relative;')
+                      .input-group(style='width:100%; height:35px;position:absolute;top: 0;bottom: 0;margin: auto;')
+                        span.input-group-btn
+                          button.btn.btn-danger(type='button', disabled='')
+                            i.fas.fa-minus(aria-hidden='true')
+                        div(style='background-color: #F2F2F2; width:100px; text-align: center;')
+                          span.count {{LoPs[$index]?LoPs[$index]:0}}
+                        span.input-group-btn
+                          button.btn.btn-success(type='button', disabled='')
+                            i.fas.fa-plus(aria-hidden='true')
+                  hr(ng-show='!$last')
+              h3.card-header
+                i.fas.fa-ambulance(aria-hidden='true')
+                |  {{'line.judge.rescue' | translate}}　
+                span.badge.badge-danger {{evacuationLevel-1?'line.judge.high':'line.judge.low' | translate}}
+              .card-body
+                h6 {{'line.view.rescuedVictims' | translate}}
+                table(border='1', style='width:100%; text-align: center; margin-top: 10px;', ng-repeat='j in range(6)', ng-if='victim_list.length > j*5 || j == 0')
+                  tbody
+                    tr
+                      th(style='text-align:center;', ng-repeat='i in range(5)') {{j*5 + i+1}}
+                    tr
+                      td(ng-repeat='i in range(5)', ng-style="{'background-color': victim_list[j*5 + i].effective?'#FFD9B7':'#ccc'}")
+                        img(src='/images/liveVictim.png', width='30px', ng-if="victim_list[j*5 + i].type == 'L'")
+                        img(src='/images/deadVictim.png', width='30px', ng-if="victim_list[j*5 + i].type == 'D'")
+                        span(style='width:30px;', ng-hide='victim_list[j*5 + i]') ---
+                        br
+                        span(ng-show='victim_list[j*5 + i]')
+                          | {{calc_victim_points(victim_list[j*5 + i].type,victim_list[j*5 + i].effective)}} P
+                hr
+              .card-body
+                p.card-text
+                  | {{'line.view.exit' | translate}}
+                  span.badge.badge-info 20　points
+                .col-md-12(style='position: relative;')
+                  img.img-thumbnail(src='/images/line_bonus.png', width='186.3px', height='118px', ng-style="{'background-color': exitBonus?'#2ecc71':'#D91E18'}")
+                  div(style='position:absolute; top:25px; left:65px;')
+                    i.fas.fa-check.fa-fw.fa-5x(ng-show='exitBonus', style='color:#27ae60; opacity:0.9;')
+                    i.fas.fa-times.fa-fw.fa-5x(ng-show='!exitBonus', style='padding-top:4px; color:#e74c3c; opacity:0.9;')
+        .col-md-7.col-lg-8.tilearea
+          div(style='text-align:left;float:left;')
+            .btn-group
+              span.input-group-addon
+                i.fas.fa-arrows-alt-v(aria-hidden='true')
+              button.btn.btn-outline-dark(type='button', ng-click='changeFloor(zz)', ng-repeat='zz in range(height)', ng-class='{active: zz == z}')  {{zz}} 
+          div(style='text-align:right;float:right;')
+            .btn-group
+              button.btn.btn-outline-dark(type='button', ng-click='tileRot(-90)')
+                i.fas.fa-undo(aria-hidden='true')
+              button.btn.btn-outline-dark(type='button', ng-click='tileRot(90)')
+                i.fas.fa-redo(aria-hidden='true')
+          div(style='clear:both;')
+          #wrapTile.mx-auto(style='margin-top:5px;')
+            div(ng-repeat='r in range(length)', ng-if='sRotate==0', style='display: flex;')
+              div(style='text-align:center;')
+                .slot(ng-repeat='c in range(width)')
+                  tile(tile="mtiles[c+','+r+','+z]", ng-click='showElements(c,r,z)')
+            div(ng-repeat='r in range(length)', ng-if='sRotate==180', style='display: flex;')
+              .slot(ng-repeat='c in range(width)')
+                tile(tile="mtiles[width - c -1+','+(length - r -1)+','+z]", ng-click='showElements(width - c -1,length - r -1,z)')
+            div(ng-repeat='r in range(width)', ng-if='sRotate==270', style='display: flex;')
+              .slot(ng-repeat='c in range(length)')
+                tile(tile="mtiles[width - r -1+','+c+','+z]", ng-click='showElements(width-r-1,c,z)')
+            div(ng-repeat='r in range(width)', ng-if='sRotate==90', style='display: flex;')
+              .slot(ng-repeat='c in range(length)')
+                tile(tile="mtiles[r+','+ (length - c-1) +','+z]", ng-click='showElements(r,length-c-1,z)')
+          br
+          h2(style='text-align:center;')
+            | {{'common.stotal' | translate}} : {{score - checkTotal() - ( victimPoints() + (20 * exitBonus))}} {{'common.point' |translate}}
+      h2 {{'line.sign.checkPointScore' | translate}}
+      .row(　style='margin-bottom:50px;text-align:center;display: flex;flex-wrap: wrap;')
+        .col-md-3(ng-repeat='cp in checkPointDistance track by $index')
+          .alert(ng-class="{'alert-success': cp.status , 'alert-danger': !cp.status}", style='margin-bottom:30px;text-align:center;', role='alert')
+            div(style='min-height:100px')
+              h6(style='text-align:center;')
+                | {{$index==0?'line.sign.start':'line.sign.checkpoint'|translate}}
+                b(style='font-size:20px;color:#FF8300;') {{$index==0?'':$index}}
+              i.fas.fa-road.fa-2x  {{cp.dis}}
+              |  {{'common.tile' | translate}}
+              br
+              div(ng-if='$index>0')
+                i.fas.fa-step-forward.fa-2x  {{LoPs[$index-1]}}
+                |  {{'common.times' | translate}}
+              i.fas.fa-2x(ng-if='$index==0')
+            h1 {{cp.point}} {{'common.point' | translate}}
+        .col-md-6
+          .alert.alert-warning(style='margin-bottom:30px;text-align:center;', role='alert')
+            div(style='min-height:100px')
+              h3 {{'line.sign.checkpoint'|translate}} {{'common.stotal' | translate}}
+            h1 {{checkTotal()}} {{'common.point' | translate}}
+      h2
+        | {{'line.sign.rescue' | translate}} 【{{evacuationLevel-1?'line.sign.high':'line.sign.low' | translate}}】 / {{'line.sign.exitBonus' | translate}}
+      .alert.alert-info(style='margin-bottom:50px;text-align:center;', role='alert')
+        .row
+          .col-md-5
+            // <p style="height:30px;">{{'line.judge.rescue' | translate}}【{{evacuationLevel-1?'line.judge.high':'line.judge.low' | translate}}】</p>
+            .row
+              .col-6
+                span Max : {{maxLiveVictims}}
+                br
+                .victim_btn(style='width:100%;position: relative; background-color: #E1FFFE;')
+                  img.img-thumbnail(src='/images/liveVictim.png', width='60px')
+                  br
+                  span(style='font-size:1.5vw;color:#444;')
+                    | {{evacuationLevel-1?'40':'30'}}
+                    span(style='font-size:10px;') p
+                    |  - ({{LoPs[actualUsedDropTiles]}}
+                    span(style='font-size:10px;') times
+                    |  x 5
+                    span(style='font-size:10px;') p
+                    | )
+                  span.badge.badge-info(style='margin-top:10px;')
+                    span(style='font-size:25px;') {{calc_victim_points("L",true)}}
+                    | 　points /victim
+              .col-6(style='')
+                span Max : {{maxDeadVictims}}
+                br
+                .victim_btn(style='width:100%;position: relative; background-color: #E1FFFE;')
+                  img.img-thumbnail(src='/images/deadVictim.png', width='60px')
+                  br
+                  span(style='font-size:1.5vw;color:#444;')
+                    | {{evacuationLevel-1?'30':'20'}}
+                    span(style='font-size:10px;') p
+                    |  - ({{LoPs[actualUsedDropTiles]}}
+                    span(style='font-size:10px;') times
+                    |  x 5
+                    span(style='font-size:10px;') p
+                    | )
+                  span.badge.badge-info(style='margin-top:10px;')
+                    span(style='font-size:25px;') {{calc_victim_points("D",true)}}
+                    | 　points /victim
+          .col-md-7
+            table(border='1', style='width:100%; text-align: center; margin-top: 10px;', ng-repeat='j in range(6)', ng-if='victim_list.length > j*5 || j == 0')
+              tbody
+                tr
+                  th(style='text-align:center;background-color:#fff;', ng-repeat='i in range(5)') {{j*5 + i+1}}
+                tr
+                  td(ng-repeat='i in range(5)', ng-style="{'background-color': victim_list[j*5 + i].effective?'#BDF4CB':'#ccc'}", ng-dblclick='delete_victim(j*5 + i)')
+                    img(src='/images/liveVictim.png', width='30px', ng-if="victim_list[j*5 + i].type == 'L'")
+                    img(src='/images/deadVictim.png', width='30px', ng-if="victim_list[j*5 + i].type == 'D'")
+                    span(style='width:30px;', ng-hide='victim_list[j*5 + i]') ---
+                    br
+                    span(ng-show='victim_list[j*5 + i]')
+                      | {{calc_victim_points(victim_list[j*5 + i].type,victim_list[j*5 + i].effective)}} P
+          .col-md-5
+          .col-md-1(style='margin-top:20px;')
+            p(style='height:30px;')
+            h1 +
+          .col-md-2(style='margin-top:20px;')
+            p(style='text-align:center;height:30px;') {{'line.sign.exitBonus' | translate}}
+            i.fas.fa-home.fa-2x  {{exitBonus}}
+            br
+            br
+            h1 {{ 20 * exitBonus}} {{'common.point' | translate}}
+          .col-md-1(style='margin-top:20px;')
+            p(style='height:30px;')
+            h1 =
+          .col-md-3(style='margin-top:20px;')
+            p(style='height:30px;') {{'common.stotal' | translate}}
+            h1 {{ victimPoints() + (20 * exitBonus)}} {{'common.point' | translate}}
+      h2 {{'line.sign.calc' | translate}}
+      .alert.alert-dark(style='margin-bottom:50px;text-align:center;', role='alert')
+        .row
+          .col-md-2
+            p(style='height:30px;') {{'line.sign.item' | translate}}
+            h1
+              | {{score - checkTotal() - ( victimPoints() + (20 * exitBonus))}} {{'common.point' | translate}}
+          .col-md-1
+            p(style='height:30px;')
+            h1 +
+          .col-md-2
+            p(style='height:30px;') {{'line.sign.checkPointScore' | translate}}
+            h1 {{checkTotal()}} {{'common.point' | translate}}
+          .col-md-1
+            p(style='height:30px;')
+            h1 +
+          .col-md-2
+            p(style='text-align:center;height:30px;') {{'line.sign.rescue' | translate}} / {{'line.sign.exitBonus' | translate}}
+            h1 {{ victimPoints() + (20 * exitBonus)}} {{'common.point' | translate}}
+          .col-md-1
+            p(style='height:30px;')
+            h1 =
+          .col-md-3
+            p(style='height:30px;')
+            h1 {{score}} {{'common.point' | translate}}
+      .alert.alert-success(style='margin:30 0 30 0;', role='alert')
+        .row
+          .col-md-6
+            .d-none.d-sm-block
+              i.fa.fa-calculator.fa-3x(aria-hidden='true')  : {{score}} {{'common.point' | translate}}
+            .d-sm-none
+              i.fa.fa-calculator.fa-2x(aria-hidden='true')  : {{score}} {{'common.point' | translate}}
+          .col-md-6
+            .d-none.d-sm-block
+              i.fas.fa-stopwatch.fa-3x(aria-hidden='true')
+                | : {{minutes}} {{'common.min' | translate}} {{seconds}} {{'common.sec' | translate}}
+            .d-sm-none
+              i.fas.fa-stopwatch.fa-2x(aria-hidden='true')
+                | : {{minutes}} {{'common.min' | translate}} {{seconds}} {{'common.sec' | translate}}
+      if user
+          .row(style='margin:0 0 30 0;')
+            .col-md-12
+              #sign.card
+                h3.card-header
+                  i.fas.fa-comment(aria-hidden='true')
+                  |  {{'line.view.comment' | translate}}
+                .card-body
+                  p.card-text.text-info
+                    | {{'line.view.comment_e' | translate}}
+                  .form-group
+                    textarea.form-control(ng-model='comment', rows='3', disabled='')
+                h3.card-header
+                  i.fas.fa-pencil-alt(aria-hidden='true')
+                  |  {{'line.view.sign' | translate}}
+                .card-body
+                  p.card-text.text-warning(translate='line.view.sign_e')
+                  .sign-box.sign-box-cap
+                    p.sign-box-title.sign-box-title-cap(translate='line.view.cap_sign')
+                    img(ng-src='{{cap_sig}}', style='max-width: 100%;height: auto;')
+                  hr
+                  .sign-box.sign-box-ref
+                    p.sign-box-title.sign-box-title-ref(translate='line.view.ref_sign')
+                    img(ng-src='{{ref_sig}}', style='max-width: 100%;height: auto;')
+                  hr
+                  .sign-box.sign-box-ref
+                    p.sign-box-title.sign-box-title-ref(translate='line.view.cref_sign')
+                    img(ng-src='{{refas_sig}}', style='max-width: 100%;height: auto;')
+
+
+    include ./includes/footer

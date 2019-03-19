@@ -1,0 +1,12 @@
+**/.git
+TechnicalDocument
+tmp
+node_modules
+rcjj-scoring
+docker
+doc
+public/signage_content
+public/components
+public/sw.js
+public/workbox**
+logs

@@ -1,0 +1,18 @@
+html(ng-app="ddApp")
+  head
+    title Rescue Line Field View
+    script.
+      var fieldId = "#{id}"
+      var competitionId = "#{cid}"
+
+
+    include ./includes/common_component
+    script(src="/javascripts/line_view_field.js")
+    script(src="/javascripts/translate_config.js")
+    link(href="/stylesheets/fredrik.css" rel="stylesheet")
+
+    meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0")
+
+  body(ng-controller="ddController")
+    include line_view_field.html
+

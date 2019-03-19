@@ -1,0 +1,42 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'CompetitionAdmin'
+
+append scripts
+  script.
+    var competitionId = "#{id}"
+  script(src='/javascripts/competition_admin.js')
+
+block location
+    a.breadcrumb-item(ng-click="go('/home')") Home
+    a.breadcrumb-item(ng-click="go('/admin')") Admin
+    span.breadcrumb-item.active {{competition.name}}
+
+
+block content
+  .row
+    .col-md-1
+    .col-md-10
+      h1 {{"admin.competition.title" | translate}} - {{competition.name}}
+      hr
+      h3 {{"admin.competition.common" | translate}}
+      button(ng-click="go('/admin/' + competitionId + '/teams')" class='btn btn-outline-dark btn-lg btn-block') {{"admin.competition.teams" | translate}}
+      button(ng-click="go('/admin/' + competitionId + '/rounds')" class='btn btn-outline-dark btn-lg btn-block') {{"admin.competition.rounds" | translate}}
+      button(ng-click="go('/admin/' + competitionId + '/fields')" class='btn btn-outline-dark btn-lg btn-block') {{"admin.competition.fields" | translate}}
+      hr
+      h3 {{"admin.competition.line" | translate}}
+      button(ng-click="go('/admin/' + competitionId + '/line/maps')" class='btn btn-outline-primary btn-lg btn-block') {{"admin.competition.maps" | translate}}
+      button(ng-click="go('/admin/' + competitionId + '/line/runs')" class='btn btn-outline-primary btn-lg btn-block') {{"admin.competition.runs" | translate}}
+      hr
+      h3 {{"admin.competition.maze" | translate}}
+      button(ng-click="go('/admin/' + competitionId + '/maze/maps')" class='btn btn-outline-success btn-lg btn-block') {{"admin.competition.maps" | translate}}
+      button(ng-click="go('/admin/' + competitionId + '/maze/runs')" class='btn btn-outline-success btn-lg btn-block') {{"admin.competition.runs" | translate}}
+      hr
+      h3 {{"admin.competition.management" | translate}}
+      button(ng-click="go('/admin/' + competitionId + '/settings')" class='btn btn-outline-dark btn-lg btn-block') {{"admin.competition.settings" | translate}}
+      button(ng-click="go('/admin/' + competitionId + '/backup')" class='btn btn-outline-dark btn-lg btn-block') {{"admin.competition.backup" | translate}}
+      br
+
+

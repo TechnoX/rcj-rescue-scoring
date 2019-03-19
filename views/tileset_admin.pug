@@ -1,0 +1,56 @@
+//- -*- tab-width: 2 -*-
+extends includes/layout
+
+block vars
+  - var ngAppDef = 'TilesetAdmin'
+
+append scripts
+  script(src='/javascripts/tileset_admin.js')
+
+append css
+  style(type='text/css').
+    .tile {
+      width: 40px;
+      height: 40px;
+      border: solid;
+      border-width: 1px;
+      border-color: black;
+      margin-right: 2px;
+    }
+    .tile-container {
+      display: inline-block;
+      margin: 5px;
+    }
+
+block location
+    a.breadcrumb-item(ng-click="go('/home')") Home
+    a.breadcrumb-item(ng-click="go('/admin')") Admin
+    span.breadcrumb-item.active Line tilesets
+
+block content
+  .row
+    .col-md-offset-2.col-md-8
+      .row
+        .col-md-offset-2.col-md-8
+          .form-group
+            label.control-label {{"admin.line_tSet.new_tSet" | translate}}
+            input.control-input(ng-model='newTileSetName')
+            button(ng-click='createNewTileSet()') {{"common.create" | translate}}
+      .row
+        .col-md-offset-2.col-md-8
+          .form-group
+            label.control-label {{"admin.line_tSet.tSet" | translate}}
+            select(ng-model='tileSet' ng-options='set as set.name for set in tileSets')
+            button(ng-click='delete()') {{"common.delete" | translate}}
+      .row
+        .col-md-offset-5.col-md-2
+            button.btn.btn-primary.btn-lg.btn-block(ng-click='save()') {{"common.save" | translate}}
+      .row
+        .col-md-6
+          h2 {{"admin.line_tSet.available" | translate}}
+          img.tile.tile-container(ng-repeat='tileType in tileTypes' ng-src='/images/tiles/{{tileType.image}}' ng-click='addTile(tileType)')
+        .col-md-6
+          h2 {{ 'admin.line_tSet.tIn' | translate:translationData }}
+          span.tile-container(ng-repeat='tile in tileSet.tiles track by tile.tileType._id')
+            img.tile(ng-src='/images/tiles/{{tile.tileType.image}}' ng-click='removeTile(tile)')
+            span(ng-bind='tile.count')
