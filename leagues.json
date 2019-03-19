@@ -1,6 +1,4 @@
 [
-  {"type": "line", "id": "LineWL", "name": "ワールドリーグ レスキューLine"},
-  {"type": "line", "id": "LineNL", "name": "日本リーグ レスキュー"},
-  {"type": "line", "id": "Line", "name": "Rescue Line (International)"},
-  {"type": "maze", "id": "Maze",   "name": "ワールドリーグ レスキューMaze"}
+  {"type": "line", "id": "Line", "name": "Rescue Line"},
+  {"type": "maze", "id": "Maze",   "name": "Rescue Maze"}
 ]
