@@ -1,8 +1,8 @@
 var app = angular.module("MazeScore", ['ngTouch','datatables', 'pascalprecht.translate', 'ngCookies','ngSanitize'])
 app.controller("MazeScoreController", function ($scope, $http) {
     console.log(UseRunsNumber);
-    $scope.competitionId = competitionId
-    $scope.sortOrder = '-score'
+    $scope.competitionId = competitionId;
+    $scope.sortOrder = ['-score','time.minutes*60+time.seconds','-foundVictims','LoPs'];
     $scope.go = function (path) {
         window.location = path
     }
@@ -21,9 +21,9 @@ app.controller("MazeScoreController", function ($scope, $http) {
                 50);
         }, 200)
     })
-    if (get['autoscroll'] != undefined) {
+    /*if (get['autoscroll'] != undefined) {
         scrollpage()
-    }
+    }*/
 
     $http.get("/api/competitions/" + competitionId).then(function (response) {
         $scope.competition = response.data

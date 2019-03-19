@@ -4,7 +4,7 @@ var app = angular.module("LineScore", ['ngTouch','datatables', 'ui.bootstrap', '
 app.controller("LineScoreController", function ($scope, $http, $sce) {
     console.log(UseRunsNumber);
     $scope.competitionId = competitionId
-    $scope.sortOrder = '-score'
+    $scope.sortOrder = ['-score','time.minutes*60+time.seconds','-rescueOrder.length','LoPsNum'];
     $scope.go = function (path) {
         window.location = path
     }

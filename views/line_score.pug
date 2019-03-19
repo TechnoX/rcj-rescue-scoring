@@ -62,9 +62,9 @@ block content
       .col-lg-12
         h3 [{{'line.score.all' | translate}}] {{league.name}}
         label {{'line.score.sort' | translate}}
-          input(type="checkbox" style='display:inline;' ng-model="sortOrder" ng-true-value="'[startTime,round.name,field.name,team.name]'" ng-false-value="'-score'")
+          input(type="checkbox" style='display:inline;' ng-model="sortOrder" ng-true-value="'[round.name,team.name,field.name]'" ng-false-value="['-score','time.minutes*60+time.seconds','-rescueOrder.length','LoPsNum']")
         label &nbsp;&nbsp;&nbsp;&nbsp;{{'line.score.team' | translate}}
-          input(type="checkbox" style='display:inline;' ng-model="sortOrder" ng-true-value="'[team.name,startTime]'" ng-false-value="'-score'")
+          input(type="checkbox" style='display:inline;' ng-model="sortOrder" ng-true-value="'[team.name,round.name,field.name]'" ng-false-value="['-score','time.minutes*60+time.seconds','-rescueOrder.length','LoPsNum']")
         table.custom(style="overflow: scroll;")
           thead
             tr

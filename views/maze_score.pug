@@ -49,8 +49,8 @@ block content
                   th.text-center {{'common.score' | translate}}
                   th.text-center {{'common.time' | translate}}
                   th.text-center {{'maze.score.exit' | translate}}
-                  th.text-center {{'common.lops' | translate}}
                   th.text-center {{'maze.score.found' | translate}}
+                  th.text-center {{'common.lops' | translate}}
               tbody
                 tr(ng-repeat='run in mazeRunsTop track by $index')
                   td.text-center(ng-bind='$index + 1')
@@ -58,18 +58,17 @@ block content
                   td.text-center(ng-bind='run.score')
                   td.text-center {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
                   td.text-center(ng-bind='run.exit')
-                  td.text-center(ng-bind='run.lops')
                   td.text-center(ng-bind='run.found')
-
+                  td.text-center(ng-bind='run.lops')
         .row
           hr
         .row#allRuns
           .col-md-12
             h3 [{{'maze.score.all' | translate}}] {{league.name}}
             label {{'maze.score.sort' | translate}}
-              input(type="checkbox" style='display:inline;' ng-model="sortOrder" ng-true-value="'[startTime,round.name,field.name,team.name]'" ng-false-value="'-score'")
+              input(type="checkbox" style='display:inline;' ng-model="sortOrder" ng-true-value="'[round.name,team.name,field.name]'" ng-false-value="['-score','time.minutes*60+time.seconds','-foundVictims','LoPs']")
             label &nbsp;&nbsp;&nbsp;&nbsp;{{'maze.score.team' | translate}}
-              input(type="checkbox" style='display:inline;' ng-model="sortOrder" ng-true-value="'[team.name,startTime]'" ng-false-value="'-score'")
+              input(type="checkbox" style='display:inline;' ng-model="sortOrder" ng-true-value="'[team.name,round.name,field.name]'" ng-false-value="['-score','time.minutes*60+time.seconds','-foundVictims','LoPs']")
             table.custom(style="overflow: scroll;")
               thead
                 tr
@@ -79,8 +78,8 @@ block content
                   th.text-center {{'common.score' | translate}}
                   th.text-center {{'common.time' | translate}}
                   th.text-center {{'maze.score.exit' | translate}}
-                  th.text-center {{'common.lops' | translate}}
                   th.text-center {{'maze.score.found' | translate}}
+                  th.text-center {{'common.lops' | translate}}
               tbody
                 tr(ng-repeat='run in mazeRuns | orderBy:sortOrder')
                   td.text-center(ng-bind='run.team.name')
@@ -91,5 +90,6 @@ block content
                   td.text-center
                       i(class="fas fa-check" aria-hidden="true" style="color:#2ecc71;" ng-if="run.exitBonus")
                       i(class="fas fa-times" aria-hidden="true" style="color:#e74c3c;" ng-if="!run.exitBonus")
-                  td.text-center(ng-bind='run.LoPs')
                   td.text-center(ng-bind='run.foundVictims')
+                  td.text-center(ng-bind='run.LoPs')
+        br
