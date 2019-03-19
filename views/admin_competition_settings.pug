@@ -72,6 +72,21 @@ block content
               h3(style="text-align:center" ng-style="{'color': '#' + cColor}") {{cName}}
               br
               p(ng-if="description" style="text-align:center" ng-style="{'color': '#' + cColor}" ng-bind-html="description")
+      hr
+      h1 {{"admin.settings.ranking" | translate}}
+      .row
+        .col-10
+          p {{"admin.settings.useNum" | translate}}
+          .input-group(style="width:100%;margin-bottom:20px;" ng-repeat="rank in ranking")
+            span.input-group-addon ID : {{rank.id}}
+            span.input-group-addon {{"admin.settings.leagueName" | translate}} : {{rank.name}}
+            span.input-group-addon {{"admin.settings.num" | translate}}
+            input.form-control(type='number', ng-model='rank.count' style="")
+        .col-2(style="text-align:right;")
+          button.btn.btn-success(type='button', ng-click='set()')
+            i.fas.fa-check &nbsp;{{"admin.settings.set" | translate}}
+
+
 
   hr
   .row

@@ -35,7 +35,26 @@ publicRouter.get('/:competitionid/score/:league', function (req, res, next) {
         return next()
     }
 
-    res.render('maze_score', {id: id, user: req.user,league: league, get: req.query})
+    competitiondb.competition.findOne({
+        _id: id,
+    }).lean().exec(function (err, data) {
+        if (err) {
+            logger.error(err)
+            res.status(400).send({
+                msg: "Could not get competition",
+                err: err.message
+            })
+        } else {
+            let num = 20;
+            for(let i in data.ranking){
+                if(data.ranking[i].league == league){
+                    num = data.ranking[i].num;
+                    break;
+                }
+            }
+            res.render('maze_score', {id: id, user: req.user,league: league,num: num, get: req.query})
+        }
+    })
 })
 
 

@@ -2,6 +2,7 @@ var socket;
 
 var app = angular.module("LineScore", ['ngTouch','datatables', 'ui.bootstrap', 'ngAnimate', 'pascalprecht.translate', 'ngCookies','ngSanitize']);
 app.controller("LineScoreController", function ($scope, $http, $sce) {
+    console.log(UseRunsNumber);
     $scope.competitionId = competitionId
     $scope.sortOrder = '-score'
     $scope.go = function (path) {
@@ -220,7 +221,7 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
             lops: 0
         }
 
-        for (let i = 0; i < Math.min(9, runs.length); i++) {
+        for (let i = 0; i < Math.min(UseRunsNumber, runs.length); i++) {
             sum.score += runs[i].score
             sum.time.minutes += runs[i].time.minutes
             sum.time.seconds += runs[i].time.seconds

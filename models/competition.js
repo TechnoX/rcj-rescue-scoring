@@ -48,7 +48,11 @@ const competitionSchema = new Schema({
   bkColor: {type: String, default: "#fff"},
   color: {type: String, default: "#000"},
   message: {type: String, default: ""},
-  description: {type: String, default: ""}
+  description: {type: String, default: ""},
+  ranking: [{
+    'league': {type: String, enum: LEAGUES},
+    'num': {type: Number, default: 20}
+  }]
 })
 
 const signageSchema = new Schema({

@@ -138,6 +138,15 @@ adminRouter.put('/:competitionid', function (req, res, next) {
                 dbCompetition.message = data.message;
                 dbCompetition.description = data.description;
 
+                dbCompetition.ranking = [];
+                for(let i in data.ranking){
+                    let tmp = {
+                        'league': data.ranking[i].id,
+                        'num': data.ranking[i].count
+                    }
+                    dbCompetition.ranking.push(tmp);
+                }
+
                 dbCompetition.save(function (err) {
                     if (err) {
                         logger.error(err)

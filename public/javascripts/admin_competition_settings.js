@@ -10,11 +10,36 @@ const app = angular.module("AdminSettings", ['ngTouch', 'pascalprecht.translate'
     $scope.description = response.data.description;
     $scope.logo = response.data.logo;
     $scope.competitonUseRule = response.data.rule;
+    let ranking  = response.data.ranking;
+    console.log(ranking)
+    $http.get("/api/teams/leagues/all/" + competitionId).then(function (response) {
+      let leagues = response.data;
+      $scope.ranking = [];
+      for(let i in leagues){
+        let num = 20;
+        if(ranking){
+          for(let j in ranking){
+            if(ranking[j].league == leagues[i].id){
+              num = ranking[j].num;
+              break;
+            }
+          }
+        }
+        let tmp = {
+          'id': leagues[i].id,
+          'name': leagues[i].name,
+          'count': num
+        }
+        $scope.ranking.push(tmp);
+      }
+    })
   })
 
   $http.get("/api/competitions/rules").then(function (response) {
     $scope.rules = response.data;
   })
+
+
 
 
   $scope.updateAuthority = function (userid, acLevel) {
@@ -40,7 +65,8 @@ const app = angular.module("AdminSettings", ['ngTouch', 'pascalprecht.translate'
       bkColor: $scope.bColor,
       color: $scope.cColor,
       message: $scope.message,
-      description: $scope.description
+      description: $scope.description,
+      ranking: $scope.ranking
     }
 
     $http.put("/api/competitions/" + $scope.competitionId, data).then(function (response) {

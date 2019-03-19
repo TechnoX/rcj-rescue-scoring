@@ -68,7 +68,7 @@ publicRouter.get('/leagues/:league/:competitionId', async function (req, res) {
                 break;
             }
         }
-        if(type == league) {
+        if(type == league || league == "all") {
             let tmp = {
                 'id': result[i]._id,
                 'name': name,

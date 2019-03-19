@@ -382,7 +382,11 @@
             "description": "Description of the competition",
             "logo": "Logo",
             "set": "Save",
-            "rule": "Rule"
+            "rule": "Rule",
+            "ranking": "Ranking",
+            "useNum": "Set the number of games to be used for ranking.  Make this setting after registering all teams. Default: 20 games",
+            "leagueName": "League name",
+            "num": "Number of games"
         },
         "line_tSet": {
             "new_tSet": "New tileset: ",

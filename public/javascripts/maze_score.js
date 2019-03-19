@@ -1,5 +1,6 @@
 var app = angular.module("MazeScore", ['ngTouch','datatables', 'pascalprecht.translate', 'ngCookies','ngSanitize'])
 app.controller("MazeScoreController", function ($scope, $http) {
+    console.log(UseRunsNumber);
     $scope.competitionId = competitionId
     $scope.sortOrder = '-score'
     $scope.go = function (path) {
@@ -173,7 +174,7 @@ app.controller("MazeScoreController", function ($scope, $http) {
 
         runs.sort(sortRuns)
 
-        for (let i = 0; i < Math.min(9, runs.length); i++) {
+        for (let i = 0; i < Math.min(UseRunsNumber, runs.length); i++) {
             sum.score += runs[i].score
             sum.time.minutes += runs[i].time.minutes
             sum.time.seconds += runs[i].time.seconds
