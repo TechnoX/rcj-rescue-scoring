@@ -24,7 +24,7 @@ block content
           p(ng-bind-html="competition.message")
       .row
         .col-sm-6
-          .card(style='width: 100%;')
+          .card(style='width: 100%;margin-bottom:20px;')
               a(onclick="location.href='/line/' + competitionId")
                 img.card-img-top(src='/images/line.png', alt='Card image cap' style="width:100%; height=auto;")
               .card-body
@@ -32,7 +32,7 @@ block content
                 p.card-text(translate="home.line_description")
                 button(onclick="location.href='/line/' + competitionId" class='btn btn-primary btn-lg btn-block') {{'home.go_line' | translate}}
         .col-sm-6
-            .card(style='width: 100%;')
+            .card(style='width: 100%;margin-bottom:20px;')
               a(onclick="location.href='/maze/' + competitionId")
                 img.card-img-top(src='/images/maze.png', alt='Card image cap' style="width:100%; height=auto;")
               .card-body

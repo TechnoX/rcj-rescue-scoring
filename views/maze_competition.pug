@@ -29,7 +29,7 @@ block content
       br
       .row
         div(ng-repeat="league in leagues" class="col-md-{{12/leagues.length}}")
-          button(ng-click="go('/maze/' + competition._id + '/score/' + league.id)" class='btn btn-outline-danger btn-lg btn-block')
+          button(ng-click="go('/maze/' + competition._id + '/score/' + league.id)" class='btn btn-outline-danger btn-lg btn-block' style="margin-bottom:20px;")
             i.fas.fa-trophy(aria-hidden='true') &nbsp;[{{league.name}}]&nbsp;{{'maze.competition.result' | translate}}
       hr
       button(ng-click="go('/interview/' + competition._id + '?return=/maze/'+competitionId)" class='btn btn-outline-success btn-lg btn-block') 
