@@ -38,6 +38,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
         $scope.exitBonus = data.exitBonus;
         $scope.score = data.score;
         $scope.LoPs = data.LoPs;
+        $scope.misidentifications = data.misidentifications;
         
         // Verified time by timekeeper
         $scope.minutes = data.time.minutes;
@@ -82,6 +83,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
       $scope.competition = response.data.competition.name;
       $scope.competition_id = response.data.competition._id;
       $scope.LoPs = response.data.LoPs;
+      $scope.misidentifications = response.data.misidentifications;
       
       // Verified time by timekeeper
       $scope.minutes = response.data.time.minutes;

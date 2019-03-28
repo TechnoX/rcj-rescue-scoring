@@ -37,10 +37,14 @@ function traverse(curTile, entryDir, tiles, map, index) {
   var nextTile = tiles[nextCoord(curTile, entryDir)]
   
   if (nextTile === undefined) {
+    map.indexCount = index
+    return 0
+    
+    
     // Last three tiles need to be counted twice (for exit bonus)
-    curTile.index.push(index + 1)
-    map.indexCount = index + 1 + 3
-    return 2
+    //curTile.index.push(index + 1)
+    //map.indexCount = index + 1 + 3
+    //return 2
   }
   
   if (nextTile.z != curTile.z) {
