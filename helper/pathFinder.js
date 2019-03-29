@@ -37,7 +37,7 @@ function traverse(curTile, entryDir, tiles, map, index) {
   var nextTile = tiles[nextCoord(curTile, entryDir)]
   
   if (nextTile === undefined) {
-    map.indexCount = index
+    map.indexCount = index + 1
     return 0
     
     
