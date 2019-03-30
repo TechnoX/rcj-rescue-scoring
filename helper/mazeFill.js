@@ -5,7 +5,9 @@ module.exports.floodFill = function (map) {
   const cells = []
   for (let i = 0; i < map.cells.length; i++) {
     const cell = map.cells[i]
-    cell.tile.reachable = false
+    if (cell.tile != null) {
+      cell.tile.reachable = false
+    }
     cells[cell.x + ',' + cell.y + ',' + cell.z] = cell
   }
   
