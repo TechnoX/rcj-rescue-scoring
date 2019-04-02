@@ -40,10 +40,10 @@ block content
       br
 
       if typeof(user) == "undefined"
-        button(onclick="location.href='/login'" class='btn btn-warning btn-lg btn-block')
+        button(ng-click="go('/login')" class='btn btn-warning btn-lg btn-block')
             i.fas.fa-sign-in-alt(aria-hidden='true' ng-cloak) &nbsp; {{'home.login' | translate}}
       else
-        button(ng-click="location.href='/logout'" class='btn btn-outline-danger btn-lg btn-block')
+        button(ng-click="go('/logout')" class='btn btn-outline-danger btn-lg btn-block')
             i.fas.fa-sign-out-alt(aria-hidden='true' ng-cloak) &nbsp; {{'home.logout' | translate}}
       br
       br
@@ -60,9 +60,9 @@ block content
       br
       if typeof(user) != "undefined"
         if user.admin
-            button(onclick="location.href='/admin'" class='btn btn-outline-success btn-lg btn-block' ng-cloak) {{'home.management' | translate}}
+            button(ng-click="go('/admin')" class='btn btn-outline-success btn-lg btn-block' ng-cloak) {{'home.management' | translate}}
         else
-            button(onclick="location.href='/'" class='btn btn-outline-success btn-lg btn-block' disabled ng-cloak) {{'home.management' | translate}}
+            button(class='btn btn-outline-success btn-lg btn-block' disabled ng-cloak) {{'home.management' | translate}}
             p(translate="home.access_level", translate-values='{account: "'+ user.username + '"}')
       br
       br
