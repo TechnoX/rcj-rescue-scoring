@@ -28,9 +28,9 @@ var md5hex = function(src){
 };
 const LEAGUES_JSON = competitiondb.LEAGUES_JSON;
 
-publicRouter.get('/', function (req, res) {
-    query.doFindResultSortQuery(req, res, null, null, competitiondb.team)
-})
+//publicRouter.get('/', function (req, res) {
+//    query.doFindResultSortQuery(req, res, null, null, competitiondb.team)
+//})
 
 publicRouter.get('/leagues', function (req, res) {
     res.send(competitiondb.team.schema.path('league').enumValues)
@@ -88,7 +88,7 @@ publicRouter.get('/:teamid', function (req, res, next) {
     }
     competitiondb.team.findOne({
             _id: id
-        })
+        },'_id inspected name league competition')
         .exec(function (err, dbTeam) {
             if (err) {
                 logger.error(err)
@@ -222,12 +222,17 @@ adminRouter.delete('/:teamid', function (req, res, next) {
 })
 
 adminRouter.post('/', function (req, res) {
-    var team = req.body
+    var team = req.body;
 
+    var code = "";
+    if(team.code){
+        code = team.code;
+    }
     var newTeam = new competitiondb.team({
         name: team.name,
         league: team.league,
-        competition: team.competition
+        competition: team.competition,
+        code: code
     })
 
     newTeam.save(function (err, data) {
@@ -252,10 +257,6 @@ adminRouter.post('/', function (req, res) {
         .exec(function (err, dbComp) {
                 if (err) {
                     logger.error(err)
-                    res.status(400).send({
-                        msg: "Could not get competition",
-                        err: err.message
-                    })
                 } else if (dbComp) {
                     var path = __dirname + "/../../TechnicalDocument/" + md5hex(dbComp.name) + "/" + md5hex(team.name);
                     mkdirp(path, function (err) {

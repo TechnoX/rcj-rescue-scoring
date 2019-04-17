@@ -132,7 +132,8 @@ const teamSchema = new Schema({
   inspected  : {type: Boolean, default: false},
   comment    : {type: String, default: ""},
   interviewer: {type: String, default: ""},
-  docPublic  : {type: Boolean, default: false}
+  docPublic  : {type: Boolean, default: false},
+  code       : {type: String, default: ""}
 })
 
 teamSchema.pre('save', function (next) {

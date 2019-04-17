@@ -232,7 +232,7 @@ function getLatestMazeRun(req, res) {
     var query = mazeRun.findOne(selection).sort("-updatedAt")
 
     if (req.query['populate'] !== undefined && req.query['populate']) {
-        query.populate(["round", "team", "field", "competition"])
+        query.populate(["round", { path: "team", select: "name league"}, "field", "competition"])
     }
 
     query.lean().exec(function (err, dbRun) {
@@ -321,7 +321,7 @@ publicRouter.get('/find/:competitionid/:field/:status', function (req, res, next
         field: field_id,
         status: status
     }, "field team competition status")
-    query.populate(["team"])
+    query.populate([{ path: "team", select: "name league"}])
     query.exec(function (err, data) {
         if (err) {
             logger.error(err)
@@ -384,7 +384,7 @@ publicRouter.get('/:runid', function (req, res, next) {
     const query = mazeRun.findById(id, "-__v")
 
     if (req.query['populate'] !== undefined && req.query['populate']) {
-        query.populate(["round", "team", "field", "competition"])
+        query.populate(["round", { path: "team", select: "name league"}, "field", "competition"])
     }
 
     query.lean().exec(function (err, dbRun) {
