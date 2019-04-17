@@ -41,8 +41,8 @@ block content
                 i(class="fa fa-2x fa-check" aria-hidden="true" style="color:#2ecc71;" ng-if="team.inspected")
                 i(class="fa fa-2x fa-times" aria-hidden="true" style="color:#e74c3c;" ng-if="!team.inspected")
               td
-                i(class="fa fa-2x fa-check" aria-hidden="true" style="color:#2ecc71;" ng-if="team.interviewer!=''&& team.interviewer != sign_empty")
-                i(class="fa fa-2x fa-times" aria-hidden="true" style="color:#e74c3c;" ng-if="team.interviewer=='' || team.interviewer == sign_empty")
+                i(class="fa fa-2x fa-check" aria-hidden="true" style="color:#2ecc71;" ng-if="team.interviewed")
+                i(class="fa fa-2x fa-times" aria-hidden="true" style="color:#e74c3c;" ng-if="!team.interviewed")
               td
                 button(ng-click="go('/interview/'+ competitionId +'/view/' + team._id)" class='btn btn-info' style="margin-right:5px;") {{'common.view' | translate}}
                 if user

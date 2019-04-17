@@ -176,7 +176,7 @@ publicRouter.get('/:competition/teams', function (req, res, next) {
 
     competitiondb.team.find({
         competition: id
-    }).lean().exec(function (err, data) {
+    },'_id name competition league inspected interviewer').lean().exec(function (err, data) {
         if (err) {
             logger.error(err)
             res.status(400).send({
@@ -184,6 +184,14 @@ publicRouter.get('/:competition/teams', function (req, res, next) {
                 err: err.message
             })
         } else {
+            for(d of data){
+                if(d.interviewer != "" && d.interviewer != "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj48c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMCIgaGVpZ2h0PSIwIj48L3N2Zz4="){
+                    d.interviewed = true;
+                }else{
+                    d.interviewed = false;
+                }
+                delete d.interviewer;
+            }
             res.status(200).send(data)
         }
     })
@@ -212,9 +220,10 @@ publicRouter.get('/:competition/teams/:teamid', function (req, res, next) {
             })
         } else {
             if(!auth.authCompetition(req.user,id,ACCESSLEVELS.VIEW)){
-                delete data.interviewer
+                delete data.interviewer;
                 if(!data.docPublic) delete data.comment
             }
+            delete data.code;
             res.status(200).send(data)
         }
     })
@@ -237,7 +246,7 @@ publicRouter.get('/:competition/:league/teams', function (req, res, next) {
     competitiondb.team.find({
         competition: id,
         league: new RegExp(".*" + league + ".*" , "i")
-    }).lean().exec(function (err, data) {
+    },'_id name competition league inspected').lean().exec(function (err, data) {
         if (err) {
             logger.error(err)
             res.status(400).send({
@@ -250,28 +259,6 @@ publicRouter.get('/:competition/:league/teams', function (req, res, next) {
     })
 })
 
-publicRouter.get('/:competitionid/teams/:name', function (req, res, next) {
-    var id = req.params.competitionid
-    var name = req.params.name
-
-    if (!ObjectId.isValid(id)) {
-        return next()
-    }
-
-    competitiondb.team.find({
-        "competition": id,
-        "name": name
-    }, function (err, data) {
-        if (err) {
-            logger.error(err)
-            res.status(400).send({
-                msg: "Could not get teams"
-            })
-        } else {
-            res.status(200).send(data)
-        }
-    }).select("_id")
-})
 
 publicRouter.get('/:competition/line/runs', function (req, res, next) {
     var id = req.params.competition
@@ -369,35 +356,6 @@ publicRouter.get('/:competition/fields', function (req, res, next) {
             res.status(400).send({
                 msg: "Could not get fields",
                 err: err.message
-            })
-        } else {
-            res.status(200).send(data)
-        }
-    })
-})
-
-publicRouter.get('/:competitionid/runs/:field/:status', function (req, res, next) {
-    var id = req.params.competitionid
-    var field_id = req.params.field
-    var status = req.params.status
-    if (!ObjectId.isValid(id)) {
-        return next()
-    }
-    if (!ObjectId.isValid(field_id)) {
-        return next()
-    }
-    populate = ["team"]
-    var query = competitiondb.run.find({
-        competition: id,
-        field: field_id,
-        status: status
-    }, "field team competition status")
-    query.populate(populate)
-    query.exec(function (err, data) {
-        if (err) {
-            logger.error(err)
-            res.status(400).send({
-                msg: "Could not get runs"
             })
         } else {
             res.status(200).send(data)
