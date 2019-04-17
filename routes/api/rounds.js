@@ -26,7 +26,7 @@ publicRouter.get('/:roundid', function (req, res, next) {
     return next()
   }
   
-  query.doIdQuery(req, res, id, "", competitiondb.team)
+  query.doIdQuery(req, res, id, "", competitiondb.round)
 })
 
 publicRouter.get('/:roundid/runs', function (req, res, next) {
