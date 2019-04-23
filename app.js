@@ -47,6 +47,7 @@ var localesRoute = require('./routes/locales')
 var interviewRoute = require('./routes/interview')
 var signageRoute = require('./routes/signage')
 var shortRoute = require('./routes/shortURL')
+var kioskRoute = require('./routes/kiosk')
 
 
 //========================================================================
@@ -169,8 +170,9 @@ app.use('/s', shortRoute.public)
 app.use('/line', [lineRoute.public, pass.ensureAuthenticated, lineRoute.private, pass.ensureAdmin, lineRoute.admin])
 app.use('/maze', [mazeRoute.public, pass.ensureAuthenticated, mazeRoute.private, pass.ensureAdmin, mazeRoute.admin])
 app.use('/interview', [interviewRoute.public, pass.ensureAuthenticated, interviewRoute.private, pass.ensureAdmin, interviewRoute.admin])
-app.use('/signage', [signageRoute.public, pass.ensureAuthenticated, signageRoute.private, pass.ensureAdmin, signageRoute.admin])
+app.use('/signage', [pass.ensureAuthenticated, signageRoute.private, pass.ensureAdmin, signageRoute.admin])
 app.use('/admin', pass.ensureAdmin, adminRoute)
+app.use('/kiosk', [kioskRoute.public, pass.ensureAuthenticated, kioskRoute.private])
 
 //========================================================================
 //                          Custom routes
