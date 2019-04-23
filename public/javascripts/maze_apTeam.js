@@ -1,5 +1,6 @@
 var app = angular.module("MazeTimetable", ['ngTouch','pascalprecht.translate', 'ngCookies']);
-app.controller("MazeTimetableController", ['$scope', '$http', '$translate', function ($scope, $http, $translate) {
+app.controller("MazeTimetableController", ['$scope', '$http', '$translate','$window', function ($scope, $http, $translate, $window) {
+    var parentScope = $window.parent.angular.element($window.frameElement).scope();
     $scope.competitionId = competitionId
     $scope.teamId = teamId
     $scope.selected = null;
@@ -77,7 +78,8 @@ app.controller("MazeTimetableController", ['$scope', '$http', '$translate', func
                         round_i = $scope.table.push({
                             'round': run.round.name,
                             'count': 0,
-                            'data': []
+                            'data': [],
+                            'able': true
                         }) - 1;
                     }
 
@@ -91,6 +93,9 @@ app.controller("MazeTimetableController", ['$scope', '$http', '$translate', func
                     console.log($scope.table[round_i]);
                     $scope.table[round_i].data[time_i].run.push(run);
                     if(run.group) $scope.table[round_i].count++;
+                    if(run.team && run.team._id == teamId){
+                        $scope.table[round_i]['able'] = false;
+                    }
                     //$scope.table[run.round.name][run.startTime][run.field.name] = run;
                 }
             }
@@ -153,6 +158,11 @@ app.controller("MazeTimetableController", ['$scope', '$http', '$translate', func
 
     }
 
+    $scope.reset = function() {
+        parentScope.reset();
+        parentScope.$apply();
+    }
+
     $scope.decision = function () {
         playSound(sClick);
         if ($scope.selected) {
@@ -176,11 +186,8 @@ app.controller("MazeTimetableController", ['$scope', '$http', '$translate', func
                     confirmButtonColor: "#ec6c62"
                 }).then((result) => {
                     if (result.value) {
-                        $http.get("/api/kiosk/1/NA").then(function (response) {
-
-                        }, function (response) {
-                            console.log("Error: " + response.statusText);
-                        });
+                        parentScope.reset();
+                        parentScope.$apply();
                     }
                 })
             }, function (response) {

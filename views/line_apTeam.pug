@@ -40,11 +40,12 @@ html(ng-app="LineTimetable")
 
   body(ng-controller="LineTimetableController" style="width: 100%;display: flex;align-items: center;justify-content: center;background-color:#eee;")
     nav.navbar(style='background-color: #460e44; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%')
-        .col-6(style="font-size:25px;") {{team.name}}
+        .col-6(style="font-size:25px;") {{competition.name}}
         .col-6(style="text-align:right;")
             button(ng-show= "selected" ng-click="decision()" class='btn btn-danger') 競技枠を決定
+            button(ng-show= "!selected" ng-click="reset()" class='btn btn-danger') 中止
     .container.nav-cont
-        div(style='text-align: center;' ng-if='!checked')
+        //div(style='text-align: center;' ng-if='!checked')
           
           br
           .card
@@ -88,12 +89,12 @@ html(ng-app="LineTimetable")
           p(ng-show='!(checkTeam && checkMember && checkMachine)') {{'line.judge.tap_red' | translate}}
           button.btn.btn-success(type='button', ng-click='infochecked()', ng-disabled='!(checkTeam  && checkMember && checkMachine)')
             i.fas.fa-check-circle.fa-2x(aria-hidden='true')  {{'line.judge.confirm' | translate}}
-        div(ng-if='checked')
-            h1 競技枠選択
+        div()
+            h1 競技枠選択 - {{team.name}}
             p リーグ：{{team.league}}
             br
             div(ng-repeat="round in table")
-             div(ng-if="round.count")
+             div(ng-if="round.count && round.able")
               h1 ラウンド名：{{round.round}}
               table(class="time" style="margin-bottom:50px;")
                 thead
@@ -111,8 +112,7 @@ html(ng-app="LineTimetable")
                                     button(ng-if="run.group && run.group == selected" class='btn btn-danger' style="width:100%; margin-right:5px; height:50px;" disable) 選択済み
                                     span(ng-if="!run.group")
                                         b 選択不可
-                            
-                                    
+
 
 
 //block content

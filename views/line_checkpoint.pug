@@ -5,11 +5,11 @@ html(ng-app="ddApp")
       var runId = "#{id}"
 
     include ./includes/common_component
-    
+
     script(src="/javascripts/line_checkpoint.js")
     script(src="/javascripts/translate_config.js")
     script(src='/components/lightbox2/dist/js/lightbox.min.js')
-  
+
     link(rel='stylesheet',href='/components/lightbox2/dist/css/lightbox.min.css')
     link(href="/stylesheets/fredrik.css" rel="stylesheet")
     link(href="/components/css-toggle-switch/dist/toggle-switch.css" rel="stylesheet")
@@ -17,4 +17,97 @@ html(ng-app="ddApp")
     meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0")
 
   body(ng-controller="ddController")
-    include line_checkpoint.html
+    nav.navbar(style='background-color: #2ecc71; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%')
+      // Navbar content
+      .col-md-8.col-sm8.col-12
+        li.navbar-brand(href='#')
+          i.fa.fa-spinner.fa-spin.fa-fw
+          |  {{team.name}}
+      .col-md-4.col-sm4.col-12(style='text-align:right;')
+        div(ng-if='numberOfDropTiles - placedDropTiles>0')
+          h3
+            | 残り：{{numberOfDropTiles - placedDropTiles}}　個
+        button.btn.btn-danger(type='button', ng-click='quit_setting()', ng-if='(numberOfDropTiles - placedDropTiles == 0)')
+          i.fas.fa-arrow-right(aria-hidden='true')  チェックポイント設定を終了
+    .container.nav-cont
+      //div(style='text-align: center;', ng-if='!checked')
+        #lops.card
+          h3.card-header
+            i.fas.fa-info-circle(aria-hidden='true')
+            |  {{'line.judge.info' | translate}}
+          table.table(style='margin-bottom:0;')
+            tbody
+              tr(ng-style="{backgroundColor: checkTeam? '#e1f7d5' : '#ffbdbd'}", ng-click='toggleCheckTeam()')
+                th(style='width:200px;')
+                  | {{'common.team' | translate}}
+                td
+                  h1
+                    b {{team.name}}
+              tr(ng-style="{backgroundColor: checkRound? '#e1f7d5' : '#ffbdbd'}", ng-click='toggleCheckRound()')
+                th
+                  | {{'common.round' | translate}}
+                td
+                  h1
+                    b {{round}}
+              tr
+                th
+                  | {{'common.competition' | translate}}
+                td
+                  | {{competition.name}}
+              tr
+                th
+                  | {{'common.league' | translate}}
+                td
+                  | {{league}}
+        br
+        br
+        .row(style='margin-bottom:30px')
+          .col-md-6
+            .card
+              h3.card-header
+                i.far.fa-images(aria-hidden='true') {{'interview.me_pic' | translate}}
+              .card-body(ng-style="{backgroundColor: checkMember? '#e1f7d5' : '#ffbdbd'}", ng-click='toggleCheckMember()')
+                img.img-thumbnail(style='max-width: 100%;height: auto;margin-bottom:20px', ng-src='/api/teams/pic/{{competition._id}}/{{team._id}}/member')
+          .col-md-6
+            .card
+              h3.card-header
+                i.far.fa-images(aria-hidden='true') {{'interview.ma_pic' | translate}}
+              .card-body(ng-style="{backgroundColor: checkMachine? '#e1f7d5' : '#ffbdbd'}", ng-click='toggleCheckMachine()')
+                div
+                  img.img-thumbnail(style='max-width: 100%;height: auto;margin-bottom:20px', ng-src='/api/teams/pic/{{competition._id}}/{{team._id}}/machine')
+        p(ng-show='!(checkTeam && checkRound && checkMember && checkMachine)') {{'line.judge.tap_red' | translate}}
+        button.btn.btn-success(type='button', ng-click='infochecked()', ng-disabled='!(checkTeam && checkRound && checkMember && checkMachine)')
+          i.fas.fa-check-circle.fa-2x(aria-hidden='true')  {{'line.judge.confirm' | translate}}
+        br
+        br
+      div()
+        .row
+          .col-12.tilearea
+            div(style='text-align:left;float:left;')
+              span 階層の切り替え
+              .btn-group
+                span.input-group-addon
+                  i.fas.fa-arrows-alt-v(aria-hidden='true')
+                button.btn.btn-outline-dark(type='button', ng-click='changeFloor(zz)', ng-repeat='zz in range(height)', ng-class='{active: zz == z}')  {{zz}} 
+            div(style='text-align:right;float:right;')
+              .btn-group
+                button.btn.btn-outline-dark(type='button', ng-click='tileRot(-90)')
+                  i.fas.fa-undo(aria-hidden='true')
+                button.btn.btn-outline-dark(type='button', ng-click='tileRot(90)')
+                  i.fas.fa-redo(aria-hidden='true')
+            div(style='clear:both;')
+            #wrapTile.mx-auto(style='margin-top:5px;')
+              div(ng-repeat='r in range(length)', ng-if='sRotate==0', style='display: flex;')
+                div(style='text-align:center;')
+                  .slot(ng-repeat='c in range(width)')
+                    tile(tile="mtiles[c+','+r+','+z]", ng-click='doScoring(c,r,z)')
+              div(ng-repeat='r in range(length)', ng-if='sRotate==180', style='display: flex;')
+                .slot(ng-repeat='c in range(width)')
+                  tile(tile="mtiles[width - c -1+','+(length - r -1)+','+z]", ng-click='doScoring(width - c -1,length - r -1,z)')
+              div(ng-repeat='r in range(width)', ng-if='sRotate==270', style='display: flex;')
+                .slot(ng-repeat='c in range(length)')
+                  tile(tile="mtiles[width - r -1+','+c+','+z]", ng-click='doScoring(width-r-1,c,z)')
+              div(ng-repeat='r in range(width)', ng-if='sRotate==90', style='display: flex;')
+                .slot(ng-repeat='c in range(length)')
+                  tile(tile="mtiles[r+','+ (length - c-1) +','+z]", ng-click='doScoring(r,length-c-1,z)')
+

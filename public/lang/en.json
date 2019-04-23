@@ -71,7 +71,8 @@
         "total": "total",
         "stotal": "Sub Total",
         "rule": "Rule",
-        "message": "Message for participants"
+        "message": "Message for participants",
+        "passcode": "Passcode"
     },
     "accessDenied":{
         "title" : "Access denied",
@@ -443,7 +444,7 @@
             "monitor": "Runs monitor",
             "status": "Status",
             "st0": "0.Before run",
-            "st1": "1.Display judge page",
+            "st1": "1.Defined checkpoints",
             "st2": "2.Timer start",
             "st3": "3.Record checking",
             "st4": "4.Finished",

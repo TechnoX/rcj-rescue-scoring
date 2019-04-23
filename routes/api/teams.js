@@ -80,6 +80,30 @@ publicRouter.get('/leagues/:league/:competitionId', async function (req, res) {
     res.send(ret);
 })
 
+privateRouter.get('/code/:teamId/:code', function (req, res, next) {
+    const id = req.params.teamId;
+    const code = req.params.code;
+
+    if (!ObjectId.isValid(id)) {
+        return next()
+    }
+    competitiondb.team.findOne({
+        _id: id,
+        code: code
+    },'_id inspected name league competition')
+      .exec(function (err, dbTeam) {
+          if (err) {
+              logger.error(err)
+              res.status(400).send({
+                  msg: "Could not get team",
+                  err: err.message
+              })
+          } else {
+              res.send(dbTeam)
+          }
+      })
+})
+
 publicRouter.get('/:teamid', function (req, res, next) {
     var id = req.params.teamid
 

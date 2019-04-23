@@ -1,5 +1,6 @@
 var app = angular.module("LineTimetable", ['ngTouch','pascalprecht.translate', 'ngCookies']);
-app.controller("LineTimetableController", ['$scope', '$http', '$translate', function ($scope, $http, $translate) {
+app.controller("LineTimetableController", ['$scope', '$http', '$translate','$window', function ($scope, $http, $translate,$window) {
+    var parentScope = $window.parent.angular.element($window.frameElement).scope();
     $scope.competitionId = competitionId
     $scope.teamId = teamId
     $scope.selected = null;
@@ -61,7 +62,7 @@ app.controller("LineTimetableController", ['$scope', '$http', '$translate', func
             "/line/runs?timetable=true&populate=true").then(function (response) {
             var runs = response.data
             $scope.runs = runs
-            //console.log($scope.runs)
+            console.log($scope.runs)
 
             $scope.table = []
             $scope.fields = []
@@ -70,7 +71,7 @@ app.controller("LineTimetableController", ['$scope', '$http', '$translate', func
                 console.log(run);
                 //console.log(run.field.league);
                 //console.log($scope.team.league);
-                //if (run.field.league == $scope.team.league) {
+                if (run.field.league == $scope.team.league) {
                     if (!array_exist($scope.fields, run.field.name)) $scope.fields.push(run.field);
                     if (!array_exist($scope.rounds, run.round.name)) $scope.rounds.push(run.round);
                     var round_i = table_exist_round($scope.table, run.round.name);
@@ -78,7 +79,8 @@ app.controller("LineTimetableController", ['$scope', '$http', '$translate', func
                         round_i = $scope.table.push({
                             'round': run.round.name,
                             'count': 0,
-                            'data': []
+                            'data': [],
+                            'able': true
                         }) - 1;
                     }
 
@@ -89,14 +91,17 @@ app.controller("LineTimetableController", ['$scope', '$http', '$translate', func
                             'run': []
                         }) - 1;
                     }
-                    console.log($scope.table[round_i]);
+                    //console.log($scope.table[round_i]);
                     $scope.table[round_i].data[time_i].run.push(run);
                     if(run.group) $scope.table[round_i].count++;
+                    if(run.team && run.team._id == teamId){
+                        $scope.table[round_i]['able'] = false;
+                    }
                     //$scope.table[run.round.name][run.startTime][run.field.name] = run;
-                //}
+                }
             }
 
-            console.log($scope.table);
+            //console.log($scope.table);
             //ObjArraySort($scope.table,'startTime','asc')
 
             //console.log($scope.table);
@@ -156,6 +161,11 @@ app.controller("LineTimetableController", ['$scope', '$http', '$translate', func
 
     }
 
+    $scope.reset = function() {
+        parentScope.reset();
+        parentScope.$apply();
+    }
+
     $scope.decision = function () {
         playSound(sClick);
         if ($scope.selected) {
@@ -179,11 +189,8 @@ app.controller("LineTimetableController", ['$scope', '$http', '$translate', func
                     confirmButtonColor: "#ec6c62"
                 }).then((result) => {
                     if (result.value) {
-                        $http.get("/api/kiosk/1/NA").then(function (response) {
-
-                        }, function (response) {
-                            console.log("Error: " + response.statusText);
-                        });
+                        parentScope.reset();
+                        parentScope.$apply();
                     }
                 })
             }, function (response) {
