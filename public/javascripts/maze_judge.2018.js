@@ -143,16 +143,6 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $timeout($scope.tile_size, 10);
             $timeout($scope.tile_size, 200);
         }else{
-            let data = {
-                status: 1
-            };
-            $http.put("/api/runs/maze/" + runId, data, http_config).then(function (response) {
-                //$scope.score = response.data.score;
-            }, function (response) {
-                if (response.status == 401) {
-                    $scope.go('/home/access_denied');
-                }
-            });
         }
 
 
