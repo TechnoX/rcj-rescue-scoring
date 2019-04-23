@@ -114,7 +114,7 @@ function getMazeRuns(req, res) {
       },
             {
                 path: "field",
-                select: "name"
+                select: "name league"
       },
             {
                 path: "map",
@@ -304,7 +304,54 @@ adminRouter.get('/nextApproval/:competitionid', function (req, res, next) {
   })
 })
 
-
+privateRouter.get('/find/team_status/:competitionid/:teamid/:status', function (req, res, next) {
+  var id = req.params.competitionid
+  var teamId = req.params.teamid
+  var status = req.params.status
+  if (!ObjectId.isValid(id)) {
+    return next()
+  }
+  if (!ObjectId.isValid(field_id)) {
+    return next()
+  }
+  var query = mazeRun.find({
+    competition: id,
+    team: teamId,
+    status: status
+  }, "competition round team field map score time status startTime LoPs exitBonus foundVictims")
+  query.populate([
+    {
+      path: "competition",
+      select: "name"
+    },
+    {
+      path: "round",
+      select: "name"
+    },
+    {
+      path: "team",
+      select: "name league"
+    },
+    {
+      path: "field",
+      select: "name league"
+    },
+    {
+      path: "map",
+      select: "name"
+    }
+  ])
+  query.exec(function (err, data) {
+    if (err) {
+      logger.error(err)
+      res.status(400).send({
+        msg: "Could not get runs"
+      })
+    } else {
+      res.status(200).send(data)
+    }
+  })
+})
 
 publicRouter.get('/find/:competitionid/:field/:status', function (req, res, next) {
     var id = req.params.competitionid

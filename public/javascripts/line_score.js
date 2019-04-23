@@ -43,7 +43,7 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
                 $scope.time = 10;
             }else{
                 if(league === "NL"){
-                    if($scope.nowR + 5 < $scope.nipponRunsTop.length){
+                    if($scope.nowR + 5 < $scope.RunsTop.length){
                         $scope.nowR += 6;
                         $scope.time = 10;
                     }else{
@@ -51,7 +51,7 @@ app.controller("LineScoreController", function ($scope, $http, $sce) {
                         clearInterval(inter);
                     }
                 }else{
-                    if($scope.nowR + 5 < $scope.worldRunsTop.length){
+                    if($scope.nowR + 5 < $scope.RunsTop.length){
                         $scope.nowR += 6;
                         $scope.time = 10;
                     }else{

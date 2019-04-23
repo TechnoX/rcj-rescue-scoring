@@ -231,18 +231,6 @@ router.get('/line/tilesets', function (req, res, next) {
   res.render('tileset_admin',{user: req.user})
 })
 
-router.get('/:competitionid/line/apteam/:team', function (req, res, next) {
-    const id = req.params.competitionid
-    const tid = req.params.team
-    res.render('line_apTeam',{id: id, user: req.user, tid: tid})
-})
-
-router.get('/:competitionid/maze/apteam/:team', function (req, res, next) {
-    const id = req.params.competitionid
-    const tid = req.params.team
-    res.render('maze_apTeam',{id: id, user: req.user, tid: tid})
-})
-
 router.get('/kiosk/:kioskNum', function (req, res, next) {
   const num = req.params.kioskNum
   

@@ -91,11 +91,10 @@ publicRouter.get('/:competition', function (req, res, next) {
     }
 
     competitiondb.competition.findById(id).lean().exec(function (err, data) {
-        if (err) {
+        if (err || !data) {
             logger.error(err);
             res.status(400).send({
-                msg: "Could not get competition",
-                err: err.message
+                msg: "Could not get competition"
             })
         } else {
             if(!data.color) data.color = "000000";

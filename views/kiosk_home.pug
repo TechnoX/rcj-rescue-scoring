@@ -1,0 +1,140 @@
+html(ng-app="ddApp")
+    head
+        title Kiosk
+        script.
+          var cid = "#{id}"
+
+
+        include ./includes/common_component
+        script(src="/javascripts/kiosk_home.js")
+        script(src="/javascripts/translate_config.js")
+        link(href="/stylesheets/fredrik.css" rel="stylesheet")
+
+
+
+    body(ng-controller="ddController" style="width: 100%;height: 100%;background-color:#eee;overflow:scroll;")
+        nav.navbar(style='background-color: #2980b9; color: #ecf0f1; position: fixed; top: 0; z-index:10 ;  width: 100%' ng-if='!flag_frame')
+            .col-6
+                li.navbar-brand {{competition.name}}
+            .col-6(style="text-align:right;")
+                button(ng-click="reset()" class='btn btn-danger' style="") 終了
+        div(style="position:fixed;left:0;top:0;width:100%;height:100%;overflow: auto;scrool:yes;-webkit-overflow-scrolling:touch;" ng-if='flag_frame')
+            iframe( ng-src='{{frameSrc}}', style='width:100%; height:100%;border:none;')
+        div(ng-if='!flag_frame')
+            br
+            br
+            br
+            br
+            .row
+                .col-md-1
+                .col-md-10
+                    //div(style="text-align:center;" ng-if="!flag_kiosk")
+                        img(src="/images/logo.png" width='200px')
+                        br
+                        br
+                        h1 読み込み中
+                        br
+                        br
+                        i.fas.fa-spinner.fa-spin.fa-4x
+                    div(style="text-align:center;" ng-if="!teamLeague")
+                        h1 あなたのチームが所属するリーグを選択してください．
+                        h3 Please select the league to which your team belongs.
+                        hr
+                        .row
+                            div(ng-repeat="league in leagues" class="col-md-{{12/leagues.length}}")
+                                button(ng-click="setLeague(league.id)" class='btn btn-outline-success btn-lg btn-block' style="height:60%;font-size:30px;") {{league.name}}
+                    div(style="text-align:center;" ng-if="teamLeague && !selectTeamId")
+                        h1 あなたのチームを選択してください．
+                        h3 Please select your team.
+                        hr
+                        .row
+                            div(ng-repeat="team in teams" class="col-md-4")
+                                button(ng-click="setTeam(team._id)" class='btn btn-outline-info btn-lg btn-block' style="margin-bottom:10px;") {{team.name}}
+                    div(style="text-align:center;" ng-if="selectTeamId && !mode")
+                        h1(ng-bind="selectTeamName")
+                        h2 パスコードを入力してください．
+                        h3 Please input passcode.
+                        hr
+                        h2(ng-bind="codeAst()" style="height:50px;font-size:45px;" ng-if="!error")
+                        h2(ng-bind="error" style="height:50px;font-size:30px;color:#c0392b" ng-if="error")
+                        div(style="margin-bottom:10px;")
+                            button(ng-click="input(1)" class='btn btn-dark' style="font-size:60px;margin-right:10px;width:100px;height:100px;") 1
+                            button(ng-click="input(2)" class='btn btn-dark' style="font-size:60px;margin-right:10px;width:100px;height:100px;") 2
+                            button(ng-click="input(3)" class='btn btn-dark' style="font-size:60px;width:100px;height:100px;") 3
+                        div(style="margin-bottom:10px;")
+                            button(ng-click="input(4)" class='btn btn-dark' style="font-size:60px;margin-right:10px;width:100px;height:100px;") 4
+                            button(ng-click="input(5)" class='btn btn-dark' style="font-size:60px;margin-right:10px;width:100px;height:100px;") 5
+                            button(ng-click="input(6)" class='btn btn-dark' style="font-size:60px;width:100px;height:100px;") 6
+                        div(style="margin-bottom:10px;")
+                            button(ng-click="input(7)" class='btn btn-dark' style="font-size:60px;margin-right:10px;width:100px;height:100px;") 7
+                            button(ng-click="input(8)" class='btn btn-dark' style="font-size:60px;margin-right:10px;width:100px;height:100px;") 8
+                            button(ng-click="input(9)" class='btn btn-dark' style="font-size:60px;width:100px;height:100px;") 9
+                        div(style="margin-bottom:10px;")
+                            button(ng-click="backSpace()" class='btn btn-warning' style="font-size:60px;margin-right:10px;width:100px;height:100px;")
+                                i.fas.fa-backspace
+                            button(ng-click="input(0)" class='btn btn-dark' style="font-size:60px;margin-right:10px;width:100px;height:100px;") 0
+                            button(ng-click="codeCheck()" class='btn btn-success' style="font-size:60px;width:100px;height:100px;")
+                                i.far.fa-check-circle
+                    div(style="text-align:center;" ng-if="mode == 'Menu'")
+                        h1(ng-bind="selectTeamName")
+                        hr
+                        //button(ng-click="setMode('Score')" class='btn btn-outline-dark btn-lg btn-block' style="min-height:20vh;") 競技結果 / Result of your games
+                        button(ng-click="setMode('Order')" class='btn btn-outline-dark btn-lg btn-block' style="min-height:20vh;") 競技順の登録 / Register the order of your game
+                        button(ng-click="setMode('CheckPoint')" class='btn btn-outline-info btn-lg btn-block' style="min-height:20vh;" ng-if="type=='line'") チェックポイントの登録 / Register the checkpoints
+                    div(style="text-align:center;" ng-if="mode == 'Score'")
+                        h1(ng-bind="selectTeamName")
+                        h2 競技結果 / Result of your games
+                        p 競技終了後，本部にて結果が承認されるまでは表示されません．
+                        p After the games, it will not be displayed until the results are approved by the OC.
+                        hr
+                        #compe
+                            table(class="custom")
+                                thead
+                                    tr
+                                        th {{'common.round' | translate}}
+                                        th {{'common.field' | translate}}
+                                        th {{'common.starttime' | translate}}
+                                        th {{'common.score' | translate}}
+                                        th {{'common.time' | translate}}
+                                        th {{'common.lops' | translate}}
+                                        th
+                                tbody
+                                    tr(ng-repeat='run in lruns | filter: teamId | orderBy:"[startTime,round.name,field.name,team.name]" ')
+                                        td(ng-bind='run.round.name' data-content="{{'common.round' | translate}}")
+                                        td(ng-bind='run.field.name' data-content="{{'common.field' | translate}}")
+                                        td(ng-bind='run.startTime | date:"dd EEE HH:mm"' data-content="{{'common.starttime' | translate}}")
+                                        td {{run.score}}
+                                        td {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+                                        td {{run.LoPsNum}}
+                                        td
+                                            button(ng-click="go('/line/view/' + run._id)" class='btn btn-info' style="width:45%; margin-right:5px;") {{'common.view' | translate}}
+                                    tr(ng-repeat='run in mruns | filter: teamId | orderBy:"[startTime]" ')
+                                        td(ng-bind='run.round.name' data-content="{{'common.round' | translate}}")
+                                        td(ng-bind='run.field.name' data-content="{{'common.field' | translate}}")
+                                        td(ng-bind='run.startTime | date:"dd EEE HH:mm"' data-content="{{'common.starttime' | translate}}")
+                                        td(ng-bind='run.score' data-content="{{'common.score' | translate}}")
+                                        td {{("00"+run.time.minutes).slice(-2)}}:{{("00"+run.time.seconds).slice(-2)}}
+                                        td {{run.LoPs}}
+                                        td
+                                            button(ng-click="go('/maze/view/' + run._id + '?return=/interview/'+competitionId + '/do/'+teamId)" class='btn btn-info' style="width:45%; margin-right:5px;") {{'common.view' | translate}}
+                    div(style="text-align:center;" ng-if="mode == 'CheckPoint'")
+                        h1(ng-bind="selectTeamName")
+                        h2 チェックポイントの設定 / Setting the checkpoints
+                        hr
+                        table(class="custom")
+                            thead
+                                tr
+                                    th {{'common.round' | translate}}
+                                    th {{'common.field' | translate}}
+                                    th {{'common.starttime' | translate}}
+                                    th
+                            tbody
+                                tr(ng-repeat='run in lruns | filter: teamId | orderBy:"[startTime,round.name,field.name,team.name]" ')
+                                    td(ng-bind='run.round.name' data-content="{{'common.round' | translate}}")
+                                    td(ng-bind='run.field.name' data-content="{{'common.field' | translate}}")
+                                    td(ng-bind='run.startTime | date:"M月dd日 HH:mm 競技開始"' data-content="{{'common.starttime' | translate}}")
+                                    td
+                                        button(ng-click="setCheckPoint(run._id)" class='btn btn-success' style="width:45%; margin-right:5px;") チェックポイントを設定 / Set the checkpoints
+                        br
+                        span ※チェックポイントの設定が可能な競技を全て表示しました．
+                        span All the games that can set the checkpoint are displayed.

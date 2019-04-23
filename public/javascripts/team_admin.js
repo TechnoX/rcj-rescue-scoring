@@ -16,8 +16,9 @@ var app = angular.module("TeamAdmin", ['ngTouch','pascalprecht.translate', 'ngCo
         var team = {
             name: $scope.teamName,
             league: $scope.teamLeague,
-            competition: competitionId
-        }
+            competition: competitionId,
+            code: $scope.passcode
+        };
 
         $http.post("/api/teams", team).then(function (response) {
             console.log(response)
@@ -25,7 +26,7 @@ var app = angular.module("TeamAdmin", ['ngTouch','pascalprecht.translate', 'ngCo
         }, function (error) {
             console.log(error)
         })
-    }
+    };
 
     $scope.selectAll = function () {
         angular.forEach($scope.teams, function (team) {
