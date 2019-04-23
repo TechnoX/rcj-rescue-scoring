@@ -48,7 +48,7 @@ privateRouter.get('/', function (req, res) {
     })
 })
 
-privateRouter.get('/:id', function (req, res) {
+privateRouter.get('/:id', function (req, res, next) {
     var id = req.params.id
     if (!ObjectId.isValid(id)) {
         return next()
@@ -66,7 +66,7 @@ privateRouter.get('/:id', function (req, res) {
     })
 })
 
-privateRouter.get('/:id/refresh', function (req, res) {
+privateRouter.get('/:id/refresh', function (req, res, next) {
     var id = req.params.id
     if (!ObjectId.isValid(id)) {
         return next()
@@ -88,7 +88,7 @@ privateRouter.get('/:id/refresh', function (req, res) {
             })
 })
 
-privateRouter.get('/:id/:cont', function (req, res) {
+privateRouter.get('/:id/:cont', function (req, res, next) {
     var id = req.params.id
     if (!ObjectId.isValid(id)) {
         return next()
@@ -110,7 +110,7 @@ privateRouter.get('/:id/:cont', function (req, res) {
 
 
 
-adminRouter.post('/', function (req, res) {
+adminRouter.post('/', function (req, res, next) {
   const sig = req.body
   
   new signagedb({

@@ -31,7 +31,7 @@ block content
               td
                 a(ng-bind='sign.name' ng-href="/signage/setting/editor/{{sign._id}}")
               td
-                button.btn.btn-info(type='button', ng-click='go("/signage/"+sign._id+"/0")' style="margin-right:10px;") {{"common.view" | translate}}
+                button.btn.btn-info(type='button', ng-click='go("/signage/display/"+sign._id+"/0")' style="margin-right:10px;") {{"common.view" | translate}}
                 button.btn.btn-danger(type='button', ng-click='removeSig(sign)') {{"common.delete" | translate}}
                 
 
