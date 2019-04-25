@@ -200,6 +200,38 @@ app.controller("LineTimetableController", ['$scope', '$http', '$translate','$win
         }
     }
 
+    swal({
+        title: "競技枠の設定",
+        html: "<p>スタッフの指示にしたがって入力してください</p>",
+        type: "success",
+        showCancelButton: false,
+        confirmButtonText: "確認",
+        confirmButtonColor: "#ec6c62"
+    }).then((result) => {
+        playSound(sClick);
+    })
+
+    window.addEventListener("keydown", handleKeydown);
+    var tmpKey = "";
+    function handleKeydown(event){
+        let keyCode = event.keyCode;
+        console.log(keyCode);
+        if(keyCode >= 48 && keyCode <= 57){//Numbers
+            if($scope.selected){
+                tmpKey = "";
+                $scope.selected = null;
+            }
+            tmpKey += String(keyCode-48);
+        }
+        if(keyCode == 13){//Enter
+            playSound(sInfo);
+            console.log(tmpKey);
+            $scope.selected = Number(tmpKey);
+            $scope.$apply();
+        }
+
+    }
+
 
 }]);
 
