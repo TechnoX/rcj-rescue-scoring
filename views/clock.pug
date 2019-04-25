@@ -68,7 +68,7 @@ html(ng-app="Clock")
                     span(style="font-size:5vh;color:#fff;margin-left:50px;") フィールド {{selectfield[n].name}}
                 div(style="padding-left: 15px;padding-right: 15px;" ng-repeat="run in runs[selectfield[n]._id] | orderBy:'[startTime]' | limitTo: 2")
                     div(ng-class="{running:run.status>1 , next:run.status<=1}")
-                        span(style="font-size:5vh;margin-left:10px;") {{run.startTime | date:"hh:mm"}} ~
+                        span(style="font-size:5vh;margin-left:10px;") {{run.startTime | date:"HH:mm"}} ~
                         span(style="font-size:5vh;margin-left:30px;") {{run.teamCode}}
                         br
                         span(style="font-size:13vh;margin-left:10px;overflow:hidden;text-align:center;") {{run.teamName}}
