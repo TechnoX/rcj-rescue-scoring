@@ -100,6 +100,12 @@ html(ng-app="ddApp")
         p(ng-show='!(checkTeam && checkRound && checkMember && checkMachine)') {{'maze.judge.tap_red' | translate}}
         button.btn.btn-success(type='button', ng-click='infochecked()', ng-disabled='!(checkTeam && checkRound && checkMember && checkMachine)')
           i.fas.fa-check-circle.fa-2x(aria-hidden='true')  {{'maze.judge.confirm' | translate}}
+        br
+        br
+        hr
+        p チームが来なかった場合に時間計測を開始する
+        button.btn.btn-success(style='margin:0 10px 10px 0;', type='button', ng-click='toggleTime()')
+          i.fas.fa-stopwatch(aria-hidden='true')  {{ startedTime ? 'line.judge.tim_stop' : 'line.judge.tim_start' |translate }}
       div(ng-show='checked')
         .alert.alert-warning(role='alert', ng-show='networkError')
           h4.alert-heading {{'maze.judge.networkError' | translate}}

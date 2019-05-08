@@ -7,7 +7,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
     $scope.sigGroup = '0';
     $scope.signageSrc = function(){
-        return "/signage/" + sigId + "/" + $scope.sigGroup;
+        return "/signage/display/" + sigId + "/" + $scope.sigGroup;
     }
     $scope.selectfield = [];
     if(sigId){
@@ -15,10 +15,10 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
     }else{
         $scope.flagSignage = false;
     }
-    
+
     $scope.vet = 1;
-    
-    
+
+
     $http.get("/api/competitions/" + competitionId +
         "/Line/fields").then(function (response) {
         $scope.fields = response.data
