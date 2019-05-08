@@ -125,6 +125,10 @@ privateRouter.get('/display/:competitionid/timetable/:league/:round', function (
   res.render('signage_timetable', {id: id, user: req.user, league: league, round: round})
 })
 
+privateRouter.get('/clock/:competitionid', function (req, res, next) {
+  const id = req.params.competitionid
+  res.render('clock',{id: id, user: req.user})
+})
 
 module.exports.public = publicRouter
 module.exports.private = privateRouter

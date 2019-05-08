@@ -48,7 +48,7 @@ html(ng-app="ddApp")
                         h3 Please select your team.
                         hr
                         .row
-                            div(ng-repeat="team in teams" class="col-md-4")
+                            div(ng-repeat="team in teams | orderBy:'name'" class="col-md-4")
                                 button(ng-click="setTeam(team._id)" class='btn btn-outline-info btn-lg btn-block' style="margin-bottom:10px;") {{team.name}}
                     div(style="text-align:center;" ng-if="selectTeamId && !mode")
                         h1(ng-bind="selectTeamName")

@@ -14,7 +14,7 @@ app.controller("ClockController", ['$scope', '$http', '$translate', '$timeout', 
             $scope.time = Number(date.getTime()) + Number($scope.timeDep);
             //console.log($scope.time);
             //$scope.$apply();
-            $timeout(tick, 500);
+            $timeout(tick, 200);
         }
 
 
@@ -36,14 +36,14 @@ app.controller("ClockController", ['$scope', '$http', '$translate', '$timeout', 
         socket.emit('subscribe', 'runs/line/' + competitionId + '/status');
         socket.emit('subscribe', 'runs/maze/' + competitionId + '/status');
 
-        socket.on('Lchanged', function (data) {
+        socket.on('LChanged', function (data) {
             update_line_list();
             $scope.$apply();
             //console.log($scope.runs);
             console.log("Updated view from socket.io");
         });
         
-        socket.on('Mchanged', function (data) {
+        socket.on('MChanged', function (data) {
             update_maze_list();
             $scope.$apply();
             //console.log($scope.runs);

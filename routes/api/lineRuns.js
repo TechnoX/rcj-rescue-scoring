@@ -548,7 +548,8 @@ privateRouter.put('/:runid', function (req, res, next) {
               socketIo.sockets.in('runs/' + dbRun._id).emit('data', dbRun)
               socketIo.sockets.in('fields/' +dbRun.field).emit('data', {newRun: dbRun._id})
               if(statusUpdate){
-                socketIo.sockets.in('runs/line/' + dbRun.competition._id + '/status').emit('StatusChanged')
+                socketIo.sockets.in('runs/line/' + dbRun.competition._id + '/status').emit('LChanged')
+                console.log("EMIT");
               }
             }
             return res.status(200).send({

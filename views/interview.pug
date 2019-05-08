@@ -33,7 +33,7 @@ block content
               th {{"common.interview" | translate}}
               th {{"common.operation" | translate}}
         tbody
-            tr(ng-repeat='team in teams')
+            tr(ng-repeat="team in teams | orderBy:'name'")
               td(ng-bind='team.name')
               td(ng-bind='team.league')
               //td(ng-click='inspected(team)')

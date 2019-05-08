@@ -229,6 +229,7 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
             $scope.minutes = response.data.time.minutes;
             $scope.seconds = response.data.time.seconds;
             $scope.time = ($scope.minutes * 60 + $scope.seconds) * 1000;
+            $scope.status = response.data.status;
             prevTime = $scope.time;
 
             var started = response.data.started;
@@ -238,12 +239,15 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
             // Scoring elements of the tiles
             $scope.stiles = response.data.tiles;
+            console.log($scope.stiles)
             for (var i = 0; i < response.data.tiles.length; i++) {
                 if (response.data.tiles[i].isDropTile) {
                     $scope.actualUsedDropTiles++;
+                    console.log("USED");
                     marker[i] = true;
                 }
             }
+
 
 
 
@@ -279,11 +283,11 @@ app.controller('ddController', ['$scope', '$uibModal', '$log', '$timeout', '$htt
 
                 console.log(started);
 
-                if(!started && tileReset){
-
+                if(!started && tileReset && $scope.status == 0){
                     $scope.stiles = [];
                     tileReset = false;
                 }
+
                 if($scope.stiles.length < response.data.indexCount){
                     while ($scope.stiles.length < response.data.indexCount) {
                         $scope.stiles.push({
